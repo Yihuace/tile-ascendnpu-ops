@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="11" time="92.389" timestamp="2026-10-13T21:37:18.720632+08:00" hostname="0170d636365245f8b59712977b2e7144"><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_op[16-128-dtype0]" time="46.358"><properties><property name="op" value="GeluAndMulFwdOp" /><property name="op_module" value="tileops.ops.elementwise.gelu_and_mul" /><property name="max_abs_err" value="7.72e-04" /></properties><failure message="AssertionError: Tensor-likes are not close!&#10;&#10;Mismatched elements: 1154 / 2048 (56.3%)&#10;Greatest absolute difference: 0.0007715225219726562 at index (15, 113) (up to 1e-05 allowed)&#10;Greatest relative difference: 0.22231249511241913 at index (7, 117) (up to 1e-05 allowed)">M = 16, N = 128, dtype = torch.float32
+
+    @GeluAndMulFixture
+    def test_gelu_and_mul_op(M: int, N: int, dtype: torch.dtype) -&gt; None:
+        test = GeluAndMulTest(M, N, dtype)
+        op = GeluAndMulFwdOp(M=M, N=N, dtype=dtype)
+        atol, rtol = _get_tolerances(dtype)
+&gt;       test.check(op, *test.gen_inputs(), atol=atol, rtol=rtol)
+
+tests/ops/test_gelu_and_mul.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/testing/test_base.py:137: in check
+    cmp(output, output_ref)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = tensor([[ 2.1732e-01,  8.4461e-01,  3.4117e-01,  ..., -2.1409e-02,
+         -2.7735e-04, -3.9250e-02],
+        [-5.266...        [ 1.8773e-02, -1.3917e-01,  9.7945e-02,  ..., -6.9227e-02,
+         -6.4945e-02,  1.1444e-01]], device='npu:0')
+output_ref = tensor([[ 2.1768e-01,  8.4454e-01,  3.4134e-01,  ..., -2.1418e-02,
+         -2.7735e-04, -3.9310e-02],
+        [-5.278...        [ 1.8790e-02, -1.3919e-01,  9.7945e-02,  ..., -6.9225e-02,
+         -6.4942e-02,  1.1469e-01]], device='npu:0')
+atol = 1e-05, rtol = 1e-05
+
+    def allclose_compare(
+        output: torch.Tensor,
+        output_ref: torch.Tensor,
+        atol: float = 1e-8,
+        rtol: float = 1e-5,
+    ) -&gt; None:
+        output, output_ref = torch.broadcast_tensors(output, output_ref)
+&gt;       torch.testing.assert_close(
+            output,
+            output_ref,
+            atol=atol,
+            rtol=rtol,
+            equal_nan=True,
+        )
+E       AssertionError: Tensor-likes are not close!
+E       
+E       Mismatched elements: 1154 / 2048 (56.3%)
+E       Greatest absolute difference: 0.0007715225219726562 at index (15, 113) (up to 1e-05 allowed)
+E       Greatest relative difference: 0.22231249511241913 at index (7, 117) (up to 1e-05 allowed)
+
+tileops/testing/test_base.py:41: AssertionError</failure></testcase><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_op[16-128-dtype1]" time="17.424"><properties><property name="op" value="GeluAndMulFwdOp" /><property name="op_module" value="tileops.ops.elementwise.gelu_and_mul" /><property name="max_abs_err" value="1.95e-03" /></properties></testcase><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_op[16-128-dtype2]" time="16.974"><properties><property name="op" value="GeluAndMulFwdOp" /><property name="op_module" value="tileops.ops.elementwise.gelu_and_mul" /><property name="max_abs_err" value="7.81e-03" /></properties></testcase><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_op[2048-14336-dtype3]" time="2.055"><properties><property name="op" value="GeluAndMulFwdOp" /><property name="op_module" value="tileops.ops.elementwise.gelu_and_mul" /><property name="max_abs_err" value="7.81e-03" /></properties></testcase><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_op[2048-14336-dtype4]" time="1.991"><properties><property name="op" value="GeluAndMulFwdOp" /><property name="op_module" value="tileops.ops.elementwise.gelu_and_mul" /><property name="max_abs_err" value="6.25e-02" /></properties></testcase><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_op[1-14336-dtype5]" time="1.921"><properties><property name="op" value="GeluAndMulFwdOp" /><property name="op_module" value="tileops.ops.elementwise.gelu_and_mul" /><property name="max_abs_err" value="3.12e-02" /></properties></testcase><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_rejects_non_float_dtype" time="0.002" /><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_kernel_rejects_non_float_dtype" time="0.002" /><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_rejects_dtype_mismatch" time="1.900" /><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_rejects_shape_mismatch" time="0.002" /><testcase classname="tests.ops.test_gelu_and_mul" name="test_gelu_and_mul_eval_roofline" time="1.993" /></testsuite></testsuites>

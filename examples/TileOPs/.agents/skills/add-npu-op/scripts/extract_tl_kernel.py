@@ -804,6 +804,155 @@ def _inline_op_func(
     return merged
 
 
+def _inline_gated_op_func(
+    builder: ast.FunctionDef,
+    activation_func: ast.FunctionDef,
+    merged_name: str,
+) -> ast.FunctionDef:
+    """Merge a FusedGated builder with its static ``activation_func``.
+
+    The GPU gated family registers ``fused_op(gate, value) =
+    activation_func(gate) * value`` (see ``FusedGatedKernel._get_effective_op_func``).
+    The extractor cannot resolve that runtime registry entry statically, so this
+    inlines the combine directly: every ``op_func(gate, value)`` call becomes
+    ``<activation_func return expr>[x := gate] * value``; the
+    ``op_func = op_func_for(op_name)`` binding and the ``op_name`` parameter are
+    dropped. Parameter-independent locals of ``activation_func`` are hoisted.
+    """
+    params = [a.arg for a in activation_func.args.args]
+    if not params:
+        raise ValueError("activation_func must have at least one parameter")
+    act_param = params[0]
+    body = list(activation_func.body)
+    if not isinstance(body[-1], ast.Return) or body[-1].value is None:
+        raise ValueError("activation_func must end with a return statement")
+    if any(isinstance(n, ast.Return) for d in body[:-1] for n in ast.walk(d)):
+        raise ValueError("activation_func contains conditional/early returns")
+    act_ret = body[-1].value
+
+    hoist_decls: list[ast.stmt] = []
+    inline_locals: dict[str, ast.expr] = {}
+    for d in body[:-1]:
+        if (
+            isinstance(d, ast.Assign)
+            and len(d.targets) == 1
+            and isinstance(d.targets[0], ast.Name)
+        ):
+            name = d.targets[0].id
+            refs = {n.id for n in ast.walk(d.value) if isinstance(n, ast.Name)}
+            if act_param in refs:
+                inline_locals[name] = d.value
+                continue
+        hoist_decls.append(d)
+    for _ in range(len(inline_locals) + 1):
+
+        class _Expand(ast.NodeTransformer):
+            def visit_Name(self, node: ast.Name) -> ast.AST:
+                if isinstance(node.ctx, ast.Load) and node.id in inline_locals:
+                    return copy.deepcopy(inline_locals[node.id])
+                return node
+
+        expanded = _Expand().visit(act_ret)
+        if ast.dump(expanded) == ast.dump(act_ret):
+            break
+        act_ret = expanded
+
+    def _subst(expr: ast.AST, arg: ast.AST) -> ast.AST:
+        cloned = copy.deepcopy(expr)
+
+        class _S(ast.NodeTransformer):
+            def visit_Name(self, node: ast.Name) -> ast.AST:
+                if node.id == act_param:
+                    return copy.deepcopy(arg)
+                return node
+
+        return _S().visit(cloned)
+
+    def _is_gated_call(node: ast.AST) -> bool:
+        return (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "op_func"
+            and len(node.args) >= 2
+        )
+
+    merged = copy.deepcopy(builder)
+    merged.name = merged_name
+    hoisted = {"done": False}
+
+    def _replace(node: ast.AST) -> ast.AST:
+        class _R(ast.NodeTransformer):
+            def visit_Call(self, c: ast.Call) -> ast.AST:
+                self.generic_visit(c)
+                if _is_gated_call(c):
+                    act = _subst(act_ret, c.args[0])
+                    combined = ast.BinOp(left=act, op=ast.Mult(), right=copy.deepcopy(c.args[1]))
+                    return ast.copy_location(combined, c)
+                return c
+
+        return _R().visit(node)
+
+    def _contains(node: ast.AST) -> bool:
+        return any(_is_gated_call(n) for n in ast.walk(node))
+
+    def _process(stmts: list[ast.stmt]) -> list[ast.stmt]:
+        result: list[ast.stmt] = []
+        for s in stmts:
+            if _contains(s):
+                if not hoisted["done"] and hoist_decls:
+                    for d in hoist_decls:
+                        result.append(copy.deepcopy(d))
+                    hoisted["done"] = True
+                s = _replace(s)
+            for field_name in ("body", "orelse", "finalbody"):
+                val = getattr(s, field_name, None)
+                if isinstance(val, list):
+                    setattr(s, field_name, _process(val))
+            if hasattr(s, "handlers") and isinstance(s.handlers, list):
+                for handler in s.handlers:
+                    if isinstance(getattr(handler, "body", None), list):
+                        handler.body = _process(handler.body)
+            result.append(s)
+        return result
+
+    merged.body = _process(merged.body)
+
+    if not hoisted["done"] and not any(_contains(s) for s in merged.body):
+        raise ValueError("gated builder has no op_func(gate, value) call to merge")
+
+    # Drop the ``op_func = op_func_for(op_name)`` binding + the now-unused op_name.
+    dropped: set[str] = set()
+
+    def _strip(stmts: list[ast.stmt]) -> list[ast.stmt]:
+        kept: list[ast.stmt] = []
+        for s in stmts:
+            if (
+                isinstance(s, ast.Assign)
+                and len(s.targets) == 1
+                and isinstance(s.targets[0], ast.Name)
+                and s.targets[0].id == "op_func"
+            ):
+                for n in ast.walk(s.value):
+                    if isinstance(n, ast.Name):
+                        dropped.add(n.id)
+                continue
+            for field_name in ("body", "orelse", "finalbody"):
+                val = getattr(s, field_name, None)
+                if isinstance(val, list):
+                    setattr(s, field_name, _strip(val))
+            kept.append(s)
+        return kept
+
+    merged.body = _strip(merged.body)
+    used = {n.id for n in ast.walk(merged) if isinstance(n, ast.Name)}
+    merged.args.args = [
+        a for a in merged.args.args if not (a.arg in dropped and a.arg not in used)
+    ]
+
+    ast.fix_missing_locations(merged)
+    return merged
+
+
 @dataclass
 class EmitTarget:
     """A definition to emit in the extracted file."""
@@ -1056,6 +1205,38 @@ class Extractor:
                     merged_ast=merged_ast,
                 )
             ]
+
+        # Gated family (no static ``op_func``; per-op math is a static
+        # ``activation_func`` combined as ``activation_func(gate) * value`` by the
+        # runtime registry). Inline that combine statically.
+        if op_func_loc is None and len(tl_targets) == 1:
+            act_loc = _find_method_in_mro(mro, "activation_func")
+            if act_loc is not None:
+                merged_name = f"{_op_name_to_snake(op_name)}_kernel"
+                try:
+                    merged_ast = _inline_gated_op_func(
+                        tl_targets[0].node, act_loc[1], merged_name
+                    )
+                except ValueError as exc:
+                    self.warnings.append(
+                        f"Pattern A (gated): cannot inline activation_func for "
+                        f"'{op_name}' ({exc})."
+                    )
+                else:
+                    helper_files: list[Path] = []
+                    for cand in (act_loc[0], tl_targets[0].file, kernel_file):
+                        if cand not in helper_files:
+                            helper_files.append(cand)
+                    self._merged_helper_files = helper_files
+                    self.pattern = "A"
+                    return [
+                        EmitTarget(
+                            tl_targets[0].file,
+                            tl_targets[0].node,
+                            "tl_kernel",
+                            merged_ast=merged_ast,
+                        )
+                    ]
 
         # Fall back: emit builder(s) as raw (un-merged) builders. This happens
         # when the kernel has no static ``op_func`` method to inline (e.g. the

@@ -642,6 +642,51 @@ created_by: bitwise_not/_bitwise_not_fwd_kernel Stage 3（2026-10-13）
 last_seen: bitwise_not-bitwise_not_fwd_kernel-20261013（2026-10-13）
 ```
 
+### CG-2026-0021
+
+```yaml
+gap_id: CG-2026-0021
+layer: BishengIR / hivm codegen（VerfCodegen）
+capability: >-
+  T.verf / T.erf 在本工具链上不是真正的 erf：CodeGenTileLangNPUIRAPI::VerfCodegen
+  （tilelang-mlir-ascend/src/target/codegen_npuir_api.cc ~2433）把 tl.npuir_verf
+  lowering 为「4 项 Maclaurin 截断序列」(2/√π)(x − x³/3 + x⁵/10 − x⁷/42)，仅 |x|≲1
+  有效；T.erf（ErfOp→hivm::VErfOp）走同一 codegen，无精确 erf 回退。
+blocked_algo: 全域 erf 消费类算子（erf-GELU / erfc / normal CDF）无法用原生 API；被迫换算法（显式多项式）。
+evidence:
+  - 复现：examples/gelu_and_mul/gelu_and_mul_fwd_kernel/repro/TRAP-verf-taylor-truncation.py（自包含断言，NPU 跑通）。
+  - 实测：verf(1.877)=0.056 vs erf=0.992；verf(3.6)=−155.8；verf(±inf)=NaN。官方测试仅采样 (−1,1) @1e-2，掩盖该截断。
+  - 文档缺口：docs/Tilelang.language/数学操作/T.verf.md 只述存在/范围/dtype，未述 lowering 与其有效定义域——doc-vs-toolchain 语义缺口。
+workaround: 显式 clamped deg-20 minimax 多项式（fp32，c0=1/A 精确饱和 + NaN mask），RANGE 全范围 max abs err 2.98e-7；代价 ~35 额外向量 op。
+occurrences: 1
+tasks: [gelu_and_mul-gelu_and_mul_fwd_kernel-20261013]
+toolchain_stamp: tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B3（20 AI Core）
+status: open
+created_by: gelu_and_mul/_gelu_and_mul_fwd_kernel Stage 3 `[DESIGN_ERROR]`（2026-10-13）
+last_seen: gelu_and_mul-gelu_and_mul_fwd_kernel-20261013（2026-10-13）
+```
+
+### CG-2026-0022
+
+```yaml
+gap_id: CG-2026-0022
+layer: tladapter / runtime（torch_npu F.gelu approximation）
+capability: >-
+  torch_npu 2.7.1.post4 的 torch.nn.functional.gelu(approximate="none") 在设备侧
+  返回 tanh 近似（非 erf 精确），偏差 ~1.2e-3。
+blocked_algo: 设备侧精确 GELU 参考不可用（fp32 容差 1e-5 下不可比）；测试参考须改走 CPU 显式 erf。
+evidence:
+  - 实测（examples/TileOPs）：kernel vs NPU F.gelu=1.20e-3；NPU F.gelu vs exact=1.20e-3；NPU F.gelu("none") vs CPU F.gelu("tanh")=2.38e-7。
+  - 修复：examples/TileOPs/tests/ops/test_gelu_and_mul.py ref_program 改 CPU 显式 erf（0.5*gate*(1+erf(gate/√2))）。
+workaround: 测试参考在 CPU 上用显式 erf 形式计算（不依赖设备 F.gelu）。
+occurrences: 1
+tasks: [gelu_and_mul-gelu_and_mul_fwd_kernel-20261013]
+toolchain_stamp: torch_npu 2.7.1.post4 + torch 2.7.1+cpu + Ascend910B3
+status: open
+created_by: gelu_and_mul Stage 5 集成（2026-10-13）
+last_seen: gelu_and_mul-gelu_and_mul_fwd_kernel-20261013（2026-10-13）
+```
+
 ### CG-2026-0008 → 已升级 recurring，条目移入下方 Recurring 区（2026-09-15 occurrences 2）
 
 ---

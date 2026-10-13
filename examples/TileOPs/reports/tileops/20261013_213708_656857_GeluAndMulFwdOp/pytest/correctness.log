@@ -1,0 +1,112 @@
+command: /usr/local/bin/python -m pytest tests/ops/test_gelu_and_mul.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261013_213708_656857_GeluAndMulFwdOp/pytest/correctness.xml
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-8.3.2, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-13 21:37:18  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-13 21:37:18  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-13 21:37:18  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 11 items
+
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_op[16-128-dtype0] [W1013 21:38:06.149433666 ToKernelNpu.cpp:41] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+Precompiling NPU launcher header...
+2026-10-13 21:37:24  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+GeluAndMulFwdKernel initialized with config: {}
+FAILED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_op[16-128-dtype1] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+GeluAndMulFwdKernel initialized with config: {}
+PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_op[16-128-dtype2] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+GeluAndMulFwdKernel initialized with config: {}
+PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_op[2048-14336-dtype3] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+GeluAndMulFwdKernel initialized with config: {}
+PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_op[2048-14336-dtype4] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+GeluAndMulFwdKernel initialized with config: {}
+PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_op[1-14336-dtype5] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+GeluAndMulFwdKernel initialized with config: {}
+PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_rejects_non_float_dtype PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_kernel_rejects_non_float_dtype PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_rejects_dtype_mismatch AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+GeluAndMulFwdKernel initialized with config: {}
+PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_rejects_shape_mismatch GeluAndMulFwdKernel initialized with config: {}
+PASSED
+tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_eval_roofline AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+GeluAndMulFwdKernel initialized with config: {}
+PASSED
+
+=================================== FAILURES ===================================
+_____________________ test_gelu_and_mul_op[16-128-dtype0] ______________________
+
+M = 16, N = 128, dtype = torch.float32
+
+    @GeluAndMulFixture
+    def test_gelu_and_mul_op(M: int, N: int, dtype: torch.dtype) -> None:
+        test = GeluAndMulTest(M, N, dtype)
+        op = GeluAndMulFwdOp(M=M, N=N, dtype=dtype)
+        atol, rtol = _get_tolerances(dtype)
+>       test.check(op, *test.gen_inputs(), atol=atol, rtol=rtol)
+
+tests/ops/test_gelu_and_mul.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/testing/test_base.py:137: in check
+    cmp(output, output_ref)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = tensor([[ 2.1732e-01,  8.4461e-01,  3.4117e-01,  ..., -2.1409e-02,
+         -2.7735e-04, -3.9250e-02],
+        [-5.266...        [ 1.8773e-02, -1.3917e-01,  9.7945e-02,  ..., -6.9227e-02,
+         -6.4945e-02,  1.1444e-01]], device='npu:0')
+output_ref = tensor([[ 2.1768e-01,  8.4454e-01,  3.4134e-01,  ..., -2.1418e-02,
+         -2.7735e-04, -3.9310e-02],
+        [-5.278...        [ 1.8790e-02, -1.3919e-01,  9.7945e-02,  ..., -6.9225e-02,
+         -6.4942e-02,  1.1469e-01]], device='npu:0')
+atol = 1e-05, rtol = 1e-05
+
+    def allclose_compare(
+        output: torch.Tensor,
+        output_ref: torch.Tensor,
+        atol: float = 1e-8,
+        rtol: float = 1e-5,
+    ) -> None:
+        output, output_ref = torch.broadcast_tensors(output, output_ref)
+>       torch.testing.assert_close(
+            output,
+            output_ref,
+            atol=atol,
+            rtol=rtol,
+            equal_nan=True,
+        )
+E       AssertionError: Tensor-likes are not close!
+E       
+E       Mismatched elements: 1154 / 2048 (56.3%)
+E       Greatest absolute difference: 0.0007715225219726562 at index (15, 113) (up to 1e-05 allowed)
+E       Greatest relative difference: 0.22231249511241913 at index (7, 117) (up to 1e-05 allowed)
+
+tileops/testing/test_base.py:41: AssertionError
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261013_213708_656857_GeluAndMulFwdOp/pytest/correctness.xml -
+=========================== short test summary info ============================
+FAILED tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_op[16-128-dtype0] - ...
+============== 1 failed, 10 passed, 1 warning in 92.37s (0:01:32) ==============

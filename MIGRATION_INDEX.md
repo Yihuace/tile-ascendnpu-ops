@@ -12,7 +12,7 @@
 | `HardswishFwdOp` | elementwise | 1a | ✅ **已完成**（harness, `phase=DONE`） | 7/7, max_abs_err 4.77e-07 | 49.89%–60.61% (6 shapes) | `examples/TileOPs/reports/tileops/20261013_150641_447235_HardswishFwdOp/` |
 | `AddFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 24/24, max_abs_err 0.00e+00 | 66.12%–82.16% (11 shapes) | `examples/TileOPs/reports/tileops/20261013_162043_457669_AddFwdOp/` |
 | `SubFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 24/24, max_abs_err 0.00e+00 | 68.43%–82.70% (15 shapes) | `examples/TileOPs/reports/tileops/20261013_170400_275674_SubFwdOp/` |
-| `GeluAndMulFwdOp` | elementwise | 1b | ⬜ 未开始 | — | — | — |
+| `GeluAndMulFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`；1 轮设计修订） | 11/11, max_abs_err 1.43e-06(fp32)/0.0312(bf16) | 4.77%–43.99% (5 shapes) | `examples/TileOPs/reports/tileops/20261013_215524_720318_GeluAndMulFwdOp/` |
 | `GeluTanhAndMulFwdOp` | elementwise | 1b | ⬜ 未开始 | — | — | — |
 | `IsnanFwdOp` | elementwise | 1c | ⬜ 未开始（前置：bool 输出 + `vcmp` 在 npuir 可落地） | — | — | — |
 | `IsinfFwdOp` | elementwise | 1c | ⬜ 未开始（同上） | — | — | — |

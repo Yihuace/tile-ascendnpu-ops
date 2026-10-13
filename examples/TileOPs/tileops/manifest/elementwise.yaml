@@ -395,3 +395,49 @@ BitwiseNotFwdOp:
     test: tests/ops/test_bitwise_not.py
     bench: benchmarks/ops/bench_bitwise_not.py
     bench_manifest_driven: true
+
+GeluAndMulFwdOp:
+  # Fused gated exact-GELU (flashinfer.activation.gelu_and_mul): the input
+  # x = [gate, value] is packed along the last dim, x.shape == (M, 2 * N);
+  # the output is y = gelu(gate) * value with the exact erf-based GELU
+  # (torch.nn.functional.gelu(..., approximate="none")).  The GPU manifest
+  # roofline gives flops = 6 * M * N; the memory term (read x's 2 * M * N
+  # elements + write M * N) is 3 * M * N * elem_bytes.
+  ref_api: "flashinfer.activation.gelu_and_mul"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32", shape: "[M, 2 * N]"}
+    outputs:
+      output: {dtype: "same_as(x)", shape: "[M, N]"}
+    shape_rules:
+      - "output.shape == [x.shape[0], x.shape[1] // 2]"
+
+  workloads:
+    # Smoke: small gated row (gate | value halves)
+    - {M: 16, N: 128, dtypes: [float32, float16, bfloat16], label: "smoke"}
+    # Full: Llama-3.1-8B SwiGLU FFN intermediate (GPU manifest llama-8b-ffn-prefill)
+    - {M: 2048, N: 14336, dtypes: [float16, bfloat16], label: "llama-8b-ffn-prefill"}
+    # Full: decode-time row (GPU manifest llama-8b-ffn-decode)
+    - {M: 1, N: 14336, dtypes: [bfloat16], label: "llama-8b-ffn-decode"}
+    # Full: Qwen3-8B SwiGLU batch-32
+    - {M: 32, N: 12288, dtypes: [float16, bfloat16], label: "qwen3-8b-swiglu-b32"}
+
+  roofline:
+    # FLOPs: gelu(gate) = gate * 0.5 * (1 + erf(gate / sqrt(2))) = 5, plus the
+    # final mul-by-value = 1 -> 6 per output element; M * N output elements.
+    flops: "6 * M * N"
+    bytes: "3 * M * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul.py
+    kernel_map:
+      gelu_and_mul: GeluAndMulFwdKernel
+    op: tileops/ops/elementwise/gelu_and_mul.py
+    test: tests/ops/test_gelu_and_mul.py
+    bench: benchmarks/ops/bench_gelu_and_mul.py
+    bench_manifest_driven: true
