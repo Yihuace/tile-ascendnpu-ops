@@ -233,3 +233,58 @@ ClampScalarFwdOp:
     test: tests/ops/test_clamp_scalar.py
     bench: benchmarks/ops/bench_clamp_scalar.py
     bench_manifest_driven: true
+
+AddFwdOp:
+  # torch.add(input, other, *, alpha=1): y = input + alpha * other, with
+  # PyTorch broadcasting.  ``alpha`` is baked into the kernel (one
+  # specialization per distinct value).  The GPU op's manifest union also
+  # lists ints/bool; this NPU port follows the GPU/test float subset.
+  ref_api: "torch.add"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      alpha: {type: "int | float", default: 1, kw_only: true}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+      # An integral input takes only an integral alpha that converts to it
+      # (torch.add semantics).
+      - "category(alpha) == 'int' or category(alpha) == category(input.dtype)"
+      - "representable(alpha, input.dtype)"
+
+  workloads:
+    # Smoke: same-shape hidden-state prefill (GPU manifest hidden-state-prefill)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float32, float16, bfloat16], label: "hidden-state-prefill"}
+    # Full: per-channel broadcast over a CNN feature map (GPU manifest cnn-feat-broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float32, float16, bfloat16], label: "cnn-feat-broadcast"}
+    # Full: same-shape FFN projection (GPU manifest llama-7b-ffn)
+    - {input_shape: [1024, 11008], other_shape: [1024, 11008], dtypes: [float32, float16, bfloat16], label: "llama-7b-ffn"}
+    # Full: row-broadcast bias add (GPU manifest linear-bias)
+    - {input_shape: [1024, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "linear-bias"}
+
+  roofline:
+    vars:
+      # Post-broadcast output element count.
+      N: "product(broadcast(input_shape, other_shape))"
+    # FLOPs: alpha == 1 folds the scalar multiply away; otherwise one mul and
+    # one add per output element (GPU manifest formula, verbatim).
+    flops: "(1 if alpha == 1 else 2) * N"
+    # Memory: 2 reads (both operands at the post-broadcast size) + 1 write.
+    bytes: "3 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/add/add.py
+    kernel_map:
+      add: AddFwdKernel
+    op: tileops/ops/elementwise/add.py
+    test: tests/ops/test_add.py
+    bench: benchmarks/ops/bench_add.py
+    bench_manifest_driven: true
