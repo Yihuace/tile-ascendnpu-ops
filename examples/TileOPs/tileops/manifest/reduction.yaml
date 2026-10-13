@@ -1,0 +1,100 @@
+# reduction.yaml -- manifest entries for the 'reduction' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+LogSumExpFwdOp:
+  ref_api: "torch.logsumexp"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      dim: {type: "int | list[int] | tuple[int, ...]", default: -1}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+    - "isinstance(dim, int) or len(dim) > 0"
+    - "isinstance(dim, int) or len({d % x.ndim for d in dim}) == len(dim)"
+    - "output.ndim == (x.ndim if keepdim else x.ndim - (1 if isinstance(dim, int) else len({d % x.ndim for d in dim})))"
+
+  workloads:
+    # Attention weight matrices
+  - {x_shape: [32, 32, 4096], dtypes: [float16, bfloat16], label: "attn-weights-4k"}
+  - {x_shape: [32, 32, 32768], dtypes: [bfloat16], label: "attn-weights-32k"}
+    # LM head logits
+  - {x_shape: [4, 102400], dtypes: [float16, bfloat16], label: "lm-head-logits"}
+  - {x_shape: [4, 128, 4096], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+    flops: "4 * M * N"
+    bytes: "(M * N + M) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/reduction/logsumexp/logsumexp.py
+    kernel_map:
+      logsumexp_fwd: LogSumExpKernel
+    op: tileops/ops/reduction/softmax.py
+    test: tests/ops/test_softmax.py
+    bench: benchmarks/ops/bench_softmax.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# reduction -- argmax (output dtype: int64)
+# ---------------------------------------------------------------------------
+
+ArgmaxFwdOp:
+  ref_api: "torch.argmax"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "int64"}
+    params:
+      dim: {type: "int | None", default: null}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "dim is None or -x.ndim <= dim < x.ndim"
+    - "output.ndim == (x.ndim if keepdim else (x.ndim - 1 if dim is not None else 0))"
+    - "dim is None or not keepdim or all(output.shape[i] == 1 for i in range(x.ndim))"
+    - "dim is None or not keepdim or all(output.shape[i] == (1 if i == dim % x.ndim else x.shape[i]) for i in range(x.ndim))"
+    - "dim is None or keepdim or all(output.shape[i] == (x.shape[i] if i < dim % x.ndim else x.shape[i + 1]) for i in range(output.ndim))"
+
+  workloads:
+    # Smoke case (small shape, all supported dtypes)
+  - {x_shape: [32, 256], dtypes: [float16, bfloat16, float32], dim: -1, label: "smoke-argmax"}
+    # LM head argmax (batch, vocab_size) -- greedy decoding
+  - {x_shape: [4, 102400], dtypes: [float16, bfloat16], dim: -1, label: "lm-head-argmax"}
+    # Hidden state argmax
+  - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], dim: -1, label: "hidden-state-argmax"}
+    # Non-last-axis sentinel; ArgmaxFwdOp and ArgminFwdOp share ArgreduceKernel,
+    # so one op carries it.
+  - {x_shape: [4, 128, 4096], dtypes: [float16], dim: 0, label: "3d-non-last-axis-argmax"}
+
+  roofline:
+    vars:
+      M: "1 if dim is None else product(x.shape[:dim % x.ndim]) * product(x.shape[dim % x.ndim + 1:])"
+      N: "product(x.shape) if dim is None else x.shape[dim % x.ndim]"
+    # N-1 comparisons per output element
+    flops: "M * N"
+    # Read x (elem_bytes) + write output (8 bytes for int64)
+    bytes: "M * N * elem_bytes + M * 8"
+
+  source:
+    kernel: tileops/kernels/reduction/argmax/argmax.py
+    kernel_map:
+      argreduce: ArgreduceKernel
+    op: tileops/ops/reduction/argmax.py
+    test: tests/ops/test_argmax.py
+    bench: benchmarks/ops/bench_argmax.py
+    bench_manifest_driven: true

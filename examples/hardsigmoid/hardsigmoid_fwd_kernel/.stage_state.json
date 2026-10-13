@@ -1,0 +1,60 @@
+{
+  "artifact_hashes": {
+    "examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md": "9611e1784c80baa659aae5f909b3dacaa98b2524fc0eba826d13d057651417a5",
+    "examples/hardsigmoid/hardsigmoid_fwd_kernel/REVIEW.md": "7312586ce96df753ebdb116ce16cdd958d4e00c8f884d8530f6070e3e0f9a30a",
+    "examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py": "03b3916e39115d48f778f9cbd9858a5c512749abbe7aae3a6be7380106ea9dad"
+  },
+  "budget": {
+    "max_stage4_experiments": null,
+    "max_subagent_dispatches": null,
+    "max_wallclock_s": null
+  },
+  "current_stage": 3,
+  "design_md_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md",
+  "env_check_passed": false,
+  "failure_reason": null,
+  "final_artifact": "examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py",
+  "kernel_opt_py_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/perf_opt/hardsigmoid_fwd_kernel.py",
+  "kernel_py_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py",
+  "last_failure_reason": null,
+  "last_updated": "2026-10-13T01:23:15Z",
+  "max_retry": 3,
+  "migration_mode": "harness",
+  "operator_name": "hardsigmoid_fwd_kernel",
+  "perf_feedback": null,
+  "perf_iteration": {
+    "consecutive_no_improvement": 0,
+    "count": 0,
+    "last_improvement": 0.0
+  },
+  "perf_tuning_requested": null,
+  "phase": "DONE",
+  "project_name": "hardsigmoid",
+  "retry_count": 1,
+  "review_md_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/REVIEW.md",
+  "scenario": "migration",
+  "stage3_failure_breakdown": {
+    "precision_fail": 0,
+    "runtime_fail": 0
+  },
+  "stage_plan": [
+    1,
+    2,
+    3
+  ],
+  "stage_retry_count": {
+    "0": 0,
+    "1": 1,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+  },
+  "stage_status": {
+    "1": "completed",
+    "2": "completed",
+    "3": "completed"
+  },
+  "task_id": "hardsigmoid-hardsigmoid_fwd_kernel-20261012T132114Z",
+  "user_requirement": "迁移 hardsigmoid 算子 HardsigmoidFwdOp。其 TileLang 实现函数 hardsigmoid_fwd_kernel 在 tileops/kernels/elementwise/hardsigmoid/_hardsigmoid_fwd_kernels.py。hardsigmoid_fwd_kernel 是对外接口，不要改变接口的参数(除非该参数跟后端实现相关，在迁移时需要适配)。HardsigmoidFwdOp 的规格见 examples/TileOPs/tileops/manifest/elementwise.yaml 中 HardsigmoidFwdOp 的 workloads 部分。精度用例见 examples/TileOPs/tests/ops/test_hardsigmoid.py，性能用例见 examples/TileOPs/benchmarks/ops/bench_hardsigmoid.py。用 developer 模式实现。"
+}

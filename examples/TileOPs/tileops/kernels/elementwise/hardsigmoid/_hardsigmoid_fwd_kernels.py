@@ -1,0 +1,162 @@
+"""Extracted TileLang kernel implementation for HardsigmoidFwdOp.
+
+TileLang kernels: hardsigmoid_fwd_kernel
+
+The GPU ``HardsigmoidFwdKernel`` inherits ``FloatUnaryKernel`` (register_copy
+strategy), whose ``@tilelang.jit`` builder is ``make_unary_regcopy`` in
+``tileops/kernels/elementwise/_builders.py``.  The per-op pointwise math is the
+``op_func`` static method on ``HardsigmoidFwdKernel``::
+
+    y = clamp(x + 3, 0, 6) * (1 / 6)    (NaN-propagating, as in torch)
+
+This file inlines that ``op_func`` into the ``make_unary_regcopy`` builder to
+produce a single self-contained ``hardsigmoid_fwd_kernel`` factory (the same
+merge ``extract_tl_kernel.py`` Pattern A performs).  The NaN-propagating
+``nan_min`` / ``nan_max`` helpers are ported verbatim from
+``tileops/kernels/elementwise/_nan.py`` (``tvm.tirx`` -> ``tvm.tir``, the
+equivalent module available under the NPU tilelang).
+
+The factory is the GPU reference implementation (CUDA ``threads``/``npt``
+execution model).  The NPU kernel component re-implements it for
+``target="npuir"``, applying the K1-K4 / K11 adaptations (decorator, grid/sync,
+``threads``/``npt`` collapse into ``block_size``, padding strategy).
+"""
+
+import functools
+
+import tilelang
+import tilelang.language as T
+
+# ``import tilelang`` above registers the bundled ``tvm`` package on sys.modules,
+# so ``tvm.tir`` (the NPU-equivalent of the GPU's ``tvm.tirx``) is importable.
+import tvm.tir as tirx
+from tvm import DataType
+
+__all__ = ["hardsigmoid_fwd_kernel", "nan_max", "nan_min"]
+
+
+# ---------------------------------------------------------------------------
+# NaN-propagating min/max (ported verbatim from tileops/kernels/elementwise/_nan.py;
+# the GPU's ``import tvm.tirx as tirx`` becomes ``import tvm.tir as tirx``).
+# ---------------------------------------------------------------------------
+
+
+def bound(x, body):
+    """``body(x)`` with *x* evaluated once, however often *body* mentions it."""
+
+    if isinstance(x, (tirx.Var, tirx.FloatImm, tirx.IntImm)):
+        return body(x)
+    var = tirx.Var("nan_operand", x.dtype)
+    return tirx.Let(var, x, body(var))
+
+
+def _is_nan(x):
+    return T.isnan(T.Cast("float32", x))
+
+
+def _propagate_nan(a, b, plain):
+    """``plain(a, b)``, and NaN where either operand is NaN."""
+
+    def select(a, b):
+        nan = T.Cast(a.dtype, T.cast(float("nan"), "float32"))
+        return tirx.Select(tirx.any(_is_nan(a), _is_nan(b)), nan, plain(a, b))
+
+    return bound(a, lambda a: bound(b, lambda b: select(a, b)))
+
+
+def _nan_intrin(name, a, b):
+    """A TileLang NaN-propagating builtin, named the way TileLang names its own."""
+
+    return tirx.call_intrin(a.dtype, tirx.op.Op.get(name), a, b)
+
+
+def _select(a, b, plain, intrin):
+    dtype = str(a.dtype)
+    if not dtype.startswith(("float", "bfloat")):
+        # Integer and bool have no NaN.
+        return plain(a, b)
+    if dtype in ("float16", "bfloat16"):
+        return _nan_intrin(intrin, a, b)
+    return _propagate_nan(a, b, plain)
+
+
+def nan_max(a, b):
+    """``max(a, b)``, NaN where either operand is NaN."""
+
+    return _select(a, b, T.max, "tl.max_nan")
+
+
+def nan_min(a, b):
+    """``min(a, b)``, NaN where either operand is NaN."""
+
+    return _select(a, b, T.min, "tl.min_nan")
+
+
+# ---------------------------------------------------------------------------
+# Builder helper (ported from tileops/kernels/elementwise/_builders.py).
+# ---------------------------------------------------------------------------
+
+
+def _narrows(dtype, out_dtype):
+    """Whether a result is stored narrower than its operand."""
+
+    return DataType(out_dtype).bits < DataType(dtype).bits
+
+
+# ---------------------------------------------------------------------------
+# TileLang kernel function (merged make_unary_regcopy + HardsigmoidFwdKernel.op_func).
+# ---------------------------------------------------------------------------
+
+
+@functools.lru_cache(maxsize=32)
+def hardsigmoid_fwd_kernel(N, dtype, output_dtype=None, threads=128, num_per_thread=8):
+    """Hardsigmoid forward kernel: ``y = clamp(x + 3, 0, 6) * (1 / 6)``.
+
+    Elementwise unary ``register_copy`` strategy (fragment load -> compute ->
+    fragment store), with the per-op math inlined.  ``threads`` / ``npt`` are
+    the GPU execution parameters; the NPU component collapses
+    ``threads * npt`` into a single ``block_size`` (K11).
+    """
+
+    out_dtype = output_dtype or dtype
+
+    @tilelang.jit(out_idx=[1])
+    def kernel(threads_arg, npt_arg):
+        block_size = threads_arg * npt_arg
+
+        # Inlined HardsigmoidFwdKernel.op_func locals.
+        three = T.cast(3.0, "float32")
+        six = T.cast(6.0, "float32")
+        zero = T.cast(0.0, "float32")
+        one_sixth = T.cast(1.0 / 6.0, "float32")
+
+        # A narrower result is stored from a thread's own contiguous run, in one
+        # store; the fragment layout would split it into one store per vector.
+        contiguous = _narrows(dtype, out_dtype) and N % block_size == 0
+
+        @T.prim_func
+        def main(x: T.Tensor((N,), dtype), y: T.Tensor((N,), out_dtype)):
+            with T.Kernel(T.ceildiv(N, block_size), threads=threads_arg) as bx:
+                if contiguous:
+                    base = bx * block_size + T.get_thread_binding() * npt_arg
+                    x_run = T.alloc_local((npt_arg,), dtype)
+                    y_run = T.alloc_local((npt_arg,), out_dtype)
+                    for v in T.vectorized(npt_arg):
+                        x_run[v] = x[base + v]
+                    for v in T.unroll(npt_arg):
+                        y_run[v] = nan_min(nan_max(x_run[v] + three, zero), six) * one_sixth
+                    for v in T.vectorized(npt_arg):
+                        y[base + v] = y_run[v]
+                else:
+                    x_reg = T.alloc_fragment((block_size,), dtype)
+                    y_reg = T.alloc_fragment((block_size,), out_dtype)
+                    T.copy(x[bx * block_size : (bx + 1) * block_size], x_reg)
+                    for i, j in T.Parallel(threads_arg, npt_arg):
+                        y_reg[i * npt_arg + j] = nan_min(
+                            nan_max(x_reg[i * npt_arg + j] + three, zero), six
+                        ) * one_sixth
+                    T.copy(y_reg, y[bx * block_size : (bx + 1) * block_size])
+
+        return main
+
+    return kernel

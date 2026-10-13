@@ -1,0 +1,444 @@
+command: /usr/local/bin/python -m pytest tests/ops/test_hardsigmoid.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261012_222741_907268_HardsigmoidFwdOp/pytest/correctness.xml
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-8.3.2, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-12 22:27:51  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-12 22:27:51  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-12 22:27:51  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 7 items
+
+tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[1048576-dtype0] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+Precompiling NPU launcher header...
+2026-10-12 22:27:57  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+HardsigmoidFwdKernel initialized with config: {'block_size': 512}
+FAILED
+tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[1048576-dtype1] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardsigmoidFwdKernel initialized with config: {'block_size': 1024}
+FAILED
+tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[1048576-dtype2] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardsigmoidFwdKernel initialized with config: {'block_size': 1024}
+FAILED
+tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[4000000-dtype3] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardsigmoidFwdKernel initialized with config: {'block_size': 1024}
+FAILED
+tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[4000000-dtype4] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardsigmoidFwdKernel initialized with config: {'block_size': 1024}
+FAILED
+tests/ops/test_hardsigmoid.py::test_hardsigmoid_rejects_non_float_dtype PASSED
+tests/ops/test_hardsigmoid.py::test_hardsigmoid_eval_roofline HardsigmoidFwdKernel initialized with config: {'block_size': 1024}
+PASSED
+
+=================================== FAILURES ===================================
+_____________________ test_hardsigmoid_op[1048576-dtype0] ______________________
+
+n_total = 1048576, dtype = torch.float32
+
+    @HardsigmoidFixture
+    def test_hardsigmoid_op(n_total: int, dtype: torch.dtype) -> None:
+        test = HardsigmoidTest(n_total, dtype)
+        op = HardsigmoidFwdOp(N_total=n_total, dtype=dtype)
+        atol, rtol = _get_tolerances(dtype)
+>       test.check(op, *test.gen_inputs(), atol=atol, rtol=rtol)
+
+tests/ops/test_hardsigmoid.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/testing/test_base.py:128: in check
+    outputs = op(*inputs)
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/elementwise/hardsigmoid.py:93: in forward
+    return self._eager_forward(input)
+tileops/ops/elementwise/hardsigmoid.py:85: in _eager_forward
+    return self.kernel(flat).reshape(orig_shape)
+tileops/kernels/kernel_base.py:94: in __call__
+    return self.forward(*args, **kwargs)
+tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py:156: in forward
+    self._compiled_fn = self.kernel(threads, npt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.JitKernel_NPU object at 0xfffe92c94590>
+args = (128, 4), total_params = 3, num_inputs = 2, orig_to_input = {0: 0, 2: 1}
+
+    def __call__(self, *args: Any) -> Any:
+        # Calculate the input params：total_params - out_params
+        total_params = len(self.param_info)
+        num_inputs = total_params - (
+            len(self.out_idx) if self.out_idx is not None else 0
+        )
+    
+        if len(args) != num_inputs:
+            raise ValueError(f"Expected {num_inputs} inputs, got {len(args)}")
+    
+        # Build the mapping from original inputs to the args position
+        orig_to_input = {}
+        input_pos = 0
+        for i, info in enumerate(self.param_info):
+            if not info["is_output"]:
+                orig_to_input[i] = input_pos
+                input_pos += 1
+    
+        # Calculate grid and get dynamic values
+        dynamic_val = self._calcu_grid(orig_to_input, *args)
+    
+        # Build full argument list
+        full_args = [None] * total_params
+        input_ptr = 0
+    
+        for i, info in enumerate(self.param_info):
+            if info["is_output"]:  # Output parameter (must be tensor)
+                dtype = info["dtype"]
+                shape = []
+                for dim in info["shape"]:
+                    if isinstance(dim, tir.Var):
+                        val = dynamic_val.get(str(dim))
+                        if val is None:
+                            raise ValueError(f"Missing value for {dim}")
+                        shape.append(val)
+                    elif isinstance(dim, tir.IntImm):
+                        shape.append(int(dim))
+                    elif isinstance(dim, tir.PrimExpr):
+                        val = _eval_tir_expr(dim, dynamic_val)
+                        shape.append(val)
+                    else:
+                        shape.append(int(dim))
+    
+                # Shape should not be empty (validated in _extract_param_info)
+>               device = args[0].device if args else torch.device("cpu")
+E               AttributeError: 'int' object has no attribute 'device'
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1317: AttributeError
+_____________________ test_hardsigmoid_op[1048576-dtype1] ______________________
+
+n_total = 1048576, dtype = torch.float16
+
+    @HardsigmoidFixture
+    def test_hardsigmoid_op(n_total: int, dtype: torch.dtype) -> None:
+        test = HardsigmoidTest(n_total, dtype)
+        op = HardsigmoidFwdOp(N_total=n_total, dtype=dtype)
+        atol, rtol = _get_tolerances(dtype)
+>       test.check(op, *test.gen_inputs(), atol=atol, rtol=rtol)
+
+tests/ops/test_hardsigmoid.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/testing/test_base.py:128: in check
+    outputs = op(*inputs)
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/elementwise/hardsigmoid.py:93: in forward
+    return self._eager_forward(input)
+tileops/ops/elementwise/hardsigmoid.py:85: in _eager_forward
+    return self.kernel(flat).reshape(orig_shape)
+tileops/kernels/kernel_base.py:94: in __call__
+    return self.forward(*args, **kwargs)
+tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py:156: in forward
+    self._compiled_fn = self.kernel(threads, npt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.JitKernel_NPU object at 0xfffe92ce6f10>
+args = (128, 8), total_params = 3, num_inputs = 2, orig_to_input = {0: 0, 2: 1}
+
+    def __call__(self, *args: Any) -> Any:
+        # Calculate the input params：total_params - out_params
+        total_params = len(self.param_info)
+        num_inputs = total_params - (
+            len(self.out_idx) if self.out_idx is not None else 0
+        )
+    
+        if len(args) != num_inputs:
+            raise ValueError(f"Expected {num_inputs} inputs, got {len(args)}")
+    
+        # Build the mapping from original inputs to the args position
+        orig_to_input = {}
+        input_pos = 0
+        for i, info in enumerate(self.param_info):
+            if not info["is_output"]:
+                orig_to_input[i] = input_pos
+                input_pos += 1
+    
+        # Calculate grid and get dynamic values
+        dynamic_val = self._calcu_grid(orig_to_input, *args)
+    
+        # Build full argument list
+        full_args = [None] * total_params
+        input_ptr = 0
+    
+        for i, info in enumerate(self.param_info):
+            if info["is_output"]:  # Output parameter (must be tensor)
+                dtype = info["dtype"]
+                shape = []
+                for dim in info["shape"]:
+                    if isinstance(dim, tir.Var):
+                        val = dynamic_val.get(str(dim))
+                        if val is None:
+                            raise ValueError(f"Missing value for {dim}")
+                        shape.append(val)
+                    elif isinstance(dim, tir.IntImm):
+                        shape.append(int(dim))
+                    elif isinstance(dim, tir.PrimExpr):
+                        val = _eval_tir_expr(dim, dynamic_val)
+                        shape.append(val)
+                    else:
+                        shape.append(int(dim))
+    
+                # Shape should not be empty (validated in _extract_param_info)
+>               device = args[0].device if args else torch.device("cpu")
+E               AttributeError: 'int' object has no attribute 'device'
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1317: AttributeError
+_____________________ test_hardsigmoid_op[1048576-dtype2] ______________________
+
+n_total = 1048576, dtype = torch.bfloat16
+
+    @HardsigmoidFixture
+    def test_hardsigmoid_op(n_total: int, dtype: torch.dtype) -> None:
+        test = HardsigmoidTest(n_total, dtype)
+        op = HardsigmoidFwdOp(N_total=n_total, dtype=dtype)
+        atol, rtol = _get_tolerances(dtype)
+>       test.check(op, *test.gen_inputs(), atol=atol, rtol=rtol)
+
+tests/ops/test_hardsigmoid.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/testing/test_base.py:128: in check
+    outputs = op(*inputs)
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/elementwise/hardsigmoid.py:93: in forward
+    return self._eager_forward(input)
+tileops/ops/elementwise/hardsigmoid.py:85: in _eager_forward
+    return self.kernel(flat).reshape(orig_shape)
+tileops/kernels/kernel_base.py:94: in __call__
+    return self.forward(*args, **kwargs)
+tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py:156: in forward
+    self._compiled_fn = self.kernel(threads, npt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.JitKernel_NPU object at 0xfffe845d38d0>
+args = (128, 8), total_params = 3, num_inputs = 2, orig_to_input = {0: 0, 2: 1}
+
+    def __call__(self, *args: Any) -> Any:
+        # Calculate the input params：total_params - out_params
+        total_params = len(self.param_info)
+        num_inputs = total_params - (
+            len(self.out_idx) if self.out_idx is not None else 0
+        )
+    
+        if len(args) != num_inputs:
+            raise ValueError(f"Expected {num_inputs} inputs, got {len(args)}")
+    
+        # Build the mapping from original inputs to the args position
+        orig_to_input = {}
+        input_pos = 0
+        for i, info in enumerate(self.param_info):
+            if not info["is_output"]:
+                orig_to_input[i] = input_pos
+                input_pos += 1
+    
+        # Calculate grid and get dynamic values
+        dynamic_val = self._calcu_grid(orig_to_input, *args)
+    
+        # Build full argument list
+        full_args = [None] * total_params
+        input_ptr = 0
+    
+        for i, info in enumerate(self.param_info):
+            if info["is_output"]:  # Output parameter (must be tensor)
+                dtype = info["dtype"]
+                shape = []
+                for dim in info["shape"]:
+                    if isinstance(dim, tir.Var):
+                        val = dynamic_val.get(str(dim))
+                        if val is None:
+                            raise ValueError(f"Missing value for {dim}")
+                        shape.append(val)
+                    elif isinstance(dim, tir.IntImm):
+                        shape.append(int(dim))
+                    elif isinstance(dim, tir.PrimExpr):
+                        val = _eval_tir_expr(dim, dynamic_val)
+                        shape.append(val)
+                    else:
+                        shape.append(int(dim))
+    
+                # Shape should not be empty (validated in _extract_param_info)
+>               device = args[0].device if args else torch.device("cpu")
+E               AttributeError: 'int' object has no attribute 'device'
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1317: AttributeError
+_____________________ test_hardsigmoid_op[4000000-dtype3] ______________________
+
+n_total = 4000000, dtype = torch.float16
+
+    @HardsigmoidFixture
+    def test_hardsigmoid_op(n_total: int, dtype: torch.dtype) -> None:
+        test = HardsigmoidTest(n_total, dtype)
+        op = HardsigmoidFwdOp(N_total=n_total, dtype=dtype)
+        atol, rtol = _get_tolerances(dtype)
+>       test.check(op, *test.gen_inputs(), atol=atol, rtol=rtol)
+
+tests/ops/test_hardsigmoid.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/testing/test_base.py:128: in check
+    outputs = op(*inputs)
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/elementwise/hardsigmoid.py:93: in forward
+    return self._eager_forward(input)
+tileops/ops/elementwise/hardsigmoid.py:85: in _eager_forward
+    return self.kernel(flat).reshape(orig_shape)
+tileops/kernels/kernel_base.py:94: in __call__
+    return self.forward(*args, **kwargs)
+tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py:156: in forward
+    self._compiled_fn = self.kernel(threads, npt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.JitKernel_NPU object at 0xfffe9c1270d0>
+args = (128, 8), total_params = 3, num_inputs = 2, orig_to_input = {0: 0, 2: 1}
+
+    def __call__(self, *args: Any) -> Any:
+        # Calculate the input params：total_params - out_params
+        total_params = len(self.param_info)
+        num_inputs = total_params - (
+            len(self.out_idx) if self.out_idx is not None else 0
+        )
+    
+        if len(args) != num_inputs:
+            raise ValueError(f"Expected {num_inputs} inputs, got {len(args)}")
+    
+        # Build the mapping from original inputs to the args position
+        orig_to_input = {}
+        input_pos = 0
+        for i, info in enumerate(self.param_info):
+            if not info["is_output"]:
+                orig_to_input[i] = input_pos
+                input_pos += 1
+    
+        # Calculate grid and get dynamic values
+        dynamic_val = self._calcu_grid(orig_to_input, *args)
+    
+        # Build full argument list
+        full_args = [None] * total_params
+        input_ptr = 0
+    
+        for i, info in enumerate(self.param_info):
+            if info["is_output"]:  # Output parameter (must be tensor)
+                dtype = info["dtype"]
+                shape = []
+                for dim in info["shape"]:
+                    if isinstance(dim, tir.Var):
+                        val = dynamic_val.get(str(dim))
+                        if val is None:
+                            raise ValueError(f"Missing value for {dim}")
+                        shape.append(val)
+                    elif isinstance(dim, tir.IntImm):
+                        shape.append(int(dim))
+                    elif isinstance(dim, tir.PrimExpr):
+                        val = _eval_tir_expr(dim, dynamic_val)
+                        shape.append(val)
+                    else:
+                        shape.append(int(dim))
+    
+                # Shape should not be empty (validated in _extract_param_info)
+>               device = args[0].device if args else torch.device("cpu")
+E               AttributeError: 'int' object has no attribute 'device'
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1317: AttributeError
+_____________________ test_hardsigmoid_op[4000000-dtype4] ______________________
+
+n_total = 4000000, dtype = torch.bfloat16
+
+    @HardsigmoidFixture
+    def test_hardsigmoid_op(n_total: int, dtype: torch.dtype) -> None:
+        test = HardsigmoidTest(n_total, dtype)
+        op = HardsigmoidFwdOp(N_total=n_total, dtype=dtype)
+        atol, rtol = _get_tolerances(dtype)
+>       test.check(op, *test.gen_inputs(), atol=atol, rtol=rtol)
+
+tests/ops/test_hardsigmoid.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/testing/test_base.py:128: in check
+    outputs = op(*inputs)
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/elementwise/hardsigmoid.py:93: in forward
+    return self._eager_forward(input)
+tileops/ops/elementwise/hardsigmoid.py:85: in _eager_forward
+    return self.kernel(flat).reshape(orig_shape)
+tileops/kernels/kernel_base.py:94: in __call__
+    return self.forward(*args, **kwargs)
+tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py:156: in forward
+    self._compiled_fn = self.kernel(threads, npt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.JitKernel_NPU object at 0xfffe845cbe50>
+args = (128, 8), total_params = 3, num_inputs = 2, orig_to_input = {0: 0, 2: 1}
+
+    def __call__(self, *args: Any) -> Any:
+        # Calculate the input params：total_params - out_params
+        total_params = len(self.param_info)
+        num_inputs = total_params - (
+            len(self.out_idx) if self.out_idx is not None else 0
+        )
+    
+        if len(args) != num_inputs:
+            raise ValueError(f"Expected {num_inputs} inputs, got {len(args)}")
+    
+        # Build the mapping from original inputs to the args position
+        orig_to_input = {}
+        input_pos = 0
+        for i, info in enumerate(self.param_info):
+            if not info["is_output"]:
+                orig_to_input[i] = input_pos
+                input_pos += 1
+    
+        # Calculate grid and get dynamic values
+        dynamic_val = self._calcu_grid(orig_to_input, *args)
+    
+        # Build full argument list
+        full_args = [None] * total_params
+        input_ptr = 0
+    
+        for i, info in enumerate(self.param_info):
+            if info["is_output"]:  # Output parameter (must be tensor)
+                dtype = info["dtype"]
+                shape = []
+                for dim in info["shape"]:
+                    if isinstance(dim, tir.Var):
+                        val = dynamic_val.get(str(dim))
+                        if val is None:
+                            raise ValueError(f"Missing value for {dim}")
+                        shape.append(val)
+                    elif isinstance(dim, tir.IntImm):
+                        shape.append(int(dim))
+                    elif isinstance(dim, tir.PrimExpr):
+                        val = _eval_tir_expr(dim, dynamic_val)
+                        shape.append(val)
+                    else:
+                        shape.append(int(dim))
+    
+                # Shape should not be empty (validated in _extract_param_info)
+>               device = args[0].device if args else torch.device("cpu")
+E               AttributeError: 'int' object has no attribute 'device'
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1317: AttributeError
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261012_222741_907268_HardsigmoidFwdOp/pytest/correctness.xml -
+=========================== short test summary info ============================
+FAILED tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[1048576-dtype0] - A...
+FAILED tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[1048576-dtype1] - A...
+FAILED tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[1048576-dtype2] - A...
+FAILED tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[4000000-dtype3] - A...
+FAILED tests/ops/test_hardsigmoid.py::test_hardsigmoid_op[4000000-dtype4] - A...
+============== 5 failed, 2 passed, 1 warning in 84.73s (0:01:24) ===============
