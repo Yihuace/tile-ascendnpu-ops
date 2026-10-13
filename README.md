@@ -127,11 +127,10 @@ pytest benchmarks/ -v
 
 ## 6. 当前状态
 
-仓库中已记录迁移状态与总览：
-
-- 见 [`MIGRATION_INDEX.md`](MIGRATION_INDEX.md)
-- 已完成的代表性算子：`HardsigmoidFwdOp`
-- 已完成的迁移工作区示例：`examples/hardsigmoid/`
+- 迁移状态总览见 [`MIGRATION_INDEX.md`](MIGRATION_INDEX.md)。
+- 本批（任务书 §5/§6）已完成：`HardsigmoidFwdOp`(1b)、`ClampScalarFwdOp`(1a)、`HardswishFwdOp`(1a)。
+- 更早批次已完成：`AdaLayerNormFwdOp`、`ArgmaxFwdOp`、`LerpTensorFwdOp`、`LogSumExpFwdOp`、`MishFwdOp`、`MultiHeadAttentionFwdOp`、`SSDChunkScanFwdOp`。
+- 迁移工作区示例：`examples/hardsigmoid/`、`examples/clamp_scalar/`、`examples/hardswish/`。
 
 此外，仓库在 `README.md` / `AGENTS.md` 中对以下约定做了明确说明：
 
@@ -163,6 +162,12 @@ pytest benchmarks/ -v
 - 存在大量生成产物与过程记录
 - 强依赖特定环境和工具链版本
 - 代码与操作流程耦合较强，适合在研究/开发型场景使用
+
+### 已知缺口（技术）
+
+- **提取器覆盖**：`extract_tl_kernel.py` 对 16 个待迁算子，仅 **2 个**（`HardswishFwdOp`/`HardsigmoidFwdOp`）产出真正自包含的**合并** kernel（pattern `A`）；**3 个**（`GeluAndMulFwdOp`/`GeluTanhAndMulFwdOp`/`FusedAddLayerNormFwdOp`）为 **`A-fallback`**（未合并、只发 raw builder；其中 gated 族引用空的 `op_func_for`/`_OP_FUNCS` 注册表，**非自包含**）；**11 个** pattern `B`。`A-fallback`/`B` 的算子 Stage 0 仍需**人工合并 op-body**（gelu 族、clamp、binary 等）。提取器已对 `A-fallback` 显式告警。
+- **工具链游离改动**：`/home/developer/tilelang-mlir-ascend/tilelang/version.py` 有 1 行本地修复（`get_git_commit_id` 加 `cwd=current_dir`，避免版本戳被工作区 git commit 污染），**不在本仓库版本控制内**。
+- `standards_check.py check` 现为 `ok`（0 failures / 0 dup）。
 
 ## 10. 进一步阅读
 

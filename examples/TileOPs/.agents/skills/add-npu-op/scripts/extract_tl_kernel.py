@@ -969,7 +969,8 @@ class Extractor:
         ):
             pa = self._pattern_a(kernel_file, kernel_class_names[0], op_name)
             if pa is not None:
-                self.pattern = "A"
+                # ``_pattern_a`` sets self.pattern ("A" merged / "A-fallback"
+                # un-merged raw builder).
                 return pa
         self.pattern = "B"
         return self._pattern_b(kernel_file, kernel_class_names)
@@ -1034,6 +1035,7 @@ class Extractor:
                 if cand not in helper_files:
                     helper_files.append(cand)
             self._merged_helper_files = helper_files
+            self.pattern = "A"
             # Keep the original builder node (for discovery/imports) and set
             # merged_ast for emission.
             return [
@@ -1045,7 +1047,20 @@ class Extractor:
                 )
             ]
 
-        # Fall back: emit builder(s) and op_func separately.
+        # Fall back: emit builder(s) as raw (un-merged) builders. This happens
+        # when the kernel has no static ``op_func`` method to inline (e.g. the
+        # gated family exposes ``activation_func`` and combines it via a runtime
+        # registry ``op_func_for``/``_OP_FUNCS``). The emitted file is then NOT
+        # self-contained -- it keeps the ``op_func_for(...)`` placeholder and may
+        # reference an empty registry -- so it still requires a manual op-body
+        # merge at Stage 0. Flag it loudly (pattern "A-fallback").
+        self.pattern = "A-fallback"
+        self.warnings.append(
+            f"Pattern A fallback (op '{op_name}'): no static 'op_func' to inline "
+            f"(the per-op body is registered dynamically, e.g. via op_func_for / "
+            f"a gated 'activation_func'); the emitted builder is RAW and NOT "
+            f"self-contained. Stage 0 must hand-merge the op body."
+        )
         targets = list(tl_targets)
         if op_func_loc is not None:
             targets.append(EmitTarget(op_func_loc[0], op_func_loc[1], "op_func"))
