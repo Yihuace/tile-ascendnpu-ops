@@ -29,4 +29,6 @@ TileOPs GPU→Ascend NPU 算子迁移工作区（`npuir-migration`）。目标�
 
 ## 已知缺口
 
-- 顶层 `docs/` 缺失：skill/标准引用 `docs/开发指南.md`、`docs/Tilelang.language/` 不存在 → `standards_check.py check` 存量 `SC-REF-PATH` 失败。补齐 `docs/` 后应转绿。
+- ~~顶层 `docs/` 缺失~~ → **已修复**：已从 tilelang 源仓拷入 `docs/`（含 `开发指南.md`、`Tilelang.language/`）与 `examples/flash_attention/flash_attn_npuir.py`，`standards_check.py check` 现为 `ok`（0 failures）。
+- `kb_stale_check.py`：修正后（优先取 tilelang 包所在仓的 commit）报告 `stale_count=132`——**真实结果**（KB 条目跨多个更早的工具链 commit，当前为 `417dae9908`），非阻塞。
+- **Stage 0 提取缺口**：`extract_tl_kernel.py` 对 builder 型 kernel（如 `make_unary_regcopy`）走 Pattern B，仅解析出 kernel 类、**提取 0 个函数** → 需人工合并出 `_<op>_kernels.py`（hardsigmoid 即如此）。属待改进项。

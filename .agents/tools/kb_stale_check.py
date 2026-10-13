@@ -52,6 +52,7 @@ VERSION_RE = re.compile(r"(\d+\.\d+\.\d+)")
 
 def detect_current_stamp() -> dict:
     stamp = {"tilelang": None, "tilelang_commit": None, "cann": None, "raw": ""}
+    tilelang_root = None
     try:
         import io
         import contextlib
@@ -62,20 +63,36 @@ def detect_current_stamp() -> dict:
         ):
             import tilelang  # noqa: PLC0415
         stamp["tilelang"] = getattr(tilelang, "__version__", None)
+        tl_file = getattr(tilelang, "__file__", None)
+        if tl_file:
+            d = os.path.dirname(os.path.abspath(tl_file))
+            while True:
+                if os.path.isdir(os.path.join(d, ".git")):
+                    tilelang_root = d
+                    break
+                parent = os.path.dirname(d)
+                if parent == d:
+                    break
+                d = parent
     except Exception:  # noqa: BLE001 -- advisory tool
         pass
-    try:
-        head = subprocess.run(
-            ["git", "rev-parse", "--short=10", "HEAD"],
-            cwd=REPO_ROOT,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        if head.returncode == 0:
-            stamp["tilelang_commit"] = head.stdout.strip()
-    except Exception:  # noqa: BLE001
-        pass
+    # Prefer the tilelang package's own repo root for the toolchain commit; fall
+    # back to REPO_ROOT. The workspace itself may be a git repo whose HEAD is
+    # unrelated to the tilelang toolchain (e.g. a migration workspace).
+    for cwd in [p for p in (tilelang_root, REPO_ROOT) if p]:
+        try:
+            head = subprocess.run(
+                ["git", "rev-parse", "--short=10", "HEAD"],
+                cwd=cwd,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            if head.returncode == 0 and head.stdout.strip():
+                stamp["tilelang_commit"] = head.stdout.strip()
+                break
+        except Exception:  # noqa: BLE001
+            continue
     for cand in (
         os.environ.get("ASCEND_HOME_PATH", "").rstrip("/") + "/../version.cfg",
         "/usr/local/Ascend/ascend-toolkit/latest/version.cfg",

@@ -78,7 +78,7 @@ TileOPs harness 迁移的最终 kernel 产物必须在模块顶层声明字面�
 实际通过验证的实现模式；实现过程中切换模式时，以最终实现为准。独立运行
 kernel 测试时设置的 `TILELANG_ASCEND_MODE` 必须与此值一致。保留这一声明，
 供 Stage 5 在运行 report 前同步 TileOPs 的 `Kernel.ascend_mode`。不要把 Stage 3
-调度字段 `mode`（`first_impl` / `retry_impl` / `precision_fix`）当作编程模式。
+调度字段 `mode`（枚举唯一出处：`_shared/standards/signal-registry.md` §2）当作编程模式。
 
 生成的文件必须包含以下组成部分（顺序）：
 注意：*.py 中的注释只能使用英文

@@ -1,0 +1,69 @@
+# Tilelang.language.pipe_barrier
+
+## 1. OP概述
+
+简介：`tilelang.language.pipe_barrier` 在指定管道上设置屏障，用于同步管道操作
+
+```python
+T.pipe_barrier(pipe)
+```
+
+## 2. OP规格
+
+### 2.1 参数说明
+
+| 参数名   | 类型    | 说明                                   |
+| -------- | ------- | -------------------------------------- |
+| `pipe` | `str` | 管道类型标识符，用于指定需要同步的管道 |
+
+当前支持参数
+
+PIPE_S、PIPE_V、PIPE_M、PIPE_MTE1、PIPE_MTE2、PIPE_MTE3、PIPE_ALL、PIPE_MTE4、PIPE_MTE5、PIPE_V2、PIPE_FIX、VIRTUAL_PIPE_MTE2_L1A、VIRTUAL_PIPE_MTE2_L1B、PIPE_NUM、PIPE_UNASSIGNED
+
+### 2.2 支持规格
+
+#### 2.2.1 DataType支持
+
+不涉及数据类型
+
+#### 2.2.2 Shape支持
+
+不涉及shape
+
+### 2.3 特殊限制说明
+
+- pipe参数必须是有效的字符串标识符
+- 该操作用于同步管道级别的操作，确保管道中的操作按预期顺序执行
+- 通常与set_flag、wait_flag等同步操作配合使用
+
+### 2.4 使用方法
+
+以下示例展示了在管道操作中使用pipe_barrier进行同步
+
+```python
+@tilelang.jit(target="npuir")
+def pipe_barrier_kernel(M, N, dtype):
+    BLOCK_SIZE = 1
+
+    @T.prim_func
+    def main(src: T.Tensor((M, N), dtype), dst: T.Tensor((M, N), dtype)):
+
+        with T.Kernel(BLOCK_SIZE, is_npu=True) as (cid, _):
+            src_ub = T.alloc_shared((M, N), dtype)
+            dst_ub = T.alloc_shared((M, N), dtype)
+
+            T.copy(src, src_ub)
+
+            # GM->UB 拷贝完成后屏障 MTE2 通路
+            T.pipe_barrier("PIPE_MTE2")
+
+            T.vadd(src_ub, src_ub, dst_ub)
+
+            T.copy(dst_ub, dst)
+
+    return main
+```
+
+## 3. Tilelang Op到Ascend NPU IR Op的转换
+
+**tilelang::barrierOp**将被转换为`mlir::hivm::PipeBarrierOp`
