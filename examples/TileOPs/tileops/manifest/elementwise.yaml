@@ -139,3 +139,54 @@ LerpTensorFwdOp:
     test: tests/ops/test_lerp_tensor.py
     bench: benchmarks/ops/bench_lerp_tensor.py
     bench_manifest_driven: true
+
+ClampScalarFwdOp:
+  # PyTorch's torch.clamp(input, min=None, max=None) with Number (or None)
+  # bounds.  The bounds are params here and tensor inputs in ClampTensorFwdOp;
+  # two signatures, so two entries.  The kernel computes in fp32 and casts
+  # back, so a half input keeps the precision of the comparison.
+  ref_api: "torch.clamp"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      min: {type: "Number | None", default: null, kw_only: true}
+      max: {type: "Number | None", default: null, kw_only: true}
+    shape_rules:
+      - "present(min) or present(max)"
+
+  workloads:
+    # Smoke: small flat vector (both bounds)
+    - {input_shape: [1048576], min: -0.5, max: 0.5, dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest 16M workload (both bounds)
+    - {input_shape: [4096, 4096], min: -0.5, max: 0.5, dtypes: [float16, bfloat16, float32], label: "16M"}
+    # Full: GPU manifest 256M workload (both bounds)
+    - {input_shape: [16384, 16384], min: -0.5, max: 0.5, dtypes: [float16, bfloat16], label: "256M"}
+    # Full: single lower bound (the torch.clamp_min form)
+    - {input_shape: [4096, 4096], min: -0.5, dtypes: [float16, bfloat16, float32], label: "16M-min-only"}
+    # Full: single upper bound (the torch.clamp_max form)
+    - {input_shape: [4096, 4096], max: 0.5, dtypes: [float16, bfloat16, float32], label: "16M-max-only"}
+
+  roofline:
+    vars:
+      N: "product(input_shape)"
+    # FLOPs: clamp = compare-and-select.  Per roofline.md §1.3 convention the
+    # clamp / min-max family collapses to 1 FLOP per output element regardless
+    # of one or two bounds.
+    flops: "1 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py
+    kernel_map:
+      clamp_scalar: ClampScalarFwdKernel
+    op: tileops/ops/elementwise/clamp_scalar.py
+    test: tests/ops/test_clamp_scalar.py
+    bench: benchmarks/ops/bench_clamp_scalar.py
+    bench_manifest_driven: true

@@ -8,7 +8,7 @@
 | 算子 | family | 批次 | 状态 | 正确性 | 性能 ratio | 报告指针 |
 |---|---|---|---|---|---|---|
 | `HardsigmoidFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 7/7, max_abs_err 5.96e-08 | 0.46%–55.07% (6 shapes) | `examples/hardsigmoid/MIGRATION_REPORT.md`；run `reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/` |
-| `ClampScalarFwdOp` | elementwise | 1a | ⬜ 未开始 | — | — | — |
+| `ClampScalarFwdOp` | elementwise | 1a | ✅ **已完成**（harness, `phase=DONE`） | 11/11, max_abs_err 0.00e+00 | 44.93%–71.81% (11 shapes) | `examples/TileOPs/reports/tileops/20261013_141507_226988_ClampScalarFwdOp/` |
 | `HardswishFwdOp` | elementwise | 1a | ⬜ 未开始 | — | — | — |
 | `AddFwdOp` | elementwise | 1b | ⬜ 未开始 | — | — | — |
 | `SubFwdOp` | elementwise | 1b | ⬜ 未开始 | — | — | — |

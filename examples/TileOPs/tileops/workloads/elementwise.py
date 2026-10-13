@@ -28,6 +28,15 @@ class HardsigmoidWorkload(ShapedRandnWorkload):
     """Workload definition for HardsigmoidFwdOp (shape + dtype, randn input)."""
 
 
+class ClampScalarWorkload(ShapedRandnWorkload):
+    """Workload definition for ClampScalarFwdOp (shape + dtype, randn input).
+
+    Scalar bounds (``min`` / ``max``) are op parameters, not tensors, so the
+    workload only generates the single input tensor; the bound values travel
+    through the manifest workload rows into the Op constructor.
+    """
+
+
 class LerpTensorManifestWorkload:
     """Workload definition for LerpTensorFwdOp (Tensor-weight torch.lerp).
 
