@@ -190,6 +190,7 @@ GPU（CUDA）的 elementwise kernel 将每个 block 处理的元素数分解为�
 | E2 | 返回的 callable 签名 `_func(threads_arg, npt_arg)` — 接收两个 GPU 执行参数 | `_func(block_size)` — 单参数，`threads * npt` 合并为 `block_size` | 同上 | callable 在编译期接收 `block_size`，用于 `T.Kernel(T.ceildiv(N, block_size), is_npu=True)` 的 grid 计算 |
 | E3 | `T.Kernel(T.ceildiv(N, block_size), threads=threads_arg) as bx` — grid 含 `threads` 维度 | `T.Kernel(T.ceildiv(N, block_size), is_npu=True) as bx` — 无 `threads` 维度 | 同上 | NPU `is_npu=True` 内核无 CUDA 线程维度 |
 | E4 | `T.Parallel(threads_arg, npt_arg)` — 二维并行循环 | `T.Parallel(block_size)` — 一维并行循环 | 同上 | 线程×元素的二维分解合并为一维 |
+| E4b | Kernel 类 `default_config` 返回 GPU `{"threads":…, "num_per_thread":…}`（或 `{"block_size": threads*npt}`） | `default_config` 返回 `{}`；`forward` 调 `factory(N, dtype, …)(x, N)`，**不传** `block_size` | 同上 | **勿把 GPU `threads*npt` 乘积写成默认值**：那是 CUDA 执行模型产物，NPU 上错误；`block_size` 由 kernel 工厂自身的 NPU 默认（DESIGN §5.2）决定。否则每次迁移都要在 Stage 5 手工改 wrapper（hardsigmoid/clamp_scalar/hardswish 连续三次复现） |
 
 ### 3.3 LerpTensorFwdKernel 类 — GPU 特定部分适配
 

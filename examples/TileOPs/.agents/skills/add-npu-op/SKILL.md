@@ -148,9 +148,9 @@ run on NPU until the NPU component rewrites them for `target="npuir"`.
 | K6  | `device_smem_budget` via `torch.cuda.get_device_properties()`                                                                     | Import from`tileops.kernels.reduction._primitives` (already backend-agnostic)                                                                                                                                                                                                                                                                                                                              |
 | K7  | `@torch.library.custom_op("top::...")`                                                                                              | `@torch.library.custom_op("npub::...")`                                                                                                                                                                                                                                                                                                                                                                    |
 | K8  | `autotune_configs`, `autotune()`, `_tile_n_candidates`, `_MAX_TILE_N_CANDIDATES`, `tune` param, `tune_by_forward`         | **All removed** — heuristic config selection only; `init_config(config)` (no `tune` arg)                                                                                                                                                                                                                                                                                                          |
-| K9  | `threads` in `default_config` dict and `forward` call                                                                           | **Removed** — reduction ops: `default_config` returns `{"block_m", "tile_n"}`; elementwise ops: `default_config` returns `{"block_size"}` (see K11); `forward` does not pass `threads`                                                                                                                                                                                                    |
+| K9  | `threads` in `default_config` dict and `forward` call                                                                           | **Removed** — reduction ops: `default_config` returns `{"block_m", "tile_n"}`; elementwise ops: `default_config` returns `{}` — do **NOT** bake a `block_size` (the NPU factory's own default, from DESIGN §5.2, governs — see K11); `forward` does not pass `threads`                                                                                                                                                                                                    |
 | K10 | T.macro factories (`make_reduce_epilogue`, `make_softmax_epilogue`, etc.) in `_primitives.py`                                   | **Preserved unchanged** (used by the NPU component later)                                                                                                                                                                                                                                                                                                                                              |
-| K11 | `npt` (num_per_thread) in factory signature, `default_config`, and `T.Parallel(threads, npt)` — **elementwise ops only** | **Collapsed into `block_size`** — the GPU `threads * npt` product (per-block element count) becomes a single `block_size` param; factory signature drops `npt`; callable takes `block_size`; `default_config` returns `{"block_size": threads * npt}`; `T.Parallel(block_size)` replaces `T.Parallel(threads, npt)`. **Reduction ops are unaffected** (they have no `npt`). |
+| K11 | `npt` (num_per_thread) in factory signature, `default_config`, and `T.Parallel(threads, npt)` — **elementwise ops only** | **Collapsed into `block_size`** — the GPU `threads * npt` product (per-block element count) becomes a single `block_size` param; factory signature drops `npt`; the **kernel body** uses `T.Parallel(block_size)` (replaces `T.Parallel(threads, npt)`) and the factory carries the NPU `block_size` default (DESIGN §5.2). **Wrapper rule:** the wrapper `default_config` returns `{}` and `forward` invokes `factory(N, dtype, ...)(x, N)` **without** `threads`/`npt`/`block_size` — do NOT bake the GPU `threads * npt` product as a default (it is a CUDA-execution-model artifact; baking it forces a Stage-5 glue fix every migration). **Reduction ops are unaffected** (they have no `npt`). |
 
 ### Op class (applies to S4)
 
@@ -344,8 +344,14 @@ Kernel class from `{gpu_repo_root}/tileops/kernels/<family>/*.py`.
   heuristics (`_tile_n_for_block_m`, `default_config`), `forward` dispatch
   signature, `_elem_bytes`, `init_config` flow.
 - **Apply K5-K11** from the Standard NPU Adaptations section. For
-  elementwise ops, K11 applies: replace GPU `{"threads", "num_per_thread"}`
-  config with `{"block_size"}` (the `threads * npt` product).
+  elementwise ops, K11 applies: the NPU kernel collapses GPU
+  `threads`/`num_per_thread` into a single `block_size` (DESIGN §5.2 value).
+  **Wrapper rule (prevents a per-op Stage-5 glue fix):** do NOT bake the GPU
+  `threads * npt` product into `default_config`; leave it empty
+  (`default_config` returns `{}`) and invoke the factory as
+  `factory(N, dtype, ...)(x, N)` so the kernel's own NPU-default `block_size`
+  governs. The GPU `threads * npt` value is a CUDA-execution-model artifact and
+  is wrong on NPU.
 
 **Structural guidance** (op-specific — follow the GPU kernel, not a fixed
 template):

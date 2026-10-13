@@ -656,6 +656,40 @@ def _inline_op_func(
     local_decls = body[:-1]
     return_expr = return_stmt.value
 
+    # Partition op_func locals. Parameter-independent locals are hoisted
+    # verbatim into the builder; parameter-dependent locals are inlined into the
+    # return expression so they see the per-call-site argument. Hoisting a
+    # parameter-dependent local would leave the parameter undefined at factory
+    # scope (e.g. hardswish's ``clamped = T.min(T.max(x + three, zero), six)``).
+    hoist_decls: list[ast.stmt] = []
+    inline_locals: dict[str, ast.expr] = {}
+    for decl in local_decls:
+        if (
+            isinstance(decl, ast.Assign)
+            and len(decl.targets) == 1
+            and isinstance(decl.targets[0], ast.Name)
+        ):
+            name = decl.targets[0].id
+            refs = {n.id for n in ast.walk(decl.value) if isinstance(n, ast.Name)}
+            if param_name in refs:
+                inline_locals[name] = decl.value
+                continue
+        hoist_decls.append(decl)
+
+    if inline_locals:
+        for _ in range(len(inline_locals) + 1):
+
+            class _Expand(ast.NodeTransformer):
+                def visit_Name(self, node: ast.Name) -> ast.AST:
+                    if isinstance(node.ctx, ast.Load) and node.id in inline_locals:
+                        return copy.deepcopy(inline_locals[node.id])
+                    return node
+
+            expanded = _Expand().visit(return_expr)
+            if ast.dump(expanded) == ast.dump(return_expr):
+                break
+            return_expr = expanded
+
     # Clone the builder so we don't mutate the original AST.
     merged = copy.deepcopy(builder)
 
@@ -697,9 +731,9 @@ def _inline_op_func(
         result: list[ast.stmt] = []
         for stmt in stmts:
             if _contains_call_to(stmt, "op_func"):
-                # Hoist local declarations once, before the first call site.
-                if not hoisted["done"] and local_decls:
-                    for decl in local_decls:
+                # Hoist parameter-independent locals once, before the first call site.
+                if not hoisted["done"] and hoist_decls:
+                    for decl in hoist_decls:
                         result.append(copy.deepcopy(decl))
                     hoisted["done"] = True
                 stmt = _replace_calls(stmt)
