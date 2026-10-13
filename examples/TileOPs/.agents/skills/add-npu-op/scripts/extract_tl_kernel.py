@@ -381,12 +381,15 @@ class _Loader:
 
     def _resolve_abs(self, module: str) -> Path | None:
         parts = module.split(".")
-        py = self.repo_root.joinpath(*parts).with_suffix(".py")
-        if py.exists():
-            return py
-        init = self.repo_root.joinpath(*parts) / "__init__.py"
-        if init.exists():
-            return init
+        # Tolerate the upstream src-layout: modules live under
+        # ``<repo>/src/tileops/...`` rather than ``<repo>/tileops/...``.
+        for base_dir in (self.repo_root, self.repo_root / "src"):
+            py = base_dir.joinpath(*parts).with_suffix(".py")
+            if py.exists():
+                return py
+            init = base_dir.joinpath(*parts) / "__init__.py"
+            if init.exists():
+                return init
         return None
 
     def _resolve_relative(self, file_path: Path, node: ast.ImportFrom) -> Path | None:
@@ -713,6 +716,46 @@ def _inline_op_func(
         return result
 
     merged.body = _process_stmts(merged.body)
+
+    # Factory-style builders (e.g. the ``_StrategyKernel`` family:
+    # ``make_unary_regcopy``) bind the per-op math via a local
+    # ``op_func = op_func_for(op_name)`` assignment instead of an ``op_func``
+    # parameter. The call sites were already substituted above, so drop that
+    # dead binding and any parameter it was the sole use of (``op_name``).
+    dropped_params: set[str] = set()
+
+    def _strip_op_func_bindings(stmts: list[ast.stmt]) -> list[ast.stmt]:
+        kept: list[ast.stmt] = []
+        for s in stmts:
+            if (
+                isinstance(s, ast.Assign)
+                and len(s.targets) == 1
+                and isinstance(s.targets[0], ast.Name)
+                and s.targets[0].id == "op_func"
+            ):
+                for n in ast.walk(s.value):
+                    if isinstance(n, ast.Name):
+                        dropped_params.add(n.id)
+                continue
+            for field_name in ("body", "orelse", "finalbody"):
+                val = getattr(s, field_name, None)
+                if isinstance(val, list):
+                    setattr(s, field_name, _strip_op_func_bindings(val))
+            if hasattr(s, "handlers") and isinstance(s.handlers, list):
+                for handler in s.handlers:
+                    if isinstance(getattr(handler, "body", None), list):
+                        handler.body = _strip_op_func_bindings(handler.body)
+            kept.append(s)
+        return kept
+
+    merged.body = _strip_op_func_bindings(merged.body)
+    used_names = {n.id for n in ast.walk(merged) if isinstance(n, ast.Name)}
+    merged.args.args = [
+        a
+        for a in merged.args.args
+        if a.arg != "op_func" and not (a.arg in dropped_params and a.arg not in used_names)
+    ]
+
     ast.fix_missing_locations(merged)
     return merged
 
@@ -822,6 +865,10 @@ class Extractor:
         self.warnings: list[str] = []
         self.pattern: str = ""  # "A" or "B", for reporting.
         self.targets: list[EmitTarget] = []  # emitted targets, for reporting.
+        # Files to search when discovering helper deps of a Pattern-A merged
+        # builder (the inlined op_func may reference module-level helpers that
+        # live outside the builder file, e.g. nan_min/nan_max in _nan.py).
+        self._merged_helper_files: list[Path] = []
 
     # -- entry point ------------------------------------------------------ #
 
@@ -829,31 +876,41 @@ class Extractor:
         self.targets = self._resolve_targets(kernel_file, kernel_class_names, op_name)
         targets = self.targets
 
-        # Always discover the original builder (loads its file into cache so
-        # imports/constants are available), even when op_func has been inlined
-        # into a merged AST. The merged AST is only used for emission.
+        # Discover dependencies. Pattern-B (non-merged) targets discover from
+        # the builder definition. Pattern-A merged targets discover the merged
+        # AST's references from the builder file and the inlined op_func's file
+        # so their definitions/imports are emitted.
         for t in targets:
-            if t.kind == "tl_kernel":
+            if t.kind == "tl_kernel" and t.merged_ast is None:
                 self._discover(t.file, t.node.name)
+        for t in targets:
+            if t.merged_ast is not None:
+                for ref in sorted(_collect_refs(t.merged_ast)):
+                    for base in self._merged_helper_files:
+                        self._discover(base, ref)
 
-        # Collect names referenced by every emitted target. For merged
-        # targets, use the merged AST (it has the inlined op_func body and
-        # may reference constants/imports not in the original builder).
+        # Collect names referenced by every emitted node (targets + discovered
+        # helper functions/constants).
         needed_refs: set[str] = set()
         for t in targets:
             ref_node = t.merged_ast if t.merged_ast is not None else t.node
             needed_refs |= _collect_refs(ref_node)
+        for key in list(self.discovered_order):
+            needed_refs |= _collect_refs(self.discovered[key])
         const_keys = self._collect_constants(needed_refs)
 
         # Emitted names: use the merged function name when merged, else the
-        # original node name.
+        # original node name; plus discovered helper functions and constants.
         emitted_names: set[str] = set()
         for t in targets:
-            if t.merged_ast is not None:
-                emitted_names.add(t.merged_ast.name)
-            else:
-                emitted_names.add(t.node.name)
+            emitted_names.add(t.merged_ast.name if t.merged_ast is not None else t.node.name)
         emitted_names |= {k[1] for k in const_keys}
+        emitted_names |= {
+            k[1]
+            for k in self.discovered_order
+            if isinstance(self.discovered[k], (ast.FunctionDef, ast.AsyncFunctionDef))
+            and not _has_tilelang_jit(self.discovered[k])
+        }
         import_texts, _ = self._collect_imports(needed_refs | emitted_names)
 
         return self._assemble(targets, const_keys, import_texts)
@@ -896,13 +953,13 @@ class Extractor:
             return None
         _file, _method, assign_node = assignment
         rhs = assign_node.value
-        builder_names = self._resolve_builder_names(mro, rhs)
-        if not builder_names:
+        builder_refs = self._resolve_builder_names(mro, rhs, _file)
+        if not builder_refs:
             return None
 
         tl_targets: list[EmitTarget] = []
-        for name in builder_names:
-            loc = _resolve_name_location(self.loader, kernel_file, name)
+        for name, origin_file in builder_refs:
+            loc = _resolve_name_location(self.loader, origin_file, name)
             if loc is None:
                 self.warnings.append(f"Pattern A: could not locate builder '{name}'; skipping.")
                 continue
@@ -923,7 +980,26 @@ class Extractor:
             builder_node = tl_targets[0].node
             op_func_node = op_func_loc[1]
             merged_name = f"{_op_name_to_snake(op_name)}_kernel"
-            merged_ast = _inline_op_func(builder_node, op_func_node, merged_name)
+            try:
+                merged_ast = _inline_op_func(builder_node, op_func_node, merged_name)
+            except ValueError as exc:
+                # Families whose op body is built dynamically (e.g.
+                # ScalarParamUnaryKernel's ``_make_op_func``, binary kernels'
+                # ``_combine``) have no static ``op_func`` return to inline.
+                # Fall back to Pattern B rather than failing the extraction.
+                self.warnings.append(
+                    f"Pattern A: cannot statically inline op_func for '{op_name}' "
+                    f"({exc}); falling back to Pattern B (raw builders)."
+                )
+                return None
+            # The inlined op_func may reference module-level helpers (from the
+            # op_func's own file) and the builder may reference helpers from its
+            # file; both must be discovered/emitted for the merged function.
+            helper_files: list[Path] = []
+            for cand in (op_func_loc[0], tl_targets[0].file, kernel_file):
+                if cand not in helper_files:
+                    helper_files.append(cand)
+            self._merged_helper_files = helper_files
             # Keep the original builder node (for discovery/imports) and set
             # merged_ast for emission.
             return [
@@ -942,9 +1018,17 @@ class Extractor:
         return targets
 
     def _resolve_builder_names(
-        self, mro: list[tuple[Path, ast.ClassDef]], rhs: ast.expr
-    ) -> list[str]:
-        """Map the RHS of ``self.kernel = <rhs>`` to builder function names."""
+        self,
+        mro: list[tuple[Path, ast.ClassDef]],
+        rhs: ast.expr,
+        assignment_file: Path,
+    ) -> list[tuple[str, Path]]:
+        """Map the RHS of ``self.kernel = <rhs>`` to ``(builder_name, origin_file)``.
+
+        The origin file is where the builder name must be resolved from: the
+        file defining the ``self.<method>`` dispatch (e.g. ``_build_kernel`` in
+        ``_base.py``), not the leaf kernel file.
+        """
         # self.<method>(...)  e.g. self._build_kernel(self.strategy)
         if (
             isinstance(rhs, ast.Call)
@@ -956,18 +1040,21 @@ class Extractor:
             method_loc = _find_method_in_mro(mro, method_name)
             if method_loc is None:
                 return []
-            _m_file, m_node = method_loc
+            m_file, m_node = method_loc
             branches = _parse_strategy_branches(m_node)
             if branches:
                 strategy = _resolve_default_strategy(mro)
-                if strategy and strategy in branches:
-                    return [branches[strategy]]
-                # Strategy not statically resolvable: keep all branches.
-                return list(dict.fromkeys(branches.values()))
-            return _direct_return_calls(m_node)
+                names = (
+                    [branches[strategy]]
+                    if (strategy and strategy in branches)
+                    else list(dict.fromkeys(branches.values()))
+                )
+            else:
+                names = _direct_return_calls(m_node)
+            return [(n, m_file) for n in names]
         # Direct call <func_name>(...)
         if isinstance(rhs, ast.Call) and isinstance(rhs.func, ast.Name):
-            return [rhs.func.id]
+            return [(rhs.func.id, assignment_file)]
         return []
 
     def _pattern_b(self, kernel_file: Path, kernel_class_names: list[str]) -> list[EmitTarget]:
@@ -1115,6 +1202,21 @@ class Extractor:
             for key in const_keys:
                 st = self.loader._cache[key[0]]
                 parts.append(ast.get_source_segment(st.source, self.discovered[key]))
+            parts.append("")
+        helper_keys = [
+            k
+            for k in self.discovered_order
+            if isinstance(self.discovered[k], (ast.FunctionDef, ast.AsyncFunctionDef))
+            and not _has_tilelang_jit(self.discovered[k])
+            and k[1] not in (set(tl_names) | set(op_names))
+        ]
+        if helper_keys:
+            parts.append("# --- helper functions referenced by the kernels ---")
+            for key in helper_keys:
+                st = self.loader._cache[key[0]]
+                parts.append(
+                    textwrap.dedent(ast.get_source_segment(st.source, self.discovered[key]))
+                )
             parts.append("")
         if tl_targets:
             parts.append("# --- TileLang kernel functions (@tilelang.jit) ---")

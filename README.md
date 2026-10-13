@@ -31,4 +31,5 @@ TileOPs GPU→Ascend NPU 算子迁移工作区（`npuir-migration`）。目标�
 
 - ~~顶层 `docs/` 缺失~~ → **已修复**：已从 tilelang 源仓拷入 `docs/`（含 `开发指南.md`、`Tilelang.language/`）与 `examples/flash_attention/flash_attn_npuir.py`，`standards_check.py check` 现为 `ok`（0 failures）。
 - `kb_stale_check.py`：修正后（优先取 tilelang 包所在仓的 commit）报告 `stale_count=132`——**真实结果**（KB 条目跨多个更早的工具链 commit，当前为 `417dae9908`），非阻塞。
-- **Stage 0 提取缺口**：`extract_tl_kernel.py` 对 builder 型 kernel（如 `make_unary_regcopy`）走 Pattern B，仅解析出 kernel 类、**提取 0 个函数** → 需人工合并出 `_<op>_kernels.py`（hardsigmoid 即如此）。属待改进项。
+- **Stage 0 提取（已大幅打通）**：修复 `extract_tl_kernel.py` 的 src-layout 内部导入解析（`_resolve_abs`）+ builder 解析起点（`_build_kernel` 所在文件）+ 工厂式 op-body 绑定剔除 + 合并函数辅助依赖发现/发出。现状：16 个待迁算子**全部可提取、0 报错**——5 个走 Pattern A（自包含合并 kernel：hardsigmoid/hardswish/gelu*(2)/fused_add_layer_norm），11 个走 Pattern B（原始 `@tilelang.jit` builder，op-body 未内联）。`gen_source_map.py`（源映射生成器，覆盖 172 算子）并入 `scripts/`。
+  - **残余**：Pattern B 的动态 op-body 族（`ScalarParamUnaryKernel` 的 `_make_op_func`、binary 的 `_combine`、谓词等）暂只给原始 builder 参考，Stage 0 仍需轻度人工合并 op-body。
