@@ -28,6 +28,10 @@ class HardsigmoidWorkload(ShapedRandnWorkload):
     """Workload definition for HardsigmoidFwdOp (shape + dtype, randn input)."""
 
 
+class HardswishWorkload(ShapedRandnWorkload):
+    """Workload definition for HardswishFwdOp (shape + dtype, randn input)."""
+
+
 class ClampScalarWorkload(ShapedRandnWorkload):
     """Workload definition for ClampScalarFwdOp (shape + dtype, randn input).
 

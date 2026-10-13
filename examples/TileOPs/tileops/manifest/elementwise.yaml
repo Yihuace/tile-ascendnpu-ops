@@ -87,6 +87,49 @@ HardsigmoidFwdOp:
     bench: benchmarks/ops/bench_hardsigmoid.py
     bench_manifest_driven: true
 
+HardswishFwdOp:
+  ref_api: "torch.nn.functional.hardswish"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: MobileNetV3 activation map (GPU manifest mbv3-stage2)
+    - {input_shape: [32, 96, 56, 56], dtypes: [float16, bfloat16], label: "mbv3-stage2"}
+    # Full: MobileNetV3 activation map (GPU manifest mbv3-stage3)
+    - {input_shape: [32, 240, 28, 28], dtypes: [float16, bfloat16], label: "mbv3-stage3"}
+    # Full: large FC layer
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "fc-wide"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: hardswish(x) = x * relu6(x + 3) / 6.
+    # add(1) + two-sided-clamp(1, per convention) + mul(1) + div(1) = 4 per elem.
+    flops: "4 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/hardswish/hardswish.py
+    kernel_map:
+      hardswish: HardswishFwdKernel
+    op: tileops/ops/elementwise/hardswish.py
+    test: tests/ops/test_hardswish.py
+    bench: benchmarks/ops/bench_hardswish.py
+    bench_manifest_driven: true
+
 LerpTensorFwdOp:
   ref_api: "torch.lerp"
   # Tensor-weight variant: weight is a tensor that broadcasts together
