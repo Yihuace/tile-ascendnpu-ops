@@ -4,6 +4,7 @@ from tileops.ops.elementwise.hardsigmoid import HardsigmoidFwdOp
 from tileops.ops.elementwise.hardswish import HardswishFwdOp
 from tileops.ops.elementwise.lerp_tensor import LerpTensorFwdOp
 from tileops.ops.elementwise.mish import MishFwdOp
+from tileops.ops.elementwise.sub import SubFwdOp
 
 __all__ = [
     "AddFwdOp",
@@ -12,4 +13,5 @@ __all__ = [
     "HardswishFwdOp",
     "LerpTensorFwdOp",
     "MishFwdOp",
+    "SubFwdOp",
 ]

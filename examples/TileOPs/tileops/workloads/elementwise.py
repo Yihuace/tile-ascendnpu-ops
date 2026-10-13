@@ -96,3 +96,36 @@ class AddWorkload:
         a = torch.randn(self.input_shape, device=device, dtype=self.dtype)
         b = torch.randn(self.other_shape, device=device, dtype=self.dtype)
         return a, b
+
+
+class SubWorkload:
+    """Workload definition for SubFwdOp (scalar-alpha binary sub with broadcast).
+
+    Ported from TileOPs ``workloads/elementwise.py`` (``RandnPairWorkload`` /
+    ``BinarySameShapeCase``).  Both operands are drawn with ``randn``; the Op
+    layer performs the ``broadcast_shapes(input, other)`` broadcast and flattens
+    the operands before kernel dispatch.  ``alpha`` is an op parameter, not a
+    tensor, so the workload only generates the two input tensors.
+
+    Adaptation point W1: ``device`` is resolved from
+    :func:`get_device_backend` instead of hard-coded ``"cuda"``.
+    """
+
+    def __init__(
+        self,
+        input_shape: tuple[int, ...],
+        other_shape: tuple[int, ...],
+        dtype: torch.dtype,
+    ):
+        self.input_shape = tuple(input_shape)
+        self.other_shape = tuple(other_shape)
+        self.shape = self.input_shape
+        self.out_shape = tuple(torch.broadcast_shapes(self.input_shape, self.other_shape))
+        self.n_total = prod(self.out_shape) if self.out_shape else 1
+        self.dtype = dtype
+
+    def gen_inputs(self) -> tuple[torch.Tensor, torch.Tensor]:
+        device = get_device_backend().name
+        a = torch.randn(self.input_shape, device=device, dtype=self.dtype)
+        b = torch.randn(self.other_shape, device=device, dtype=self.dtype)
+        return a, b
