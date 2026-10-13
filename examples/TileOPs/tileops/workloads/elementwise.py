@@ -158,6 +158,35 @@ class GeluAndMulWorkload:
         return (x,)
 
 
+class GeluTanhAndMulWorkload:
+    """Workload definition for GeluTanhAndMulFwdOp (fused gated tanh-GELU).
+
+    Ported from TileOPs ``workloads/elementwise.py`` (``GatedRandnWorkload``:
+    one ``(M, 2 * N)`` randn tensor carrying the gate and value halves of a
+    fused gated op).  ``M`` / ``N`` are the manifest workload keys; ``x`` has
+    ``2 * N`` columns, so the output has ``M * N`` elements.  Only the
+    activation differs from :class:`GeluAndMulWorkload` (tanh vs erf).
+
+    Adaptation point W1: ``device`` is resolved from
+    :func:`get_device_backend` instead of hard-coded ``"cuda"``.
+    """
+
+    def __init__(self, M: int, N: int, dtype: torch.dtype):
+        self.M = int(M)
+        self.N = int(N)
+        self.m = self.M
+        self.n = self.N
+        self.dtype = dtype
+        self.x_shape = (self.M, 2 * self.N)
+        self.shape = self.x_shape
+        self.n_total = self.M * self.N
+
+    def gen_inputs(self) -> tuple[torch.Tensor]:
+        device = get_device_backend().name
+        x = torch.randn(self.M, 2 * self.N, device=device, dtype=self.dtype)
+        return (x,)
+
+
 class SubWorkload:
     """Workload definition for SubFwdOp (scalar-alpha binary sub with broadcast).
 

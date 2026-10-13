@@ -2,6 +2,7 @@ from tileops.ops.elementwise.add import AddFwdOp
 from tileops.ops.elementwise.bitwise_not import BitwiseNotFwdOp
 from tileops.ops.elementwise.clamp_scalar import ClampScalarFwdOp
 from tileops.ops.elementwise.gelu_and_mul import GeluAndMulFwdOp
+from tileops.ops.elementwise.gelu_tanh_and_mul import GeluTanhAndMulFwdOp
 from tileops.ops.elementwise.hardsigmoid import HardsigmoidFwdOp
 from tileops.ops.elementwise.hardswish import HardswishFwdOp
 from tileops.ops.elementwise.lerp_tensor import LerpTensorFwdOp
@@ -13,6 +14,7 @@ __all__ = [
     "BitwiseNotFwdOp",
     "ClampScalarFwdOp",
     "GeluAndMulFwdOp",
+    "GeluTanhAndMulFwdOp",
     "HardsigmoidFwdOp",
     "HardswishFwdOp",
     "LerpTensorFwdOp",

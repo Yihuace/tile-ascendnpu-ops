@@ -629,6 +629,48 @@ def _contains_call_to(node: ast.AST, name: str) -> bool:
     return False
 
 
+def _partition_op_func_locals(
+    local_decls: list[ast.stmt], param_name: str
+) -> tuple[list[ast.stmt], dict[str, ast.expr]]:
+    """Split op-body locals into hoistable (param-independent) and inlinable.
+
+    A local is parameter-dependent if its value references *param_name* OR any
+    other parameter-dependent local (transitive). Only param-independent locals
+    may be hoisted to factory scope; the rest must be inlined at the call site.
+    """
+    dependent: set[str] = set()
+    changed = True
+    while changed:
+        changed = False
+        for d in local_decls:
+            if not (
+                isinstance(d, ast.Assign)
+                and len(d.targets) == 1
+                and isinstance(d.targets[0], ast.Name)
+            ):
+                continue
+            name = d.targets[0].id
+            if name in dependent:
+                continue
+            refs = {n.id for n in ast.walk(d.value) if isinstance(n, ast.Name)}
+            if param_name in refs or (refs & dependent):
+                dependent.add(name)
+                changed = True
+    hoist: list[ast.stmt] = []
+    inline: dict[str, ast.expr] = {}
+    for d in local_decls:
+        if (
+            isinstance(d, ast.Assign)
+            and len(d.targets) == 1
+            and isinstance(d.targets[0], ast.Name)
+            and d.targets[0].id in dependent
+        ):
+            inline[d.targets[0].id] = d.value
+        else:
+            hoist.append(d)
+    return hoist, inline
+
+
 def _inline_op_func(
     builder: ast.FunctionDef,
     op_func: ast.FunctionDef,
@@ -671,20 +713,7 @@ def _inline_op_func(
     # return expression so they see the per-call-site argument. Hoisting a
     # parameter-dependent local would leave the parameter undefined at factory
     # scope (e.g. hardswish's ``clamped = T.min(T.max(x + three, zero), six)``).
-    hoist_decls: list[ast.stmt] = []
-    inline_locals: dict[str, ast.expr] = {}
-    for decl in local_decls:
-        if (
-            isinstance(decl, ast.Assign)
-            and len(decl.targets) == 1
-            and isinstance(decl.targets[0], ast.Name)
-        ):
-            name = decl.targets[0].id
-            refs = {n.id for n in ast.walk(decl.value) if isinstance(n, ast.Name)}
-            if param_name in refs:
-                inline_locals[name] = decl.value
-                continue
-        hoist_decls.append(decl)
+    hoist_decls, inline_locals = _partition_op_func_locals(local_decls, param_name)
 
     if inline_locals:
         for _ in range(len(inline_locals) + 1):
@@ -695,10 +724,10 @@ def _inline_op_func(
                         return copy.deepcopy(inline_locals[node.id])
                     return node
 
-            expanded = _Expand().visit(return_expr)
-            if ast.dump(expanded) == ast.dump(return_expr):
+            before = ast.dump(return_expr)
+            return_expr = _Expand().visit(copy.deepcopy(return_expr))
+            if ast.dump(return_expr) == before:
                 break
-            return_expr = expanded
 
     # Clone the builder so we don't mutate the original AST.
     merged = copy.deepcopy(builder)
@@ -830,20 +859,8 @@ def _inline_gated_op_func(
         raise ValueError("activation_func contains conditional/early returns")
     act_ret = body[-1].value
 
-    hoist_decls: list[ast.stmt] = []
-    inline_locals: dict[str, ast.expr] = {}
-    for d in body[:-1]:
-        if (
-            isinstance(d, ast.Assign)
-            and len(d.targets) == 1
-            and isinstance(d.targets[0], ast.Name)
-        ):
-            name = d.targets[0].id
-            refs = {n.id for n in ast.walk(d.value) if isinstance(n, ast.Name)}
-            if act_param in refs:
-                inline_locals[name] = d.value
-                continue
-        hoist_decls.append(d)
+    hoist_decls, inline_locals = _partition_op_func_locals(body[:-1], act_param)
+
     for _ in range(len(inline_locals) + 1):
 
         class _Expand(ast.NodeTransformer):
@@ -852,10 +869,10 @@ def _inline_gated_op_func(
                     return copy.deepcopy(inline_locals[node.id])
                 return node
 
-        expanded = _Expand().visit(act_ret)
-        if ast.dump(expanded) == ast.dump(act_ret):
+        before = ast.dump(act_ret)
+        act_ret = _Expand().visit(copy.deepcopy(act_ret))
+        if ast.dump(act_ret) == before:
             break
-        act_ret = expanded
 
     def _subst(expr: ast.AST, arg: ast.AST) -> ast.AST:
         cloned = copy.deepcopy(expr)

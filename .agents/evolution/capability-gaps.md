@@ -687,6 +687,29 @@ created_by: gelu_and_mul Stage 5 集成（2026-10-13）
 last_seen: gelu_and_mul-gelu_and_mul_fwd_kernel-20261013（2026-10-13）
 ```
 
+### CG-2026-0023
+
+```yaml
+gap_id: CG-2026-0023
+layer: BishengIR / hivm codegen（Vtanh）
+capability: >-
+  T.vtanh 在本工具链非忠实且按 TILELANG_ASCEND_MODE 分派两条失败路径：
+  默认/Expert = 截断 Maclaurin 级数 (x − x³/3 + 2x⁵/15 − 17x⁷/315)，仅 |x|≲0.5 可用；
+  Developer = exp 恒等式 (e^{2x}−1)/(e^{2x}+1)，|x|≲44 忠实但 |x|>~44 / +inf 溢出为 NaN。
+  T.tanh 仅为 TIR 标量表达式、无向量形态。
+blocked_algo: 需要全范围忠实 tanh 的向量算子（tanh-GELU 等）无法用原生向量 API；被迫换算法（恒等折叠）。
+evidence:
+  - 复现：examples/gelu_tanh_and_mul/gelu_tanh_and_mul_fwd_kernel/DESIGN.md §1.6.1 `counter npuir-vtanh`（截断发散复现）；codegen_npuir_api.cc Vtanh 源码。
+  - 实测（设计期硬件探针）：显式 sigmoid 机制 fp32 1.9e-7 / fp16 9.4e-4 / bf16 6.8e-3。
+workaround: 恒等折叠 gelu_tanh(g)=g·σ(2u)（`1+tanh(u)=2σ(2u)`）+ 显式 fp32 sigmoid（`vexp`/`vdiv`），RANGE max abs err 1.781e-7。
+occurrences: 1
+tasks: [gelu_tanh_and_mul-gelu_tanh_and_mul_fwd_kernel-20261013]
+toolchain_stamp: tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B3（20 AI Core）
+status: open
+created_by: gelu_tanh_and_mul Stage 1 设计调研（2026-10-13）
+last_seen: gelu_tanh_and_mul-gelu_tanh_and_mul_fwd_kernel-20261013（2026-10-13）
+```
+
 ### CG-2026-0008 → 已升级 recurring，条目移入下方 Recurring 区（2026-09-15 occurrences 2）
 
 ---
