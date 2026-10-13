@@ -577,6 +577,71 @@ created_by: argmax/_argreduce_kernel Stage 4 round 4（2026-09-28）
 last_seen: argmax-_argreduce_kernel-20260924T031005Z（2026-09-28）
 ```
 
+### CG-2026-0018
+
+```yaml
+gap_id: CG-2026-0018
+layer: BishengIR / TileLangIR（hivm.hir.vxor verifier）
+capability: >-
+  T.vxor 的标量操作数不受支持：hivm.hir.vxor 要求两个操作数均为 shaped（variadic
+  of shaped），标量立即数（如 T.cast(1,"int8")）报 "operand #1 must be variadic of
+  shaped..."；同族一元 vnot 无此问题。
+blocked_algo: 轻微：位运算「标量常量第二操作数」写法需物化为同形常量 buffer。
+evidence:
+  - 复现：examples/bitwise_not/bitwise_not_fwd_kernel/repro/TRAP-npuir-vxor-scalar-operand.py
+    （NPU 跑通）；形态 = bitwise_not 的 bool 分支 `T.vxor(x_ub, 1, y_ub)` → bishengir-compile
+    报 operand #1 非 shaped。
+workaround: 用 `T.fill(c_ub, T.cast(1,"int8"))` 物化同形常量 buffer 后再 `T.vxor(x_ub, c_ub, y_ub)`（bit-exact 等价）。
+occurrences: 1
+tasks: [bitwise_not-bitwise_not_fwd_kernel-20261013]
+toolchain_stamp: tilelang 0.1.2+417dae9908 / CANN 8.5.2 / Ascend910B3
+status: open
+created_by: bitwise_not/_bitwise_not_fwd_kernel Stage 3（2026-10-13）
+last_seen: bitwise_not-bitwise_not_fwd_kernel-20261013（2026-10-13）
+```
+
+### CG-2026-0019
+
+```yaml
+gap_id: CG-2026-0019
+layer: tladapter / runtime（JitKernel_NPU dtype 映射）
+capability: >-
+  JitKernel_NPU._tvm_dtype_to_torch（tilelang/engine/jit_npu.py ~1696）缺 uint8 键，
+  自动分配的 uint8 输出被回退映射为 float32 → uint8 算子输出 dtype 错误。
+blocked_algo: 中等：uint8 输出的逐元素算子无法直接得到正确输出 dtype。
+evidence:
+  - 复现：examples/bitwise_not/bitwise_not_fwd_kernel/repro/TRAP-npuir-uint8-output-dtype-map.py
+    （NPU 跑通）；来源 tilelang/engine/jit_npu.py:1696 映射表无 uint8。
+workaround: bool/uint8 走 int8 字节存储（bit-identical）并在 host 侧 view 回转（输入 view int8、输出 int8→bool/uint8 view）。
+occurrences: 1
+tasks: [bitwise_not-bitwise_not_fwd_kernel-20261013]
+toolchain_stamp: tilelang 0.1.2+417dae9908 / CANN 8.5.2 / Ascend910B3
+status: open
+created_by: bitwise_not/_bitwise_not_fwd_kernel Stage 3（2026-10-13）
+last_seen: bitwise_not-bitwise_not_fwd_kernel-20261013（2026-10-13）
+```
+
+### CG-2026-0020
+
+```yaml
+gap_id: CG-2026-0020
+layer: Frontend API / TileLangIR（python AST → TVM parser）
+capability: >-
+  条件分支内的 T.alloc_ub（如 `if cond: buf = T.alloc_ub(...)`）被 TVM parser 拒绝
+  （alloc 必须无条件/顶层），不允许按 trace-time 条件分配 UB buffer。
+blocked_algo: 轻微：条件性临时 buffer 需改为无条件分配（浪费少量 UB）。
+evidence:
+  - 复现：examples/bitwise_not/bitwise_not_fwd_kernel/RETROSPECTIVE.md（Stage 3；bool 常量 buffer
+    条件分配被 parser 拒 → 改无条件分配）。
+workaround: 无条件分配该 buffer（即便部分路径不用）。
+occurrences: 1
+tasks: [bitwise_not-bitwise_not_fwd_kernel-20261013]
+toolchain_stamp: tilelang 0.1.2+417dae9908 / CANN 8.5.2 / Ascend910B3
+status: open
+created_by: bitwise_not/_bitwise_not_fwd_kernel Stage 3（2026-10-13）
+last_seen: bitwise_not-bitwise_not_fwd_kernel-20261013（2026-10-13）
+```
+
 ### CG-2026-0008 → 已升级 recurring，条目移入下方 Recurring 区（2026-09-15 occurrences 2）
 
 ---

@@ -41,6 +41,38 @@ class ClampScalarWorkload(ShapedRandnWorkload):
     """
 
 
+class BitwiseNotWorkload:
+    """Workload definition for BitwiseNotFwdOp (bool / integer input).
+
+    Ported from TileOPs ``workloads/elementwise.py`` (``BitwiseNotWorkload``).
+    ``torch.bitwise_not`` operates on bool / integer element types, so this
+    generator draws a bool tensor for the bool dtype, a full-range ``uint8``
+    tensor for uint8, and a small symmetric-range tensor otherwise.  The op is
+    exact (no tolerance), so any valid input exercises the all-ones complement.
+
+    Adaptation point W1: ``device`` is resolved from
+    :func:`get_device_backend` instead of hard-coded ``"cuda"``.
+    """
+
+    def __init__(self, shape: tuple[int, ...], dtype: torch.dtype):
+        self.shape = tuple(shape)
+        self.input_shape = self.shape
+        self.n_total = prod(self.shape)
+        self.dtype = dtype
+
+    def gen_inputs(self) -> tuple[torch.Tensor]:
+        device = get_device_backend().name
+        if self.dtype == torch.bool:
+            x = torch.rand(self.shape, device=device) > 0.5
+        elif self.dtype == torch.uint8:
+            x = torch.randint(0, 256, self.shape, device=device, dtype=self.dtype)
+        else:
+            lo = max(torch.iinfo(self.dtype).min, -128)
+            hi = min(torch.iinfo(self.dtype).max, 128)
+            x = torch.randint(lo, hi, self.shape, device=device, dtype=self.dtype)
+        return (x,)
+
+
 class LerpTensorManifestWorkload:
     """Workload definition for LerpTensorFwdOp (Tensor-weight torch.lerp).
 

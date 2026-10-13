@@ -656,6 +656,16 @@ def _inline_op_func(
     local_decls = body[:-1]
     return_expr = return_stmt.value
 
+    # op_funcs with conditional/early returns (e.g. dtype-branched bodies:
+    # ``if x.dtype == "bool": return ...``) cannot be reduced to a single
+    # trailing-return expression; hoisting those branches would leave the
+    # parameter undefined at factory scope and corrupt the merged output.
+    # Refuse to merge so Pattern A falls back instead of silently mis-merging.
+    if any(isinstance(n, ast.Return) for decl in local_decls for n in ast.walk(decl)):
+        raise ValueError(
+            "op_func contains conditional/early returns; not statically inlinable"
+        )
+
     # Partition op_func locals. Parameter-independent locals are hoisted
     # verbatim into the builder; parameter-dependent locals are inlined into the
     # return expression so they see the per-call-site argument. Hoisting a

@@ -1,0 +1,101 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_bitwise_not.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261013_181824_602023_BitwiseNotFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-8.3.2, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-13 18:20:31  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-13 18:20:31  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-13 18:20:31  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 13 items
+
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[smoke-1m-int32] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+Precompiling NPU launcher header...
+2026-10-13 18:20:38  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_j93f92x6/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_j93f92x6/prof_script.py
+=== [msprof] latency_us: 6.0, roofline: {'Ratio(%)': 39.947, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.126216858625412, 'Perf(TOps/s)': 0.08823466300964355, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[smoke-1m-int64] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_c0yjo2nv/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_c0yjo2nv/prof_script.py
+=== [msprof] latency_us: 8.84, roofline: {'Ratio(%)': 54.2258, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.125608429312706, 'Perf(TOps/s)': 0.11919637024402618, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[smoke-1m-bool] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_oew7pix6/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_oew7pix6/prof_script.py
+=== [msprof] latency_us: 4.32, roofline: {'Ratio(%)': 13.8717, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.6298059225082397, 'Perf(TOps/s)': 0.15288887917995453, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[smoke-1m-uint8] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_cbf56aa1/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_cbf56aa1/prof_script.py
+=== [msprof] latency_us: 3.86, roofline: {'Ratio(%)': 15.5249, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.12986695766448975, 'Perf(TOps/s)': 0.03528290241956711, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[smoke-1m-int8] BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_11a209ka/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_11a209ka/prof_script.py
+=== [msprof] latency_us: 3.78, roofline: {'Ratio(%)': 15.8534, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.12986695766448975, 'Perf(TOps/s)': 0.0360296294093132, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[smoke-1m-int16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_1igsqzya/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_1igsqzya/prof_script.py
+=== [msprof] latency_us: 4.2, roofline: {'Ratio(%)': 28.534399999999998, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.1274336278438568, 'Perf(TOps/s)': 0.06363429129123688, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[16m-int32] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_y4ml2xhs/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_y4ml2xhs/prof_script.py
+=== [msprof] latency_us: 50.060001, roofline: {'Ratio(%)': 76.6041, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.1250760555267334, 'Perf(TOps/s)': 0.16767333447933197, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[16m-int64] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_ceatit8t/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_ceatit8t/prof_script.py
+=== [msprof] latency_us: 129.699997, roofline: {'Ratio(%)': 72.4265, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.10208853334188461, 'Perf(TOps/s)': 0.12939348816871643, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[256m-int32] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_ac534i0p/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_ac534i0p/prof_script.py
+=== [msprof] latency_us: 1610.939941, roofline: {'Ratio(%)': 72.50450000000001, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.06566652655601501, 'Perf(TOps/s)': 0.08331958949565887, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[16m-int-small-bool] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_on2nncnz/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_on2nncnz/prof_script.py
+=== [msprof] latency_us: 29.5, roofline: {'Ratio(%)': 32.4985, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.625300407409668, 'Perf(TOps/s)': 0.3556230664253235, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[16m-int-small-uint8] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_9_ahsrdl/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_9_ahsrdl/prof_script.py
+=== [msprof] latency_us: 23.639999, roofline: {'Ratio(%)': 40.5544, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.1253042221069336, 'Perf(TOps/s)': 0.08892860263586044, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[16m-int-small-int8] BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_23tuezz4/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_23tuezz4/prof_script.py
+=== [msprof] latency_us: 23.0, roofline: {'Ratio(%)': 41.6828, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.1253042221069336, 'Perf(TOps/s)': 0.09140312671661377, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+benchmarks/ops/bench_bitwise_not.py::test_bitwise_not_bench[16m-int-small-int16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+BitwiseNotFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_br6q32qs/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_br6q32qs/prof_script.py
+=== [msprof] latency_us: 29.52, roofline: {'Ratio(%)': 64.9527, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.1251521110534668, 'Perf(TOps/s)': 0.14225691556930542, 'Computility(TOps/s)': 2.303999900817871}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261013_181824_602023_BitwiseNotFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261013_181824_602023_BitwiseNotFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261013_181824_602023_BitwiseNotFwdOp/pytest/benchmark.xml -
+================== 13 passed, 1 warning in 1065.88s (0:17:45) ==================

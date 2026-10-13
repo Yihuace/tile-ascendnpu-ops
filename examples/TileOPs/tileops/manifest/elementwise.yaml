@@ -352,3 +352,46 @@ SubFwdOp:
     test: tests/ops/test_sub.py
     bench: benchmarks/ops/bench_sub.py
     bench_manifest_driven: true
+
+BitwiseNotFwdOp:
+  # torch.bitwise_not: y = ~x for bool / integer inputs (BITWISE_DTYPES).
+  # Exact op (no tolerance); the kernel computes the all-ones complement
+  # (bool -> x == 0, uint8 -> xor 255, else -> xor -1).
+  ref_api: "torch.bitwise_not"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector over every admitted dtype
+    - {input_shape: [1048576], dtypes: [int32, int64, bool, uint8, int8, int16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (int32 / int64)
+    - {input_shape: [4096, 4096], dtypes: [int32, int64], label: "16m"}
+    # Full: GPU manifest elementwise-256M workload (int32)
+    - {input_shape: [16384, 16384], dtypes: [int32], label: "256m"}
+    # Full: GPU 16M shape over the narrow integer / bool dtypes
+    - {input_shape: [4096, 4096], dtypes: [bool, uint8, int8, int16], label: "16m-int-small"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: bitwise_not is one elementwise all-ones complement per element.
+    flops: "1 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/bitwise_not/bitwise_not.py
+    kernel_map:
+      bitwise_not: BitwiseNotFwdKernel
+    op: tileops/ops/elementwise/bitwise_not.py
+    test: tests/ops/test_bitwise_not.py
+    bench: benchmarks/ops/bench_bitwise_not.py
+    bench_manifest_driven: true

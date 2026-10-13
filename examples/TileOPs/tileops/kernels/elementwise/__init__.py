@@ -1,4 +1,5 @@
 from tileops.kernels.elementwise.add import AddFwdKernel
+from tileops.kernels.elementwise.bitwise_not import BitwiseNotFwdKernel
 from tileops.kernels.elementwise.clamp_scalar import ClampScalarFwdKernel
 from tileops.kernels.elementwise.hardsigmoid import HardsigmoidFwdKernel
 from tileops.kernels.elementwise.hardswish import HardswishFwdKernel
@@ -8,6 +9,7 @@ from tileops.kernels.elementwise.sub import SubFwdKernel
 
 __all__ = [
     "AddFwdKernel",
+    "BitwiseNotFwdKernel",
     "ClampScalarFwdKernel",
     "HardsigmoidFwdKernel",
     "HardswishFwdKernel",
