@@ -536,3 +536,48 @@ IsnanFwdOp:
     test: tests/ops/test_isnan.py
     bench: benchmarks/ops/bench_isnan.py
     bench_manifest_driven: true
+
+IsinfFwdOp:
+  # torch.isinf: y = isinf(x), bool output (a float infinity predicate).  Exact
+  # op (no tolerance).  The GPU op's manifest union also lists ints/bool, served
+  # by an ``isinf_exact`` false-everywhere fallback; this NPU port follows the
+  # float workloads (the standard isinf path only).
+  ref_api: "torch.isinf"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: bool}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector over every admitted float dtype
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (all float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "16m"}
+    # Full: GPU manifest elementwise-256M workload (half dtypes)
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "256m"}
+    # Full: GPU 16M shape over the half dtypes
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16], label: "16m-half"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: isinf is one elementwise predicate per element.
+    flops: "1 * N"
+    # Memory: read N float elements + write N bool (one byte) elements.
+    bytes: "N * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/isinf/isinf.py
+    kernel_map:
+      isinf: IsinfFwdKernel
+    op: tileops/ops/elementwise/isinf.py
+    test: tests/ops/test_isinf.py
+    bench: benchmarks/ops/bench_isinf.py
+    bench_manifest_driven: true

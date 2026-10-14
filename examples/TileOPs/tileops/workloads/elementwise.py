@@ -102,6 +102,37 @@ class IsnanWorkload:
         return (x,)
 
 
+class IsinfWorkload:
+    """Workload definition for IsinfFwdOp (float infinity predicate).
+
+    Ported from TileOPs ``workloads/elementwise.py`` (``_draw_special``: a
+    quarter each of NaN, +Inf, -Inf and finite values, so the predicate sees
+    both truth values).  The NaN quarter is the discriminant for the ordered
+    ``==`` ``isinf`` body: ``isinf(NaN)`` must answer false, so a NaN region
+    that wrongly reads true is caught.  The op is exact (bool output), so any
+    such input exercises the predicate.
+
+    Adaptation point W1: ``device`` is resolved from
+    :func:`get_device_backend` instead of hard-coded ``"cuda"``.
+    """
+
+    def __init__(self, shape: tuple[int, ...], dtype: torch.dtype):
+        self.shape = tuple(shape)
+        self.input_shape = self.shape
+        self.n_total = prod(self.shape)
+        self.dtype = dtype
+
+    def gen_inputs(self) -> tuple[torch.Tensor]:
+        device = get_device_backend().name
+        x = torch.randn(self.shape, device=device, dtype=self.dtype)
+        flat = x.view(-1)
+        quarter = flat.numel() // 4
+        flat[:quarter] = float("nan")
+        flat[quarter : 2 * quarter] = float("inf")
+        flat[2 * quarter : 3 * quarter] = float("-inf")
+        return (x,)
+
+
 class LerpTensorManifestWorkload:
     """Workload definition for LerpTensorFwdOp (Tensor-weight torch.lerp).
 
