@@ -56,3 +56,59 @@ AdaLayerNormFwdOp:
     test: tests/ops/test_ada_layer_norm.py
     bench: benchmarks/ops/bench_ada_layer_norm.py
     bench_manifest_driven: true
+
+FusedAddLayerNormFwdOp:
+  ref_api: "flash_attn.ops.triton.layer_norm.layer_norm_fn"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float32 | float16 | bfloat16"}
+      residual: {dtype: "same_as(x)"}
+      weight: {dtype: "same_as(x)"}
+      bias: {dtype: "same_as(x)"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+      residual_out: {dtype: "same_as(x)"}
+    params:
+      eps: {type: float, default: 1.0e-5}
+    shape_rules:
+      - "residual.shape == x.shape"
+      - "weight.shape == x.shape[-1:]"
+      - "bias.shape == x.shape[-1:]"
+      - "output.shape == x.shape"
+      - "residual_out.shape == x.shape"
+
+  workloads:
+    # Smoke: small Llama-style block (all three dtypes)
+    - {x_shape: [64, 4096], dtypes: [float32, float16, bfloat16], label: "smoke-llama"}
+    # Full: Llama-8B prefill (hidden_dim=4096)
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "llama-8b-prefill"}
+    # Full: Llama-8B decode
+    - {x_shape: [1, 4096], dtypes: [bfloat16], label: "llama-8b-decode"}
+    # Full: Llama-70B prefill (hidden_dim=8192)
+    - {x_shape: [2048, 8192], dtypes: [float16, bfloat16], label: "llama-70b-prefill"}
+    # Full: Llama-70B decode
+    - {x_shape: [1, 8192], dtypes: [bfloat16], label: "llama-70b-decode"}
+    # Full: Llama-13B prefill (hidden_dim=5120) -- fp32
+    - {x_shape: [2048, 5120], dtypes: [float32], label: "llama-13b-prefill"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[:-1])"
+      N: "x.shape[-1]"
+    # The residual add (1), then an affine LayerNorm (7).
+    flops: "8 * M * N"
+    # Read x + read residual + write output + write residual_out (4*M*N),
+    # plus read weight + read bias (2*N).
+    bytes: "(4 * M * N + 2 * N) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm.py
+    kernel_map:
+      fused_add_layer_norm: FusedAddLayerNormKernel
+    op: tileops/ops/norm/fused_add_layer_norm.py
+    test: tests/ops/test_fused_add_layer_norm.py
+    bench: benchmarks/ops/bench_fused_add_layer_norm.py
+    bench_manifest_driven: true

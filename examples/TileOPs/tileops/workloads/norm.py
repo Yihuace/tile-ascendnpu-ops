@@ -30,3 +30,29 @@ class AdaLayerNormWorkload(WorkloadBase):
         scale = torch.randn(self.m, self.n, dtype=self.dtype, device=device)
         shift = torch.randn(self.m, self.n, dtype=self.dtype, device=device)
         return x, scale, shift
+
+
+class FusedAddLayerNormWorkload(WorkloadBase):
+    """Workload definition for FusedAddLayerNormFwdOp.
+
+    Generates the four operands of the fused residual-add + LayerNorm op:
+    ``x`` / ``residual`` of shape ``(m, n)`` and the affine ``weight`` / ``bias``
+    of shape ``(n,)``.  Adaptation point W1: ``device`` is resolved from
+    :func:`get_device_backend` instead of hard-coded ``"cuda"``.
+
+    Ported from TileOPs ``workloads/norm.py:FusedAddLayerNormWorkload``.
+    """
+
+    def __init__(self, m: int, n: int, dtype: torch.dtype, eps: float = 1e-5):
+        self.m = m
+        self.n = n
+        self.dtype = dtype
+        self.eps = eps
+
+    def gen_inputs(self) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        device = get_device_backend().name
+        x = torch.randn(self.m, self.n, dtype=self.dtype, device=device)
+        residual = torch.randn(self.m, self.n, dtype=self.dtype, device=device)
+        weight = torch.randn(self.n, dtype=self.dtype, device=device)
+        bias = torch.randn(self.n, dtype=self.dtype, device=device)
+        return x, residual, weight, bias
