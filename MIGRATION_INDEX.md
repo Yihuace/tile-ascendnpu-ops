@@ -19,7 +19,7 @@
 | `IsfiniteFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`） | 9/9, max_abs_err 0.00e+00 | 40.78%–72.06% (5 shapes) | `examples/TileOPs/reports/tileops/20261014_105757_589000_IsfiniteFwdOp/` |
 | `FusedAddLayerNormFwdOp` | norm | 2 | ✅ **已完成**（harness, `phase=DONE`） | 14/14, max_abs_err 1.56e-02(bf16) | 27.52%–45.08% (7 shapes) | `examples/TileOPs/reports/tileops/20261014_115534_389335_FusedAddLayerNormFwdOp/` |
 | `BatchNormBwdOp` | norm | 3 | ⬜ 未开始（高风险，先探针） | — | — | — |
-| `Conv1dFwdOp` | convolution | 3 | ⬜ 未开始（高风险） | — | — | — |
+| `Conv1dFwdOp` | convolution | 3 | ✅ **已完成**（harness, `phase=DONE`；5 kernel: pointwise/general/unit_stride/group/direct） | 28/28, avg max_abs_err 3.91e-02 | benchmark 报告 `partial`（msprof profile 过滤缺口 CG-2026-0025；恢复延迟 unit_stride≈5.5ms/general≈0.6ms） | `examples/TileOPs/reports/tileops/20261014_174100_695290_Conv1dFwdOp/` |
 | `Conv3dFwdOp` | convolution | 3 | ⬜ 未开始（高风险） | — | — | — |
 | `GLARecurrentFwdOp` | linear_attention | 3 | ⬜ 未开始（高风险） | — | — | — |
 | `GDNFwdOp` | linear_attention | 3 | ⬜ 未开始（高风险） | — | — | — |

@@ -1,0 +1,91 @@
+# convolution.yaml -- manifest entries for the 'convolution' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+# Ported from the GPU TileOPs manifest
+# (src/tileops/manifest/spec/convolution.yaml, Conv1dFwdOp entry only;
+# Conv2dFwdOp / Conv3dFwdOp are not migrated yet).  signature / shape_rules are
+# copied from the GPU entry; workloads are expressed in the NPU contract
+# (leading smoke case + ``input_shape`` / ``weight_shape`` keys + ``dtypes``),
+# reusing the GPU model-family shapes (whisper-conv1 / wav2vec2-layer1 /
+# encodec-init / encodec-deep) and their ``+bias`` variants.  roofline is the
+# GPU ``tileops.perf.formulas.conv_roofline`` expressed inline as vars/flops/bytes
+# (the NPU project has no tileops.perf module; Conv1dFwdOp.eval_roofline
+# implements the exact windowed arithmetic).
+#
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+Conv1dFwdOp:
+  ref_api: "torch.nn.functional.conv1d"
+  family: convolution
+  status: implemented
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16", shape: "[N, C_in, L_in]"}
+      weight: {dtype: "same_as(input)", shape: "[C_out, C_in_g, kW]"}
+      bias: {dtype: "same_as(input)", shape: "[C_out]", optional: true}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "[N, C_out, L_out]"}
+    params:
+      stride: {type: "int | tuple[int]", default: 1}
+      padding: {type: "int | tuple[int] | 'valid' | 'same'", default: 0}
+      dilation: {type: "int | tuple[int]", default: 1}
+      groups: {type: int, default: 1}
+    shape_rules:
+    - "groups > 0 and C_in % groups == 0 and C_out % groups == 0"
+    - "sW > 0 and dW > 0 and pW >= 0 and kW > 0"
+    - "padding != 'same' or sW == 1"
+    - "L_out > 0"
+
+  workloads:
+    # Smoke: smallest robust shape (NPU manifest workload contract).
+  - {input_shape: [1, 8, 128], weight_shape: [16, 8, 3], stride: 1, padding: 0, dilation: 1, groups: 1, bias: false, dtypes: [float16, bfloat16], label: "smoke-k3-s1"}
+    # Full: Whisper-large encoder conv1: mel spectrogram -> hidden (ASR entry point)
+  - {input_shape: [1, 80, 3000], weight_shape: [1280, 80, 3], stride: 1, padding: 0, dilation: 1, groups: 1, bias: false, dtypes: [float16, bfloat16], label: "whisper-conv1"}
+    # Full: Wav2Vec2 feature extractor layer1: raw 1s waveform, large kernel + stride downsampling
+  - {input_shape: [1, 1, 16000], weight_shape: [512, 1, 10], stride: 5, padding: 0, dilation: 1, groups: 1, bias: false, dtypes: [float16, bfloat16], label: "wav2vec2-layer1"}
+    # Full: EnCodec SEANet encoder init: raw 1s audio @24kHz, narrow channels
+  - {input_shape: [1, 1, 24000], weight_shape: [32, 1, 7], stride: 1, padding: 0, dilation: 1, groups: 1, bias: false, dtypes: [float16, bfloat16], label: "encodec-init"}
+    # Full: EnCodec SEANet deep block: short sequence, wide channels, large kernel
+  - {input_shape: [1, 128, 600], weight_shape: [256, 128, 10], stride: 1, padding: 0, dilation: 1, groups: 1, bias: false, dtypes: [float16, bfloat16], label: "encodec-deep"}
+    # Full: the same four shapes carrying a bias (optional input)
+  - {input_shape: [1, 80, 3000], weight_shape: [1280, 80, 3], stride: 1, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "whisper-conv1-bias"}
+  - {input_shape: [1, 1, 16000], weight_shape: [512, 1, 10], stride: 5, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "wav2vec2-layer1-bias"}
+  - {input_shape: [1, 1, 24000], weight_shape: [32, 1, 7], stride: 1, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "encodec-init-bias"}
+  - {input_shape: [1, 128, 600], weight_shape: [256, 128, 10], stride: 1, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "encodec-deep-bias"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.conv_roofline``:
+  #   2 * N * C_out * C_in_g * taps FLOPs per output position (a multiply-add per
+  #   in-range tap; the bias add when present), and every tensor moved once with
+  #   ``input`` read only at the positions some window reads.  ``taps`` here is
+  #   the unpadded window ``kW`` (the GPU entry counts only in-range taps;
+  #   ``Conv1dFwdOp.eval_roofline`` implements that exact windowed count).
+  roofline:
+    vars:
+      N: "input_shape[0]"
+      C_in: "input_shape[1]"
+      L_in: "input_shape[2]"
+      C_out: "weight_shape[0]"
+      C_in_g: "weight_shape[1]"
+      kW: "weight_shape[2]"
+      sW: "stride"
+      dW: "dilation"
+      pW: "0 if padding in ('valid', 'same') else (padding if isinstance(padding, int) else padding[0])"
+      L_out: "(L_in + 2 * pW - dW * (kW - 1) - 1) // sW + 1"
+      taps: "kW"
+      bias_flops: "N * C_out * L_out if bias else 0"
+    flops: "2 * N * C_out * C_in_g * taps * L_out + bias_flops"
+    bytes: "(N * C_in * L_in + C_out * C_in_g * kW + N * C_out * L_out + (C_out if bias else 0)) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/convolution/conv1d/conv1d.py
+    kernel_map:
+      conv1d_pointwise: Conv1dPointwiseKernel
+      conv1d: Conv1dKernel
+      conv1d_unit_stride: Conv1dUnitStrideKernel
+      depthwise_conv1d: DepthwiseConv1dKernel
+      group_conv1d: GroupConv1dKernel
+    op: tileops/ops/convolution.py
+    test: tests/ops/test_conv1d.py
+    bench: benchmarks/ops/bench_conv1d.py
+    bench_manifest_driven: false

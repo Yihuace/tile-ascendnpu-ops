@@ -732,6 +732,44 @@ created_by: isnan/_isnan_fwd_kernel Stage 3 `[DESIGN_ERROR]`（2026-10-14）
 last_seen: isnan-_isnan_fwd_kernel-20261014（2026-10-14）
 ```
 
+### CG-2026-0025
+
+```yaml
+gap_id: CG-2026-0025
+layer: Reporting harness（tileops.reporting.cli + msprof 采集过滤）
+capability: >-
+  单算子集成报告（Stage 5 `python -m tileops.reporting.cli run --op <Op>
+  --prof-mode msprof --kernel-name main`）对 npuir 多 kernel/多 Scope 算子的
+  profile 匹配失败：① `--kernel-name main` 期望设备端 op 名形如
+  `*_main_mix_aic`，而 npuir 生成的设备 op 名不含该后缀（e.g. conv1d 五个
+  `_conv1d_*_kernel`），过滤命中为空 → 退化为无过滤采集；② 无过滤采集里混入
+  wrapper 侧 workspace 分配算子（`ZerosLike` 等），单次 capture 含 2–3 个 op，
+  逐 shape 判为 invalid（`invalid_profile_count=16`）→ `benchmark_passed=false`、
+  run status=partial。kernel 本身正确（op 正确性 28/28、per-kernel L0 49/49），
+  真实延迟可由保留的 `OpBasicInfo` CSV 恢复（conv1d: unit_stride≈5.5ms /
+  general≈0.59–0.62ms），但报告不产出有效 ratio。
+blocked_algo: 无法通过标准 `tileops.reporting.cli` 拿到 npuir 多-kernel 算子的
+  有效 per-shape benchmark ratio（需人工从 CSV 恢复），阻塞性能门禁的自动化。
+evidence:
+  - examples/TileOPs/reports/tileops/20261014_174100_695290_Conv1dFwdOp/run.json
+    （status=partial，benchmark_passed=false，invalid_profile_count=16，
+    correctness 28/28）。
+  - examples/TileOPs/profile_run_msprof_20261014_174257.log（无过滤重试 +
+    captured_op_count=2–3，含 ZerosLike）。
+  - 对照：单-kernel MixCV 算子（gqa/ssd）此前以同类 harness 亦见 profile 过滤
+    对不齐（历史记录），本条目为多-kernel 分发场景的显式复现。
+workaround: >-
+  ① 采集时显式传入真实设备 op 名（或前缀通配）替代 `main`；② 将 wrapper 的
+  workspace 分配算子排除出 profile 窗口（或在报告层按 op 名白名单过滤）；
+  ③ 过渡期：从保留的 `OpBasicInfo` CSV 人工恢复 per-shape 延迟填报告。
+occurrences: 1
+tasks: [conv1d-Conv1dFwdOp Stage 5 integrate 20261014]
+toolchain_stamp: tilelang 0.1.2 dev-root（417dae99）+ CANN 8.5.2 + Ascend910B3（20 AI Core）
+status: open
+created_by: conv1d/Conv1dFwdOp Stage 5 integrator（2026-10-14）
+last_seen: conv1d-Conv1dFwdOp Stage 5（2026-10-14）
+```
+
 ### CG-2026-0008 → 已升级 recurring，条目移入下方 Recurring 区（2026-09-15 occurrences 2）
 
 ---
