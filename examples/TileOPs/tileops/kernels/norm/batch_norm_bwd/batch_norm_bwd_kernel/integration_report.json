@@ -1,0 +1,39 @@
+{
+  "op_name": "BatchNormBwdOp",
+  "op_slug": "batch_norm_bwd",
+  "family": "norm",
+  "verdict": "INTEGRATE_COMPLETED",
+  "attempts_used": 0,
+  "run_json": "examples/TileOPs/reports/tileops/20261014_202544_230090_BatchNormBwdOp/run.json",
+  "report_md": "examples/TileOPs/reports/tileops/20261014_202544_230090_BatchNormBwdOp/report.md",
+  "report_status": "partial",
+  "correctness": {"status": "pass", "passed": 12, "failed": 0, "avg_max_abs_err": 0.002286, "max_abs_err": 0.0156},
+  "benchmark_status": "partial",
+  "benchmark_note": "6 msprof workloads ran with 0 pytest failures; 5/6 valid. The split-path workload [4,128,262144] hit a kernel-name filter fallback (--kernel-name main matched no device op because the split prim_funcs are stats/finalize/apply); msprof retried unfiltered and captured all 3 ops, so that record is invalid (kernel_filter_fallback_count=1, invalid_profile_count=1). Harness filter issue, not a kernel defect (CG-2026-0025).",
+  "dispatch": {
+    "bwd_wide": "BatchNormBwdWideKernel (holder thread/block)",
+    "bwd_split": "BatchNormBwdSplitKernel (channel cut across blocks)",
+    "bwd_kernel": "BatchNormBwdKernel (general tiled path)"
+  },
+  "per_kernel_long_latency_us": {
+    "resnet-stage1_fp16": 20.78,
+    "resnet-stage1_bf16": 21.10,
+    "resnet-stage2_fp16": 24.98,
+    "resnet-stage3_fp16": 40.42,
+    "resnet-stage3_fp32": 41.50,
+    "large-spatial_fp16_split": 2085.34
+  },
+  "integrated_files": [
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel.py",
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel.py",
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_kernel.py",
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/__init__.py",
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py"
+  ],
+  "design_docs": [
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md",
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md",
+    "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_kernel_DESIGN.md"
+  ],
+  "log": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/integration_log.md"
+}

@@ -1,0 +1,21 @@
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+2026-10-14 18:14:29  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-14 18:14:29  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-14 18:14:29  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+device: Ascend910B3
+
+===== case (N=8,C=64,S=1024) float16 =====
+[PROBE] (N=8,C=64,S=1024) dtype=float16 max_abs_err grad_x=4.883e-04 grad_weight=3.052e-05 grad_bias=1.526e-05 (rtol=atol=1.0e-03)
+
+===== case (N=4,C=64,S=256) float16 =====
+[PROBE] (N=4,C=64,S=256) dtype=float16 max_abs_err grad_x=6.104e-05 grad_weight=3.052e-05 grad_bias=3.815e-06 (rtol=atol=1.0e-03)
+
+===== case (N=8,C=64,S=256) bfloat16 =====
+[PROBE] (N=8,C=64,S=256) dtype=bfloat16 max_abs_err grad_x=3.052e-05 grad_weight=1.526e-05 grad_bias=1.907e-06 (rtol=atol=1.6e-02)
+
+===== case (N=4,C=64,S=256) float32 =====
+[PROBE] (N=4,C=64,S=256) dtype=float32 max_abs_err grad_x=4.768e-07 grad_weight=8.583e-06 grad_bias=4.768e-06 (rtol=atol=1.0e-05)
+
+worst max_abs_err across cases: 4.883e-04
+PROBE PASS

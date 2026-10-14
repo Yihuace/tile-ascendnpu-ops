@@ -61,8 +61,9 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # Auto-generated extracted kernel files: align_up is injected at runtime,
 # and the extraction script's import ordering (incl. duplicate imports from
-# multiple contributing source files) is not ruff-controlled.
-"tileops/kernels/**/_*_kernels.py" = ["F401", "F811", "F821", "I001"]
+# multiple contributing source files) is not ruff-controlled.  RUF022: the
+# ``__all__`` order follows the extractor's discovery order, not sorted order.
+"tileops/kernels/**/_*_kernels.py" = ["F401", "F811", "F821", "I001", "RUF022"]
 # Integrated per-function kernels set TILELANG_ASCEND_MODE before importing
 # tilelang (the env var must precede the import), so module-level imports
 # legitimately follow executable code -> E402 is intrinsic to that form.

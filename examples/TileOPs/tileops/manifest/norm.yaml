@@ -112,3 +112,59 @@ FusedAddLayerNormFwdOp:
     test: tests/ops/test_fused_add_layer_norm.py
     bench: benchmarks/ops/bench_fused_add_layer_norm.py
     bench_manifest_driven: true
+
+BatchNormBwdOp:
+  ref_api: "torch.ops.aten.native_batch_norm_backward.default"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      grad_out: {dtype: "float32 | float16 | bfloat16", shape: "[N, C, S]"}
+      x: {dtype: "same_as(grad_out)", shape: "[N, C, S]"}
+      weight: {dtype: float32, shape: "[C]"}
+      mean: {dtype: float32, shape: "[C]"}
+      rstd: {dtype: float32, shape: "[C]"}
+    outputs:
+      grad_x: {dtype: "same_as(grad_out)", shape: "[N, C, S]"}
+      grad_weight: {dtype: float32, shape: "[C]"}
+      grad_bias: {dtype: float32, shape: "[C]"}
+    shape_rules:
+    - "x.shape == grad_out.shape"
+    - "weight.shape == mean.shape == rstd.shape == (grad_out.shape[1],)"
+
+  workloads:
+    # Smoke: smallest robust shape (all three dtypes). The GPU entry's
+    # ``L: []`` (BatchNorm1d) flattens to S = 1.
+    - {x_shape: [32, 64, 1], dtypes: [float32, float16, bfloat16], label: "smoke-fc"}
+    # Full: ResNet stage 1 (B=8, C=64, 32x32)
+    - {x_shape: [8, 64, 1024], dtypes: [float16, bfloat16], label: "resnet-stage1"}
+    # Full: ResNet stage 2 (B=4, C=128, 32x32)
+    - {x_shape: [4, 128, 1024], dtypes: [float16], label: "resnet-stage2"}
+    # Full: ResNet stage 3 (B=4, C=256, 28x28), paired with an fp32 case
+    - {x_shape: [4, 256, 784], dtypes: [float16, float32], label: "resnet-stage3"}
+    # Full: long channel (B=4, C=128, 512x512) -- the split / tiled path
+    - {x_shape: [4, 128, 262144], dtypes: [float16], label: "large-spatial"}
+
+  roofline:
+    vars:
+      N: "x_shape[0]"
+      C: "x_shape[1]"
+      S: "x_shape[2]"
+    # x_hat (2), the grad_bias and grad_weight reductions (3), and grad_x from
+    # them (4) -- copied verbatim from the GPU entry (device-agnostic).
+    flops: "9 * N * C * S"
+    # Read grad_out + x (2*N*C*S) and weight/mean/rstd (3*C); write grad_x
+    # (N*C*S) and grad_weight/grad_bias (2*C).
+    bytes: "(3 * N * C * S + 5 * C) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py
+    kernel_map:
+      bwd_wide: BatchNormBwdWideKernel
+      bwd_split: BatchNormBwdSplitKernel
+      bwd_kernel: BatchNormBwdKernel
+    op: tileops/ops/norm/batch_norm_bwd.py
+    test: tests/ops/test_batch_norm_bwd.py
+    bench: benchmarks/ops/bench_batch_norm_bwd.py
+    bench_manifest_driven: false
