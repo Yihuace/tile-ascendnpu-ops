@@ -5,6 +5,7 @@ from tileops.ops.elementwise.gelu_and_mul import GeluAndMulFwdOp
 from tileops.ops.elementwise.gelu_tanh_and_mul import GeluTanhAndMulFwdOp
 from tileops.ops.elementwise.hardsigmoid import HardsigmoidFwdOp
 from tileops.ops.elementwise.hardswish import HardswishFwdOp
+from tileops.ops.elementwise.isfinite import IsfiniteFwdOp
 from tileops.ops.elementwise.isinf import IsinfFwdOp
 from tileops.ops.elementwise.isnan import IsnanFwdOp
 from tileops.ops.elementwise.lerp_tensor import LerpTensorFwdOp
@@ -19,6 +20,7 @@ __all__ = [
     "GeluTanhAndMulFwdOp",
     "HardsigmoidFwdOp",
     "HardswishFwdOp",
+    "IsfiniteFwdOp",
     "IsinfFwdOp",
     "IsnanFwdOp",
     "LerpTensorFwdOp",
