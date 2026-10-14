@@ -113,7 +113,7 @@
 | CONST-arange-scalar-materialize | T.arange (M,W) 物化标量 ~1ns/elem；(1,N)+首轴 vbrc 绕法（-18.2%） | verified |
 | CONST-gm-to-ub-bw-dilution | gm_to_ub_bw 是总时长稀释口径（用 mte2_ratio×aiv_time 判搬运）；跨步列块 2D 读不慢（0.98× 对照 + 误读更正） | verified |
 | CONST-reduce-dims0-skinny | dims=0 长条形 (K,4) 逐列串行（(400,4)=33µs）；transpose+dims=1 绕法 | verified |
-| CONST-vcmp-ne-nan-unordered | npuir_cmp "ne" 自比较 = IEEE 无序（NaN≠NaN→true）；vcmp(x,x,"ne") 可作 NaN 检测（GPU 后端有序相反，勿外推） | verified |
+| CONST-vcmp-ne-nan-unordered | ~~npuir_cmp "ne" 自比较 = IEEE 无序（NaN≠NaN→true）；vcmp(x,x,"ne") 可作 NaN 检测~~ **OVERTURNED 2026-10-14**：本工具链 `vcmp "ne"` 实为**有序**（NaN 自比较→false）；正确检测用 `NOT(x<=x)` via `vcmp "le"`（见 CG-2026-0024 / examples/isnan repro） | overturned |
 
 ### cases.md — 案例索引与参考实现集
 

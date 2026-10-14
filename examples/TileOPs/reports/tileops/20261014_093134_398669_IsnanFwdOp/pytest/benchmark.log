@@ -1,0 +1,83 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_isnan.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261014_093134_398669_IsnanFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-8.3.2, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-14 09:33:22  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-14 09:33:22  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-14 09:33:22  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 10 items
+
+benchmarks/ops/bench_isnan.py::test_isnan_bench[smoke-1m-float32] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+Precompiling NPU launcher header...
+2026-10-14 09:33:29  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_dirvju3y/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_dirvju3y/prof_script.py
+=== [msprof] latency_us: 5.6, roofline: {'Ratio(%)': 42.8003, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.8999359011650085, 'Perf(TOps/s)': 0.674057126045227, 'Computility(TOps/s)': 7.541060924530029}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[smoke-1m-float16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_1viub4sw/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_1viub4sw/prof_script.py
+=== [msprof] latency_us: 4.48, roofline: {'Ratio(%)': 26.751, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.0498015880584717, 'Perf(TOps/s)': 0.9595999717712402, 'Computility(TOps/s)': 8.588472366333008}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[smoke-1m-bfloat16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_vkdbrxbl/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_vkdbrxbl/prof_script.py
+=== [msprof] latency_us: 5.26, roofline: {'Ratio(%)': 22.7841, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.301739454269409, 'Perf(TOps/s)': 0.9177550673484802, 'Computility(TOps/s)': 6.613872051239014}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[16m-float16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_1vareo8n/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_1vareo8n/prof_script.py
+=== [msprof] latency_us: 30.959999, roofline: {'Ratio(%)': 61.931599999999996, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.01043701171875, 'Perf(TOps/s)': 2.1789188385009766, 'Computility(TOps/s)': 9.074568748474121}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[16m-bfloat16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_d93hjslc/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_d93hjslc/prof_script.py
+=== [msprof] latency_us: 36.939999, roofline: {'Ratio(%)': 51.9059, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.2623891830444336, 'Perf(TOps/s)': 2.0550479888916016, 'Computility(TOps/s)': 6.837067127227783}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[16m-float32] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_uyfyuhu9/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_uyfyuhu9/prof_script.py
+=== [msprof] latency_us: 51.540001, roofline: {'Ratio(%)': 74.4043, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.8802206516265869, 'Perf(TOps/s)': 1.1461141109466553, 'Computility(TOps/s)': 7.946140289306641}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[256m-float16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof__9btm6c8/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof__9btm6c8/prof_script.py
+=== [msprof] latency_us: 643.320007, roofline: {'Ratio(%)': 65.5784, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.4601683616638184, 'Perf(TOps/s)': 1.6757203340530396, 'Computility(TOps/s)': 9.107457160949707}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[256m-bfloat16] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_zmebmo90/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_zmebmo90/prof_script.py
+=== [msprof] latency_us: 658.320007, roofline: {'Ratio(%)': 64.0364, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.6446095705032349, 'Perf(TOps/s)': 1.843010663986206, 'Computility(TOps/s)': 6.8517866134643555}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[16m-half-float16] IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_7j62gju9/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_7j62gju9/prof_script.py
+=== [msprof] latency_us: 30.66, roofline: {'Ratio(%)': 62.537600000000005, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.01043701171875, 'Perf(TOps/s)': 2.2002389430999756, 'Computility(TOps/s)': 9.074568748474121}
+PASSED
+benchmarks/ops/bench_isnan.py::test_isnan_bench[16m-half-bfloat16] IsnanFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_7e1zipsh/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_7e1zipsh/prof_script.py
+=== [msprof] latency_us: 36.919998, roofline: {'Ratio(%)': 51.934000000000005, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.2623891830444336, 'Perf(TOps/s)': 2.056161403656006, 'Computility(TOps/s)': 6.837067127227783}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261014_093134_398669_IsnanFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261014_093134_398669_IsnanFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261014_093134_398669_IsnanFwdOp/pytest/benchmark.xml -
+================== 10 passed, 1 warning in 841.00s (0:14:01) ===================

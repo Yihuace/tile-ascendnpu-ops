@@ -14,7 +14,7 @@
 | `SubFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 24/24, max_abs_err 0.00e+00 | 68.43%–82.70% (15 shapes) | `examples/TileOPs/reports/tileops/20261013_170400_275674_SubFwdOp/` |
 | `GeluAndMulFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`；1 轮设计修订） | 11/11, max_abs_err 1.43e-06(fp32)/0.0312(bf16) | 4.77%–43.99% (5 shapes) | `examples/TileOPs/reports/tileops/20261013_215524_720318_GeluAndMulFwdOp/` |
 | `GeluTanhAndMulFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 11/11, max_abs_err 0(fp32)/1.56e-02(bf16) | 2.46%–49.73% (5 shapes) | `examples/TileOPs/reports/tileops/20261013_224655_433825_GeluTanhAndMulFwdOp/` |
-| `IsnanFwdOp` | elementwise | 1c | ⬜ 未开始（前置：bool 输出 + `vcmp` 在 npuir 可落地） | — | — | — |
+| `IsnanFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`；1 设计修订） | 9/9, max_abs_err 0.00e+00 | 51.91%–74.40% (5 shapes) | `examples/TileOPs/reports/tileops/20261014_093134_398669_IsnanFwdOp/` |
 | `IsinfFwdOp` | elementwise | 1c | ⬜ 未开始（同上） | — | — | — |
 | `IsfiniteFwdOp` | elementwise | 1c | ⬜ 未开始（同上） | — | — | — |
 | `FusedAddLayerNormFwdOp` | norm | 2 | ⬜ 未开始（复用 row-reduction 模板） | — | — | — |

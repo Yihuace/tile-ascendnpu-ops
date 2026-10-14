@@ -491,3 +491,48 @@ GeluTanhAndMulFwdOp:
     test: tests/ops/test_gelu_tanh_and_mul.py
     bench: benchmarks/ops/bench_gelu_tanh_and_mul.py
     bench_manifest_driven: true
+
+IsnanFwdOp:
+  # torch.isnan: y = isnan(x), bool output (a float NaN predicate).  Exact op
+  # (no tolerance).  The GPU op's manifest union also lists ints/bool, served by
+  # an ``isnan_exact`` false-everywhere fallback; this NPU port follows the
+  # float workloads (the standard isnan path only).
+  ref_api: "torch.isnan"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: bool}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector over every admitted float dtype
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (all float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "16m"}
+    # Full: GPU manifest elementwise-256M workload (half dtypes)
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "256m"}
+    # Full: GPU 16M shape over the half dtypes
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16], label: "16m-half"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: isnan is one elementwise predicate per element.
+    flops: "1 * N"
+    # Memory: read N float elements + write N bool (one byte) elements.
+    bytes: "N * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/isnan/isnan.py
+    kernel_map:
+      isnan: IsnanFwdKernel
+    op: tileops/ops/elementwise/isnan.py
+    test: tests/ops/test_isnan.py
+    bench: benchmarks/ops/bench_isnan.py
+    bench_manifest_driven: true

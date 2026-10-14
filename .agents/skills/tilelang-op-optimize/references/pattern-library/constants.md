@@ -230,11 +230,18 @@ family: [elementwise, migration]
 apis: [T.vcmp, T.vselect, T.vclamp, T.vbrc]
 dtype: [fp32, fp16, bf16]
 device: 910B2C
-status: verified
+status: overturned
 origin_task: hardsigmoid-hardsigmoid_fwd_kernel-20261012T132114Z（Stage 3 develop）
 toolchain: tilelang 0.1.2 dev-root（/home/developer/tilelang-mlir-ascend/build）+ Ascend 910B2C（实查 20 AI Core）+ CANN 8.5.2 / 2026-10-12
 repro: repro/CONST-vcmp-ne-nan-unordered.py
 ---
+
+> **⚠️ OVERTURNED（2026-10-14，task isnan-_isnan_fwd_kernel）**：本常数结论**错误**，已推翻。
+> 实测本工具链 `T.vcmp "ne"`（`tilelang 0.1.2 dev-root` + 910B2C + CANN 8.5.2）**按有序** not-equal lower（`ne ≡ lt∨gt`），自比较 `vcmp(x,x,"ne")` 对 NaN **为 false**（漏检），并非 IEEE 无序。`npuir_cmp` 无 `unordered` 模态（仅 eq/ne/lt/gt/ge/le）。
+> - **判别性复现**：`examples/isnan/isnan_fwd_kernel/repro/CONST-vcmp-ne-ordered.py`（直接读 mask：`ne(NaN)=0`、`le(NaN)=0`、`eq/lt/gt`…）。
+> - 原 repro 通过系**非判别性**（hardsigmoid 的算术链 `clamp(x+3,0,6)*(1/6)` 自身经 vclamp 传播 NaN，与 mask 无关）。
+> - **正确 NaN 检测**：`isnan(x) = NOT(x<=x)`（`vcmp(x,x,"le")`：有序 ≤，仅 NaN 为 false → 取反），三 dtype 精确（见 `CONST-vcmp-le-nan` 提案 / CG-2026-0024）。
+> - 受影响：hardsigmoid 的「`vcmp(x,x,"ne")` 单点 NaN 恢复」机制**失效**（但其输出经算术链仍正确）；后续谓词算子不得再用 `vcmp "ne"`。
 
 ### Ascend `npuir_cmp "ne"` 自比较按 IEEE **无序**实现（NaN≠NaN→true）——`vcmp(x,x,"ne")` 可作 NaN 检测
 

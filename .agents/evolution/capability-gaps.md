@@ -710,6 +710,28 @@ created_by: gelu_tanh_and_mul Stage 1 设计调研（2026-10-13）
 last_seen: gelu_tanh_and_mul-gelu_tanh_and_mul_fwd_kernel-20261013（2026-10-13）
 ```
 
+### CG-2026-0024
+
+```yaml
+gap_id: CG-2026-0024
+layer: Frontend API / BishengIR（npuir_cmp）
+capability: >-
+  T.vcmp 无 unordered 模态：`npuir_cmp` 只接受 eq/ne/lt/gt/ge/le，且 "ne" 按**有序**
+  not-equal（ne ≡ lt∨gt）lower → 自比较 `vcmp(x,x,"ne")` 对 NaN 为 **false**，无法检测 NaN。
+blocked_algo: NaN 谓词（isnan 等）不能用 `vcmp "ne"` 自比较；必须 `NOT(x<=x)`（有序 `le` + 取反）。
+evidence:
+  - 判别性复现：examples/isnan/isnan_fwd_kernel/repro/CONST-vcmp-ne-ordered.py（直接读 mask：ne(NaN)=0、le(NaN)=0）。
+  - 推翻 pattern-library 常数 CONST-vcmp-ne-nan-unordered（原 repro 非判别性——hardsigmoid 算术链自身传播 NaN）。
+  - docs/Tilelang.language/比较操作/T.vcmp.md（无 unordered 说明）。
+workaround: `isnan(x)=NOT(x<=x)`：`vcmp(x,x,tmp,"le")` → `vcast(i1→f16)` → `vsub(1.0,·)`（fp16 域取反）→ `vcast(f16→i8)` → host view(bool)。三 dtype 精确。
+occurrences: 1
+tasks: [isnan-_isnan_fwd_kernel-20261014]
+toolchain_stamp: tilelang 0.1.2 dev-root（417dae99）+ CANN 8.5.2 + Ascend910B3（20 AI Core）
+status: open
+created_by: isnan/_isnan_fwd_kernel Stage 3 `[DESIGN_ERROR]`（2026-10-14）
+last_seen: isnan-_isnan_fwd_kernel-20261014（2026-10-14）
+```
+
 ### CG-2026-0008 → 已升级 recurring，条目移入下方 Recurring 区（2026-09-15 occurrences 2）
 
 ---
