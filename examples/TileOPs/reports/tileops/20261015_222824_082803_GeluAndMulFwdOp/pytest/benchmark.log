@@ -1,0 +1,69 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_gelu_and_mul.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_222824_082803_GeluAndMulFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 22:30:26  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 22:30:26  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 22:30:26  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 8 items / 1 deselected / 7 selected
+
+benchmarks/ops/bench_gelu_and_mul.py::test_gelu_and_mul_manifest_bench[smoke-float32] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpf7iwz8zi/libkernel.so not found, kernel gets no workspace
+Precompiling NPU launcher header...
+2026-10-15 22:30:34  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+GeluAndMulFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_n674ka_d/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_n674ka_d/prof_script.py
+=== [msprof] latency_us: 3.94, roofline: {'Ratio(%)': 10.5922, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 111.81395721435547, 'Perf(TOps/s)': 0.4685969352722168, 'Computility(TOps/s)': 4.423974514007568}
+PASSED
+benchmarks/ops/bench_gelu_and_mul.py::test_gelu_and_mul_manifest_bench[smoke-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp0gt4nm0z/libkernel.so not found, kernel gets no workspace
+GeluAndMulFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_bnhrebc5/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_bnhrebc5/prof_script.py
+=== [msprof] latency_us: 4.02, roofline: {'Ratio(%)': 10.381400000000001, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 448.7272644042969, 'Perf(TOps/s)': 0.4714985191822052, 'Computility(TOps/s)': 4.541750907897949}
+PASSED
+benchmarks/ops/bench_gelu_and_mul.py::test_gelu_and_mul_manifest_bench[llama-8b-ffn-prefill-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpzf6imo7q/libkernel.so not found, kernel gets no workspace
+GeluAndMulFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_fvqq6fi1/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_fvqq6fi1/prof_script.py
+=== [msprof] latency_us: 797.219971, roofline: {'Ratio(%)': 46.0053, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 14.195319175720215, 'Perf(TOps/s)': 2.0911507606506348, 'Computility(TOps/s)': 4.54545259475708}
+PASSED
+benchmarks/ops/bench_gelu_and_mul.py::test_gelu_and_mul_manifest_bench[llama-8b-ffn-prefill-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp97bbyqjm/libkernel.so not found, kernel gets no workspace
+GeluAndMulFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_u2pd2on9/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_u2pd2on9/prof_script.py
+=== [msprof] latency_us: 800.23999, roofline: {'Ratio(%)': 46.6279, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 14.191892623901367, 'Perf(TOps/s)': 2.119948148727417, 'Computility(TOps/s)': 4.546520709991455}
+PASSED
+benchmarks/ops/bench_gelu_and_mul.py::test_gelu_and_mul_manifest_bench[llama-8b-ffn-decode-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpr9f5j1vw/libkernel.so not found, kernel gets no workspace
+GeluAndMulFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_irraq9ni/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_irraq9ni/prof_script.py
+=== [msprof] latency_us: 3.8, roofline: {'Ratio(%)': 4.8048, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 14.428730964660645, 'Perf(TOps/s)': 0.21822315454483032, 'Computility(TOps/s)': 4.541750907897949}
+PASSED
+benchmarks/ops/bench_gelu_and_mul.py::test_gelu_and_mul_manifest_bench[qwen3-8b-swiglu-b32-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp6pi3rtcd/libkernel.so not found, kernel gets no workspace
+GeluAndMulFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof__i6879ve/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof__i6879ve/prof_script.py
+=== [msprof] latency_us: 13.92, roofline: {'Ratio(%)': 35.295300000000005, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 14.195784568786621, 'Perf(TOps/s)': 1.6041563749313354, 'Computility(TOps/s)': 4.544952869415283}
+PASSED
+benchmarks/ops/bench_gelu_and_mul.py::test_gelu_and_mul_manifest_bench[qwen3-8b-swiglu-b32-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpi5lydpyl/libkernel.so not found, kernel gets no workspace
+GeluAndMulFwdKernel initialized with config: {}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof__cm_1kx6/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof__cm_1kx6/prof_script.py
+=== [msprof] latency_us: 13.86, roofline: {'Ratio(%)': 36.0638, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 14.445764541625977, 'Perf(TOps/s)': 1.639471411705017, 'Computility(TOps/s)': 4.546028137207031}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_222824_082803_GeluAndMulFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_222824_082803_GeluAndMulFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_222824_082803_GeluAndMulFwdOp/pytest/benchmark.xml -
+============ 7 passed, 1 deselected, 1 warning in 629.91s (0:10:29) ============

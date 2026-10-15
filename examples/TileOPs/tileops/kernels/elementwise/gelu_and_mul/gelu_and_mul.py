@@ -61,9 +61,9 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .gelu_and_mul_kernel import gelu_and_mul_fwd_kernel
+# from .gelu_and_mul_kernel import gelu_and_mul_fwd_kernel
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .gelu_and_mul_kernel.perf_opt.gelu_and_mul_fwd_kernel import gelu_and_mul_fwd_kernel
+from .gelu_and_mul_kernel.perf_opt.gelu_and_mul_fwd_kernel import gelu_and_mul_fwd_kernel
 
 __all__ = ["GeluAndMulFwdKernel"]
 
