@@ -49,9 +49,9 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .clamp_scalar_kernel import clamp_scalar_fwd_kernel
+# from .clamp_scalar_kernel import clamp_scalar_fwd_kernel
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .clamp_scalar_kernel.perf_opt.clamp_scalar_fwd_kernel import clamp_scalar_fwd_kernel
+from .clamp_scalar_kernel.perf_opt.clamp_scalar_fwd_kernel import clamp_scalar_fwd_kernel
 
 __all__ = ["ClampScalarFwdKernel"]
 

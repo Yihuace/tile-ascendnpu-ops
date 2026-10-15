@@ -1,0 +1,111 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_clamp_scalar.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_195138_601192_ClampScalarFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 19:53:37  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 19:53:37  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 19:53:37  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 14 items
+
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[smoke-1m-float32] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp45jenqea/libkernel.so not found, kernel gets no workspace
+Precompiling NPU launcher header...
+2026-10-15 19:53:45  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+ClampScalarFwdKernel initialized with config: {'block_size': 4096}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_cvgvf45d/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_cvgvf45d/prof_script.py
+=== [msprof] latency_us: 7.04, roofline: {'Ratio(%)': 34.045700000000004, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.2531355619430542, 'Perf(TOps/s)': 0.7466181516647339, 'Computility(TOps/s)': 3.8335275650024414}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[smoke-1m-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp_fify_kw/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_o9innti6/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_o9innti6/prof_script.py
+=== [msprof] latency_us: 5.6, roofline: {'Ratio(%)': 21.4008, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.504241704940796, 'Perf(TOps/s)': 0.9378743171691895, 'Computility(TOps/s)': 4.599928855895996}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[smoke-1m-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpsti12w0o/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_f2ndusg8/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_f2ndusg8/prof_script.py
+=== [msprof] latency_us: 5.44, roofline: {'Ratio(%)': 25.171599999999998, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.004211187362671, 'Perf(TOps/s)': 1.1582118272781372, 'Computility(TOps/s)': 4.601269721984863}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpz8kjsqws/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_b8x0c3bh/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_b8x0c3bh/prof_script.py
+=== [msprof] latency_us: 42.099998, roofline: {'Ratio(%)': 45.544000000000004, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.502096176147461, 'Perf(TOps/s)': 1.9942219257354736, 'Computility(TOps/s)': 4.604125022888184}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpklk85izh/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_lsx0zb0b/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_lsx0zb0b/prof_script.py
+=== [msprof] latency_us: 42.279999, roofline: {'Ratio(%)': 51.7408, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.002094268798828, 'Perf(TOps/s)': 2.3825438022613525, 'Computility(TOps/s)': 4.604770183563232}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-float32] AscendNPU IR compile success: 
+Workspace size: /tmp/tmplyo8i_pr/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 4096}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_850k83z6/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_850k83z6/prof_script.py
+=== [msprof] latency_us: 68.480003, roofline: {'Ratio(%)': 55.9988, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.2520270347595215, 'Perf(TOps/s)': 1.2269606590270996, 'Computility(TOps/s)': 3.835855007171631}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[256M-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp7kq3javj/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_zuca5cop/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_zuca5cop/prof_script.py
+=== [msprof] latency_us: 891.400024, roofline: {'Ratio(%)': 62.364399999999996, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.380712628364563, 'Perf(TOps/s)': 1.5068778991699219, 'Computility(TOps/s)': 4.604388236999512}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[256M-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp_4ef7mts/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_tlx8qass/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_tlx8qass/prof_script.py
+=== [msprof] latency_us: 884.619995, roofline: {'Ratio(%)': 62.8474, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.656506061553955, 'Perf(TOps/s)': 1.8218742609024048, 'Computility(TOps/s)': 4.604989051818848}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-min-only-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp9hjkzlu8/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_yk52es9v/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_yk52es9v/prof_script.py
+=== [msprof] latency_us: 39.34, roofline: {'Ratio(%)': 48.7393, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.0020980834960938, 'Perf(TOps/s)': 1.7076646089553833, 'Computility(TOps/s)': 4.603158473968506}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-min-only-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpia89v0g0/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_q85lo2jq/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_q85lo2jq/prof_script.py
+=== [msprof] latency_us: 38.700001, roofline: {'Ratio(%)': 49.5453, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.502096176147461, 'Perf(TOps/s)': 2.1694247722625732, 'Computility(TOps/s)': 4.604125022888184}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-min-only-float32] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpv4931115/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 4096}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_fw6g9a57/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_fw6g9a57/prof_script.py
+=== [msprof] latency_us: 63.959999, roofline: {'Ratio(%)': 59.9562, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.0020275115966797, 'Perf(TOps/s)': 1.051361083984375, 'Computility(TOps/s)': 3.6819257736206055}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-max-only-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpiagirt0k/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_v63n7ysz/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_v63n7ysz/prof_script.py
+=== [msprof] latency_us: 38.599998, roofline: {'Ratio(%)': 49.6737, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.0020980834960938, 'Perf(TOps/s)': 1.740402102470398, 'Computility(TOps/s)': 4.603158473968506}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-max-only-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpk6cg1gta/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_bb4h2krc/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_bb4h2krc/prof_script.py
+=== [msprof] latency_us: 37.5, roofline: {'Ratio(%)': 51.1308, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.502096176147461, 'Perf(TOps/s)': 2.2388463020324707, 'Computility(TOps/s)': 4.604125022888184}
+PASSED
+benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench[16M-max-only-float32] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp00zkaj8w/libkernel.so not found, kernel gets no workspace
+ClampScalarFwdKernel initialized with config: {'block_size': 4096}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_b_ip6rj_/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_b_ip6rj_/prof_script.py
+=== [msprof] latency_us: 63.259997999999996, roofline: {'Ratio(%)': 60.6197, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.0020275115966797, 'Perf(TOps/s)': 1.0629948377609253, 'Computility(TOps/s)': 3.6819257736206055}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_195138_601192_ClampScalarFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_195138_601192_ClampScalarFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_195138_601192_ClampScalarFwdOp/pytest/benchmark.xml -
+================== 14 passed, 1 warning in 1239.49s (0:20:39) ==================
