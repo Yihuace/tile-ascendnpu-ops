@@ -41,6 +41,15 @@ class ClampScalarWorkload(ShapedRandnWorkload):
     """
 
 
+class ClampMinWorkload(ShapedRandnWorkload):
+    """Workload definition for ClampMinFwdOp (shape + dtype, randn input).
+
+    ``torch.clamp_min`` is the scalar-min specialization of ``torch.clamp``;
+    the lower bound ``min`` is an op parameter, not a tensor, so the workload
+    only generates the single input tensor.
+    """
+
+
 class BitwiseNotWorkload:
     """Workload definition for BitwiseNotFwdOp (bool / integer input).
 
@@ -191,6 +200,40 @@ class LerpTensorManifestWorkload:
         end = torch.randn(self.end_shape, device=device, dtype=self.dtype)
         weight = torch.rand(self.weight_shape, device=device, dtype=self.dtype)
         return x, end, weight
+
+
+class LerpScalarWorkload:
+    """Workload definition for LerpFwdOp (scalar-weight torch.lerp).
+
+    The scalar overload ``torch.lerp(input, end, weight: float)`` takes two
+    tensor operands (``input`` / ``end``) that broadcast together plus a scalar
+    ``weight`` op parameter, so the workload generates the two input tensors
+    only.  Both are drawn with ``randn``; the Op layer performs the
+    ``broadcast_shapes(input, end)`` broadcast and flattens the operands before
+    kernel dispatch.
+
+    Adaptation point W1: ``device`` is resolved from
+    :func:`get_device_backend` instead of hard-coded ``"cuda"``.
+    """
+
+    def __init__(
+        self,
+        input_shape: tuple[int, ...],
+        end_shape: tuple[int, ...],
+        dtype: torch.dtype,
+    ):
+        self.input_shape = tuple(input_shape)
+        self.end_shape = tuple(end_shape)
+        self.shape = self.input_shape
+        self.out_shape = tuple(torch.broadcast_shapes(self.input_shape, self.end_shape))
+        self.n_total = prod(self.out_shape) if self.out_shape else 1
+        self.dtype = dtype
+
+    def gen_inputs(self) -> tuple[torch.Tensor, torch.Tensor]:
+        device = get_device_backend().name
+        a = torch.randn(self.input_shape, device=device, dtype=self.dtype)
+        b = torch.randn(self.end_shape, device=device, dtype=self.dtype)
+        return a, b
 
 
 class AddWorkload:

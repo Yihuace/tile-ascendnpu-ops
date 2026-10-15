@@ -183,6 +183,61 @@ LerpTensorFwdOp:
     bench: benchmarks/ops/bench_lerp_tensor.py
     bench_manifest_driven: true
 
+LerpFwdOp:
+  # Scalar-weight variant of torch.lerp: out = input + weight * (end - input),
+  # where ``weight`` is a construction-time scalar constant baked into the
+  # compiled kernel (a new Op instance is required per distinct weight).  The
+  # tensor-weight overload lives in LerpTensorFwdOp (this op is its variant_of
+  # parent).  Broadcast: output.shape == broadcast_shapes(input.shape,
+  # end.shape); the Op layer pre-broadcasts/expands to contiguous 1-D vectors
+  # before kernel dispatch.
+  ref_api: "torch.lerp"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      end: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      weight: {type: float, default: 0.5, kw_only: true}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, end.shape)"
+
+  workloads:
+    # Smoke: same-shape hidden-state prefill (GPU manifest hidden-state-prefill)
+    - {input_shape: [2048, 4096], end_shape: [2048, 4096], dtypes: [float32, float16, bfloat16], label: "hidden-state-prefill"}
+    # Full: per-channel broadcast over a CNN feature map (GPU manifest cnn-feat-broadcast)
+    - {input_shape: [16, 256, 56, 56], end_shape: [256, 1, 1], dtypes: [float32, float16, bfloat16], label: "cnn-feat-broadcast"}
+    # Full: same-shape FFN projection (GPU manifest llama-7b-ffn)
+    - {input_shape: [1024, 11008], end_shape: [1024, 11008], dtypes: [float32, float16, bfloat16], label: "llama-7b-ffn"}
+    # Full: row-broadcast (GPU manifest linear-bias)
+    - {input_shape: [1024, 4096], end_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "linear-bias"}
+
+  roofline:
+    vars:
+      # Post-broadcast output element count.
+      N: "product(broadcast(input_shape, end_shape))"
+    # FLOPs: sub + scalar mul + add = 3 per output element.
+    flops: "3 * N"
+    # Memory: 2 reads (input, end at the post-broadcast size) + 1 write, plus
+    # the broadcast read of the smaller operand -> 4 * N * elem_bytes per the
+    # scalar-lerp roofline.
+    bytes: "4 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/lerp_scalar/lerp_scalar.py
+    kernel_map:
+      lerp_scalar: LerpScalarFwdKernel
+    op: tileops/ops/elementwise/lerp_scalar.py
+    test: tests/ops/test_lerp_scalar.py
+    bench: benchmarks/ops/bench_lerp_scalar.py
+    bench_manifest_driven: true
+
 ClampScalarFwdOp:
   # PyTorch's torch.clamp(input, min=None, max=None) with Number (or None)
   # bounds.  The bounds are params here and tensor inputs in ClampTensorFwdOp;
@@ -232,6 +287,52 @@ ClampScalarFwdOp:
     op: tileops/ops/elementwise/clamp_scalar.py
     test: tests/ops/test_clamp_scalar.py
     bench: benchmarks/ops/bench_clamp_scalar.py
+    bench_manifest_driven: true
+
+ClampMinFwdOp:
+  # PyTorch's torch.clamp_min(input, min) = torch.clamp(input, min, max=None):
+  # the scalar-min-only specialization of ClampScalarFwdOp.  A thin interface
+  # that reuses the migrated clamp_scalar kernel package; no new kernel.
+  ref_api: "torch.clamp_min"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      min: {type: "Number", kw_only: true}
+    shape_rules:
+      - "present(min)"
+
+  workloads:
+    # Smoke: small flat vector (single lower bound)
+    - {input_shape: [1048576], min: -0.5, dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest 16M workload (single lower bound)
+    - {input_shape: [4096, 4096], min: -0.5, dtypes: [float16, bfloat16, float32], label: "16M-min-only"}
+    # Full: mid-size square
+    - {input_shape: [8192, 8192], min: -0.5, dtypes: [float16, bfloat16], label: "64M-min-only"}
+    # Full: GPU manifest 256M workload (single lower bound)
+    - {input_shape: [16384, 16384], min: -0.5, dtypes: [float16, bfloat16], label: "256M-min-only"}
+
+  roofline:
+    vars:
+      N: "product(input_shape)"
+    # FLOPs: clamp_min = compare-and-select; per roofline.md §1.3 convention
+    # the clamp / min-max family collapses to 1 FLOP per output element.
+    flops: "1 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py
+    kernel_map:
+      clamp_min: ClampScalarFwdKernel
+    op: tileops/ops/elementwise/clamp_min.py
+    test: tests/ops/test_clamp_min.py
+    bench: benchmarks/ops/bench_clamp_min.py
     bench_manifest_driven: true
 
 AddFwdOp:

@@ -8,6 +8,7 @@ from tileops.kernels.elementwise.hardswish import HardswishFwdKernel
 from tileops.kernels.elementwise.isfinite import IsfiniteFwdKernel
 from tileops.kernels.elementwise.isinf import IsinfFwdKernel
 from tileops.kernels.elementwise.isnan import IsnanFwdKernel
+from tileops.kernels.elementwise.lerp_scalar import LerpScalarFwdKernel
 from tileops.kernels.elementwise.lerp_tensor import LerpTensorFwdKernel
 from tileops.kernels.elementwise.mish import MishFwdKernel
 from tileops.kernels.elementwise.sub import SubFwdKernel
@@ -23,6 +24,7 @@ __all__ = [
     "IsfiniteFwdKernel",
     "IsinfFwdKernel",
     "IsnanFwdKernel",
+    "LerpScalarFwdKernel",
     "LerpTensorFwdKernel",
     "MishFwdKernel",
     "SubFwdKernel",
