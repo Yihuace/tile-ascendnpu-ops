@@ -1,0 +1,81 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_hardsigmoid.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_214729_104006_HardsigmoidFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 21:49:23  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 21:49:23  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 21:49:23  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 9 items
+
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[smoke-1m-float32] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpazlew56k/libkernel.so not found, kernel gets no workspace
+Precompiling NPU launcher header...
+2026-10-15 21:49:31  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+HardsigmoidFwdKernel initialized with config: {'block_size': 4096}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_p7xu8t1l/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_p7xu8t1l/prof_script.py
+=== [msprof] latency_us: 5.62, roofline: {'Ratio(%)': 42.648, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.2511825561523438, 'Perf(TOps/s)': 0.9338078498840332, 'Computility(TOps/s)': 3.8375039100646973}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[smoke-1m-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpdzzo110q/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_fx7mstlv/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_fx7mstlv/prof_script.py
+=== [msprof] latency_us: 5.16, roofline: {'Ratio(%)': 23.2257, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.502288579940796, 'Perf(TOps/s)': 1.0170543193817139, 'Computility(TOps/s)': 4.603508949279785}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[smoke-1m-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpc5az8wp_/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_5ouan00e/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_5ouan00e/prof_script.py
+=== [msprof] latency_us: 5.42, roofline: {'Ratio(%)': 25.2317, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.002258062362671, 'Perf(TOps/s)': 1.1617298126220703, 'Computility(TOps/s)': 4.604255676269531}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpsxdgf778/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_q8kz_eag/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_q8kz_eag/prof_script.py
+=== [msprof] latency_us: 2.48, roofline: {'Ratio(%)': 0.3628, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.6097559928894043, 'Perf(TOps/s)': 0.016567740589380264, 'Computility(TOps/s)': 4.593689441680908}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp3hp63akc/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_cnp6_68c/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_cnp6_68c/prof_script.py
+=== [msprof] latency_us: 2.64, roofline: {'Ratio(%)': 0.4061, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.1300814151763916, 'Perf(TOps/s)': 0.018666666001081467, 'Computility(TOps/s)': 4.596062183380127}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-deep-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpg27u24r1/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_9n2desgq/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_9n2desgq/prof_script.py
+=== [msprof] latency_us: 2.08, roofline: {'Ratio(%)': 1.7201000000000002, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.6583850383758545, 'Perf(TOps/s)': 0.07901538908481598, 'Computility(TOps/s)': 4.593689441680908}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-deep-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpnhrvedvg/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_nq_4h7dc/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_nq_4h7dc/prof_script.py
+=== [msprof] latency_us: 2.06, roofline: {'Ratio(%)': 2.0820000000000003, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.188405752182007, 'Perf(TOps/s)': 0.0956893265247345, 'Computility(TOps/s)': 4.596062183380127}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[fc-wide-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpq_czk4_0/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_bw5xn0rr/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_bw5xn0rr/prof_script.py
+=== [msprof] latency_us: 17.200001, roofline: {'Ratio(%)': 55.738699999999994, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.500286102294922, 'Perf(TOps/s)': 2.4388463497161865, 'Computility(TOps/s)': 4.607437610626221}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[fc-wide-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpesv4hch9/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_w_m8agcw/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_w_m8agcw/prof_script.py
+=== [msprof] latency_us: 16.9, roofline: {'Ratio(%)': 64.6443, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.0002822875976562, 'Perf(TOps/s)': 2.9785070419311523, 'Computility(TOps/s)': 4.607531547546387}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_214729_104006_HardsigmoidFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_214729_104006_HardsigmoidFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_214729_104006_HardsigmoidFwdOp/pytest/benchmark.xml -
+=================== 9 passed, 1 warning in 816.11s (0:13:36) ===================

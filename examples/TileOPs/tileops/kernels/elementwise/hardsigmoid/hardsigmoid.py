@@ -47,10 +47,10 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .hardsigmoid_kernel import hardsigmoid_fwd_kernel
+# from .hardsigmoid_kernel import hardsigmoid_fwd_kernel
 
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .hardsigmoid_kernel.perf_opt.hardsigmoid_fwd_kernel import hardsigmoid_fwd_kernel
+from .hardsigmoid_kernel.perf_opt.hardsigmoid_fwd_kernel import hardsigmoid_fwd_kernel
 
 __all__ = ["HardsigmoidFwdKernel"]
 
@@ -64,7 +64,15 @@ __all__ = ["HardsigmoidFwdKernel"]
 # optimum), a single value for all dtypes.
 # ---------------------------------------------------------------------------
 
-_DEFAULT_BLOCK_SIZE = 8192
+# fp32 needs a smaller tile: 6 [block_size] UB buffers with the fp32 path
+# keeping x in fp32 too -> at 8192 fp32 needs ~224 KB with Expert-mode
+# multi-buffering (>192 KB UB) and fails to compile (bench smoke-1m-float32
+# ub overflow); 4096 fits.  fp16/bf16 keep 8192.
+_DEFAULT_BLOCK_SIZE = {
+    "float32": 4096,
+    "float16": 8192,
+    "bfloat16": 8192,
+}
 
 
 class HardsigmoidFwdKernel(Kernel):
@@ -120,7 +128,9 @@ class HardsigmoidFwdKernel(Kernel):
         # forward()).  The imported function is the NPU implementation
         # (``target="npuir"``), a factory that returns a compiled callable
         # invoked as ``kernel(x, N)``.
-        self.kernel = hardsigmoid_fwd_kernel(self.N_total, self.dtype_str)
+        self.kernel = hardsigmoid_fwd_kernel(
+            self.N_total, self.dtype_str, block_size=_DEFAULT_BLOCK_SIZE[self.dtype_str]
+        )
         self.init_config(config)
 
     @property
@@ -132,7 +142,7 @@ class HardsigmoidFwdKernel(Kernel):
         512/1024 split is collapsed away.
         """
         # K11: collapse threads * npt into a single NPU block_size.
-        return {"block_size": _DEFAULT_BLOCK_SIZE}
+        return {"block_size": _DEFAULT_BLOCK_SIZE[self.dtype_str]}
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Run the Hardsigmoid kernel.

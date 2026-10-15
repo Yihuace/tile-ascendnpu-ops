@@ -1,0 +1,417 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_hardsigmoid.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_213240_149053_HardsigmoidFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 21:34:37  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 21:34:37  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 21:34:37  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 9 items
+
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[smoke-1m-float32] AscendNPU IR:
+
+module attributes {hivm.module_core_type = #hivm.module_core_type<AIV>, memref.memref_as_ptr} {
+  func.func @main(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xf32, #hivm.address_space<gm>>, %arg4: memref<?xf32, #hivm.address_space<gm>>, %arg5: i32, %arg6: i32, %arg7: i32, %arg8: i32, %arg9: i32, %arg10: i32, %arg11: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, mix_mode = "aiv"} {
+    %cst = arith.constant 0.166666672 : f32
+    %cst_0 = arith.constant 6.000000e+00 : f32
+    %cst_1 = arith.constant 0.000000e+00 : f32
+    %cst_2 = arith.constant 3.000000e+00 : f32
+    %c8192_i32 = arith.constant 8192 : i32
+    %c327680_i32 = arith.constant 327680 : i32
+    %c128_i32 = arith.constant 128 : i32
+    %c40_i32 = arith.constant 40 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c4_i32 = arith.constant 4 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1048576], strides: [1] : memref<?xf32, #hivm.address_space<gm>> to memref<1048576xf32, strided<[1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_3 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [1048576], strides: [1] : memref<?xf32, #hivm.address_space<gm>> to memref<1048576xf32, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    scf.for %arg12 = %c0_i32 to %c4_i32 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>
+      %alloc_6 = memref.alloc() : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>
+      %alloc_7 = memref.alloc() : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>
+      %2 = arith.muli %arg12, %c40_i32 : i32
+      %3 = arith.addi %2, %1 : i32
+      %4 = arith.cmpi slt, %3, %c128_i32 : i32
+      scf.if %4 {
+        %5 = arith.muli %arg12, %c327680_i32 : i32
+        %6 = arith.muli %1, %c8192_i32 : i32
+        %7 = arith.addi %5, %6 : i32
+        %8 = arith.index_cast %7 : i32 to index
+        %9 = arith.subi %arg5, %6 : i32
+        %10 = arith.subi %9, %5 : i32
+        %11 = arith.minsi %10, %c8192_i32 : i32
+        %12 = arith.index_cast %11 : i32 to index
+        %subview = memref.subview %reinterpret_cast[%8] [%12] [1] : memref<1048576xf32, strided<[1]>, #hivm.address_space<gm>> to memref<?xf32, strided<[1], offset: ?>, #hivm.address_space<gm>>
+        %subview_8 = memref.subview %alloc[0] [%12] [1] : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>> to memref<?xf32, strided<[1]>, #hivm.address_space<ub>>
+        memref.copy %subview, %subview_8 : memref<?xf32, strided<[1], offset: ?>, #hivm.address_space<gm>> to memref<?xf32, strided<[1]>, #hivm.address_space<ub>>
+        memref.copy %alloc, %alloc_4 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>> to memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>
+        hivm.hir.vadd ins(%alloc_4, %cst_2 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>, f32) outs(%alloc_5 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>)
+        hivm.hir.vmax ins(%alloc_5, %cst_1 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>, f32) outs(%alloc_6 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>)
+        hivm.hir.vmin ins(%alloc_6, %cst_0 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>, f32) outs(%alloc_6 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>)
+        hivm.hir.vmul ins(%alloc_6, %cst : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>, f32) outs(%alloc_5 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>)
+        memref.copy %alloc_5, %alloc_7 : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>> to memref<8192xf32, strided<[1]>, #hivm.address_space<ub>>
+        %subview_9 = memref.subview %alloc_7[0] [%12] [1] : memref<8192xf32, strided<[1]>, #hivm.address_space<ub>> to memref<?xf32, strided<[1]>, #hivm.address_space<ub>>
+        %subview_10 = memref.subview %reinterpret_cast_3[%8] [%12] [1] : memref<1048576xf32, strided<[1]>, #hivm.address_space<gm>> to memref<?xf32, strided<[1], offset: ?>, #hivm.address_space<gm>>
+        memref.copy %subview_9, %subview_10 : memref<?xf32, strided<[1]>, #hivm.address_space<ub>> to memref<?xf32, strided<[1], offset: ?>, #hivm.address_space<gm>>
+      }
+    }
+    return
+  }
+}
+err cmd: /home/developer/Ascend/cann-8.5.2/bin/bishengir-compile /tmp/tmpgku5voak/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true --disable-hivm-tensor-compile=true -o /tmp/tmpgku5voak/kernel
+err code: 1
+FAILED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[smoke-1m-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp7o4qi5m5/libkernel.so not found, kernel gets no workspace
+Precompiling NPU launcher header...
+2026-10-15 21:34:45  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_a9stdoqg/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_a9stdoqg/prof_script.py
+=== [msprof] latency_us: 4.9, roofline: {'Ratio(%)': 24.458099999999998, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.502288579940796, 'Perf(TOps/s)': 1.0710203647613525, 'Computility(TOps/s)': 4.603508949279785}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[smoke-1m-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpie4smwjg/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_154b41q0/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_154b41q0/prof_script.py
+=== [msprof] latency_us: 4.86, roofline: {'Ratio(%)': 28.138999999999996, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.002258062362671, 'Perf(TOps/s)': 1.2955918312072754, 'Computility(TOps/s)': 4.604255676269531}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpjcz88kve/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_lt3t4dme/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_lt3t4dme/prof_script.py
+=== [msprof] latency_us: 2.48, roofline: {'Ratio(%)': 0.3628, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.6097559928894043, 'Perf(TOps/s)': 0.016567740589380264, 'Computility(TOps/s)': 4.593689441680908}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpwz4a08jw/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_aq8kyart/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_aq8kyart/prof_script.py
+=== [msprof] latency_us: 2.36, roofline: {'Ratio(%)': 0.45430000000000004, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.1300814151763916, 'Perf(TOps/s)': 0.020881356671452522, 'Computility(TOps/s)': 4.596062183380127}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-deep-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpfnmoy4pm/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_y14dl6t_/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_y14dl6t_/prof_script.py
+=== [msprof] latency_us: 2.08, roofline: {'Ratio(%)': 1.7201000000000002, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.6583850383758545, 'Perf(TOps/s)': 0.07901538908481598, 'Computility(TOps/s)': 4.593689441680908}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[mbv3-se-gate-deep-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpxo8cd7el/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_s5y58yzq/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_s5y58yzq/prof_script.py
+=== [msprof] latency_us: 2.1, roofline: {'Ratio(%)': 2.0423, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.188405752182007, 'Perf(TOps/s)': 0.09386666864156723, 'Computility(TOps/s)': 4.596062183380127}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[fc-wide-float16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmpsoohysya/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_vpbsnv1c/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_vpbsnv1c/prof_script.py
+=== [msprof] latency_us: 15.92, roofline: {'Ratio(%)': 60.2202, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 2.500286102294922, 'Perf(TOps/s)': 2.634934902191162, 'Computility(TOps/s)': 4.607437610626221}
+PASSED
+benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[fc-wide-bfloat16] AscendNPU IR compile success: 
+Workspace size: /tmp/tmp3eyv190d/libkernel.so not found, kernel gets no workspace
+HardsigmoidFwdKernel initialized with config: {'block_size': 8192}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_8_2ksgz0/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_8_2ksgz0/prof_script.py
+=== [msprof] latency_us: 16.700001, roofline: {'Ratio(%)': 65.4185, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3.0002822875976562, 'Perf(TOps/s)': 3.0141775608062744, 'Computility(TOps/s)': 4.607531547546387}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_213240_149053_HardsigmoidFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_213240_149053_HardsigmoidFwdOp/benchmark.json
+
+
+=================================== FAILURES ===================================
+___________________ test_hardsigmoid_bench[smoke-1m-float32] ___________________
+
+self = <tilelang.jit.jit_npu.compiler_npu object at 0xfffec9722010>
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+>               ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1921: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/home/developer/Ascend/cann-8.5.2/bin/bishengir-compile', '/tmp/tmpgku5voak/kernel.npuir', '--enable-auto-multi-buf...', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', ...],)
+kwargs = {'text': True, 'stdout': -1, 'stderr': -1}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-8.5.2/bin/bishengir-compile', '/tmp/tmpgku5voak/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '--disable-hivm-tensor-compile=true', '-o', '/tmp/tmpgku5voak/kernel']' returned non-zero exit status 1.
+
+/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py:571: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+shape = (1048576,), dtype = torch.float32, op_params = {}
+
+    @pytest.mark.parametrize(
+        "shape, dtype, op_params",
+        workloads_to_params(_HARDSIGMOID_OP, include_extra=True),
+    )
+    def test_hardsigmoid_bench(shape: tuple, dtype: torch.dtype, op_params: dict) -> None:
+        test = HardsigmoidWorkload(shape, dtype)
+        inputs = test.gen_inputs()
+    
+>       op = HardsigmoidFwdOp(N_total=test.n_total, dtype=dtype, **op_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/ops/bench_hardsigmoid.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/ops/elementwise/hardsigmoid.py:61: in __init__
+    self.kernel = self.kernel_map[self._op_name](N_total, dtype)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py:123: in __init__
+    self.kernel = hardsigmoid_fwd_kernel(self.N_total, self.dtype_str)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py:151: in wrapper
+    kernel_result = compile(
+/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py:66: in compile
+    return cached_npu(
+/home/developer/tilelang-mlir-ascend/tilelang/cache/__init__.py:29: in cached_npu
+    return _kernel_cache_instance.cached_npu(
+/home/developer/tilelang-mlir-ascend/tilelang/cache/kernel_cache.py:186: in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1585: in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.compiler_npu object at 0xfffec9722010>
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+                ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+                print("AscendNPU IR compile success:", ret.stdout)
+            except subprocess.CalledProcessError as e:
+                # print ir
+                print("AscendNPU IR:\n")
+                print(self.mlir_content)
+                # print error info
+                print("err cmd:", " ".join(cmd_list))
+                print(f"err code: {e.returncode}")
+>               raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+E               RuntimeError: NPU IR opt failed: loc("/tmp/tmpgku5voak/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+E               
+E               loc("/tmp/tmpgku5voak/kernel.npuir":2:3): error: ub overflow, requires 1835008 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+E               loc("/tmp/tmpgku5voak/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+E               
+E               loc("/tmp/tmpgku5voak/kernel.npuir":2:3): error: ub overflow, requires 1835008 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+E               loc("/tmp/tmpgku5voak/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+E               
+E               loc("/tmp/tmpgku5voak/kernel.npuir":2:3): error: ub overflow, requires 1835008 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+E               loc("/tmp/tmpgku5voak/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+E               
+E               loc("/tmp/tmpgku5voak/kernel.npuir":2:3): error: ub overflow, requires 1835008 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+E               loc("/tmp/tmpgku5voak/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+E               
+E               loc("/tmp/tmpgku5voak/kernel.npuir":2:3): error: ub overflow, requires 1835008 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+E               [ERROR] Failed to run BiShengIR pipeline
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1932: RuntimeError
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_213240_149053_HardsigmoidFwdOp/pytest/benchmark.xml -
+=========================== short test summary info ============================
+FAILED benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench[smoke-1m-float32]
+============== 1 failed, 8 passed, 1 warning in 729.02s (0:12:09) ==============
