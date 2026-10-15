@@ -89,3 +89,79 @@ Conv1dFwdOp:
     test: tests/ops/test_conv1d.py
     bench: benchmarks/ops/bench_conv1d.py
     bench_manifest_driven: false
+
+Conv1dBiasFwdOp:
+  # Bias-required variant of Conv1dFwdOp: the exact same computation as
+  # torch.nn.functional.conv1d, but the per-output-channel ``bias`` is a
+  # mandatory input (the base op takes ``bias: Optional = None``).  The two
+  # entries mirror the GPU baseline, which registers conv1d (bias-optional)
+  # and conv1d-bias as two separate ops.  It is a thin interface over the
+  # migrated conv1d kernel package; every kernel already implements
+  # ``has_bias=True`` -- no new TileLang kernel is introduced.
+  ref_api: "torch.nn.functional.conv1d"
+  family: convolution
+  status: implemented
+  variant_of: Conv1dFwdOp
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16", shape: "[N, C_in, L_in]"}
+      weight: {dtype: "same_as(input)", shape: "[C_out, C_in_g, kW]"}
+      bias: {dtype: "same_as(input)", shape: "[C_out]", optional: false}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "[N, C_out, L_out]"}
+    params:
+      stride: {type: "int | tuple[int]", default: 1}
+      padding: {type: "int | tuple[int] | 'valid' | 'same'", default: 0}
+      dilation: {type: "int | tuple[int]", default: 1}
+      groups: {type: int, default: 1}
+    shape_rules:
+    - "groups > 0 and C_in % groups == 0 and C_out % groups == 0"
+    - "sW > 0 and dW > 0 and pW >= 0 and kW > 0"
+    - "padding != 'same' or sW == 1"
+    - "L_out > 0"
+
+  workloads:
+    # Mirror Conv1dFwdOp's shapes, but every workload carries a bias
+    # (bias: true), which is the contract of this op.
+    # Smoke: smallest robust shape (NPU manifest workload contract).
+  - {input_shape: [1, 8, 128], weight_shape: [16, 8, 3], stride: 1, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "smoke-k3-s1-bias"}
+    # Full: Whisper-large encoder conv1: mel spectrogram -> hidden (ASR entry point)
+  - {input_shape: [1, 80, 3000], weight_shape: [1280, 80, 3], stride: 1, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "whisper-conv1-bias"}
+    # Full: Wav2Vec2 feature extractor layer1: raw 1s waveform, large kernel + stride downsampling
+  - {input_shape: [1, 1, 16000], weight_shape: [512, 1, 10], stride: 5, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "wav2vec2-layer1-bias"}
+    # Full: EnCodec SEANet encoder init: raw 1s audio @24kHz, narrow channels
+  - {input_shape: [1, 1, 24000], weight_shape: [32, 1, 7], stride: 1, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "encodec-init-bias"}
+    # Full: EnCodec SEANet deep block: short sequence, wide channels, large kernel
+  - {input_shape: [1, 128, 600], weight_shape: [256, 128, 10], stride: 1, padding: 0, dilation: 1, groups: 1, bias: true, dtypes: [float16, bfloat16], label: "encodec-deep-bias"}
+
+  # Same inlined conv roofline as Conv1dFwdOp; ``bias`` is always present.
+  roofline:
+    vars:
+      N: "input_shape[0]"
+      C_in: "input_shape[1]"
+      L_in: "input_shape[2]"
+      C_out: "weight_shape[0]"
+      C_in_g: "weight_shape[1]"
+      kW: "weight_shape[2]"
+      sW: "stride"
+      dW: "dilation"
+      pW: "0 if padding in ('valid', 'same') else (padding if isinstance(padding, int) else padding[0])"
+      L_out: "(L_in + 2 * pW - dW * (kW - 1) - 1) // sW + 1"
+      taps: "kW"
+      bias_flops: "N * C_out * L_out"
+    flops: "2 * N * C_out * C_in_g * taps * L_out + bias_flops"
+    bytes: "(N * C_in * L_in + C_out * C_in_g * kW + N * C_out * L_out + C_out) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/convolution/conv1d/conv1d.py
+    kernel_map:
+      conv1d_pointwise: Conv1dPointwiseKernel
+      conv1d: Conv1dKernel
+      conv1d_unit_stride: Conv1dUnitStrideKernel
+      depthwise_conv1d: DepthwiseConv1dKernel
+      group_conv1d: GroupConv1dKernel
+    op: tileops/ops/convolution.py
+    test: tests/ops/test_conv1d_bias.py
+    bench: benchmarks/ops/bench_conv1d_bias.py
+    bench_manifest_driven: false

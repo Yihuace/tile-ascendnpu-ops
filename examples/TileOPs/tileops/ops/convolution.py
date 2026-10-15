@@ -1,7 +1,8 @@
 """Convolution operators (host-side Op layer, NPU-adapted).
 
 Provides:
-  - Conv1dFwdOp: torch.nn.functional.conv1d
+  - Conv1dFwdOp: torch.nn.functional.conv1d (bias optional)
+  - Conv1dBiasFwdOp: torch.nn.functional.conv1d with a required bias
 
 The GPU ``tileops/ops/convolution.py`` also defines ``Conv2dFwdOp`` /
 ``Conv3dFwdOp``; only the 1-D operator is migrated.
@@ -35,7 +36,7 @@ from tileops.kernels.convolution import (
 from tileops.kernels.kernel_base import Kernel
 from tileops.ops.op_base import Op
 
-__all__ = ["Conv1dFwdOp"]
+__all__ = ["Conv1dBiasFwdOp", "Conv1dFwdOp"]
 
 
 def _axes(value: int | Tuple[int, ...], dims: int) -> Tuple[int, ...]:
@@ -325,3 +326,57 @@ class Conv1dFwdOp(Op):
         reads = _window_reads(l_in, out_l, kernel_l, stride, self.pad_left, dilation)
         nbytes = total_bytes - input_bytes + input_bytes * reads // l_in
         return int(flops), int(nbytes)
+
+
+class Conv1dBiasFwdOp(Conv1dFwdOp):
+    """1D convolution with a **required** per-output-channel bias.
+
+    The exact computation of :class:`Conv1dFwdOp`
+    (``torch.nn.functional.conv1d``), but the ``bias`` argument is mandatory:
+    it is always a positional tensor of shape ``[C_out]``, the kernel always
+    dispatches its ``has_bias=True`` variant, and ``bias=None`` is rejected.
+    This mirrors the GPU baseline, which registers conv1d (bias-optional) and
+    conv1d-bias as two separate manifest entries.
+
+    All kernel dispatch / roofline machinery is inherited unchanged; this
+    subclass only tightens the ``forward`` contract and validates ``bias``.
+    """
+
+    def forward(
+        self,
+        input: torch.Tensor,
+        weight: torch.Tensor,
+        bias: torch.Tensor,
+    ) -> torch.Tensor:
+        """Apply the convolution with a mandatory bias.
+
+        Args:
+            input: Input, ``[N, C_in, L]``.
+            weight: Weight, ``[C_out, C_in / groups, k]``.
+            bias: Per-output-channel bias, ``[C_out]``.  Required; must be a
+                device tensor with the same dtype and device as ``input``.
+
+        Returns:
+            The convolution result, ``[N, C_out, L_out]``.
+        """
+        if bias is None:
+            raise ValueError("Conv1dBiasFwdOp requires a bias tensor; got None")
+        backend = get_device_backend()
+        if not backend.is_device_tensor(bias):
+            raise ValueError(f"bias must be a {backend.name} tensor, got device {bias.device}")
+        if bias.dtype != input.dtype:
+            raise ValueError(
+                f"bias.dtype {bias.dtype} must match input.dtype {input.dtype}"
+            )
+        if bias.device != input.device:
+            raise ValueError(
+                f"bias.device {bias.device} must match input.device {input.device}"
+            )
+        if weight.ndim < 1:
+            raise ValueError("weight must have shape [C_out, C_in / groups, k]")
+        c_out = weight.shape[0]
+        if bias.ndim != 1 or bias.shape[0] != c_out:
+            raise ValueError(
+                f"bias must have shape [C_out] = [{c_out}], got {tuple(bias.shape)}"
+            )
+        return super().forward(input, weight, bias)

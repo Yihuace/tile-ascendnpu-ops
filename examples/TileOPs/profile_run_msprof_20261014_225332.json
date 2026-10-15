@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-14T22:53:32.548870+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-ab4af886cd73",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "smoke-k3-s1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 8,
+        "c_in_g": 8,
+        "c_out": 16,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          8,
+          128
+        ],
+        "kernel_size": 3,
+        "l_in": 128,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          16,
+          8,
+          3
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 4.179322202020478e-05,
+        "latency_us": 164.619995,
+        "prof_mode": "msprof",
+        "tflops": 0.0006000729133784752
+      },
+      "tag": "tileops"
+    }
+  ]
+}
