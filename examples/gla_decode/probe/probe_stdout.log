@@ -1,0 +1,42 @@
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+2026-10-15 08:22:14  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 08:22:14  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 08:22:14  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+device: Ascend910B3
+
+===== case (B=2,H=3,DK=16,DV=16) float32 k_tile=None =====
+[PROBE] (B=2,H=3,DK=16,DV=16) dtype=float32 untiled max_abs_err o=1.192e-07 new_state=2.384e-07 (rtol=atol=1.0e-04)
+
+===== case (B=1,H=2,DK=32,DV=16) float32 k_tile=None =====
+[PROBE] (B=1,H=2,DK=32,DV=16) dtype=float32 untiled max_abs_err o=1.192e-07 new_state=2.384e-07 (rtol=atol=1.0e-04)
+
+===== case (B=2,H=3,DK=16,DV=16) float16 k_tile=None =====
+[PROBE] (B=2,H=3,DK=16,DV=16) dtype=float16 untiled max_abs_err o=2.226e-04 new_state=9.766e-04 (rtol=atol=2.0e-03)
+
+===== case (B=1,H=2,DK=32,DV=16) float16 k_tile=None =====
+[PROBE] (B=1,H=2,DK=32,DV=16) dtype=float16 untiled max_abs_err o=1.603e-04 new_state=9.263e-04 (rtol=atol=2.0e-03)
+
+===== case (B=2,H=4,DK=32,DV=32) bfloat16 k_tile=None =====
+[PROBE] (B=2,H=4,DK=32,DV=32) dtype=bfloat16 untiled max_abs_err o=1.930e-03 new_state=7.665e-03 (rtol=atol=2.0e-02)
+
+===== case (B=2,H=8,DK=64,DV=64) float16 k_tile=None =====
+[PROBE] (B=2,H=8,DK=64,DV=64) dtype=float16 untiled max_abs_err o=4.801e-04 new_state=9.713e-04 (rtol=atol=2.0e-03)
+
+===== case (B=1,H=4,DK=128,DV=128) float16 k_tile=16 =====
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[PROBE] (B=1,H=4,DK=128,DV=128) dtype=float16 tiled(k=16) max_abs_err o=4.508e-04 new_state=9.766e-04 (rtol=atol=2.0e-03)
+
+===== case (B=1,H=4,DK=128,DV=128) float16 k_tile=32 =====
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[PROBE] (B=1,H=4,DK=128,DV=128) dtype=float16 tiled(k=32) max_abs_err o=4.508e-04 new_state=9.766e-04 (rtol=atol=2.0e-03)
+
+===== case (B=8,H=32,DK=128,DV=128) bfloat16 k_tile=16 =====
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[PROBE] (B=8,H=32,DK=128,DV=128) dtype=bfloat16 tiled(k=16) max_abs_err o=3.889e-03 new_state=1.513e-02 (rtol=atol=2.0e-02)
+
+worst max_abs_err across cases: 1.513e-02
+PROBE PASS
