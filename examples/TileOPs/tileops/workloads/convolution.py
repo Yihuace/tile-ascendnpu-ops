@@ -308,6 +308,103 @@ class Conv1dWorkload(WorkloadBase):
         return out.to(x.dtype).contiguous()
 
 
+class Conv3dWorkload(WorkloadBase):
+    """3-D convolution workload: NCDHW input, O(kDkHkW) weight, optional bias."""
+
+    def __init__(
+        self,
+        n: int,
+        c_in: int,
+        d_in: int,
+        h_in: int,
+        w_in: int,
+        c_out: int,
+        kernel_size: int | tuple[int, int, int],
+        stride: int | tuple[int, int, int],
+        padding: int | tuple[int, int, int] | str,
+        dilation: int | tuple[int, int, int],
+        groups: int,
+        dtype: torch.dtype,
+        use_bias: bool = False,
+    ) -> None:
+        self.n = n
+        self.c_in = c_in
+        self.d_in = d_in
+        self.h_in = h_in
+        self.w_in = w_in
+        self.c_out = c_out
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding = padding
+        self.dilation = dilation
+        self.groups = groups
+        self.dtype = dtype
+        self.use_bias = use_bias
+
+    def gen_inputs(self) -> tuple[torch.Tensor, torch.Tensor, Optional[torch.Tensor]]:
+        device = get_device_backend().name
+        kd, kh, kw = (
+            (self.kernel_size,) * 3
+            if isinstance(self.kernel_size, int)
+            else tuple(self.kernel_size)
+        )
+        x = torch.randn(
+            self.n, self.c_in, self.d_in, self.h_in, self.w_in,
+            device=device, dtype=self.dtype,
+        ).contiguous()
+        weight = torch.randn(
+            self.c_out,
+            self.c_in // self.groups,
+            kd,
+            kh,
+            kw,
+            device=device,
+            dtype=self.dtype,
+        ).contiguous()
+        bias = (
+            torch.zeros(self.c_out, device=device, dtype=self.dtype).contiguous()
+            if self.use_bias
+            else None
+        )
+        return x, weight, bias
+
+    def ref_program(
+        self,
+        x: torch.Tensor,
+        weight: torch.Tensor,
+        bias: Optional[torch.Tensor],
+    ) -> torch.Tensor:
+        x_cpu = x.detach().to("cpu")
+        out = F.conv3d(
+            x_cpu.float(),
+            weight.detach().to("cpu").float(),
+            bias=bias.detach().to("cpu").float() if bias is not None else None,
+            stride=self.stride,
+            padding=self.padding,
+            dilation=self.dilation,
+            groups=self.groups,
+        )
+        return out.to(x_cpu.dtype).contiguous()
+
+
+def conv3d_tolerance(
+    dtype: torch.dtype,
+    *,
+    padding: int | tuple | str = 0,
+    kernel_shape: tuple = (),
+) -> dict:
+    """Numerical tolerance for a Conv3d comparison against the fp32 reference.
+
+    A half-precision kernel accumulating in fp32 drifts with the reduction
+    length (``C_in * kD * kH * kW``), so bf16 needs the looser pair.
+    """
+    if dtype == torch.float16:
+        return {"atol": 1.5e-2, "rtol": 1e-2}
+    if dtype == torch.bfloat16:
+        return {"atol": 3e-2, "rtol": 2e-2}
+    return {"atol": 1e-4, "rtol": 1e-4}
+
+
 def conv1d_tolerance(
     dtype: torch.dtype,
     *,

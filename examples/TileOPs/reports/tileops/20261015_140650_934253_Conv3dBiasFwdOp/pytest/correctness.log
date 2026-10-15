@@ -1,0 +1,64 @@
+command: /usr/local/bin/python -m pytest tests/ops/test_conv3d_bias.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_140650_934253_Conv3dBiasFwdOp/pytest/correctness.xml
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 14:07:00  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 14:07:00  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 14:07:00  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 17 items
+
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[smoke-k3-s1-fp16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[smoke-k3-s1-fp16] max_abs_err = 7.812e-03
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[smoke-k3-s1-bf16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[smoke-k3-s1-bf16] max_abs_err = 9.766e-04
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[r3d-stem-bias] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[r3d-stem-bias] max_abs_err = 3.125e-02
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[video-down-bias] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[video-down-bias] max_abs_err = 6.250e-02
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[unet-encoder-bias] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[unet-encoder-bias] max_abs_err = 5.000e-01
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[nondiv-fp16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[nondiv-fp16] max_abs_err = 3.125e-02
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[stride2-fp16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[stride2-fp16] max_abs_err = 1.562e-02
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[k2-pad0-fp16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[k2-pad0-fp16] max_abs_err = 1.953e-03
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[batch2-fp16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[batch2-fp16] max_abs_err = 7.812e-03
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[dilation2-fp16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+[dilation2-fp16] max_abs_err = 1.562e-02
+PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias_required PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias_rejects_bad_shape PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias_rejects_bad_dtype PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias_rejects_cpu_bias PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias_rejects_bad_input_ndim PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias_rejects_unsupported_dtype PASSED
+tests/ops/test_conv3d_bias.py::test_conv3d_bias_eval_roofline Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+PASSED
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+tests/ops/test_conv3d_bias.py::test_conv3d_bias[video-down-bias]
+  /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py:324: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+    m = j % mdec
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_140650_934253_Conv3dBiasFwdOp/pytest/correctness.xml -
+======================== 17 passed, 2 warnings in 7.78s ========================

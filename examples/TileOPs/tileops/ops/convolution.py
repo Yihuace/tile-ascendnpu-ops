@@ -30,13 +30,14 @@ from tileops.kernels.convolution import (
     Conv1dKernel,
     Conv1dPointwiseKernel,
     Conv1dUnitStrideKernel,
+    Conv3dKernel,
     DepthwiseConv1dKernel,
     GroupConv1dKernel,
 )
 from tileops.kernels.kernel_base import Kernel
 from tileops.ops.op_base import Op
 
-__all__ = ["Conv1dBiasFwdOp", "Conv1dFwdOp"]
+__all__ = ["Conv1dBiasFwdOp", "Conv1dFwdOp", "Conv3dBiasFwdOp", "Conv3dFwdOp"]
 
 
 def _axes(value: int | Tuple[int, ...], dims: int) -> Tuple[int, ...]:
@@ -374,6 +375,283 @@ class Conv1dBiasFwdOp(Conv1dFwdOp):
             )
         if weight.ndim < 1:
             raise ValueError("weight must have shape [C_out, C_in / groups, k]")
+        c_out = weight.shape[0]
+        if bias.ndim != 1 or bias.shape[0] != c_out:
+            raise ValueError(
+                f"bias must have shape [C_out] = [{c_out}], got {tuple(bias.shape)}"
+            )
+        return super().forward(input, weight, bias)
+
+
+class Conv3dFwdOp(Op):
+    """3D convolution over an NCDHW input, as ``torch.nn.functional.conv3d``.
+
+    The GPU ``Conv3dFwdOp`` selects among dense NCDHW, an NDHWC-staged perf
+    variant and a grouped kernel; the NDHWC variant computes the same result as
+    the dense path (PROBE.md Sec 5.3), so only the dense ``Conv3dKernel`` is
+    migrated here and it serves every ungrouped call.
+
+    Args:
+        stride: Stride, an int or a 3-tuple (default 1).
+        padding: Padding each side, an int or a 3-tuple, or ``'valid'`` /
+            ``'same'`` (default 0).  ``'same'`` puts the extra element of an odd
+            total after, and requires stride 1.
+        dilation: Dilation, an int or a 3-tuple (default 1).
+        groups: Number of channel groups (default 1).
+        kernel_map: Optional override for kernel dispatch.
+    """
+
+    _SUPPORTED_DTYPES = (torch.float16, torch.bfloat16)
+
+    def __init__(
+        self,
+        stride: int | Tuple[int, int, int] = 1,
+        padding: int | Tuple[int, int, int] | str = 0,
+        dilation: int | Tuple[int, int, int] = 1,
+        groups: int = 1,
+        kernel_map: Optional[Dict[str, Kernel]] = None,
+    ) -> None:
+        self.stride = stride
+        self.padding = padding
+        self.dilation = dilation
+        self.groups = groups
+        self.dispatch_kernel(kernel_map)
+        self._kernel_cache: Dict[tuple, Kernel] = {}
+        self.kernel: Optional[Kernel] = None
+        # Forward-time shape/geometry facts (bound by ``forward``).
+        self.n = None
+        self.c_in = None
+        self.c_out = None
+        self.d_in = None
+        self.h_in = None
+        self.w_in = None
+        self.kernel_d = None
+        self.kernel_h = None
+        self.kernel_w = None
+        self.stride3 = None
+        self.dilation3 = None
+        self.pad3 = None
+        self.out3 = None
+        self.has_bias = False
+        self.dtype = None
+
+    @property
+    def default_kernel_map(self) -> Dict[str, Kernel]:
+        return {"conv3d": Conv3dKernel}
+
+    def _get_kernel(
+        self,
+        n: int,
+        c_in: int,
+        d_in: int,
+        h_in: int,
+        w_in: int,
+        c_out: int,
+        kernel: Tuple[int, int, int],
+        stride: Tuple[int, int, int],
+        pad: Tuple[int, int, int],
+        dilation: Tuple[int, int, int],
+        dtype: torch.dtype,
+        has_bias: bool,
+    ) -> Kernel:
+        cache_key = (
+            n, c_in, d_in, h_in, w_in, c_out, kernel, stride, pad, dilation, dtype, has_bias
+        )
+        if cache_key in self._kernel_cache:
+            return self._kernel_cache[cache_key]
+        cls = self.kernel_map["conv3d"]
+        kernel_obj = cls(
+            n,
+            c_in,
+            d_in,
+            h_in,
+            w_in,
+            c_out,
+            kernel[0],
+            kernel[1],
+            kernel[2],
+            stride[0],
+            stride[1],
+            stride[2],
+            pad[0],
+            pad[1],
+            pad[2],
+            dtype,
+            dilation_d=dilation[0],
+            dilation_h=dilation[1],
+            dilation_w=dilation[2],
+            has_bias=has_bias,
+        )
+        self._kernel_cache[cache_key] = kernel_obj
+        return kernel_obj
+
+    def forward(
+        self,
+        input: torch.Tensor,
+        weight: torch.Tensor,
+        bias: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        """Apply the convolution.
+
+        Args:
+            input: Input, ``[N, C_in, D, H, W]``.
+            weight: Weight, ``[C_out, C_in / groups, kD, kH, kW]``.
+            bias: Per-output-channel bias, ``[C_out]``, or ``None``.
+
+        Returns:
+            The convolution result, ``[N, C_out, D_out, H_out, W_out]``.
+        """
+        backend = get_device_backend()
+        if not backend.is_device_tensor(input):
+            raise ValueError(f"input must be a {backend.name} tensor, got device {input.device}")
+        if input.dtype not in self._SUPPORTED_DTYPES:
+            names = ", ".join(str(dt) for dt in self._SUPPORTED_DTYPES)
+            raise ValueError(
+                f"{type(self).__name__} does not support dtype {input.dtype}. "
+                f"Supported: [{names}]"
+            )
+        if input.ndim != 5:
+            raise ValueError("input must have shape [N, C_in, D, H, W]")
+        n, c_in, d_in, h_in, w_in = input.shape
+        c_out, c_in_g, kernel_d, kernel_h, kernel_w = weight.shape
+        kernel = (kernel_d, kernel_h, kernel_w)
+        stride = _axes(self.stride, 3)
+        dilation = _axes(self.dilation, 3)
+        spatial = (d_in, h_in, w_in)
+        if self.padding == "same":
+            if any(s != 1 for s in stride):
+                raise ValueError("padding='same' requires stride 1 on every axis")
+            total = tuple(dl * (k - 1) for k, dl in zip(kernel, dilation, strict=True))
+            if any(t % 2 for t in total):
+                raise ValueError(
+                    "padding='same' with an odd total pad is not supported by the NPU kernel"
+                )
+            pad_before = tuple(t // 2 for t in total)
+            out = tuple(spatial)
+        else:
+            pad_before = (0, 0, 0) if self.padding == "valid" else _axes(self.padding, 3)
+            out = tuple(
+                _out_dim(size, k, s, pb, pb, dl)
+                for size, k, s, pb, dl in zip(
+                    spatial, kernel, stride, pad_before, dilation, strict=True
+                )
+            )
+
+        kernel_obj = self._get_kernel(
+            n, c_in, d_in, h_in, w_in, c_out, kernel, stride, pad_before, dilation,
+            input.dtype, bias is not None,
+        )
+
+        self.n = n
+        self.c_in = c_in
+        self.c_out = c_out
+        self.d_in, self.h_in, self.w_in = d_in, h_in, w_in
+        self.kernel_d, self.kernel_h, self.kernel_w = kernel
+        self.stride3 = stride
+        self.dilation3 = dilation
+        self.pad3 = pad_before
+        self.out3 = out
+        self.has_bias = bias is not None
+        self.dtype = input.dtype
+        self.kernel = kernel_obj
+
+        input = input.contiguous()
+        weight = weight.contiguous()
+        if bias is not None:
+            bias = bias.contiguous()
+        return kernel_obj(input, weight, bias)
+
+    def eval_roofline(self) -> tuple[int, int]:
+        """Return ``(flops, bytes)`` for the last forwarded call.
+
+        Inlined from the GPU ``tileops.perf.formulas.conv_roofline``: a
+        multiply-add per in-range tap (the per-axis tap counts multiply across
+        the three spatial axes), plus the bias add when present; every tensor
+        moves once with ``input`` read only at the positions some window reads.
+        """
+        if self.dtype is None:
+            raise RuntimeError(
+                f"{type(self).__name__}.eval_roofline() requires a prior forward() "
+                "call to bind dynamic input shape"
+            )
+        n = int(self.n)
+        c_in = int(self.c_in)
+        c_out = int(self.c_out)
+        dims = (int(self.d_in), int(self.h_in), int(self.w_in))
+        ks = (int(self.kernel_d), int(self.kernel_h), int(self.kernel_w))
+        out_dims = tuple(int(o) for o in self.out3)
+        stride = tuple(int(s) for s in self.stride3)
+        pads = tuple(int(p) for p in self.pad3)
+        dilation = tuple(int(dl) for dl in self.dilation3)
+        elem_bytes = self.dtype.itemsize
+
+        taps = 1
+        reads = 1
+        for size, k, o, s, p, dl in zip(dims, ks, out_dims, stride, pads, dilation, strict=True):
+            taps *= _window_taps(size, o, k, s, p, dl)
+            reads *= _window_reads(size, o, k, s, p, dl)
+        flops = 2 * n * c_out * c_in * taps
+        if self.has_bias:
+            flops += n * c_out * out_dims[0] * out_dims[1] * out_dims[2]
+
+        spatial = dims[0] * dims[1] * dims[2]
+        input_bytes = n * c_in * spatial * elem_bytes
+        total_bytes = (
+            n * c_in * spatial
+            + c_out * c_in * ks[0] * ks[1] * ks[2]
+            + n * c_out * out_dims[0] * out_dims[1] * out_dims[2]
+            + (c_out if self.has_bias else 0)
+        ) * elem_bytes
+        nbytes = total_bytes - input_bytes + input_bytes * reads // spatial
+        return int(flops), int(nbytes)
+
+
+class Conv3dBiasFwdOp(Conv3dFwdOp):
+    """3D convolution with a **required** per-output-channel bias.
+
+    The exact computation of :class:`Conv3dFwdOp`
+    (``torch.nn.functional.conv3d``), but the ``bias`` argument is mandatory:
+    it is always a positional tensor of shape ``[C_out]``, the kernel always
+    dispatches its ``has_bias=True`` variant, and ``bias=None`` is rejected.
+    This mirrors the GPU baseline, which registers conv3d (bias-optional) and
+    conv3d-bias as two separate manifest entries.
+
+    All kernel dispatch / roofline machinery is inherited unchanged; this
+    subclass only tightens the ``forward`` contract and validates ``bias``.
+    """
+
+    def forward(
+        self,
+        input: torch.Tensor,
+        weight: torch.Tensor,
+        bias: torch.Tensor,
+    ) -> torch.Tensor:
+        """Apply the convolution with a mandatory bias.
+
+        Args:
+            input: Input, ``[N, C_in, D, H, W]``.
+            weight: Weight, ``[C_out, C_in / groups, kD, kH, kW]``.
+            bias: Per-output-channel bias, ``[C_out]``.  Required; must be a
+                device tensor with the same dtype and device as ``input``.
+
+        Returns:
+            The convolution result, ``[N, C_out, D_out, H_out, W_out]``.
+        """
+        if bias is None:
+            raise ValueError("Conv3dBiasFwdOp requires a bias tensor; got None")
+        backend = get_device_backend()
+        if not backend.is_device_tensor(bias):
+            raise ValueError(f"bias must be a {backend.name} tensor, got device {bias.device}")
+        if bias.dtype != input.dtype:
+            raise ValueError(
+                f"bias.dtype {bias.dtype} must match input.dtype {input.dtype}"
+            )
+        if bias.device != input.device:
+            raise ValueError(
+                f"bias.device {bias.device} must match input.device {input.device}"
+            )
+        if weight.ndim != 5:
+            raise ValueError("weight must have shape [C_out, C_in / groups, kD, kH, kW]")
         c_out = weight.shape[0]
         if bias.ndim != 1 or bias.shape[0] != c_out:
             raise ValueError(

@@ -3,7 +3,7 @@
 > TileOPs GPU→NPU 迁移总览。算子清单见《TileOPs迁移任务书.md》§5/§6；此处记录**状态 / 正确性 / 性能 / 报告指针 / 版本戳**。
 > 维护约定：每完成一个算子（Stage 5 通过）更新本表一行；一批完成跑一次 `tileops-report run --all` 生成统一横评。
 
-## A. 本批待迁（任务书 §5/§6，去重后 16 个）
+## A. 本批待迁（任务书 §5/§6，**19 接口全量交付**；交付名 = 任务书原名）
 
 | 算子 | family | 批次 | 状态 | 正确性 | 性能 ratio | 报告指针 |
 |---|---|---|---|---|---|---|
@@ -20,11 +20,14 @@
 | `FusedAddLayerNormFwdOp` | norm | 2 | ✅ **已完成**（harness, `phase=DONE`） | 14/14, max_abs_err 1.56e-02(bf16) | 27.52%–45.08% (7 shapes) | `examples/TileOPs/reports/tileops/20261014_115534_389335_FusedAddLayerNormFwdOp/` |
 | `BatchNormBwdOp` | norm | 3 | ✅ **已完成**（harness, `phase=DONE`；探针 FEASIBLE；3 kernel: wide/split/general） | 12/12, avg max_abs_err 2.29e-03 | wide 20.78–41.50µs (5 valid)；benchmark `partial`（split 3-阶段命名触发 profile 过滤缺口 CG-2026-0025） | `examples/TileOPs/reports/tileops/20261014_202544_230090_BatchNormBwdOp/` |
 | `Conv1dFwdOp` | convolution | 3 | ✅ **已完成**（harness, `phase=DONE`；5 kernel: pointwise/general/unit_stride/group/direct） | 28/28, avg max_abs_err 3.91e-02 | benchmark 报告 `partial`（msprof profile 过滤缺口 CG-2026-0025；恢复延迟 unit_stride≈5.5ms/general≈0.6ms） | `examples/TileOPs/reports/tileops/20261014_174100_695290_Conv1dFwdOp/` |
-| `Conv3dFwdOp` | convolution | 3 | ⬜ 未开始（高风险） | — | — | — |
-| `GLARecurrentFwdOp` | linear_attention | 3 | ⬜ 未开始（高风险） | — | — | — |
-| `GDNFwdOp` | linear_attention | 3 | ⬜ 未开始（高风险） | — | — | — |
+| `ClampMinFwdOp` | elementwise | 1c | ✅ **已完成**（薄接口；复用已迁 ClampScalar kernel，max=None） | 14/14, max_abs_err 0.00e+00 | benchmark 8/10（fp32 UB 溢出，ClampScalar 同族，非本次引入） | `examples/TileOPs/reports/tileops/20261014_214827_195753_ClampMinFwdOp/` |
+| `LerpFwdOp`（标量权重） | elementwise | 1c | ✅ **已完成**（薄接口；新 npuir `lerp_scalar` 二元 kernel） | 36/36, fp16≤1.95e-3 / bf16≤1.56e-2 | 见 `git show 5fd2613` | `tests/ops/test_lerp_scalar.py` |
+| `Conv1dBiasFwdOp` | convolution | 3 | ✅ **已完成**（薄接口；复用已迁 Conv1d 5 kernel 的 has_bias 路径） | 28/28, max_abs_err 2.50e-01(bf16) | 见 `git show b2b4a4b` | `tests/ops/test_conv1d_bias.py` |
+| `Conv3dBiasFwdOp` | convolution | 3 | ✅ **已完成**（新增 dense NCDHW implicit-GEMM + MixCV bias kernel；stride/dilation/pad 通用，W 轴 polyphase） | 17/17, max_abs_err 1.56e-02(fp16 r3d-stem) / 5.00e-01(bf16 unet-encoder, rtol) | r3d-stem 6.40ms / video-down 85.1µs / unet-encoder 6.41ms（msprof，ratio N/A） | `examples/TileOPs/reports/tileops/20261015_140650_934253_Conv3dBiasFwdOp/` |
+| `GLADecodeOp` | linear_attention | 4 | 🟡 探针 FEASIBLE，实现未开始 | — | — | `examples/gla_decode/probe/` |
+| `GatedDeltaNetPrefillFwdOp` | linear_attention | 4 | ⬜ 探针未完成，实现未开始 | — | — | `examples/gdn_prefill/probe/` |
 
-**别名 / 不单列**（任务书 §5 标 ❌）：`ClampMinFwdOp`→`ClampScalarFwdOp`；`LerpFwdOp`→`LerpTensorFwdOp`（已迁，见 B）；`Conv1dBiasFwdOp`→`Conv1dFwdOp`；`Conv3dBiasFwdOp`→`Conv3dFwdOp`；`GLADecodeOp`→`GLARecurrentFwdOp`；`GatedDeltaNetPrefillFwdOp`→`GDNFwdOp`。
+> 基线名映射（**交付名 = 任务书原名**；基线 commit `1238a9f` 注册名为映射参考，非交付名）：`ClampMinFwdOp`→`ClampScalarFwdOp`(max=None)；`LerpFwdOp`→`LerpScalar`/`LerpTensor`；`Conv1dBiasFwdOp`/`Conv3dBiasFwdOp`→基线 conv1d/conv3d（bias 可选）；`GLADecodeOp`→`GLARecurrentFwdOp`；`GatedDeltaNetPrefillFwdOp`→`GDNFwdOp`。裸 `Conv3dFwdOp` **不在 19 内**（任务书 §5）。
 
 ## B. 此前已完成（不在本批清单）
 
