@@ -184,47 +184,58 @@ grep -nE '"status"|"correctness_passed"|"correctness_tests"|"benchmark_passed"|"
 
 ---
 
-## 5. 本次批次：算子核对与源定位
+## 5. 本次批次：算子核对与源定位（19 接口全量交付）
 
 基线：`{GPU_REPO}` = 上游 TileOPs `1238a9f`（2026-10-12）。行号为定义起始行。
-「源仓库」列 ❌ 表示该名字在上游不存在，同行给出真实对应条目。
 
-| 算子 | 源仓库 | manifest 条目 | kernel | op 层 |
-|---|---|---|---|---|
-| GeluAndMulFwdOp | ✅ | elementwise_fused_gated.yaml:31 | kernels/elementwise/activations.py:386（GeluAndMulFwdKernel） | ops/elementwise/activations.py:273 |
-| GeluTanhAndMulFwdOp | ✅ | elementwise_fused_gated.yaml:56 | kernels/elementwise/activations.py:405（GeluTanhAndMulFwdKernel） | ops/elementwise/activations.py:284 |
-| IsnanFwdOp | ✅ | elementwise_unary_math.yaml:424 | kernels/elementwise/comparison.py:186（IsnanFwdKernel） | ops/elementwise/comparison.py:86 |
-| IsinfFwdOp | ✅ | elementwise_unary_math.yaml:443 | kernels/elementwise/comparison.py:194（IsinfFwdKernel） | ops/elementwise/comparison.py:99 |
-| IsfiniteFwdOp | ✅ | elementwise_unary_math.yaml:462 | kernels/elementwise/comparison.py:202（IsfiniteFwdKernel） | ops/elementwise/comparison.py:112 |
-| ClampScalarFwdOp | ✅ | elementwise_unary_activation.yaml:323 | kernels/elementwise/clamp.py:24（ClampFwdKernel，依赖 _nan.py） | ops/elementwise/clamp.py:74 |
-| ClampMinFwdOp | ❌ | 无此条目 → 并入 ClampScalarFwdOp（min 给值 / max=None） | kernels/elementwise/clamp.py:24 | ops/elementwise/clamp.py:74 |
-| HardsigmoidFwdOp | ✅ | elementwise_unary_activation.yaml:106 | kernels/elementwise/activations.py:169（HardsigmoidFwdKernel） | ops/elementwise/activations.py:113 |
-| HardswishFwdOp | ✅ | elementwise_unary_activation.yaml:82 | kernels/elementwise/activations.py:151（HardswishFwdKernel） | ops/elementwise/activations.py:107 |
-| FusedAddLayerNormFwdOp | ✅ | norm.yaml:120 | kernels/norm/fused_add_norm.py:144（FusedAddLayerNormKernel） | ops/norm/fused_add_layer_norm.py:14 |
-| AddFwdOp | ✅ | elementwise_binary.yaml:98 | kernels/elementwise/arithmetic.py:43（AddFwdKernel） | ops/elementwise/arithmetic.py:75 |
-| LerpFwdOp | ❌ | 无此条目 → LerpScalarFwdOp（elementwise_binary.yaml:288）/ LerpTensorFwdOp（elementwise_multi_input.yaml:31，NPU 侧已迁） | kernels/elementwise/arithmetic.py:441 / :596 | ops/elementwise/arithmetic.py |
-| SubFwdOp | ✅ | elementwise_binary.yaml:127 | kernels/elementwise/arithmetic.py:53（SubFwdKernel） | ops/elementwise/arithmetic.py:86 |
-| BatchNormBwdOp | ✅ | norm.yaml:250 | kernels/norm/batch_norm.py:2146（BatchNormBwdKernel；Wide:1981 / Split:2044） | ops/norm/batch_norm.py:182 |
-| GLADecodeOp | ❌ | 无此条目 → GLARecurrentFwdOp（linear_attention.yaml:396） | kernels/linear_attention/gla/recurrent.py:157 / :380 | ops/linear_attention/gla/recurrent.py:18 |
-| Conv3dBiasFwdOp | ❌ | 无此条目 → Conv3dFwdOp（convolution.yaml:128，bias 为可选输入） | kernels/convolution/conv3d.py:607 / :766 / :956 | ops/convolution.py:263 |
-| Conv1dFwdOp | ✅ | convolution.yaml:6 | kernels/convolution/conv1d.py:745（另有 641/874/929/1074） | ops/convolution.py:75 |
-| Conv1dBiasFwdOp | ❌ | 无此条目 → 同 Conv1dFwdOp（bias 为可选输入） | kernels/convolution/conv1d.py:745 | ops/convolution.py:75 |
-| GatedDeltaNetPrefillFwdOp | ❌ | 无此条目 → GDNFwdOp（linear_attention.yaml:66） | kernels/linear_attention/gdn/prefill.py:29（decode 见 gdn/decode.py:18） | ops/linear_attention/gdn.py:19 |
+**本任务全量交付 19 个独立 Op 接口**，不以"底层 Kernel 复用"为由合并或删减。其中 13 个接口名与基线注册名一致；另 6 个在基线 manifest 中已发生**改名 / 合并 / 拆分**（改动均发生在基线之前），本任务将它们**作为独立 Op 接口交付**，交付名沿用本清单原名，并在「基线状态」列如实标注与基线实际注册条目的映射。
 
-去重后**待迁 16 个**：上表 13 个 ✅ 行 + `Conv3dFwdOp`、`GLARecurrentFwdOp`、`GDNFwdOp`；
-`ClampMinFwdOp`/`Conv1dBiasFwdOp` 是同算子别名，`LerpFwdOp` 已由 `LerpTensorFwdOp` 覆盖。
+「基线状态」：`同名` = 1238a9f manifest 即为此名；`已改名`/`已合并`/`已拆分` = 该名字在基线中已不存在，本任务按独立接口重新暴露（底层复用对应 Kernel）。
+
+| 算子（交付接口） | 基线状态 | manifest 条目（基线 1238a9f） | kernel 层 | op 层 | 交付说明 |
+|---|---|---|---|---|---|
+| `GeluAndMulFwdOp` | 同名 | elementwise_fused_gated.yaml:31 | kernels/elementwise/activations.py:386（GeluAndMulFwdKernel） | ops/elementwise/activations.py:273 | 独立交付 |
+| `GeluTanhAndMulFwdOp` | 同名 | elementwise_fused_gated.yaml:56 | kernels/elementwise/activations.py:405 | ops/elementwise/activations.py:284 | 独立交付 |
+| `IsnanFwdOp` | 同名 | elementwise_unary_math.yaml:424 | kernels/elementwise/comparison.py:186 | ops/elementwise/comparison.py:86 | 独立交付 |
+| `IsinfFwdOp` | 同名 | elementwise_unary_math.yaml:443 | kernels/elementwise/comparison.py:194 | ops/elementwise/comparison.py:99 | 独立交付 |
+| `IsfiniteFwdOp` | 同名 | elementwise_unary_math.yaml:462 | kernels/elementwise/comparison.py:202 | ops/elementwise/comparison.py:112 | 独立交付 |
+| `ClampScalarFwdOp` | 同名 | elementwise_unary_activation.yaml:323 | kernels/elementwise/clamp.py:24（ClampFwdKernel） | ops/elementwise/clamp.py:74 | 独立交付（双边截断） |
+| `ClampMinFwdOp` | 已合并（现 ClampScalarFwdOp / ClampTensorFwdOp） | elementwise_unary_activation.yaml:323（ClampScalarFwdOp） | kernels/elementwise/clamp.py:24 | ops/elementwise/clamp.py:74 | 独立交付 Op 接口（单边 min，复用 ClampFwdKernel） |
+| `HardsigmoidFwdOp` | 同名 | elementwise_unary_activation.yaml:106 | kernels/elementwise/activations.py:169 | ops/elementwise/activations.py:113 | 独立交付 |
+| `HardswishFwdOp` | 同名 | elementwise_unary_activation.yaml:82 | kernels/elementwise/activations.py:151 | ops/elementwise/activations.py:107 | 独立交付 |
+| `FusedAddLayerNormFwdOp` | 同名 | norm.yaml:120 | kernels/norm/fused_add_norm.py:144 | ops/norm/fused_add_layer_norm.py:14 | 独立交付 |
+| `AddFwdOp` | 同名 | elementwise_binary.yaml:98 | kernels/elementwise/arithmetic.py:43 | ops/elementwise/arithmetic.py:75 | 独立交付 |
+| `LerpFwdOp`（标量插值） | 已拆分（现 LerpScalarFwdOp + LerpTensorFwdOp） | elementwise_binary.yaml:288（LerpScalarFwdOp） | kernels/elementwise/arithmetic.py:441 / :596 | ops/elementwise/arithmetic.py | 独立交付 Op 接口（标量 lerp，区别于张量版 `LerpTensorFwdOp`） |
+| `SubFwdOp` | 同名 | elementwise_binary.yaml:127 | kernels/elementwise/arithmetic.py:53 | ops/elementwise/arithmetic.py:86 | 独立交付 |
+| `BatchNormBwdOp` | 同名 | norm.yaml:250 | kernels/norm/batch_norm.py:2146（Wide:1981 / Split:2044） | ops/norm/batch_norm.py:182 | 独立交付 |
+| `GLADecodeOp`（GLA decode） | 已改名（现 GLAFwdOp / GLARecurrentFwdOp） | linear_attention.yaml:528（GLAFwdOp）/ :396（GLARecurrentFwdOp） | kernels/linear_attention/gla/recurrent.py（GLADecodeKernel） | ops/linear_attention/gla/ | 独立交付 Op 接口 |
+| `Conv3dBiasFwdOp` | 已合并（现 Conv3dFwdOp，bias 可选输入） | convolution.yaml:128（Conv3dFwdOp） | kernels/convolution/conv3d.py（Conv3dKernel / Group / Ndhwc） | ops/convolution.py:263 | 独立交付 Op 接口（带 bias） |
+| `Conv1dFwdOp` | 同名 | convolution.yaml:6 | kernels/convolution/conv1d.py:745（另有 641/874/929/1074） | ops/convolution.py:75 | 独立交付 |
+| `Conv1dBiasFwdOp` | 已合并（现 Conv1dFwdOp，bias 可选输入） | convolution.yaml:6（Conv1dFwdOp） | kernels/convolution/conv1d.py:745 | ops/convolution.py:75 | 独立交付 Op 接口（带 bias） |
+| `GatedDeltaNetPrefillFwdOp` | 已改名（现 GDNFwdOp） | linear_attention.yaml:66（GDNFwdOp） | kernels/linear_attention/gdn/prefill.py:29（decode 见 gdn/decode.py:18） | ops/linear_attention/gdn.py:19 | 独立交付 Op 接口 |
+
+**交付口径声明（纠偏）：**
+
+1. 严禁以"底层 Kernel 复用"为由，在 L2 Python 层省略 `ClampMinFwdOp`、`LerpFwdOp`、`Conv1dBiasFwdOp`、`Conv3dBiasFwdOp`、`GLADecodeOp`、`GatedDeltaNetPrefillFwdOp` 等独立 Op 接口的封装与暴露。
+2. 交付名沿用本清单原名；基线实际注册名（如 `GDNFwdOp` / `GLARecurrentFwdOp` / `GLAFwdOp`）**仅作映射参考**，不作为交付接口名。
+3. `LerpFwdOp`（标量插值）与 `LerpTensorFwdOp`（张量插值）是两个独立算子；标量版必须独立开发与测试。
+4. 上表 19 行为本任务接口清单。基线中的裸卷积 `Conv3dFwdOp`（无 bias）**不在**本 19 清单内；如另行需要，单列，不与本清单混计。
 
 ---
 
 ## 6. 分批与出口标准
 
+**总计 19 个独立 Op 接口**（而非按当前注册名去重后的 16 个）。分批计划：
+
 | 批 | 算子 | 出口标准（不满足不进下一批） |
 |---|---|---|
 | 1a 链路验证 | ClampScalarFwdOp、HardswishFwdOp | 各走完 Stage 0→5；`wrapper_rewritten=true`；报告正确性 100%；全程无需人工补丁 |
-| 1b elementwise | HardsigmoidFwdOp、AddFwdOp、SubFwdOp、GeluAndMulFwdOp、GeluTanhAndMulFwdOp | 同批全绿 + 报告产出 |
-| 1c 谓词算子 | IsnanFwdOp、IsinfFwdOp、IsfiniteFwdOp | 前置探针：bool 输出 + vcmp 在 npuir 上可落地；不可行则登记 gap 并停批 |
-| 2 中风险 | FusedAddLayerNormFwdOp | 复用 row-reduction 模板（全 N 驻留 + M 行块分核 + 尾块 `T.min` 双显式 slice） |
-| 3 高风险 | BatchNormBwdOp、Conv1dFwdOp、Conv3dFwdOp、GLARecurrentFwdOp、GDNFwdOp | 每个先过可行性预研探针；不可行时登记 gap，只交付 plain 产物 |
+| 1b elementwise（常规） | HardsigmoidFwdOp、AddFwdOp、SubFwdOp、GeluAndMulFwdOp、GeluTanhAndMulFwdOp | 同批全绿 + 报告产出 |
+| 1c elementwise（补齐） | **ClampMinFwdOp、LerpFwdOp** | 必须提供独立的 Python 测试用例与 API 入口；同批全绿 + 报告产出 |
+| 1d 谓词算子 | IsnanFwdOp、IsinfFwdOp、IsfiniteFwdOp | 前置探针：bool 输出 + vcmp 在 npuir 上可落地；不可行则登记 gap 并停批 |
+| 2 中风险 | FusedAddLayerNormFwdOp、BatchNormBwdOp | 验证 Norm 系列 row-reduction 模板（全 N 驻留 + M 行块分核 + 尾块 `T.min` 双显式 slice）在 NPU 的精度与性能基线 |
+| 3 高风险（卷积） | Conv1dFwdOp、**Conv1dBiasFwdOp**、**Conv3dBiasFwdOp** | 带/不带 bias 的接口均需通过独立测试；每个先过可行性预研探针；不可行时登记 gap，只交付 plain 产物 |
+| 4 高风险（线性注意力） | **GLADecodeOp**、**GatedDeltaNetPrefillFwdOp** | 每个先过可行性预研探针；重点关注 chunk 并行与状态传递在 NPU L1 Buffer 上的映射；不可行时登记 gap，只交付 plain 产物 |
 
 ---
 
