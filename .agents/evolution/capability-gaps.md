@@ -774,6 +774,50 @@ last_seen: conv1d-Conv1dFwdOp Stage 5（2026-10-14）
 
 ---
 
+### CG-2026-0026
+
+```yaml
+gap_id: CG-2026-0026
+layer: BishengIR backend（Developer-mode T.gemm lowering）
+capability: >-
+  GDN（gated delta net）chunked prefill 的 Developer-mode 探针内核编译到
+  bishengir backend 阶段崩溃：`fatal error: error in backend: ERROR: error
+  pointer address space cast`（bisheng clang 退出码 70，`Failed to compile
+  BiShengLIR for device`）。Npuir IR 前端已降级（`AscendNPU IR compile reported
+  success` 之前的 `.npuir` 解析/opt 通过），失败发生在 hivmc/biSheng 后端指针
+  地址空间转换。探针形态：Developer 模式（无 T.Scope）下于 `T.alloc_shared`
+  buffer 上直接 `T.gemm(..., b_transpose=True / a_transpose=True)`，
+  并含 `T.arange`/`T.cumsum`/`T.vcumsum`。核心 chunked delta-rule 数学
+  （intra-chunk 逆、gate/beta 变换、跨 chunk 状态传递、输出合并）尚无可用
+  NPU 落地。
+blocked_algo: >-
+  GatedDeltaNetPrefillFwdOp（基线 GDNFwdOp / kernels/linear_attention/gdn/
+  prefill.py:29 GDNDensePrefillFwdKernel）无法以当前探针形态（Developer-mode
+  shared-buffer T.gemm + 转置）在 npuir 上编译；需改为 Expert 模式
+  （T.Scope("Cube") + T.alloc_L1/T.alloc_L0C + T.gemm）重构，或等待后端修复
+  指针地址空间转换。
+evidence:
+  - examples/gdn_prefill/probe/gdn_prefill_probe.py（316 行，Neumann-series 逆 +
+    chunked 前向；独立 sequential delta-rule golden）。
+  - 实跑 `python gdn_prefill_probe.py`：3/3 case 均 bishengir-compile 失败，
+    stderr `fatal error: error in backend: ERROR: error pointer address space
+    cast`；`hivm.hir.vcumsum` 低效告警（非本轮报错点）。
+  - 对照：Conv1d/Conv3d/GLADecode 均已迁移成功（Expert/Developer 均可用），
+    唯一崩溃点为本探针的 Cube-on-shared + 转置组合。
+workaround: >-
+  ① 将 prefill 核改为 Expert 模式（显式 Cube Scope + L1/L0C，如 conv1d/conv3d
+  先例），避免 Developer-mode shared-buffer T.gemm 转置路径；② 以 Cube-free
+  （纯 Vector）或分阶段多 kernel（prepare/forward）重排；③ 过渡期：登记本 gap，
+  GatedDeltaNetPrefillFwdOp 暂不交付（任务书 §6 批 4「不可行时只交付 plain 产物」
+  口径）。
+occurrences: 1
+tasks: [gdn_prefill-GatedDeltaNetPrefillFwdOp Stage-0 probe 20261015]
+toolchain_stamp: tilelang 0.1.2 dev-root（417dae99）+ CANN 8.5.2 + Ascend910B3
+status: open
+created_by: gdn_prefill/GatedDeltaNetPrefillFwdOp Stage-0 probe（2026-10-15）
+last_seen: gdn_prefill/GatedDeltaNetPrefillFwdOp Stage-0 probe（2026-10-15）
+```
+
 ## Recurring（达升级阈值，待推动补齐）
 
 ### CG-2026-0008
