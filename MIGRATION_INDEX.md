@@ -24,7 +24,7 @@
 | `LerpFwdOp`（标量权重） | elementwise | 1c | ✅ **已完成**（薄接口；新 npuir `lerp_scalar` 二元 kernel） | 36/36, fp16≤1.95e-3 / bf16≤1.56e-2 | 见 `git show 5fd2613` | `tests/ops/test_lerp_scalar.py` |
 | `Conv1dBiasFwdOp` | convolution | 3 | ✅ **已完成**（薄接口；复用已迁 Conv1d 5 kernel 的 has_bias 路径） | 28/28, max_abs_err 2.50e-01(bf16) | 见 `git show b2b4a4b` | `tests/ops/test_conv1d_bias.py` |
 | `Conv3dBiasFwdOp` | convolution | 3 | ✅ **已完成**（新增 dense NCDHW implicit-GEMM + MixCV bias kernel；stride/dilation/pad 通用，W 轴 polyphase） | 17/17, max_abs_err 1.56e-02(fp16 r3d-stem) / 5.00e-01(bf16 unet-encoder, rtol) | r3d-stem 6.40ms / video-down 85.1µs / unet-encoder 6.41ms（msprof，ratio N/A） | `examples/TileOPs/reports/tileops/20261015_140650_934253_Conv3dBiasFwdOp/` |
-| `GLADecodeOp` | linear_attention | 4 | 🟡 探针 FEASIBLE，实现未开始 | — | — | `examples/gla_decode/probe/` |
+| `GLADecodeOp` | linear_attention | 4 | ✅ **已完成**（Vector kernel；K-tile 流式 state，bf16 fp32 中转） | 11/11, worst max_abs_err 1.51e-02(bf16) | ratio 2.47%–14.12%（msprof，5 shapes） | `examples/TileOPs/reports/tileops/20261015_141409_254847_GLADecodeOp/` |
 | `GatedDeltaNetPrefillFwdOp` | linear_attention | 4 | ⬜ 探针未完成，实现未开始 | — | — | `examples/gdn_prefill/probe/` |
 
 > 基线名映射（**交付名 = 任务书原名**；基线 commit `1238a9f` 注册名为映射参考，非交付名）：`ClampMinFwdOp`→`ClampScalarFwdOp`(max=None)；`LerpFwdOp`→`LerpScalar`/`LerpTensor`；`Conv1dBiasFwdOp`/`Conv3dBiasFwdOp`→基线 conv1d/conv3d（bias 可选）；`GLADecodeOp`→`GLARecurrentFwdOp`；`GatedDeltaNetPrefillFwdOp`→`GDNFwdOp`。裸 `Conv3dFwdOp` **不在 19 内**（任务书 §5）。

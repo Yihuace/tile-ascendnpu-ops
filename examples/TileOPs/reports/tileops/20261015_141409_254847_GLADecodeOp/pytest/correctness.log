@@ -1,0 +1,53 @@
+command: /usr/local/bin/python -m pytest tests/ops/test_gla_decode.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_141409_254847_GLADecodeOp/pytest/correctness.xml
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 14:14:19  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 14:14:19  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 14:14:19  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 11 items
+
+tests/ops/test_gla_decode.py::test_gla_decode[smoke-d64-fp16] GLADecodeKernel initialized with config: {'k_tile': 32}
+[smoke-d64-fp16] max_abs_err o=3.805e-04 new_state=9.756e-04 (tol=2.0e-03)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[smoke-d64-bf16] GLADecodeKernel initialized with config: {'k_tile': 32}
+[smoke-d64-bf16] max_abs_err o=3.228e-03 new_state=7.779e-03 (tol=2.0e-02)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[serving-b1-h8] GLADecodeKernel initialized with config: {'k_tile': 16}
+[serving-b1-h8] max_abs_err o=3.239e-03 new_state=1.256e-02 (tol=2.0e-02)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[serving-b1-h32] GLADecodeKernel initialized with config: {'k_tile': 16}
+[serving-b1-h32] max_abs_err o=3.239e-03 new_state=1.256e-02 (tol=2.0e-02)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[serving-b8-h32] GLADecodeKernel initialized with config: {'k_tile': 16}
+[serving-b8-h32] max_abs_err o=3.809e-03 new_state=1.489e-02 (tol=2.0e-02)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[f32-untiled] GLADecodeKernel initialized with config: {'k_tile': 32}
+[f32-untiled] max_abs_err o=1.192e-07 new_state=2.384e-07 (tol=1.0e-04)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[small-k16] GLADecodeKernel initialized with config: {'k_tile': 16}
+[small-k16] max_abs_err o=2.301e-04 new_state=9.310e-04 (tol=2.0e-03)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[rect-d128x64] GLADecodeKernel initialized with config: {'k_tile': 32}
+[rect-d128x64] max_abs_err o=2.123e-04 new_state=9.747e-04 (tol=2.0e-03)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode[custom-scale] GLADecodeKernel initialized with config: {'k_tile': 32}
+[custom-scale] max_abs_err o=6.456e-03 new_state=7.779e-03 (tol=2.0e-02)
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode_default_scale GLADecodeKernel initialized with config: {'k_tile': 32}
+PASSED
+tests/ops/test_gla_decode.py::test_gla_decode_eval_roofline GLADecodeKernel initialized with config: {'k_tile': 16}
+PASSED
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_141409_254847_GLADecodeOp/pytest/correctness.xml -
+======================== 11 passed, 1 warning in 5.28s =========================

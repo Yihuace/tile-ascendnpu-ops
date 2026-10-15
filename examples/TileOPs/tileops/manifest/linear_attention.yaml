@@ -1,0 +1,61 @@
+# linear_attention.yaml -- manifest entries for the 'linear_attention' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.  Ported from the GPU
+# TileOPs manifest (src/tileops/manifest/spec/linear_attention.yaml,
+# GLARecurrentFwdOp entry; the other linear-attention ops -- DeltaNet chunk,
+# GDN, GLA prefill/chunk -- are not migrated yet).  signature / shape_rules /
+# workloads are copied from the GPU entry using the NPU contract (a leading
+# smoke case + ``dtypes``); roofline is the GPU entry's inline formula.
+
+GLADecodeOp:
+  # Single-token GLA decode.  The ``scale`` parameter is semantic and fixed at
+  # op construction (non-positive means DK ** -0.5); ``state`` is returned
+  # functionally as ``new_state``.  Baseline name: GLARecurrentFwdOp.
+  ref_api: "fla.ops.gla.fused_recurrent_gla"
+  family: linear_attention
+  status: implemented
+
+  signature:
+    inputs:
+      q: {dtype: "float16 | bfloat16 | float32", shape: "[B, H, DK]"}
+      k: {dtype: "same_as(q)", shape: "[B, H, DK]"}
+      v: {dtype: "same_as(q)", shape: "[B, H, DV]"}
+      gk: {dtype: "same_as(q)", shape: "[B, H, DK]"}
+      state: {dtype: "same_as(q)", shape: "[B, H, DK, DV]"}
+    outputs:
+      o: {dtype: "same_as(q)", shape: "[B, H, DV]"}
+      new_state: {dtype: "same_as(q)", shape: "[B, H, DK, DV]"}
+    params:
+      scale: {type: float, default: -1.0}
+    shape_rules:
+    - "B > 0 and H > 0 and DK > 0 and DV > 0"
+
+  workloads:
+    # Smoke: smallest robust shape (NPU manifest workload contract), both dtypes.
+  - {B: 2, H: 4, DK: 64, DV: 64, scale: 0.125, dtypes: [float16, bfloat16], label: "smoke-b2-h4-d64"}
+    # Full: GPU manifest serving workloads (DK = DV = 128, bf16).
+  - {B: 1, H: 8, DK: 128, DV: 128, scale: 0.08838834764831845, dtypes: [bfloat16], label: "serving-b1-h8"}
+  - {B: 1, H: 32, DK: 128, DV: 128, scale: 0.08838834764831845, dtypes: [bfloat16], label: "serving-b1-h32"}
+  - {B: 1, H: 64, DK: 128, DV: 128, scale: 0.08838834764831845, dtypes: [bfloat16], label: "serving-b1-h64"}
+  - {B: 8, H: 32, DK: 128, DV: 128, scale: 0.08838834764831845, dtypes: [bfloat16], label: "serving-b8-h32"}
+  - {B: 8, H: 64, DK: 128, DV: 128, scale: 0.08838834764831845, dtypes: [bfloat16], label: "serving-b8-h64"}
+
+  # Inlined from the GPU entry: exp(gk) (DK), the state decay (DK*DV), the
+  # k v^T update (2*DK*DV), the q^T S readout (2*DK*DV) and the scale (DV).
+  roofline:
+    vars:
+      B: "B"
+      H: "H"
+      DK: "DK"
+      DV: "DV"
+    flops: "B * H * (5 * DK * DV + DK + DV)"
+    bytes: "B * H * (3 * DK + 2 * DV + 2 * DK * DV) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/linear_attention/gla_decode/gla_decode.py
+    kernel_map:
+      gla_decode: GLADecodeKernel
+    op: tileops/ops/linear_attention/gla_decode.py
+    test: tests/ops/test_gla_decode.py
+    bench: benchmarks/ops/bench_gla_decode.py
+    bench_manifest_driven: false
