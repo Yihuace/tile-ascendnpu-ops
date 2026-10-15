@@ -66,8 +66,14 @@ __all__ = ["ClampScalarFwdKernel"]
 # this design decision.
 # ---------------------------------------------------------------------------
 
+# fp32 uses a smaller tile: the kernel allocates six [block_size] UB buffers
+# (x_ub/x32/buf1/buf2/nan_mask/y_ub) and the fp32 path keeps x_ub in fp32 too,
+# so at block_size=8192 fp32 needs ~225 KB with Expert-mode multi-buffering
+# (>192 KB UB) and fails to compile when the msprof/benchmark path builds it
+# under the ambient Expert mode; 4096 fits under both Developer and Expert.
+# fp16/bf16 keep 8192 (their x_ub/y_ub are half-width, ~181 KB worst case).
 _DEFAULT_BLOCK_SIZE = {
-    "float32": 8192,
+    "float32": 4096,
     "float16": 8192,
     "bfloat16": 8192,
 }
@@ -133,8 +139,17 @@ class ClampScalarFwdKernel(Kernel):
         # Build the factory callable (does not compile yet -- compilation is
         # deferred to forward()).  The imported function is the GPU reference
         # implementation; the NPU component rewrites it for target="npuir".
+        # Pass the dtype-appropriate block_size here too: the factory call
+        # materializes a kernel object, and leaving block_size to the factory
+        # default (8192) overflows UB on the fp32 path when built under the
+        # ambient Expert mode (multi-buffer); forward() rebuilds with the same
+        # configured value.
         self.kernel = clamp_scalar_fwd_kernel(
-            self.N_total, self.dtype_str, min_val=self.min_val, max_val=self.max_val
+            self.N_total,
+            self.dtype_str,
+            min_val=self.min_val,
+            max_val=self.max_val,
+            block_size=_DEFAULT_BLOCK_SIZE[self.dtype_str],
         )
         self.init_config(config)
 

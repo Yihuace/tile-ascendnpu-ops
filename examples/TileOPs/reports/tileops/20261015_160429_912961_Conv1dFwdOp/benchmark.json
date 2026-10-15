@@ -1,0 +1,1033 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-15T16:14:39.795569+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-602a1f4b3981",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "smoke-k3-s1",
+      "params": {
+        "bias": null,
+        "c_in": 8,
+        "c_in_g": 8,
+        "c_out": 16,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          8,
+          128
+        ],
+        "kernel_size": 3,
+        "l_in": 128,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": false,
+        "weight_shape": [
+          16,
+          8,
+          3
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_dfhkw31s",
+        "bandwidth_tbs": 4.3562341798263514e-05,
+        "latency_us": 157.199997,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 157.199997,
+          "max_latency_us": 157.199997,
+          "min_latency_us": 157.199997,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.0006155725308315369
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-f5eeceafac0d",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "whisper-conv1",
+      "params": {
+        "bias": null,
+        "c_in": 80,
+        "c_in_g": 80,
+        "c_out": 1280,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          80,
+          3000
+        ],
+        "kernel_size": 3,
+        "l_in": 3000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": false,
+        "weight_shape": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_9fvexkh6",
+        "bandwidth_tbs": 0.001596330028003597,
+        "latency_us": 5493.400391,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 5493.400391,
+          "max_latency_us": 5493.400391,
+          "min_latency_us": 5493.400391,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.3353061981460073
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-641990cb6e14",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "whisper-conv1",
+      "params": {
+        "bias": null,
+        "c_in": 80,
+        "c_in_g": 80,
+        "c_out": 1280,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          80,
+          3000
+        ],
+        "kernel_size": 3,
+        "l_in": 3000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": false,
+        "weight_shape": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_790i858o",
+        "bandwidth_tbs": 0.001570671799896917,
+        "latency_us": 5583.139648,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 5583.139648,
+          "max_latency_us": 5583.139648,
+          "min_latency_us": 5583.139648,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.3299167343342081
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-5029ac522ba4",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "wav2vec2-layer1",
+      "params": {
+        "bias": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 512,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          16000
+        ],
+        "kernel_size": 10,
+        "l_in": 16000,
+        "n": 1,
+        "padding": 0,
+        "stride": 5,
+        "use_bias": false,
+        "weight_shape": [
+          512,
+          1,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_fr7xet8z",
+        "bandwidth_tbs": 0.005526342217467999,
+        "latency_us": 600.400024,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 600.400024,
+          "max_latency_us": 600.400024,
+          "min_latency_us": 600.400024,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.05455989122345538
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-4242f72164d2",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "wav2vec2-layer1",
+      "params": {
+        "bias": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 512,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          16000
+        ],
+        "kernel_size": 10,
+        "l_in": 16000,
+        "n": 1,
+        "padding": 0,
+        "stride": 5,
+        "use_bias": false,
+        "weight_shape": [
+          512,
+          1,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_35l8e30s",
+        "bandwidth_tbs": 0.005573874207696628,
+        "latency_us": 595.280029,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 595.280029,
+          "max_latency_us": 595.280029,
+          "min_latency_us": 595.280029,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.05502916006611067
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-c9aa57bb875b",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "encodec-init",
+      "params": {
+        "bias": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 32,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          24000
+        ],
+        "kernel_size": 7,
+        "l_in": 24000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": false,
+        "weight_shape": [
+          32,
+          1,
+          7
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_olwjvsqe",
+        "bandwidth_tbs": 0.005806260389107021,
+        "latency_us": 272.820007,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 272.820007,
+          "max_latency_us": 272.820007,
+          "min_latency_us": 272.820007,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.039400746734824334
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-b61fa207198d",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "encodec-init",
+      "params": {
+        "bias": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 32,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          24000
+        ],
+        "kernel_size": 7,
+        "l_in": 24000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": false,
+        "weight_shape": [
+          32,
+          1,
+          7
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_hflmdls3",
+        "bandwidth_tbs": 0.005417084773879688,
+        "latency_us": 292.420013,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 292.420013,
+          "max_latency_us": 292.420013,
+          "min_latency_us": 292.420013,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.036759836954114354
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-59751a88257f",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "encodec-deep",
+      "params": {
+        "bias": null,
+        "c_in": 128,
+        "c_in_g": 128,
+        "c_out": 256,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          128,
+          600
+        ],
+        "kernel_size": 10,
+        "l_in": 600,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": false,
+        "weight_shape": [
+          256,
+          128,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_ps0x0c7y",
+        "bandwidth_tbs": 0.0006133783436952011,
+        "latency_us": 1812.180054,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 1812.180054,
+          "max_latency_us": 1812.180054,
+          "min_latency_us": 1812.180054,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.2137302853240653
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-bafe9f39ea61",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "encodec-deep",
+      "params": {
+        "bias": null,
+        "c_in": 128,
+        "c_in_g": 128,
+        "c_out": 256,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          128,
+          600
+        ],
+        "kernel_size": 10,
+        "l_in": 600,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": false,
+        "weight_shape": [
+          256,
+          128,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_ano5shkr",
+        "bandwidth_tbs": 0.0005963645712267835,
+        "latency_us": 1863.880005,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 1863.880005,
+          "max_latency_us": 1863.880005,
+          "min_latency_us": 1863.880005,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.20780187509978684
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-3696fca1b6c6",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "whisper-conv1-bias",
+      "params": {
+        "c_in": 80,
+        "c_in_g": 80,
+        "c_out": 1280,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          80,
+          3000
+        ],
+        "kernel_size": 3,
+        "l_in": 3000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_w2dutj_m",
+        "bandwidth_tbs": 0.001614958446862922,
+        "latency_us": 5431.619629,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 5431.619629,
+          "max_latency_us": 5431.619629,
+          "min_latency_us": 5431.619629,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.33982656483252793
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-e5284771eae5",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "whisper-conv1-bias",
+      "params": {
+        "c_in": 80,
+        "c_in_g": 80,
+        "c_out": 1280,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          80,
+          3000
+        ],
+        "kernel_size": 3,
+        "l_in": 3000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_x5xcdx35",
+        "bandwidth_tbs": 0.0015225135676197982,
+        "latency_us": 5761.419922,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 5761.419922,
+          "max_latency_us": 5761.419922,
+          "min_latency_us": 5761.419922,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.3203739121586632
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-59c2812dbf96",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "wav2vec2-layer1-bias",
+      "params": {
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 512,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          16000
+        ],
+        "kernel_size": 10,
+        "l_in": 16000,
+        "n": 1,
+        "padding": 0,
+        "stride": 5,
+        "use_bias": true,
+        "weight_shape": [
+          512,
+          1,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_gnyi3pf6",
+        "bandwidth_tbs": 0.005301642253907305,
+        "latency_us": 626.039978,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 626.039978,
+          "max_latency_us": 626.039978,
+          "min_latency_us": 626.039978,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.05494161588511206
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-ddd8f3a71b5d",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "wav2vec2-layer1-bias",
+      "params": {
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 512,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          16000
+        ],
+        "kernel_size": 10,
+        "l_in": 16000,
+        "n": 1,
+        "padding": 0,
+        "stride": 5,
+        "use_bias": true,
+        "weight_shape": [
+          512,
+          1,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_ohwrygnx",
+        "bandwidth_tbs": 0.005401555644249872,
+        "latency_us": 614.460022,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 614.460022,
+          "max_latency_us": 614.460022,
+          "min_latency_us": 614.460022,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.055977031488632804
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-ac8047fef70f",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "encodec-init-bias",
+      "params": {
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 32,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          24000
+        ],
+        "kernel_size": 7,
+        "l_in": 24000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          32,
+          1,
+          7
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_7jiwu3cx",
+        "bandwidth_tbs": 0.005826570438675695,
+        "latency_us": 271.880005,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 271.880005,
+          "max_latency_us": 271.880005,
+          "min_latency_us": 271.880005,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.042361040856976596
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-802571d618fd",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "encodec-init-bias",
+      "params": {
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 32,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          24000
+        ],
+        "kernel_size": 7,
+        "l_in": 24000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          32,
+          1,
+          7
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_b04mx6b_",
+        "bandwidth_tbs": 0.006138603473134957,
+        "latency_us": 258.059998,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 258.059998,
+          "max_latency_us": 258.059998,
+          "min_latency_us": 258.059998,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.04462962136425344
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-70d6f0e84fa3",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "encodec-deep-bias",
+      "params": {
+        "c_in": 128,
+        "c_in_g": 128,
+        "c_out": 256,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          128,
+          600
+        ],
+        "kernel_size": 10,
+        "l_in": 600,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          256,
+          128,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_t8j5v0nb",
+        "bandwidth_tbs": 0.0006211329421096836,
+        "latency_us": 1790.380005,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 1790.380005,
+          "max_latency_us": 1790.380005,
+          "min_latency_us": 1790.380005,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.2164172158524525
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-71d05debf21d",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1,
+        "taps": 1
+      },
+      "label": "encodec-deep-bias",
+      "params": {
+        "c_in": 128,
+        "c_in_g": 128,
+        "c_out": 256,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          128,
+          600
+        ],
+        "kernel_size": 10,
+        "l_in": 600,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          256,
+          128,
+          10
+        ]
+      },
+      "result": {
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_160429_912961_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_u_xf7r5y",
+        "bandwidth_tbs": 0.0006177241030866425,
+        "latency_us": 1800.26001,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 1800.26001,
+          "max_latency_us": 1800.26001,
+          "min_latency_us": 1800.26001,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.21522949676585887
+      },
+      "tag": "tileops"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+command: /usr/local/bin/python -m pytest tests/ops/test_batch_norm_bwd.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_162156_553625_BatchNormBwdOp/pytest/correctness.xml
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 16:22:06  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 16:22:06  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 16:22:06  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 12 items
+
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[32-64-spatial0-dtype0] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[32-64-spatial1-dtype1] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[32-64-spatial2-dtype2] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[8-64-spatial3-dtype3] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[4-128-spatial4-dtype4] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[8-64-spatial5-dtype5] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[4-256-spatial6-dtype6] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd[4-64-spatial7-dtype7] BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd_matches_torch BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd_eval_roofline BatchNormBwdWideKernel initialized with config: {}
+PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd_rejects_bad_dtype PASSED
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd_rejects_bad_shape PASSED
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+tests/ops/test_batch_norm_bwd.py::test_batch_norm_bwd_matches_torch
+  /mnt/workspace/npuir-migration/examples/TileOPs/tests/ops/test_batch_norm_bwd.py:97: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+    grad_out = torch.randn_like(x)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_162156_553625_BatchNormBwdOp/pytest/correctness.xml -
+======================== 12 passed, 2 warnings in 6.28s ========================

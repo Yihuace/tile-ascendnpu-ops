@@ -1,0 +1,528 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-15T15:50:22.154254+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-6b2a99275baf",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "hidden-state-prefill",
+      "params": {
+        "dtype": "float32",
+        "end_shape": [
+          2048,
+          4096
+        ],
+        "input_shape": [
+          2048,
+          4096
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 0.3750755786895752,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607062339782715,
+        "Perf(TOps/s)": 0.5314810872077942,
+        "Ratio(%)": 80.9713,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_gaag8xye",
+        "latency_us": 47.360001,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 47.360001,
+          "max_latency_us": 47.360001,
+          "min_latency_us": 47.360001,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-5c494cdd2024",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "hidden-state-prefill",
+      "params": {
+        "dtype": "bfloat16",
+        "end_shape": [
+          2048,
+          4096
+        ],
+        "input_shape": [
+          2048,
+          4096
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.5001468658447266,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607531547546387,
+        "Perf(TOps/s)": 1.9435046911239624,
+        "Ratio(%)": 74.031,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_s4sbgl0f",
+        "latency_us": 25.9,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 25.9,
+          "max_latency_us": 25.9,
+          "min_latency_us": 25.9,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-e19d60e6cbcc",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "cnn-feat-broadcast",
+      "params": {
+        "dtype": "float32",
+        "end_shape": [
+          256,
+          1,
+          1
+        ],
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 0.375049352645874,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607388019561768,
+        "Perf(TOps/s)": 0.530565619468689,
+        "Ratio(%)": 80.83749999999999,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_pezb22l8",
+        "latency_us": 72.639999,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 72.639999,
+          "max_latency_us": 72.639999,
+          "min_latency_us": 72.639999,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-d3de96ab3568",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "cnn-feat-broadcast",
+      "params": {
+        "dtype": "float16",
+        "end_shape": [
+          256,
+          1,
+          1
+        ],
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.2500965595245361,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607632160186768,
+        "Perf(TOps/s)": 1.6683220863342285,
+        "Ratio(%)": 76.2603,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_y0il96n_",
+        "latency_us": 38.5,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 38.5,
+          "max_latency_us": 38.5,
+          "min_latency_us": 38.5,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-b715aa0809ed",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "cnn-feat-broadcast",
+      "params": {
+        "dtype": "bfloat16",
+        "end_shape": [
+          256,
+          1,
+          1
+        ],
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.5000959634780884,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607693672180176,
+        "Perf(TOps/s)": 1.7816795110702515,
+        "Ratio(%)": 67.86919999999999,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_g_kxvucm",
+        "latency_us": 43.259998,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 43.259998,
+          "max_latency_us": 43.259998,
+          "min_latency_us": 43.259998,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-98d6d256a7ff",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "llama-7b-ffn",
+      "params": {
+        "dtype": "float32",
+        "end_shape": [
+          1024,
+          11008
+        ],
+        "input_shape": [
+          1024,
+          11008
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 0.3750562369823456,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607302665710449,
+        "Perf(TOps/s)": 0.529291033744812,
+        "Ratio(%)": 80.6418,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_fadd402l",
+        "latency_us": 63.900002,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 63.900002,
+          "max_latency_us": 63.900002,
+          "min_latency_us": 63.900002,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-d24862e1bb00",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "llama-7b-ffn",
+      "params": {
+        "dtype": "float16",
+        "end_shape": [
+          1024,
+          11008
+        ],
+        "input_shape": [
+          1024,
+          11008
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.2501100301742554,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607581615447998,
+        "Perf(TOps/s)": 1.6755672693252563,
+        "Ratio(%)": 76.5906,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_y0c44sy9",
+        "latency_us": 33.639999,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 33.639999,
+          "max_latency_us": 33.639999,
+          "min_latency_us": 33.639999,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-87285a45a3ad",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "llama-7b-ffn",
+      "params": {
+        "dtype": "bfloat16",
+        "end_shape": [
+          1024,
+          11008
+        ],
+        "input_shape": [
+          1024,
+          11008
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.500109314918518,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.6076507568359375,
+        "Perf(TOps/s)": 1.9999488592147827,
+        "Ratio(%)": 76.183,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_oxhp94tz",
+        "latency_us": 33.82,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 33.82,
+          "max_latency_us": 33.82,
+          "min_latency_us": 33.82,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-da4100b898ff",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "linear-bias",
+      "params": {
+        "dtype": "float32",
+        "end_shape": [
+          1,
+          4096
+        ],
+        "input_shape": [
+          1024,
+          4096
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 0.3751511573791504,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.606126308441162,
+        "Perf(TOps/s)": 0.48564937710762024,
+        "Ratio(%)": 73.9739,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_8en05xgn",
+        "latency_us": 25.92,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 25.92,
+          "max_latency_us": 25.92,
+          "min_latency_us": 25.92,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-6a4ebe678203",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "linear-bias",
+      "params": {
+        "dtype": "float16",
+        "end_shape": [
+          1,
+          4096
+        ],
+        "input_shape": [
+          1024,
+          4096
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.250295639038086,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.606875419616699,
+        "Perf(TOps/s)": 1.4793117046356201,
+        "Ratio(%)": 67.60969999999999,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_p_ibvy4m",
+        "latency_us": 14.18,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 14.18,
+          "max_latency_us": 14.18,
+          "min_latency_us": 14.18,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "LerpFwdOp",
+      "case_id": "LerpFwdOp-72e15f0bf1e8",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "linear-bias",
+      "params": {
+        "dtype": "bfloat16",
+        "end_shape": [
+          1,
+          4096
+        ],
+        "input_shape": [
+          1024,
+          4096
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.5002937316894531,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.607062339782715,
+        "Perf(TOps/s)": 1.6260300874710083,
+        "Ratio(%)": 61.9319,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_jnufelzq",
+        "latency_us": 15.48,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.48,
+          "max_latency_us": 15.48,
+          "min_latency_us": 15.48,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_lerp_scalar.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 15:34:24  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 15:34:24  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 15:34:24  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 12 items / 1 deselected / 11 selected
+
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[hidden-state-prefill-float32] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+Precompiling NPU launcher header...
+2026-10-15 15:34:31  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_v7u9hjwl/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_v7u9hjwl/prof_script.py
+=== [msprof] latency_us: 47.360001, roofline: {'Ratio(%)': 80.9713, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.3750755786895752, 'Perf(TOps/s)': 0.5314810872077942, 'Computility(TOps/s)': 4.607062339782715}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[hidden-state-prefill-bfloat16] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_c6gyit1i/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_c6gyit1i/prof_script.py
+=== [msprof] latency_us: 25.9, roofline: {'Ratio(%)': 74.031, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.5001468658447266, 'Perf(TOps/s)': 1.9435046911239624, 'Computility(TOps/s)': 4.607531547546387}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[cnn-feat-broadcast-float32] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_w3ctxcgb/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_w3ctxcgb/prof_script.py
+=== [msprof] latency_us: 72.639999, roofline: {'Ratio(%)': 80.83749999999999, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.375049352645874, 'Perf(TOps/s)': 0.530565619468689, 'Computility(TOps/s)': 4.607388019561768}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[cnn-feat-broadcast-float16] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_31hpu6vv/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_31hpu6vv/prof_script.py
+=== [msprof] latency_us: 38.5, roofline: {'Ratio(%)': 76.2603, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.2500965595245361, 'Perf(TOps/s)': 1.6683220863342285, 'Computility(TOps/s)': 4.607632160186768}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[cnn-feat-broadcast-bfloat16] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_binwo5ea/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_binwo5ea/prof_script.py
+=== [msprof] latency_us: 43.259998, roofline: {'Ratio(%)': 67.86919999999999, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.5000959634780884, 'Perf(TOps/s)': 1.7816795110702515, 'Computility(TOps/s)': 4.607693672180176}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[llama-7b-ffn-float32] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof__elq00me/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof__elq00me/prof_script.py
+=== [msprof] latency_us: 63.900002, roofline: {'Ratio(%)': 80.6418, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.3750562369823456, 'Perf(TOps/s)': 0.529291033744812, 'Computility(TOps/s)': 4.607302665710449}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[llama-7b-ffn-float16] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_yhz8kb48/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_yhz8kb48/prof_script.py
+=== [msprof] latency_us: 33.639999, roofline: {'Ratio(%)': 76.5906, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.2501100301742554, 'Perf(TOps/s)': 1.6755672693252563, 'Computility(TOps/s)': 4.607581615447998}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[llama-7b-ffn-bfloat16] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_80wwhiin/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_80wwhiin/prof_script.py
+=== [msprof] latency_us: 33.82, roofline: {'Ratio(%)': 76.183, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.500109314918518, 'Perf(TOps/s)': 1.9999488592147827, 'Computility(TOps/s)': 4.6076507568359375}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[linear-bias-float32] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_18uj6lxj/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_18uj6lxj/prof_script.py
+=== [msprof] latency_us: 25.92, roofline: {'Ratio(%)': 73.9739, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 0.3751511573791504, 'Perf(TOps/s)': 0.48564937710762024, 'Computility(TOps/s)': 4.606126308441162}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[linear-bias-float16] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_sptj74ve/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_sptj74ve/prof_script.py
+=== [msprof] latency_us: 14.18, roofline: {'Ratio(%)': 67.60969999999999, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.250295639038086, 'Perf(TOps/s)': 1.4793117046356201, 'Computility(TOps/s)': 4.606875419616699}
+PASSED
+benchmarks/ops/bench_lerp_scalar.py::test_lerp_scalar_manifest_bench[linear-bias-bfloat16] LerpScalarFwdKernel initialized with config: {'block_size': 8192}
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=main --output=/tmp/tileops_msprof_7qp0uymc/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_7qp0uymc/prof_script.py
+=== [msprof] latency_us: 15.48, roofline: {'Ratio(%)': 61.9319, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1.5002937316894531, 'Perf(TOps/s)': 1.6260300874710083, 'Computility(TOps/s)': 4.607062339782715}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/pytest/benchmark.xml -
+=========== 11 passed, 1 deselected, 1 warning in 958.27s (0:15:58) ============

@@ -173,11 +173,16 @@ def parse_bin_file(bin_path):
         for graph in j.get("multiple_rooflines", []):
             title = graph.get("title", "")
             for r in graph.get("rooflines", []):
-                bw = float(r["bw"])
-                ai = float(r["point"][0])
-                perf = float(r["point"][1])
-                computility = float(r["computility"])
-                ratio = float(r["ratio"])
+                # MIX (Cube+Vector) kernels emit some entries with non-numeric
+                # fields (e.g. ratio="NA" on the scalar MTE3 point); a raw
+                # float() there aborts the whole parse and loses the valid
+                # GM/L2 "GM Read + Write" ratio.  Tolerate non-numeric fields.
+                point = r.get("point") or (0.0, 0.0)
+                bw = safe_float(r.get("bw"))
+                ai = safe_float(point[0]) if len(point) > 0 else 0.0
+                perf = safe_float(point[1]) if len(point) > 1 else 0.0
+                computility = safe_float(r.get("computility"))
+                ratio = safe_float(r.get("ratio"))
                 bw_name = r.get("bw_name", "")
                 computility_name = r.get("computility_name", "")
                 roofline_entries.append(

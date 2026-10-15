@@ -1,0 +1,45 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_conv3d_bias.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_161834_232370_Conv3dBiasFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 16:20:01  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 16:20:01  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 16:20:01  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 5 items / 1 deselected / 4 selected
+
+benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench[smoke-k3-s1-bias-bfloat16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv3d_bias_main --output=/tmp/tileops_msprof_k94hj7yv/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_k94hj7yv/prof_script.py
+=== [msprof] latency_us: 189.460007, roofline: {'Ratio(%)': 0.059500000000000004, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 676.1079711914062, 'Perf(TOps/s)': 0.17768798768520355, 'Computility(TOps/s)': 298.7095031738281}
+PASSED
+benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench[r3d-stem-bias-float16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv3d_bias_main --output=/tmp/tileops_msprof_i8izj8w_/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_i8izj8w_/prof_script.py
+=== [msprof] latency_us: 6396.120117, roofline: {'Ratio(%)': 0.584, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 5268.0546875, 'Perf(TOps/s)': 1.7422536611557007, 'Computility(TOps/s)': 298.3248596191406}
+PASSED
+benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench[video-down-bias-float16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv3d_bias_main --output=/tmp/tileops_msprof_6j586lxt/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_6j586lxt/prof_script.py
+=== [msprof] latency_us: 85.599998, roofline: {'Ratio(%)': 6.2308, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1049.72119140625, 'Perf(TOps/s)': 18.588109970092773, 'Computility(TOps/s)': 298.3238830566406}
+PASSED
+benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench[unet-encoder-bias-bfloat16] Conv3dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv3d_bias_main --output=/tmp/tileops_msprof__zm161wv/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof__zm161wv/prof_script.py
+=== [msprof] latency_us: 6425.100098, roofline: {'Ratio(%)': 0.7596999999999999, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 4887.79345703125, 'Perf(TOps/s)': 2.2693979740142822, 'Computility(TOps/s)': 298.7111511230469}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_161834_232370_Conv3dBiasFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_161834_232370_Conv3dBiasFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench[video-down-bias-float16]
+  /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py:324: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+    m = j % mdec
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_161834_232370_Conv3dBiasFwdOp/pytest/benchmark.xml -
+============ 4 passed, 1 deselected, 2 warnings in 98.44s (0:01:38) ============

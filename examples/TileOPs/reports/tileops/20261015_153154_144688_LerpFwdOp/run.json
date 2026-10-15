@@ -1,0 +1,1229 @@
+{
+  "schema_version": 2,
+  "operator": "LerpFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261015_153154_144688_LerpFwdOp",
+    "generated_at": "2026-10-15T15:50:27.313687+08:00",
+    "project_root": "/mnt/workspace/npuir-migration/examples/TileOPs",
+    "git_commit": "c258aa41e8c40ff6a6e28d3a642ead0f7218fdf7",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_lerp_scalar.py",
+    "benchmark_file": "benchmarks/ops/bench_lerp_scalar.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_lerp_scalar.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_lerp_scalar.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-15T15:50:27.313687+08:00",
+      "evaluation_scope": "LerpFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261015_153154_144688_LerpFwdOp",
+      "git_commit": "c258aa41e8c40ff6a6e28d3a642ead0f7218fdf7",
+      "correctness_target": "tests/ops/test_lerp_scalar.py",
+      "benchmark_target": "benchmarks/ops/bench_lerp_scalar.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "8.5.2",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": null,
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 36,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 36,
+    "passed_cases": 36,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 11,
+    "benchmark_failed": 0,
+    "case_count": 11,
+    "msprof_case_count": 11,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 36,
+    "passed": 36,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_default_weight_same_shape[dtype0]",
+        "name": "test_lerp_scalar_default_weight_same_shape[dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 46.27,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "1.19e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_default_weight_same_shape[dtype1]",
+        "name": "test_lerp_scalar_default_weight_same_shape[dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 17.033,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_default_weight_same_shape[dtype2]",
+        "name": "test_lerp_scalar_default_weight_same_shape[dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 17.166,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.0-dtype0]",
+        "name": "test_lerp_scalar_custom_weights[0.0-dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.692,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.0-dtype1]",
+        "name": "test_lerp_scalar_custom_weights[0.0-dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.65,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.0-dtype2]",
+        "name": "test_lerp_scalar_custom_weights[0.0-dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.611,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.3-dtype0]",
+        "name": "test_lerp_scalar_custom_weights[0.3-dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.62,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.3-dtype1]",
+        "name": "test_lerp_scalar_custom_weights[0.3-dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.61,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.3-dtype2]",
+        "name": "test_lerp_scalar_custom_weights[0.3-dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.668,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.5-dtype0]",
+        "name": "test_lerp_scalar_custom_weights[0.5-dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.626,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.5-dtype1]",
+        "name": "test_lerp_scalar_custom_weights[0.5-dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.633,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.5-dtype2]",
+        "name": "test_lerp_scalar_custom_weights[0.5-dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.592,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "2.38e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.7-dtype0]",
+        "name": "test_lerp_scalar_custom_weights[0.7-dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.626,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.7-dtype1]",
+        "name": "test_lerp_scalar_custom_weights[0.7-dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.623,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[0.7-dtype2]",
+        "name": "test_lerp_scalar_custom_weights[0.7-dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.581,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "3.58e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[1.0-dtype0]",
+        "name": "test_lerp_scalar_custom_weights[1.0-dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.676,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[1.0-dtype1]",
+        "name": "test_lerp_scalar_custom_weights[1.0-dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.607,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[1.0-dtype2]",
+        "name": "test_lerp_scalar_custom_weights[1.0-dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.597,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "2.38e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[-1.5-dtype0]",
+        "name": "test_lerp_scalar_custom_weights[-1.5-dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.618,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[-1.5-dtype1]",
+        "name": "test_lerp_scalar_custom_weights[-1.5-dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.621,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[-1.5-dtype2]",
+        "name": "test_lerp_scalar_custom_weights[-1.5-dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.659,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[2.0-dtype0]",
+        "name": "test_lerp_scalar_custom_weights[2.0-dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.674,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[2.0-dtype1]",
+        "name": "test_lerp_scalar_custom_weights[2.0-dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.63,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_custom_weights[2.0-dtype2]",
+        "name": "test_lerp_scalar_custom_weights[2.0-dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.633,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "9.54e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_broadcast[a_shape0-b_shape0]",
+        "name": "test_lerp_scalar_broadcast[a_shape0-b_shape0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.641,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_broadcast[a_shape1-b_shape1]",
+        "name": "test_lerp_scalar_broadcast[a_shape1-b_shape1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.669,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_broadcast[a_shape2-b_shape2]",
+        "name": "test_lerp_scalar_broadcast[a_shape2-b_shape2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 0.091,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_broadcast[a_shape3-b_shape3]",
+        "name": "test_lerp_scalar_broadcast[a_shape3-b_shape3]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.679,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_broadcast[a_shape4-b_shape4]",
+        "name": "test_lerp_scalar_broadcast[a_shape4-b_shape4]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.691,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_rejects_unsupported_dtype[bad_dtype0]",
+        "name": "test_lerp_scalar_rejects_unsupported_dtype[bad_dtype0]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_rejects_unsupported_dtype[bad_dtype1]",
+        "name": "test_lerp_scalar_rejects_unsupported_dtype[bad_dtype1]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_rejects_unsupported_dtype[bad_dtype2]",
+        "name": "test_lerp_scalar_rejects_unsupported_dtype[bad_dtype2]",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_dtype_mismatch_rejected",
+        "name": "test_lerp_scalar_dtype_mismatch_rejected",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 0.005,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_kernel_rejects_non_float_dtype",
+        "name": "test_lerp_scalar_kernel_rejects_non_float_dtype",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_nan_semantics",
+        "name": "test_lerp_scalar_nan_semantics",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 1.591,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_lerp_scalar::test_lerp_scalar_eval_roofline",
+        "name": "test_lerp_scalar_eval_roofline",
+        "classname": "tests.ops.test_lerp_scalar",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[hidden-state-prefill-float32]",
+        "name": "test_lerp_scalar_manifest_bench[hidden-state-prefill-float32]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 111.934,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "47.3600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[hidden-state-prefill-bfloat16]",
+        "name": "test_lerp_scalar_manifest_bench[hidden-state-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 86.843,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "25.9000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[cnn-feat-broadcast-float32]",
+        "name": "test_lerp_scalar_manifest_bench[cnn-feat-broadcast-float32]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 83.735,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "72.6400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[cnn-feat-broadcast-float16]",
+        "name": "test_lerp_scalar_manifest_bench[cnn-feat-broadcast-float16]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 83.784,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "38.5000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[cnn-feat-broadcast-bfloat16]",
+        "name": "test_lerp_scalar_manifest_bench[cnn-feat-broadcast-bfloat16]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 83.433,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "43.2600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[llama-7b-ffn-float32]",
+        "name": "test_lerp_scalar_manifest_bench[llama-7b-ffn-float32]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 83.633,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "63.9000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[llama-7b-ffn-float16]",
+        "name": "test_lerp_scalar_manifest_bench[llama-7b-ffn-float16]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 83.705,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "33.6400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[llama-7b-ffn-bfloat16]",
+        "name": "test_lerp_scalar_manifest_bench[llama-7b-ffn-bfloat16]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 84.931,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "33.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[linear-bias-float32]",
+        "name": "test_lerp_scalar_manifest_bench[linear-bias-float32]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 83.71,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "25.9200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[linear-bias-float16]",
+        "name": "test_lerp_scalar_manifest_bench[linear-bias-float16]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 84.726,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "14.1800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_lerp_scalar::test_lerp_scalar_manifest_bench[linear-bias-bfloat16]",
+        "name": "test_lerp_scalar_manifest_bench[linear-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_lerp_scalar",
+        "time_s": 84.859,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LerpFwdOp",
+          "op_module": "tileops.ops.elementwise.lerp_scalar",
+          "tileops_latency_us": "15.4800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-6b2a99275baf",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "float32",
+          "end_shape": [
+            2048,
+            4096
+          ],
+          "input_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 47.360001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 80.9713,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.3750755786895752,
+        "performance_tops": 0.5314810872077942,
+        "computility_tops": 4.607062339782715,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_gaag8xye",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 47.360001,
+          "max_latency_us": 47.360001,
+          "min_latency_us": 47.360001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-5c494cdd2024",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "end_shape": [
+            2048,
+            4096
+          ],
+          "input_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 25.9,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.031,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.5001468658447266,
+        "performance_tops": 1.9435046911239624,
+        "computility_tops": 4.607531547546387,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_s4sbgl0f",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 25.9,
+          "max_latency_us": 25.9,
+          "min_latency_us": 25.9,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-e19d60e6cbcc",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float32",
+          "end_shape": [
+            256,
+            1,
+            1
+          ],
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 72.639999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 80.83749999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.375049352645874,
+        "performance_tops": 0.530565619468689,
+        "computility_tops": 4.607388019561768,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_pezb22l8",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 72.639999,
+          "max_latency_us": 72.639999,
+          "min_latency_us": 72.639999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-d3de96ab3568",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float16",
+          "end_shape": [
+            256,
+            1,
+            1
+          ],
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 38.5,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 76.2603,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.2500965595245361,
+        "performance_tops": 1.6683220863342285,
+        "computility_tops": 4.607632160186768,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_y0il96n_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 38.5,
+          "max_latency_us": 38.5,
+          "min_latency_us": 38.5,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-b715aa0809ed",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "bfloat16",
+          "end_shape": [
+            256,
+            1,
+            1
+          ],
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 43.259998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 67.86919999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.5000959634780884,
+        "performance_tops": 1.7816795110702515,
+        "computility_tops": 4.607693672180176,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_g_kxvucm",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 43.259998,
+          "max_latency_us": 43.259998,
+          "min_latency_us": 43.259998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-98d6d256a7ff",
+        "label": "llama-7b-ffn",
+        "params": {
+          "dtype": "float32",
+          "end_shape": [
+            1024,
+            11008
+          ],
+          "input_shape": [
+            1024,
+            11008
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 63.900002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 80.6418,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.3750562369823456,
+        "performance_tops": 0.529291033744812,
+        "computility_tops": 4.607302665710449,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_fadd402l",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 63.900002,
+          "max_latency_us": 63.900002,
+          "min_latency_us": 63.900002,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-d24862e1bb00",
+        "label": "llama-7b-ffn",
+        "params": {
+          "dtype": "float16",
+          "end_shape": [
+            1024,
+            11008
+          ],
+          "input_shape": [
+            1024,
+            11008
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 33.639999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 76.5906,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.2501100301742554,
+        "performance_tops": 1.6755672693252563,
+        "computility_tops": 4.607581615447998,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_y0c44sy9",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 33.639999,
+          "max_latency_us": 33.639999,
+          "min_latency_us": 33.639999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-87285a45a3ad",
+        "label": "llama-7b-ffn",
+        "params": {
+          "dtype": "bfloat16",
+          "end_shape": [
+            1024,
+            11008
+          ],
+          "input_shape": [
+            1024,
+            11008
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 33.82,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 76.183,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.500109314918518,
+        "performance_tops": 1.9999488592147827,
+        "computility_tops": 4.6076507568359375,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_oxhp94tz",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 33.82,
+          "max_latency_us": 33.82,
+          "min_latency_us": 33.82,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-da4100b898ff",
+        "label": "linear-bias",
+        "params": {
+          "dtype": "float32",
+          "end_shape": [
+            1,
+            4096
+          ],
+          "input_shape": [
+            1024,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 25.92,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 73.9739,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.3751511573791504,
+        "performance_tops": 0.48564937710762024,
+        "computility_tops": 4.606126308441162,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_8en05xgn",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 25.92,
+          "max_latency_us": 25.92,
+          "min_latency_us": 25.92,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-6a4ebe678203",
+        "label": "linear-bias",
+        "params": {
+          "dtype": "float16",
+          "end_shape": [
+            1,
+            4096
+          ],
+          "input_shape": [
+            1024,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 14.18,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 67.60969999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.250295639038086,
+        "performance_tops": 1.4793117046356201,
+        "computility_tops": 4.606875419616699,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_p_ibvy4m",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 14.18,
+          "max_latency_us": 14.18,
+          "min_latency_us": 14.18,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LerpFwdOp",
+        "case_id": "LerpFwdOp-72e15f0bf1e8",
+        "label": "linear-bias",
+        "params": {
+          "dtype": "bfloat16",
+          "end_shape": [
+            1,
+            4096
+          ],
+          "input_shape": [
+            1024,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 15.48,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.9319,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.5002937316894531,
+        "performance_tops": 1.6260300874710083,
+        "computility_tops": 4.607062339782715,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_153154_144688_LerpFwdOp/artifacts/msprof/main_jnufelzq",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.48,
+          "max_latency_us": 15.48,
+          "min_latency_us": 15.48,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "LerpFwdOp",
+      "family": "elementwise",
+      "cases": 36,
+      "passed": 36,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0012104105862068963,
+      "max_abs_err": 0.0156,
+      "performance_cases": 11,
+      "ratio_range": {
+        "min": 61.9319,
+        "max": 80.9713
+      }
+    }
+  ],
+  "warnings": []
+}

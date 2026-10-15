@@ -1,0 +1,65 @@
+command: /usr/local/bin/python -m pytest benchmarks/ops/bench_conv1d_bias.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_163253_978057_Conv1dBiasFwdOp/pytest/benchmark.xml -m not smoke
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 16:33:32  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 16:33:32  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 16:33:32  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 10 items / 1 deselected / 9 selected
+
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[smoke-k3-s1-bias-bfloat16] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_bias_main --output=/tmp/tileops_msprof_0gdwl3ul/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_0gdwl3ul/prof_script.py
+=== [msprof] latency_us: 169.979996, roofline: {'Ratio(%)': 0.0329, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 5426.66650390625, 'Perf(TOps/s)': 0.09807460010051727, 'Computility(TOps/s)': 298.4521484375}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[whisper-conv1-bias-float16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_unit_stride_bias_main --output=/tmp/tileops_msprof_5n2a75ck/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_5n2a75ck/prof_script.py
+=== [msprof] latency_us: 5368.999512, roofline: {'Ratio(%)': 0.1178, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3089.556640625, 'Perf(TOps/s)': 0.35045894980430603, 'Computility(TOps/s)': 297.5251159667969}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[whisper-conv1-bias-bfloat16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_unit_stride_bias_main --output=/tmp/tileops_msprof_fppsbsi2/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_fppsbsi2/prof_script.py
+=== [msprof] latency_us: 5879.120117, roofline: {'Ratio(%)': 0.10790000000000001, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 3105.079833984375, 'Perf(TOps/s)': 0.32138797640800476, 'Computility(TOps/s)': 297.7594909667969}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[wav2vec2-layer1-bias-float16] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_bias_main --output=/tmp/tileops_msprof_tk045qvx/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_tk045qvx/prof_script.py
+=== [msprof] latency_us: 584.880005, roofline: {'Ratio(%)': 0.3319, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1002.2609252929688, 'Perf(TOps/s)': 0.9885793328285217, 'Computility(TOps/s)': 297.86798095703125}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[wav2vec2-layer1-bias-bfloat16] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_bias_main --output=/tmp/tileops_msprof_db7u12u5/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_db7u12u5/prof_script.py
+=== [msprof] latency_us: 611.960022, roofline: {'Ratio(%)': 0.3189, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1007.9409790039062, 'Perf(TOps/s)': 0.9501880407333374, 'Computility(TOps/s)': 297.9299621582031}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[encodec-init-bias-float16] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_bias_main --output=/tmp/tileops_msprof_n864iyrq/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_n864iyrq/prof_script.py
+=== [msprof] latency_us: 262.179993, roofline: {'Ratio(%)': 0.4467, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1217.4154052734375, 'Perf(TOps/s)': 1.3319597244262695, 'Computility(TOps/s)': 298.2101745605469}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[encodec-init-bias-bfloat16] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_bias_main --output=/tmp/tileops_msprof_rzl78lgf/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_rzl78lgf/prof_script.py
+=== [msprof] latency_us: 265.619995, roofline: {'Ratio(%)': 0.4442, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1205.559326171875, 'Perf(TOps/s)': 1.326305866241455, 'Computility(TOps/s)': 298.60284423828125}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[encodec-deep-bias-float16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_unit_stride_bias_main --output=/tmp/tileops_msprof_di2g4h5a/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_di2g4h5a/prof_script.py
+=== [msprof] latency_us: 1837.0, roofline: {'Ratio(%)': 0.0727, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1429.9677734375, 'Perf(TOps/s)': 0.21611584722995758, 'Computility(TOps/s)': 297.2588806152344}
+PASSED
+benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench[encodec-deep-bias-bfloat16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+msprof command:  /home/developer/Ascend/cann-8.5.2/bin/msprof op --kernel-name=_conv1d_unit_stride_bias_main --output=/tmp/tileops_msprof_jiehvves/msprof_output --launch-count=10 --warm-up=5 --aic-metrics=Roofline --dump=off /usr/local/bin/python /tmp/tileops_msprof_jiehvves/prof_script.py
+=== [msprof] latency_us: 1824.920044, roofline: {'Ratio(%)': 0.0732, 'Bandwidth(TB/s)': 1.75, 'AI(Ops/Byte)': 1433.7921142578125, 'Perf(TOps/s)': 0.2177259624004364, 'Computility(TOps/s)': 297.2999267578125}
+PASSED
+Benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_163253_978057_Conv1dBiasFwdOp/benchmark.md
+Structured benchmark report saved to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_163253_978057_Conv1dBiasFwdOp/benchmark.json
+
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_163253_978057_Conv1dBiasFwdOp/pytest/benchmark.xml -
+============ 9 passed, 1 deselected, 1 warning in 215.49s (0:03:35) ============
