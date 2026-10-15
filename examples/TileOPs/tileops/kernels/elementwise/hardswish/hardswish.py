@@ -73,7 +73,7 @@ __all__ = ["HardswishFwdKernel"]
 # ---------------------------------------------------------------------------
 
 _DEFAULT_BLOCK_SIZE = {
-    "float32": 8192,
+    "float32": 4096,  # fp32 multi-buffer UB > 192KB at 8192
     "float16": 8192,
     "bfloat16": 8192,
 }
@@ -132,7 +132,9 @@ class HardswishFwdKernel(Kernel):
         # forward()).  The imported function is the NPU implementation
         # (``target="npuir"``), a factory that returns a compiled callable
         # invoked as ``kernel(x, N)``.
-        self.kernel = hardswish_fwd_kernel(self.N_total, self.dtype_str)
+        self.kernel = hardswish_fwd_kernel(
+            self.N_total, self.dtype_str, block_size=_DEFAULT_BLOCK_SIZE[self.dtype_str]
+        )
         self.init_config(config)
 
     @property

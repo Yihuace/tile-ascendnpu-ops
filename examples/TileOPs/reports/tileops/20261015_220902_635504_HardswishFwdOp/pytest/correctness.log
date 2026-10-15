@@ -1,0 +1,47 @@
+command: /usr/local/bin/python -m pytest tests/ops/test_hardswish.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/pytest/correctness.xml
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-15 22:09:12  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-15 22:09:12  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-15 22:09:12  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 7 items
+
+tests/ops/test_hardswish.py::test_hardswish_op[1048576-dtype0] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+Precompiling NPU launcher header...
+2026-10-15 22:09:18  [TileLang:tilelang.utils.npu_utils:WARNING]: Using non-atomic rename for /home/developer/.tilelang/cache/981f8ce878f2fc765fd2df88f1bc6ceaec5d7342d639ebe3b3253da7650800b5/npu_launcher.h
+HardswishFwdKernel initialized with config: {'block_size': 4096}
+PASSED
+tests/ops/test_hardswish.py::test_hardswish_op[1048576-dtype1] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardswishFwdKernel initialized with config: {'block_size': 8192}
+PASSED
+tests/ops/test_hardswish.py::test_hardswish_op[1048576-dtype2] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardswishFwdKernel initialized with config: {'block_size': 8192}
+PASSED
+tests/ops/test_hardswish.py::test_hardswish_op[4000000-dtype3] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardswishFwdKernel initialized with config: {'block_size': 8192}
+PASSED
+tests/ops/test_hardswish.py::test_hardswish_op[4000000-dtype4] AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+HardswishFwdKernel initialized with config: {'block_size': 8192}
+PASSED
+tests/ops/test_hardswish.py::test_hardswish_rejects_non_float_dtype PASSED
+tests/ops/test_hardswish.py::test_hardswish_eval_roofline HardswishFwdKernel initialized with config: {'block_size': 8192}
+PASSED
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/pytest/correctness.xml -
+=================== 7 passed, 1 warning in 87.22s (0:01:27) ====================

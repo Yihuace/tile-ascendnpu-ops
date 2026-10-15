@@ -1,0 +1,597 @@
+{
+  "schema_version": 2,
+  "operator": "HardswishFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261015_220902_635504_HardswishFwdOp",
+    "generated_at": "2026-10-15T22:24:19.835257+08:00",
+    "project_root": "/mnt/workspace/npuir-migration/examples/TileOPs",
+    "git_commit": "4f345656b1cd3ceb109d153a2f2bf0cb203b048c",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_hardswish.py",
+    "benchmark_file": "benchmarks/ops/bench_hardswish.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_hardswish.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_hardswish.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-15T22:24:19.835257+08:00",
+      "evaluation_scope": "HardswishFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261015_220902_635504_HardswishFwdOp",
+      "git_commit": "4f345656b1cd3ceb109d153a2f2bf0cb203b048c",
+      "correctness_target": "tests/ops/test_hardswish.py",
+      "benchmark_target": "benchmarks/ops/bench_hardswish.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "8.5.2",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": null,
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 7,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 7,
+    "passed_cases": 7,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 9,
+    "benchmark_failed": 0,
+    "case_count": 6,
+    "msprof_case_count": 6,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_hardswish::test_hardswish_op[1048576-dtype0]",
+        "name": "test_hardswish_op[1048576-dtype0]",
+        "classname": "tests.ops.test_hardswish",
+        "time_s": 46.968,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "max_abs_err": "4.77e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardswish::test_hardswish_op[1048576-dtype1]",
+        "name": "test_hardswish_op[1048576-dtype1]",
+        "classname": "tests.ops.test_hardswish",
+        "time_s": 17.444,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardswish::test_hardswish_op[1048576-dtype2]",
+        "name": "test_hardswish_op[1048576-dtype2]",
+        "classname": "tests.ops.test_hardswish",
+        "time_s": 17.369,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardswish::test_hardswish_op[4000000-dtype3]",
+        "name": "test_hardswish_op[4000000-dtype3]",
+        "classname": "tests.ops.test_hardswish",
+        "time_s": 1.714,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardswish::test_hardswish_op[4000000-dtype4]",
+        "name": "test_hardswish_op[4000000-dtype4]",
+        "classname": "tests.ops.test_hardswish",
+        "time_s": 1.689,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardswish::test_hardswish_rejects_non_float_dtype",
+        "name": "test_hardswish_rejects_non_float_dtype",
+        "classname": "tests.ops.test_hardswish",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_hardswish::test_hardswish_eval_roofline",
+        "name": "test_hardswish_eval_roofline",
+        "classname": "tests.ops.test_hardswish",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[smoke-1m-float32]",
+        "name": "test_hardswish_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 114.35,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "5.8600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[smoke-1m-float16]",
+        "name": "test_hardswish_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.324,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "5.6200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[smoke-1m-bfloat16]",
+        "name": "test_hardswish_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.237,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "5.5200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[mbv3-stage2-float16]",
+        "name": "test_hardswish_bench[mbv3-stage2-float16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.203,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "22.6800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[mbv3-stage2-bfloat16]",
+        "name": "test_hardswish_bench[mbv3-stage2-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.382,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "23.8600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[mbv3-stage3-float16]",
+        "name": "test_hardswish_bench[mbv3-stage3-float16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.442,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "15.6800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[mbv3-stage3-bfloat16]",
+        "name": "test_hardswish_bench[mbv3-stage3-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.224,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "15.9600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[fc-wide-float16]",
+        "name": "test_hardswish_bench[fc-wide-float16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.464,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "19.8800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardswish::test_hardswish_bench[fc-wide-bfloat16]",
+        "name": "test_hardswish_bench[fc-wide-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardswish",
+        "time_s": 85.323,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardswishFwdOp",
+          "op_module": "tileops.ops.elementwise.hardswish",
+          "tileops_latency_us": "20.9200"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "HardswishFwdOp",
+        "case_id": "HardswishFwdOp-f0d7d586149a",
+        "label": "mbv3-stage2",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            32,
+            96,
+            56,
+            56
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 22.68,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 55.6016,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.007925271987915,
+        "performance_tops": 2.5553719997406006,
+        "computility_tops": 4.595860481262207,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/artifacts/msprof/main_3tqe1s1t",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 22.68,
+          "max_latency_us": 22.68,
+          "min_latency_us": 22.68,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardswishFwdOp",
+        "case_id": "HardswishFwdOp-d303acc5b511",
+        "label": "mbv3-stage2",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            32,
+            96,
+            56,
+            56
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 23.860001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.614000000000004,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.5079221725463867,
+        "performance_tops": 2.832759141921997,
+        "computility_tops": 4.597586631774902,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/artifacts/msprof/main_v1g374wp",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 23.860001,
+          "max_latency_us": 23.860001,
+          "min_latency_us": 23.860001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardswishFwdOp",
+        "case_id": "HardswishFwdOp-74b700109cc4",
+        "label": "mbv3-stage3",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            32,
+            240,
+            28,
+            28
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 15.68,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 50.2675,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.007993221282959,
+        "performance_tops": 2.3101632595062256,
+        "computility_tops": 4.595738887786865,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/artifacts/msprof/main_c5rkncsu",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.68,
+          "max_latency_us": 15.68,
+          "min_latency_us": 15.68,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardswishFwdOp",
+        "case_id": "HardswishFwdOp-a3cf1c17b838",
+        "label": "mbv3-stage3",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            32,
+            240,
+            28,
+            28
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 15.960000000000003,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 57.5728,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.5079877376556396,
+        "performance_tops": 2.646897315979004,
+        "computility_tops": 4.597482204437256,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/artifacts/msprof/main_qhfxcdd5",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.96,
+          "max_latency_us": 15.96,
+          "min_latency_us": 15.96,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardswishFwdOp",
+        "case_id": "HardswishFwdOp-38784cca412c",
+        "label": "fc-wide",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 19.879999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 55.234700000000004,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.0079421997070312,
+        "performance_tops": 2.5384950637817383,
+        "computility_tops": 4.595829963684082,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/artifacts/msprof/main_dr4a8esi",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 19.879999,
+          "max_latency_us": 19.879999,
+          "min_latency_us": 19.879999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardswishFwdOp",
+        "case_id": "HardswishFwdOp-0c5f035cb580",
+        "label": "fc-wide",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 20.92,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.1908,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.5079383850097656,
+        "performance_tops": 2.8132832050323486,
+        "computility_tops": 4.597560882568359,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_220902_635504_HardswishFwdOp/artifacts/msprof/main_40ob9olh",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 20.92,
+          "max_latency_us": 20.92,
+          "min_latency_us": 20.92,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "HardswishFwdOp",
+      "family": "elementwise",
+      "cases": 7,
+      "passed": 7,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 9.540000000000001e-08,
+      "max_abs_err": 4.77e-07,
+      "performance_cases": 6,
+      "ratio_range": {
+        "min": 50.2675,
+        "max": 61.614000000000004
+      }
+    }
+  ],
+  "warnings": []
+}
