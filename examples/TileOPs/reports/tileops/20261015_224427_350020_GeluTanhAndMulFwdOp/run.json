@@ -1,0 +1,535 @@
+{
+  "schema_version": 2,
+  "operator": "GeluTanhAndMulFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261015_224427_350020_GeluTanhAndMulFwdOp",
+    "generated_at": "2026-10-15T22:57:00.289888+08:00",
+    "project_root": "/mnt/workspace/npuir-migration/examples/TileOPs",
+    "git_commit": "f010d584f03451db13fd121f81a75d21f959415e",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_gelu_tanh_and_mul.py",
+    "benchmark_file": "benchmarks/ops/bench_gelu_tanh_and_mul.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_gelu_tanh_and_mul.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_gelu_tanh_and_mul.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-15T22:57:00.289888+08:00",
+      "evaluation_scope": "GeluTanhAndMulFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261015_224427_350020_GeluTanhAndMulFwdOp",
+      "git_commit": "f010d584f03451db13fd121f81a75d21f959415e",
+      "correctness_target": "tests/ops/test_gelu_tanh_and_mul.py",
+      "benchmark_target": "benchmarks/ops/bench_gelu_tanh_and_mul.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "8.5.2",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": null,
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 11,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 11,
+    "passed_cases": 11,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 7,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_op[16-128-dtype0]",
+        "name": "test_gelu_tanh_and_mul_op[16-128-dtype0]",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 47.874,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "max_abs_err": "4.77e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_op[16-128-dtype1]",
+        "name": "test_gelu_tanh_and_mul_op[16-128-dtype1]",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 17.907,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "max_abs_err": "3.05e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_op[16-128-dtype2]",
+        "name": "test_gelu_tanh_and_mul_op[16-128-dtype2]",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 17.909,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_op[2048-14336-dtype3]",
+        "name": "test_gelu_tanh_and_mul_op[2048-14336-dtype3]",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 2.185,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_op[2048-14336-dtype4]",
+        "name": "test_gelu_tanh_and_mul_op[2048-14336-dtype4]",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 2.174,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_op[1-14336-dtype5]",
+        "name": "test_gelu_tanh_and_mul_op[1-14336-dtype5]",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 1.887,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_rejects_non_float_dtype",
+        "name": "test_gelu_tanh_and_mul_rejects_non_float_dtype",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_kernel_rejects_non_float_dtype",
+        "name": "test_gelu_tanh_and_mul_kernel_rejects_non_float_dtype",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_rejects_dtype_mismatch",
+        "name": "test_gelu_tanh_and_mul_rejects_dtype_mismatch",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 1.755,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_rejects_shape_mismatch",
+        "name": "test_gelu_tanh_and_mul_rejects_shape_mismatch",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gelu_tanh_and_mul::test_gelu_tanh_and_mul_eval_roofline",
+        "name": "test_gelu_tanh_and_mul_eval_roofline",
+        "classname": "tests.ops.test_gelu_tanh_and_mul",
+        "time_s": 1.82,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_gelu_tanh_and_mul::test_gelu_tanh_and_mul_manifest_bench[smoke-float32]",
+        "name": "test_gelu_tanh_and_mul_manifest_bench[smoke-float32]",
+        "classname": "benchmarks.ops.bench_gelu_tanh_and_mul",
+        "time_s": 117.078,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "tileops_latency_us": "2.4800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gelu_tanh_and_mul::test_gelu_tanh_and_mul_manifest_bench[smoke-bfloat16]",
+        "name": "test_gelu_tanh_and_mul_manifest_bench[smoke-bfloat16]",
+        "classname": "benchmarks.ops.bench_gelu_tanh_and_mul",
+        "time_s": 86.482,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "tileops_latency_us": "2.3800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gelu_tanh_and_mul::test_gelu_tanh_and_mul_manifest_bench[llama-8b-ffn-prefill-float16]",
+        "name": "test_gelu_tanh_and_mul_manifest_bench[llama-8b-ffn-prefill-float16]",
+        "classname": "benchmarks.ops.bench_gelu_tanh_and_mul",
+        "time_s": 87.545,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "tileops_latency_us": "200.1400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gelu_tanh_and_mul::test_gelu_tanh_and_mul_manifest_bench[llama-8b-ffn-prefill-bfloat16]",
+        "name": "test_gelu_tanh_and_mul_manifest_bench[llama-8b-ffn-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_gelu_tanh_and_mul",
+        "time_s": 86.724,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "tileops_latency_us": "204.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gelu_tanh_and_mul::test_gelu_tanh_and_mul_manifest_bench[llama-8b-ffn-decode-bfloat16]",
+        "name": "test_gelu_tanh_and_mul_manifest_bench[llama-8b-ffn-decode-bfloat16]",
+        "classname": "benchmarks.ops.bench_gelu_tanh_and_mul",
+        "time_s": 70.438,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "tileops_latency_us": "2.2400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gelu_tanh_and_mul::test_gelu_tanh_and_mul_manifest_bench[qwen3-8b-swiglu-b32-float16]",
+        "name": "test_gelu_tanh_and_mul_manifest_bench[qwen3-8b-swiglu-b32-float16]",
+        "classname": "benchmarks.ops.bench_gelu_tanh_and_mul",
+        "time_s": 87.282,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "tileops_latency_us": "5.7000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gelu_tanh_and_mul::test_gelu_tanh_and_mul_manifest_bench[qwen3-8b-swiglu-b32-bfloat16]",
+        "name": "test_gelu_tanh_and_mul_manifest_bench[qwen3-8b-swiglu-b32-bfloat16]",
+        "classname": "benchmarks.ops.bench_gelu_tanh_and_mul",
+        "time_s": 86.619,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeluTanhAndMulFwdOp",
+          "op_module": "tileops.ops.elementwise.gelu_tanh_and_mul",
+          "tileops_latency_us": "5.8400"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "GeluTanhAndMulFwdOp",
+        "case_id": "GeluTanhAndMulFwdOp-9c90c357a1f0",
+        "label": "llama-8b-ffn-prefill",
+        "params": {
+          "M": 2048,
+          "N": 14336,
+          "dtype": "float16"
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 200.139999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 48.3507,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.6484553813934326,
+        "performance_tops": 2.140886068344116,
+        "computility_tops": 4.427827835083008,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/artifacts/msprof/main_u8victoo",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 200.139999,
+          "max_latency_us": 200.139999,
+          "min_latency_us": 200.139999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeluTanhAndMulFwdOp",
+        "case_id": "GeluTanhAndMulFwdOp-4b61a9968042",
+        "label": "llama-8b-ffn-prefill",
+        "params": {
+          "M": 2048,
+          "N": 14336,
+          "dtype": "bfloat16"
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 204.820007,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 50.3567,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.8984551429748535,
+        "performance_tops": 2.235314130783081,
+        "computility_tops": 4.438957691192627,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/artifacts/msprof/main_i6wbgk3r",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 204.820007,
+          "max_latency_us": 204.820007,
+          "min_latency_us": 204.820007,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeluTanhAndMulFwdOp",
+        "case_id": "GeluTanhAndMulFwdOp-79c0520cd36b",
+        "label": "llama-8b-ffn-decode",
+        "params": {
+          "M": 1,
+          "N": 14336,
+          "dtype": "bfloat16"
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 2.24,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 2.2569,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.897550106048584,
+        "performance_tops": 0.10000000149011612,
+        "computility_tops": 4.430768966674805,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/artifacts/msprof/main_9iu4qcri",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 2.24,
+          "max_latency_us": 2.24,
+          "min_latency_us": 2.24,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeluTanhAndMulFwdOp",
+        "case_id": "GeluTanhAndMulFwdOp-8d0b8f361439",
+        "label": "qwen3-8b-swiglu-b32",
+        "params": {
+          "M": 32,
+          "N": 12288,
+          "dtype": "float16"
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 5.7,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 22.7563,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.649768114089966,
+        "performance_tops": 1.0072028636932373,
+        "computility_tops": 4.426032543182373,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/artifacts/msprof/main_v0e3z9oc",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 5.7,
+          "max_latency_us": 5.7,
+          "min_latency_us": 5.7,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeluTanhAndMulFwdOp",
+        "case_id": "GeluTanhAndMulFwdOp-4c768422b395",
+        "label": "qwen3-8b-swiglu-b32",
+        "params": {
+          "M": 32,
+          "N": 12288,
+          "dtype": "bfloat16"
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 5.84,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 23.672,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.899747848510742,
+        "performance_tops": 1.050389051437378,
+        "computility_tops": 4.437264442443848,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261015_224427_350020_GeluTanhAndMulFwdOp/artifacts/msprof/main_7fumq4sy",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 5.84,
+          "max_latency_us": 5.84,
+          "min_latency_us": 5.84,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "family": "elementwise",
+      "cases": 11,
+      "passed": 11,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0032568295000000003,
+      "max_abs_err": 0.0156,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 2.2569,
+        "max": 50.3567
+      }
+    }
+  ],
+  "warnings": []
+}
