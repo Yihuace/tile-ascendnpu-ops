@@ -1,0 +1,19 @@
+# NPU Benchmark Report
+Generated: 2026-10-15 22:08:31
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## HardswishFwdOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | AI(Ops/Byte) | Bandwidth(TB/s) | Computility(TOps/s) | Perf(TOps/s) | artifact_dir | msprof | prof_mode | op_params | config | dtype | shape |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| fc-wide | 19.6400 | 55.9097 | 3.0079 | 1.7500 | 4.5958 | 2.5695 | /tmp/opencode/mp_hs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 19.639999, 'max_latency_us': 19.639999, 'min_latency_us': 19.639999, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 8192} | float16 | [2048, 4096] |
+| fc-wide | 20.9200 | 61.1908 | 3.5079 | 1.7500 | 4.5976 | 2.8133 | /tmp/opencode/mp_hs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 20.92, 'max_latency_us': 20.92, 'min_latency_us': 20.92, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 8192} | bfloat16 | [2048, 4096] |

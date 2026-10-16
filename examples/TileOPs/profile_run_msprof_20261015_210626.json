@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-15T21:07:54.592819+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "GeluAndMulFwdOp",
+      "case_id": "GeluAndMulFwdOp-9c90c357a1f0",
+      "label": "llama-8b-ffn-prefill",
+      "params": {
+        "M": 2048,
+        "N": 14336,
+        "dtype": "float16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 14.699224472045898,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.546375751495361,
+        "Perf(TOps/s)": 1.96342933177948,
+        "Ratio(%)": 43.1867,
+        "artifact_dir": "/tmp/opencode/mp_op",
+        "latency_us": 879.219971,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 879.219971,
+          "max_latency_us": 879.219971,
+          "min_latency_us": 879.219971,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluAndMulFwdOp",
+      "case_id": "GeluAndMulFwdOp-4b61a9968042",
+      "label": "llama-8b-ffn-prefill",
+      "params": {
+        "M": 2048,
+        "N": 14336,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 14.949224472045898,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.547392845153809,
+        "Perf(TOps/s)": 1.9965049028396606,
+        "Ratio(%)": 43.904399999999995,
+        "artifact_dir": "/tmp/opencode/mp_op",
+        "latency_us": 879.359985,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 879.359985,
+          "max_latency_us": 879.359985,
+          "min_latency_us": 879.359985,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

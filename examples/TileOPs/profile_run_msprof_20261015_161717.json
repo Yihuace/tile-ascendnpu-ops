@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-15T16:17:17.812316+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "BatchNormBwdOp",
+      "case_id": "BatchNormBwdOp-895ee3e30b19",
+      "label": "resnet-stage1",
+      "params": {
+        "c": 64,
+        "dtype": "float16",
+        "n": 8,
+        "s": 1024
+      },
+      "result": {
+        "artifact_dir": "/tmp/opencode/msprof_bn",
+        "bandwidth_tbs": 0.1530334704782816,
+        "latency_us": 20.559999,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 20.559999,
+          "max_latency_us": 20.559999,
+          "min_latency_us": 20.559999,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.2295035131081475
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "BatchNormBwdOp",
+      "case_id": "BatchNormBwdOp-48e2ace7d023",
+      "label": "resnet-stage1",
+      "params": {
+        "c": 64,
+        "dtype": "bfloat16",
+        "n": 8,
+        "s": 1024
+      },
+      "result": {
+        "artifact_dir": "/tmp/opencode/msprof_bn",
+        "bandwidth_tbs": 0.15576078436827803,
+        "latency_us": 20.200001,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 20.200001,
+          "max_latency_us": 20.200001,
+          "min_latency_us": 20.200001,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "tflops": 0.2335936518022945
+      },
+      "tag": "tileops"
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-15T11:27:03.723315+08:00",
+  "profiling_mode_requested": "events",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-c0568102da1a",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "smoke-1m",
+      "params": {
+        "dtype": "float16",
+        "op_params": {},
+        "shape": [
+          1048576
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.007494753650992586,
+        "latency_us": 559.6320033073425,
+        "prof_mode": "events",
+        "tflops": 0.005621065238244439
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-4223e27ec498",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "smoke-1m",
+      "params": {
+        "dtype": "bfloat16",
+        "op_params": {},
+        "shape": [
+          1048576
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.00782002931809472,
+        "latency_us": 536.353999376297,
+        "prof_mode": "events",
+        "tflops": 0.005865021988571041
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-f328d3d231ae",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "mbv3-se-gate",
+      "params": {
+        "dtype": "float16",
+        "op_params": {},
+        "shape": [
+          32,
+          240,
+          1,
+          1
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 5.6069648860008e-05,
+        "latency_us": 547.8900015354156,
+        "prof_mode": "events",
+        "tflops": 4.2052236645006e-05
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-0cde19a37061",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "mbv3-se-gate",
+      "params": {
+        "dtype": "bfloat16",
+        "op_params": {},
+        "shape": [
+          32,
+          240,
+          1,
+          1
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 5.495724413489298e-05,
+        "latency_us": 558.979994058609,
+        "prof_mode": "events",
+        "tflops": 4.121793310116974e-05
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-9b299c6f8e84",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "mbv3-se-gate-deep",
+      "params": {
+        "dtype": "float16",
+        "op_params": {},
+        "shape": [
+          32,
+          960,
+          1,
+          1
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.00022149959397663497,
+        "latency_us": 554.7639966011047,
+        "prof_mode": "events",
+        "tflops": 0.0001661246954824762
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-929ebee7d006",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "mbv3-se-gate-deep",
+      "params": {
+        "dtype": "bfloat16",
+        "op_params": {},
+        "shape": [
+          32,
+          960,
+          1,
+          1
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.00021604439034257877,
+        "latency_us": 568.7720000743866,
+        "prof_mode": "events",
+        "tflops": 0.00016203329275693408
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-38784cca412c",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "fc-wide",
+      "params": {
+        "dtype": "float16",
+        "op_params": {},
+        "shape": [
+          2048,
+          4096
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.05989039417801191,
+        "latency_us": 560.264003276825,
+        "prof_mode": "events",
+        "tflops": 0.044917795633508936
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "HardsigmoidFwdOp",
+      "case_id": "HardsigmoidFwdOp-0c5f035cb580",
+      "config": {
+        "block_size": 8192
+      },
+      "label": "fc-wide",
+      "params": {
+        "dtype": "bfloat16",
+        "op_params": {},
+        "shape": [
+          2048,
+          4096
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.060219727563053715,
+        "latency_us": 557.1999967098236,
+        "prof_mode": "events",
+        "tflops": 0.045164795672290294
+      },
+      "tag": "tileops"
+    }
+  ]
+}

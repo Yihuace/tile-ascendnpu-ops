@@ -1,0 +1,23 @@
+# NPU Benchmark Report
+Generated: 2026-10-15 20:24:08
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## ClampScalarFwdOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | AI(Ops/Byte) | Bandwidth(TB/s) | Computility(TOps/s) | Perf(TOps/s) | artifact_dir | msprof | prof_mode | op_params | config | dtype | shape |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 16M | 41.9000 | 45.7614 | 2.5021 | 1.7500 | 4.6041 | 2.0037 | /tmp/opencode/msprof_cs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 41.900002, 'max_latency_us': 41.900002, 'min_latency_us': 41.900002, 'op_name': 'main', 'sample_count': 1} | msprof | {'max': 0.5, 'min': -0.5} | {'block_size': 8192} | float16 | [4096, 4096] |
+| 16M | 42.8200 | 51.0883 | 3.0021 | 1.7500 | 4.6048 | 2.3525 | /tmp/opencode/msprof_cs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 42.82, 'max_latency_us': 42.82, 'min_latency_us': 42.82, 'op_name': 'main', 'sample_count': 1} | msprof | {'max': 0.5, 'min': -0.5} | {'block_size': 8192} | bfloat16 | [4096, 4096] |
+| 16M-min-only | 38.6000 | 49.6737 | 2.0021 | 1.7500 | 4.6032 | 1.7404 | /tmp/opencode/msprof_cs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 38.599998, 'max_latency_us': 38.599998, 'min_latency_us': 38.599998, 'op_name': 'main', 'sample_count': 1} | msprof | {'min': -0.5} | {'block_size': 8192} | float16 | [4096, 4096] |
+| 16M-min-only | 38.6200 | 49.6479 | 2.5021 | 1.7500 | 4.6041 | 2.1739 | /tmp/opencode/msprof_cs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 38.619999, 'max_latency_us': 38.619999, 'min_latency_us': 38.619999, 'op_name': 'main', 'sample_count': 1} | msprof | {'min': -0.5} | {'block_size': 8192} | bfloat16 | [4096, 4096] |
+| 16M-max-only | 38.8400 | 49.3667 | 2.0021 | 1.7500 | 4.6032 | 1.7296 | /tmp/opencode/msprof_cs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 38.84, 'max_latency_us': 38.84, 'min_latency_us': 38.84, 'op_name': 'main', 'sample_count': 1} | msprof | {'max': 0.5} | {'block_size': 8192} | float16 | [4096, 4096] |
+| 16M-max-only | 39.8200 | 48.1518 | 2.5021 | 1.7500 | 4.6041 | 2.1084 | /tmp/opencode/msprof_cs | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 39.82, 'max_latency_us': 39.82, 'min_latency_us': 39.82, 'op_name': 'main', 'sample_count': 1} | msprof | {'max': 0.5} | {'block_size': 8192} | bfloat16 | [4096, 4096] |

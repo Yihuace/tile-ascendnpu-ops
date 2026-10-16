@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-15T09:00:41.265109+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "Conv3dBiasFwdOp",
+      "case_id": "Conv3dBiasFwdOp-af0d9afbd290",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "smoke-k3-s1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 8,
+        "c_in_g": 8,
+        "c_out": 16,
+        "d_in": 8,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "h_in": 16,
+        "input_shape": [
+          1,
+          8,
+          8,
+          16,
+          16
+        ],
+        "kd": 3,
+        "kh": 3,
+        "kw": 3,
+        "n": 1,
+        "padding": 1,
+        "stride": 1,
+        "use_bias": true,
+        "w_in": 16,
+        "weight_shape": [
+          16,
+          8,
+          3,
+          3,
+          3
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.00041748511501423765,
+        "latency_us": 252.10000599999998,
+        "prof_mode": "msprof",
+        "tflops": 0.04740214087896531
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv3dBiasFwdOp",
+      "case_id": "Conv3dBiasFwdOp-bafecdc19242",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "smoke-k3-s1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 8,
+        "c_in_g": 8,
+        "c_out": 16,
+        "d_in": 8,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "h_in": 16,
+        "input_shape": [
+          1,
+          8,
+          8,
+          16,
+          16
+        ],
+        "kd": 3,
+        "kh": 3,
+        "kw": 3,
+        "n": 1,
+        "padding": 1,
+        "stride": 1,
+        "use_bias": true,
+        "w_in": 16,
+        "weight_shape": [
+          16,
+          8,
+          3,
+          3,
+          3
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.00036395325592251466,
+        "latency_us": 289.179993,
+        "prof_mode": "msprof",
+        "tflops": 0.04132402064205043
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv3dBiasFwdOp",
+      "case_id": "Conv3dBiasFwdOp-85fdc3d4b5a6",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "r3d-stem-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 3,
+        "c_in_g": 3,
+        "c_out": 64,
+        "d_in": 16,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "h_in": 112,
+        "input_shape": [
+          1,
+          3,
+          16,
+          112,
+          112
+        ],
+        "kd": 3,
+        "kh": 3,
+        "kw": 3,
+        "n": 1,
+        "padding": 1,
+        "stride": 1,
+        "use_bias": true,
+        "w_in": 112,
+        "weight_shape": [
+          64,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.0021844081056356696,
+        "latency_us": 12316.760742,
+        "prof_mode": "msprof",
+        "tflops": 0.16103018330434335
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv3dBiasFwdOp",
+      "case_id": "Conv3dBiasFwdOp-a44e243c85db",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "video-down-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 64,
+        "c_in_g": 64,
+        "c_out": 128,
+        "d_in": 8,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "h_in": 56,
+        "input_shape": [
+          1,
+          64,
+          8,
+          56,
+          56
+        ],
+        "kd": 3,
+        "kh": 3,
+        "kw": 3,
+        "n": 1,
+        "padding": 1,
+        "stride": 2,
+        "use_bias": true,
+        "w_in": 56,
+        "weight_shape": [
+          128,
+          64,
+          3,
+          3,
+          3
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.0017268825509808687,
+        "latency_us": 2580.780029,
+        "prof_mode": "msprof",
+        "tflops": 0.48123611080531964
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv3dBiasFwdOp",
+      "case_id": "Conv3dBiasFwdOp-f62c713fde26",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "unet-encoder-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 32,
+        "c_in_g": 32,
+        "c_out": 64,
+        "d_in": 32,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "h_in": 64,
+        "input_shape": [
+          1,
+          32,
+          32,
+          64,
+          64
+        ],
+        "kd": 3,
+        "kh": 3,
+        "kw": 3,
+        "n": 1,
+        "padding": 1,
+        "stride": 1,
+        "use_bias": true,
+        "w_in": 64,
+        "weight_shape": [
+          64,
+          32,
+          3,
+          3,
+          3
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.0037661542129181257,
+        "latency_us": 6711.5,
+        "prof_mode": "msprof",
+        "tflops": 2.072227521120465
+      },
+      "tag": "tileops"
+    }
+  ]
+}
