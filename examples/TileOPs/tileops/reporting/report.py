@@ -122,6 +122,24 @@ def _kernel_name(case: dict[str, Any]) -> str:
     return str((case.get("msprof") or {}).get("kernel_name_resolved") or "N/A")
 
 
+def _ai(case: dict[str, Any]) -> Any:
+    return case.get("arithmetic_intensity_ops_per_byte")
+
+
+def _bound_type(case: dict[str, Any]) -> str:
+    """Official-doc §3.1: memory-bound if AI*bw < computility, else compute-bound."""
+    ai = case.get("arithmetic_intensity_ops_per_byte")
+    bw = case.get("bandwidth_tb_s")
+    comp = case.get("computility_tops")
+    if ai and bw and comp:
+        return "memory" if ai * bw < comp else "compute"
+    return "?"
+
+
+def _advice(case: dict[str, Any]) -> str:
+    return str(case.get("advice") or "")
+
+
 def _md_cell(value: Any) -> str:
     return str(value).replace("\n", " ").replace("|", "\\|")
 
@@ -343,8 +361,8 @@ def render_markdown(run: dict[str, Any]) -> str:
             lines.extend(["", "</details>", ""])
         lines.extend(
             [
-                "| Label | Latency (us) | Ratio (%) | Shape / Parameters | DType | Mode | Kernel | Bandwidth (TB/s) |",
-                "|---|---:|---:|---|---|---|---|---:|",
+                "| Label | Latency (us) | Ratio (%) | AI (Ops/Byte) | Bound | Shape / Parameters | DType | Mode | Kernel | Bandwidth (TB/s) | Advice |",
+                "|---|---:|---:|---:|:---:|---|---|---|---|---:|---|",
             ]
         )
         for case in cases:
@@ -352,12 +370,13 @@ def render_markdown(run: dict[str, Any]) -> str:
             lines.append(
                 f"| {_md_cell(_case_label(case))} | {_fmt(case.get('latency_us'))} | "
                 f"{_fmt(case.get('roofline_utilization_percent'), 2)} | "
+                f"{_fmt(_ai(case), 4)} | {_bound_type(case)} | "
                 f"{_md_cell(_shape_or_parameters(params))} | {_md_cell(_dtype(params))} | "
                 f"{case.get('prof_mode') or 'N/A'} | {_md_cell(_kernel_name(case))} | "
-                f"{_fmt(case.get('bandwidth_tb_s'))} |"
+                f"{_fmt(case.get('bandwidth_tb_s'))} | {_md_cell(_advice(case))} |"
             )
         if not cases:
-            lines.append("| - | No performance records | - | - | - | - | - | - |")
+            lines.append("| - | No performance records | - | - | - | - | - | - | - | - | - |")
         lines.append("")
     warnings = run.get("warnings", [])
     if warnings:
@@ -483,14 +502,17 @@ def _performance_rows(cases: list[dict[str, Any]], operator_index: int) -> str:
             f'<td class="col-name"><a class="case-link" href="#case-{operator_index}-{case_index}">{html.escape(_case_label(case))}</a></td>'
             f'<td class="number strong">{_fmt(case.get("latency_us"), 3)}</td>'
             f'<td class="number score-cell {_score_class(ratio, high=70, mid=40)}">{_fmt_with_suffix(ratio, "%", 2)}</td>'
+            f'<td class="number">{_fmt(_ai(case), 3)}</td>'
+            f"<td>{html.escape(_bound_type(case))}</td>"
             f"<td><code>{html.escape(_shape_or_parameters(params))}</code></td>"
             f"<td><code>{html.escape(_dtype(params))}</code></td>"
             f"<td><code>{html.escape(_kernel_name(case))}</code>"
             f'<span class="cell-sub">{html.escape(str(case.get("prof_mode") or "N/A"))}</span></td>'
             f'<td class="number">{_fmt(case.get("bandwidth_tb_s"), 3)}</td>'
+            f"<td>{html.escape(_advice(case))}</td>"
             "</tr>"
         )
-    return "".join(rows) or '<tr><td colspan="7" class="empty">No performance records</td></tr>'
+    return "".join(rows) or '<tr><td colspan="10" class="empty">No performance records</td></tr>'
 
 
 def _case_details(cases: list[dict[str, Any]], operator_index: int) -> str:
@@ -577,8 +599,9 @@ def _operator_details_section(run: dict[str, Any]) -> str:
             '<div class="table-wrap"><table>'
             f"<caption>Table 4.{operator_index}. Per-shape performance results</caption>"
             "<thead><tr><th>Label</th><th>Latency (us)</th><th>Ratio</th>"
+            "<th>AI (Ops/Byte)</th><th>Bound</th>"
             "<th>Shape / Parameters</th><th>DType</th><th>Kernel</th>"
-            "<th>Bandwidth (TB/s)</th></tr></thead>"
+            "<th>Bandwidth (TB/s)</th><th>Advice</th></tr></thead>"
             f"<tbody>{_performance_rows(cases, operator_index)}</tbody></table></div>"
             '<p class="note">Latency 是该 shape 重复测量后的统计值；Ratio 不跨 shape 求平均。</p>'
             f"{_case_details(cases, operator_index)}</div>"
