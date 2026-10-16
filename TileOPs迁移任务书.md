@@ -167,6 +167,27 @@ grep -nE '"status"|"correctness_passed"|"correctness_tests"|"benchmark_passed"|"
 （`benchmark_base.py` 的 `gm["ratio"] / gm["bw"]`），必须与该兜底常数区分标注，
 否则默认核数/带宽会被误当作实查值。
 
+### 3.1 性能口径（SOL，**以官方文档为准**）
+
+性能唯一口径 = msprof `visualize_data.bin` 的 Roofline **`GM Read + Write`** 条目，其定义为标准 Roofline **SOL（speed-of-light）利用率**：
+
+```
+Ratio = Performance / min(AI × 带宽上限, 计算上限)
+AI          = total_fops / total_bytes          # total_bytes = Σ(L2 读未命中) × 128
+Performance = total_fops / task_duration
+计算上限(computility) = (峰值 ppc × 指令占比) × 频率 × 核数   # 按本算子指令构成加权
+fops        = Σ(FP32指令 × 64 + MISC指令 × 32)   # 计算单元指令计数，非"有用 FLOPs"
+```
+
+依据（仓库内官方文档）：`examples/TileOPs/docs/roofline_metrics_analysis.md`（公式逆向验证）、`examples/TileOPs/docs/roofline_types_and_latency_analysis.md`（多级 roofline + `advice` 字段 + 阈值）。**本任务书与上述文档冲突处，以文档为准。**
+
+**关键（勿误读）**：
+- `Ratio` 是 **SOL 利用率**，**不是"带宽利用率"**。分母 `min(AI×带宽, 计算上限)` 随算子 AI 切换：
+  - `AI × 带宽 < 计算上限`（**访存受限**）→ Ratio = 带宽利用率；
+  - `AI × 带宽 ≥ 计算上限`（**算力受限**）→ Ratio = 计算单元利用率（Cube 或 Vector）。
+- 判据须**按 AI 分类**（平衡点 = 计算上限 / 带宽上限）；达标口径、瓶颈判定、阈值一律以官方文档为准，**不得**把 Ratio 当成"带宽利用率"。
+- 报告须给出：AI、瓶颈类型（访存/算力受限）；如可得，附多级 roofline（Memory Unit / Memory Transfer / Pipeline）与 bin 的 `advice` 字段用于定位。
+
 报告禁开 pytest-xdist（`-n` / `--numprocesses` 会被 CLI 拒绝）；报告运行必须串行。
 
 ---

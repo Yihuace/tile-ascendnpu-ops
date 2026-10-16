@@ -36,6 +36,27 @@ SOC_CONFIG = {
         "gm_bw": 1.8,
         "l2_bw": 8.0,
     },
+    # Ascend910B3 (本任务实测平台).  num_cores=40 = msprof block_dim (AIV 向量核);
+    # gm_bw=1.75 为 msprof 对本机写入 visualize_data.bin 的值（非兜底 1.8）;
+    # l2_bw 沿用 910B 家族值（910B3 无官方公开值，标注为假设）。
+    # 依据：官方文档 docs/roofline_metrics_analysis.md（SoC 查表 + 默认值机制）。
+    "Ascend910B3": {
+        "num_cores": 40,
+        "cacheline_size": 128,
+        "vec_peak_ppc": {
+            "FP32": 64,
+            "MISC": 32,
+            "FP16": 128,
+            "INT32": 64,
+            "INT16": 128,
+            "S32": 64,
+            "S16": 128,
+        },
+        "cube_peak_ppc": 4096,
+        "cube_roofline_multiplier": 384,
+        "gm_bw": 1.75,
+        "l2_bw": 8.0,
+    },
     "Ascend910B1": {
         "num_cores": 48,
         "cacheline_size": 128,
@@ -168,8 +189,12 @@ def parse_bin_file(bin_path):
     config = SOC_CONFIG.get(soc, DEFAULT_CONFIG)
 
     roofline_entries = []
+    advice = ""
     if DATA_TYPE_ROOFLINE in blocks:
         j = json.loads(blocks[DATA_TYPE_ROOFLINE][0].decode("utf-8"))
+        # msopprof writes the bottleneck verdict here (official-doc §二):
+        # "compute bound" / "memory bound" / "latency bound:{compute,pipeline,memory} caused".
+        advice = j.get("advice", "") or ""
         for graph in j.get("multiple_rooflines", []):
             title = graph.get("title", "")
             for r in graph.get("rooflines", []):
@@ -202,6 +227,7 @@ def parse_bin_file(bin_path):
         "base_info": base_info,
         "roofline_entries": roofline_entries,
         "config": config,
+        "advice": advice,
     }
 
 

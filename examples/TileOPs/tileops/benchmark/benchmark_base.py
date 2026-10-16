@@ -462,14 +462,22 @@ class BenchmarkBase(Generic[W], ABC):
             return None
 
         gm = gm_entries[0]
+        # Official-doc §一/§二: the bin also carries a bottleneck verdict
+        # ("advice") and a multi-level roofline (GM/L2, Memory Unit(Cube/Vector),
+        # Memory Transfer, Pipeline).  Surface them for bottleneck localization.
+        levels = [
+            {"title": e.get("title", ""), "bw_name": e.get("bw_name", ""),
+             "ratio": e.get("ratio"), "bw": e.get("bw")}
+            for e in bin_data.get("roofline_entries", [])
+        ]
         return {
             "Ratio(%)": gm["ratio"] * 100,
             "Bandwidth(TB/s)": gm["bw"],
             "AI(Ops/Byte)": gm["AI"],
             "Perf(TOps/s)": gm["performance"],
-            "Computility(TOps/s)": gm["computility"],
-            # "roofline_bw_name": gm.get("bw_name", ""),
-            # "roofline_title": gm.get("title", ""),
+            "Computility(TOPs/s)": gm["computility"],
+            "advice": bin_data.get("advice", ""),
+            "roofline_levels": levels,
         }
 
     @staticmethod

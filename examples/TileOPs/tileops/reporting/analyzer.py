@@ -110,6 +110,8 @@ def _analyze_performance(benchmark: dict[str, Any]) -> tuple[list[dict], dict, l
                 "performance_tops": result.get("Perf(TOps/s)", result.get("tflops")),
                 "computility_tops": result.get("Computility(TOps/s)"),
                 "artifact_dir": result.get("artifact_dir"),
+                "advice": result.get("advice"),
+                "roofline_levels": result.get("roofline_levels"),
                 "msprof": msprof_metadata or None,
             }
         )
