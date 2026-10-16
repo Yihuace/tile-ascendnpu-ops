@@ -29,3 +29,12 @@ linalg = _re.sub(r"\s+syn_instr_mode\s*=\s*<[^>]*>", "", linalg)   # CANN9 shim
 - **`syn_instr_mode` 类问题**：小 shim 即可解，**不需重建**。
 - **剩余 7 个 SEGV**：需更深入处理——① 用**匹配 9.0 的 AscendNPU-IR 重建**（`3rdparty/AscendNPU-IR` 更新版本 + 重建，小时级）；② 或改这些 kernel 的 sync 构造规避；③ 或等 9.0 工具链修复。
 - **性能结论**：9.0 下的性能数字需**在 8.5.2 之外单独复测**（结论绑版本）；"删 NaN 恢复"优化在 9.0 下需重验。
+
+## 6. 对剩余 7 个 SEGV 的进一步排查（2026-10-16）
+- 崩溃发生在 **9.0 的 sync op lowering**（stripped npuir **解析通过**、9.0 backend 在 hivm.opt 之后 SEGV）。
+- 尝试**改名**（非删除），均**解析失败**（`Dialect '' not found for custom op '<name>'`）：
+  - `syn_instr_mode`（旧名）→ 解析失败；
+  - `sync_instr_mode`（9.0 strings 里有）→ 解析失败；
+  - `tsync_instr_mode`（9.0 strings 里有）→ 解析失败。
+- ⇒ 9.0 的 `hivm.hir.sync_block_set/wait` **op 定义结构性改版**（该 mode 的 text/属性/属性名与旧版不兼容），**无法靠字符串改名/删除解决**。
+- **结论**：剩余 7 个（`conv1d_bias`×5、`ssd`、`mha`）需**匹配 9.0 的 AscendNPU-IR**（更新 submodule + 重建）才能正确生成；当前"strip"shim 只是**保 398/405** 的权宜之计（这 7 个在 strip 下从"解析错"变为"SEGV"，仍不可用）。
