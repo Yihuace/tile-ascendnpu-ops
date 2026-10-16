@@ -68,7 +68,7 @@ dtype: [fp16, bf16, fp32]
 device: 910B2C
 status: verified
 origin_task: multi_head_attention-_gqa_prefill_fwd_kernel-20260907T115424Z
-toolchain: tilelang dev root build 2026-09-07（HEAD 21586b5）+ CANN 8.5.0 + Ascend910B2C
+toolchain: tilelang dev root build 2026-09-07（HEAD 21586b5）+ CANN 8.5.0 + Ascend910B2C；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
 repro: repro/TRAP-load-nd2nz-strided.py
 ---
 
@@ -85,7 +85,7 @@ dtype: [fp16, f16, fp32]
 device: 910B2C
 status: verified
 origin_task: multi_head_attention-_gqa_prefill_fwd_kernel-20260907T115424Z
-toolchain: tilelang dev root build 2026-09-07（HEAD 21586b5）+ CANN 8.5.0 + Ascend910B2C
+toolchain: tilelang dev root build 2026-09-07（HEAD 21586b5）+ CANN 8.5.0 + Ascend910B2C；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
 repro: repro/TRAP-T-copy-region-semantics.py
 ---
 
@@ -102,7 +102,7 @@ dtype: [bf16, fp16, fp32]
 device: 910B2C
 status: verified
 origin_task: multi_head_attention-_gqa_prefill_fwd_kernel-20260907T115424Z
-toolchain: tilelang dev root build 2026-09-07（21586b5）+ CANN 8.5.0 + Ascend910B2C
+toolchain: tilelang dev root build 2026-09-07（21586b5）+ CANN 8.5.0 + Ascend910B2C；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
 repro: repro/TRAP-zero-input-crash.py
 ---
 
@@ -119,7 +119,7 @@ dtype: [fp32, fp16, bf16]
 device: 910B2C
 status: verified
 origin_task: ada_layer_norm-_ada_layer_norm_kernel-20260910T132324Z
-toolchain: tilelang 0.1.2+a83118285a + Ascend910B2C + CANN 8.5.0 + torch 2.9.0+cpu / 2026-09-10
+toolchain: tilelang 0.1.2+a83118285a + Ascend910B2C + CANN 8.5.0 + torch 2.9.0+cpu / 2026-09-10；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
 repro: repro/TRAP-vrsqrt-plain-precision.py
 ---
 
@@ -160,7 +160,7 @@ dtype: [fp16, bf16]
 device: 910B2C
 status: verified
 origin_task: ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260917T035420Z（Stage 3）
-toolchain: tilelang 0.1.2+1990aa9fe4 / CANN 8.5.0 / Ascend910B2C（npu-smi 26.0.rc1）/ 2026-09-17
+toolchain: tilelang 0.1.2+1990aa9fe4 / CANN 8.5.0 / Ascend910B2C（npu-smi 26.0.rc1）/ 2026-09-17；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
 repro: repro/TRAP-DEVMODE-PERSIST-GEMM.py
 ---
 

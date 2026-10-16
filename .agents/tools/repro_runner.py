@@ -104,6 +104,12 @@ def run_one(path: str, timeout: int) -> dict:
                 "duration_s": 0.0,
                 "tail": f"syntax error: {e}",
             }
+    # Each repro declares its intended TILELANG_ASCEND_MODE via
+    # ``os.environ.setdefault(...)``; an exported value from the caller's shell
+    # would silently override that intent (e.g. a global "Developer" export
+    # breaks Expert-mode repros). Strip it so the repro's own default applies.
+    env = dict(os.environ)
+    env.pop("TILELANG_ASCEND_MODE", None)
     try:
         proc = subprocess.run(
             [sys.executable, os.path.basename(path)],
@@ -111,6 +117,7 @@ def run_one(path: str, timeout: int) -> dict:
             capture_output=True,
             text=True,
             timeout=timeout,
+            env=env,
         )
         status = "PASS" if proc.returncode == 0 else "FAIL"
         tail = (proc.stdout.strip().splitlines() or [""])[-1]

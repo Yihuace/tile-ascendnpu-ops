@@ -594,7 +594,7 @@ evidence:
 workaround: 用 `T.fill(c_ub, T.cast(1,"int8"))` 物化同形常量 buffer 后再 `T.vxor(x_ub, c_ub, y_ub)`（bit-exact 等价）。
 occurrences: 1
 tasks: [bitwise_not-bitwise_not_fwd_kernel-20261013]
-toolchain_stamp: tilelang 0.1.2+417dae9908 / CANN 8.5.2 / Ascend910B3
+toolchain_stamp: tilelang 0.1.2+417dae9908 / CANN 8.5.2 / Ascend910B3；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验：复现仍成立，缺口未消失（repro 复跑通过）
 status: open
 created_by: bitwise_not/_bitwise_not_fwd_kernel Stage 3（2026-10-13）
 last_seen: bitwise_not-bitwise_not_fwd_kernel-20261013（2026-10-13）
@@ -615,7 +615,7 @@ evidence:
 workaround: bool/uint8 走 int8 字节存储（bit-identical）并在 host 侧 view 回转（输入 view int8、输出 int8→bool/uint8 view）。
 occurrences: 1
 tasks: [bitwise_not-bitwise_not_fwd_kernel-20261013]
-toolchain_stamp: tilelang 0.1.2+417dae9908 / CANN 8.5.2 / Ascend910B3
+toolchain_stamp: tilelang 0.1.2+417dae9908 / CANN 8.5.2 / Ascend910B3；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验：复现仍成立，缺口未消失（repro 复跑通过）
 status: open
 created_by: bitwise_not/_bitwise_not_fwd_kernel Stage 3（2026-10-13）
 last_seen: bitwise_not-bitwise_not_fwd_kernel-20261013（2026-10-13）
@@ -660,7 +660,7 @@ evidence:
 workaround: 显式 clamped deg-20 minimax 多项式（fp32，c0=1/A 精确饱和 + NaN mask），RANGE 全范围 max abs err 2.98e-7；代价 ~35 额外向量 op。
 occurrences: 1
 tasks: [gelu_and_mul-gelu_and_mul_fwd_kernel-20261013]
-toolchain_stamp: tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B3（20 AI Core）
+toolchain_stamp: tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B3（20 AI Core）；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验：复现仍成立，缺口未消失（repro 复跑通过）
 status: open
 created_by: gelu_and_mul/_gelu_and_mul_fwd_kernel Stage 3 `[DESIGN_ERROR]`（2026-10-13）
 last_seen: gelu_and_mul-gelu_and_mul_fwd_kernel-20261013（2026-10-13）
@@ -704,7 +704,7 @@ evidence:
 workaround: 恒等折叠 gelu_tanh(g)=g·σ(2u)（`1+tanh(u)=2σ(2u)`）+ 显式 fp32 sigmoid（`vexp`/`vdiv`），RANGE max abs err 1.781e-7。
 occurrences: 1
 tasks: [gelu_tanh_and_mul-gelu_tanh_and_mul_fwd_kernel-20261013]
-toolchain_stamp: tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B3（20 AI Core）
+toolchain_stamp: tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B3（20 AI Core）；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验：复现仍成立，缺口未消失（repro 复跑通过）
 status: open
 created_by: gelu_tanh_and_mul Stage 1 设计调研（2026-10-13）
 last_seen: gelu_tanh_and_mul-gelu_tanh_and_mul_fwd_kernel-20261013（2026-10-13）
@@ -726,7 +726,7 @@ evidence:
 workaround: `isnan(x)=NOT(x<=x)`：`vcmp(x,x,tmp,"le")` → `vcast(i1→f16)` → `vsub(1.0,·)`（fp16 域取反）→ `vcast(f16→i8)` → host view(bool)。三 dtype 精确。
 occurrences: 1
 tasks: [isnan-_isnan_fwd_kernel-20261014]
-toolchain_stamp: tilelang 0.1.2 dev-root（417dae99）+ CANN 8.5.2 + Ascend910B3（20 AI Core）
+toolchain_stamp: tilelang 0.1.2 dev-root（417dae99）+ CANN 8.5.2 + Ascend910B3（20 AI Core）；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验：复现仍成立，缺口未消失（repro 复跑通过）
 status: open
 created_by: isnan/_isnan_fwd_kernel Stage 3 `[DESIGN_ERROR]`（2026-10-14）
 last_seen: isnan-_isnan_fwd_kernel-20261014（2026-10-14）

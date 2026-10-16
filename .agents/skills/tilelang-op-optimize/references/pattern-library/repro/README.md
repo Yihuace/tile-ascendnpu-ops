@@ -40,6 +40,8 @@ python3 .agents/tools/repro_runner.py --filter stale      # 工具链升级后�
 
 用途：① 工具链升级重验（`kb_stale_check` 列 stale → `repro_runner --filter stale` → FAIL 即条目推翻、PASS 即刷新版本戳）；② apply 预验证（E-4）与 Tier 1 第二次独立证据（另一上下文重跑通过）复用同一套件；③ delta 形态的 PATT-\* 只做语法级检查（全量 NPU 执行与 msprof 测量按需人工触发）。
 
+**环境卫生（强制）**：repro 通过 `os.environ.setdefault("TILELANG_ASCEND_MODE", ...)` 声明各自的目标模式（Developer/Expert），**调用方 shell 不得导出 `TILELANG_ASCEND_MODE`**——已导出的值会让 `setdefault` 失效并静默覆盖 repro 意图（`.bashrc` 全局导出 `Developer` 时，Expert 模式的 MixCV/Cube repro 会假失败：bishengir 报 `multiple entry functions detected ... main_mix_aiv / main_mix_aic`）。`repro_runner.py` 已在子进程环境中剥离该变量（2026-10-16，CANN 9.0.0 重验中发现）；手工直跑时用 `env -u TILELANG_ASCEND_MODE python3 repro/<ID>.py`。
+
 ## 现存 repro 索引
 
 | repro | 条目 | 形态/断言 | 首次验证 |

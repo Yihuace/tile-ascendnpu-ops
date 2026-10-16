@@ -109,7 +109,7 @@ dtype: [fp16, bf16, fp32]
 device: 910B2C
 status: verified
 origin_task: lerp_tensor-_make_lerp_tensor_kernel-20260907T025419Z
-toolchain: tilelang 0.1.2+ed787bb（2026-09-07 build）/ CANN 8.5.0
+toolchain: tilelang 0.1.2+ed787bb（2026-09-07 build）/ CANN 8.5.0；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
 source: PL-1.6-copy-floor
 repro: repro/CONST-copy-floor-method.py
 ---
@@ -232,7 +232,7 @@ dtype: [fp32, fp16, bf16]
 device: 910B2C
 status: overturned
 origin_task: hardsigmoid-hardsigmoid_fwd_kernel-20261012T132114Z（Stage 3 develop）
-toolchain: tilelang 0.1.2 dev-root（/home/developer/tilelang-mlir-ascend/build）+ Ascend 910B2C（实查 20 AI Core）+ CANN 8.5.2 / 2026-10-12
+toolchain: tilelang 0.1.2 dev-root（/home/developer/tilelang-mlir-ascend/build）+ Ascend 910B2C（实查 20 AI Core）+ CANN 8.5.2 / 2026-10-12；2026-10-16 CANN 9.0.0 重验维持 overturned（CONST-vcmp-ne-ordered 复跑通过：ordered 'ne' + NOT(x<=x) workaround 精确）
 repro: repro/CONST-vcmp-ne-nan-unordered.py
 ---
 

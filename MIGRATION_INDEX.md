@@ -45,7 +45,8 @@
 
 ## C. 版本戳与状态文件
 
-- 当前工作区版本戳：tilelang `0.1.2`（commit `417dae9`）/ torch `2.7.1+cpu` / torch_npu `2.7.1.post4` / CANN `8.5.2` / Ascend910B3。
+- 当前工作区版本戳：tilelang `0.1.2`（dev root `/home/developer/tilelang-mlir-ascend`，无 `.git`）/ torch `2.7.1+cpu` / torch_npu `2.7.1.post4` / **CANN `9.0.0`**（`bishengir 1.1.0` + `hivmc 0.2.0`）/ Ascend910B3（可见设备 6）。
+  - **2026-10-16 重定基线**：工作区自 8.5.2 升级至 CANN 9.0.0。工作流① 知识库结论重验已完（19/19 repro 探针存活，见 `docs/cann9_adaptation.md` §10）；**表 A/B 的正确性/性能数据仍为 8.5.x 口径，待 ②`pytest tests/ops` / ③`tileops-report` 重测后覆盖**。
 - 状态机：`python3 .agents/tools/statectl.py show --dir examples/<op_slug>`；op 级 `migration show --dir examples/<op_slug>`。
 - 报告口径：`examples/TileOPs/reports/report.md`（多算子统一 run）vs `examples/TileOPs/reports/tileops/<run_id>/`（单算子）。
 - 待办缺口：顶层 `docs/` 缺失（skill 引用 `docs/开发指南.md`/`docs/Tilelang.language/` 不存在）→ `standards_check` 存量 SC-REF-PATH；补入后应转绿。
