@@ -1,0 +1,149 @@
+command: /usr/local/bin/python -m pytest tests/ops/test_conv1d.py -sv --junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_145411_460873_Conv1dFwdOp/pytest/correctness.xml
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/workspace/npuir-migration/examples/TileOPs
+configfile: pyproject.toml
+plugins: cov-7.1.0, xdist-3.6.1, forked-1.7.5
+collecting ... 2026-10-16 14:54:21  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-16 14:54:21  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-16 14:54:21  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+collected 28 items
+
+tests/ops/test_conv1d.py::test_conv1d[smoke-tcn-k3-s1-fp16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmp74i9uykx/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[smoke-tcn-k3-s1-bf16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpzvbys1kp/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[smoke-padding-wider-than-row-fp16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpqzq1f9lb/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-convtasnet-pointwise-k1-s1-fp16] Conv1dPointwiseKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpx5e0amff/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-seanet-residual-k3-s1-fp16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpxh6tupve/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-audio-downsample-k5-s2-fp16] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpn7n59rqm/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-small-seanet-stem-k7-s1-fp16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpejpx9hbg/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-sequence-downsample-k3-s2-bf16] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmp7y298art/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-dilation-k3-d2-fp16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmp6_ofkny7/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-padding-valid-fp16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmp_wjibwxd/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-padding-same-fp16] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpeadq6zfs/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-groups2-k3-fp16] GroupConv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpspog7982/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-groups3-coutg24-fp16] GroupConv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpgq3skuxv/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d[full-conformer-depthwise-k31-fp16] DepthwiseConv1dKernel initialized with config: {'block_n': 256}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpo5nfhtzz/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_no_bias_matches_torch Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpp1fd3x0_/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_bias_matches_torch Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpqcalsjsl/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_dilation_matches_torch[no-bias] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpxnv863c1/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_dilation_matches_torch[bias] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmp99id3ozm/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_same_padding_even_kernel_matches_torch[no-bias] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpcbex0rug/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_same_padding_even_kernel_matches_torch[bias] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpbw8u6wdn/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_dispatches_kernel[unit-stride] Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpv_y9kdjg/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_dispatches_kernel[generic] Conv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpxhwlr0ij/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_dispatches_kernel[pointwise] Conv1dPointwiseKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpx6mpn9df/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_depthwise_matches_torch DepthwiseConv1dKernel initialized with config: {'block_n': 256}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpazti7egf/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_grouped_matches_torch[no-bias] GroupConv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_grouped_matches_torch[bias] GroupConv1dKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'num_stages': 1}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpkhwtyw_y/libkernel.so not found, kernel gets no workspace
+PASSED
+tests/ops/test_conv1d.py::test_conv1d_rejects_unsupported_dtype PASSED
+tests/ops/test_conv1d.py::test_conv1d_eval_roofline Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 256, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+PASSED
+
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+tests/ops/test_conv1d.py::test_conv1d[full-audio-downsample-k5-s2-fp16]
+  /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d.py:298: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+    src = (j % mdec) * self.stride_l + (j // mdec)
+
+tests/ops/test_conv1d.py::test_conv1d_same_padding_even_kernel_matches_torch[no-bias]
+  /mnt/workspace/npuir-migration/examples/TileOPs/tests/ops/test_conv1d.py:134: UserWarning: Using padding='same' with even kernel lengths and odd dilation may require a zero-padded copy of the input be created (Triggered internally at /pytorch/aten/src/ATen/native/Convolution.cpp:1036.)
+    ref = F.conv1d(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_145411_460873_Conv1dFwdOp/pytest/correctness.xml -
+======================= 28 passed, 3 warnings in 54.31s ========================
