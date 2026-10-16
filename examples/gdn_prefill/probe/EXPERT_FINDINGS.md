@@ -84,3 +84,12 @@
 **影响**：Neumann 求逆（以及 chunk 循环里状态 S 的 loop-carried 传递）都依赖"环路携带的 Cube 依赖"，这在本工具链上是**硬伤**。
 **可能绕法**（待试）：① 把 chunk/幂循环**在 Python 层展开**（不用 `T.serial`）；② 换逆的算法（如按块 forward-substitution，小块）；③ 把 Neumann 改成**单次大 gemm 的增广矩阵**形式（避免环路）。
 **状态**：`GatedDeltaNetPrefillFwdOp` 仍**未交付**（CG-2026-0026，WIP，阻碍为上述工具链限制）。
+
+## 11. 结论：Neumann 在本工具链不可实现（再证）
+第 10 节的"绕法①（Python 展开）"已试——**展开 + 复用 L1 + 显式 `T.rs("PIPE_FIX"/"PIPE_MTE2")` 同步仍 err=192.6**（同环路版）。
+⇒ 根因不是 `T.serial` 循环，而是 **`L0C → GM(fp16 fixpipe) → L1` 把 matmul 输出再作为 matmul 操作数** 这条链**本身在本工具链不可靠**。
+- Neumann（`W=(I+S_sys)^{-1}rhs`）与 chunk 状态递归都**必须**做这种"matmul 输出回喂" ⇒ **被堵死**。
+- 结合第 10 节（`initC=False` 不累加），**Cube 侧的环路携带数值流在两个维度上都不可用**。
+- 另：GLADecode（同族）能交付是因为**单步、纯 Vector、无 Cube 环路**；GDN prefill（chunked + Cube + 环路）不满足该条件。
+
+**最终状态**：`GatedDeltaNetPrefillFwdOp` **未交付**（18/19），阻碍为工具链对"Cube 环路携带数值流"的支持缺陷（CG-2026-0026，已升级说明）。可能的**长期**出路：工具链修复（L0C→L1 直连 / initC 累加），或纯 Vector 顺序实现（慢但无 Cube 环路，需另评估）。
