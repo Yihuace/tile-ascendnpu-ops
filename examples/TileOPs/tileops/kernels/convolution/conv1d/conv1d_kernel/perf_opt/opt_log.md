@@ -40,3 +40,16 @@ Cube 阻塞在 `sync_block_wait(4)` 上等 prelude；对大 `C_out`（whisper 12
 
 正确性 `pytest tests/ops/test_conv1d.py` 28/28。注：wav2vec2 `K=C_in·kW=10` 极小 → gemm 天生喂不饱 Cube，
 其 ratio 上限低（非 prelude 问题）。
+
+## 续：block_n 128→256（减少权重重载）
+去 prelude 后 whisper `mte2_ratio=0.886`（GM→L1 主导，权重按 N 块重复载入）。
+把 `_DEFAULT_BLOCK.block_n` 128→256（N 块减半 → 权重重载减半）：
+
+| shape | block_n=128 | block_n=256 | ratio 128→256 |
+|---|---:|---:|---:|
+| whisper-conv1 | 53 | **43.7** | 11.6% → **14.2%** |
+| wav2vec2-layer1 | 218 | **134.7** | 0.81% → **1.31%** |
+| encodec-init | 175 | **113.5** | 0.66% → **1.02%** |
+| encodec-deep | 21 | 22.7 | 6.2% → 5.7%（略降） |
+
+`block_n=512` 编译失败（资源超限）→ 取 256。正确性 passed。

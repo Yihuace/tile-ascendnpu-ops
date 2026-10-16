@@ -128,7 +128,7 @@ _SLOTS = 2
 # hardcode their pipeline depth and ignore it; it is carried as a
 # source-compatible placeholder (same convention as the ``ssd_chunk_scan``
 # wrapper), never a GPU-derived value.
-_DEFAULT_BLOCK = {"block_m": 64, "block_n": 128, "block_k": 128}
+_DEFAULT_BLOCK = {"block_m": 64, "block_n": 256, "block_k": 128}
 _NUM_STAGES = 1
 
 
