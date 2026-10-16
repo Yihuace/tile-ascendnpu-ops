@@ -32,7 +32,7 @@ dtype: [fp16, bf16, fp32]
 device: 910B2C
 status: verified
 origin_task: ada_layer_norm-_ada_layer_norm_kernel-20260910T145715Z（2026-09-10 蒸馏溯源归位：原回写误标 145312Z，实际 optimize task_id 以 stage_state.json 为准）
-toolchain: tilelang 0.1.2+a83118285a（2026-09-10 build）/ Ascend910B2C / CANN 8.5.0；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
+toolchain:tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）+ Ascend910B3 / 2026-10-16
 repro: repro/PL-1.10-loads-first-decoupling.py
 ---
 

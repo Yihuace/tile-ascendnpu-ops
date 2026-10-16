@@ -146,7 +146,7 @@ dtype: []
 device: 910B2C
 status: verified
 origin_task: multi_head_attention-_gqa_prefill_fwd_kernel-20260907T115424Z
-toolchain: tilelang dev root build 2026-09-07（HEAD 21586b5）+ CANN 8.5.0 + Ascend910B2C；developer 谱系 v3_deadbuf 跨工具链二次一致（tilelang 67db6f3 + CANN 26.0.rc1）；2026-10-16 CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）重验存活（repro_runner）
+toolchain:tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）+ Ascend910B3 / 2026-10-16
 repro: repro/TRAP-tvm-parser-rules.py
 ---
 
