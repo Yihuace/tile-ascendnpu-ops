@@ -1,0 +1,18 @@
+{
+  "op_name": "Conv3dBiasFwdOp",
+  "op_slug": "conv3d",
+  "family": "convolution",
+  "gpu_repo_root": "/mnt/workspace/TileOPs-main",
+  "gpu_baseline_commit": "1238a9f",
+  "kernel_class_name": "Conv3dKernel",
+  "op_class_name": "Conv3dBiasFwdOp",
+  "test_path": "tests/ops/test_conv3d_bias.py",
+  "test_slug": "conv3d_bias",
+  "bench_path": "benchmarks/ops/bench_conv3d_bias.py",
+  "bench_slug": "conv3d_bias",
+  "wrapper_path": "tileops/kernels/convolution/conv3d/conv3d.py",
+  "kernel_src": "tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py",
+  "mode": "direct-implementation",
+  "note": "New dense NCDHW implicit-GEMM + MixCV-bias kernel written directly (adapted from the Conv1d NPU package + the Conv3d probe); did not use the extract/integrate harness (thin bias-variant op over a new conv3d kernel). Baseline op is Conv3dFwdOp (bias-optional); this delivers the bias-required interface.",
+  "created_at": "2026-10-16T00:00:00Z"
+}
