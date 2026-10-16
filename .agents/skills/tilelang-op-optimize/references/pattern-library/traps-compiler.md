@@ -261,3 +261,44 @@ repro: repro/TRAP-vselect-inplace-carried-state.py
 ### 原位 T.vselect(cond, A, B, B) 在多迭代 T.serial 循环丢失 loop-carried 状态
 
 在线递推（running (max, idx) 类）跨 tile 级联时，`T.vselect(cond, chunk, running, running)`（false 操作数同时是输出）在多迭代 `T.serial` 循环中静默丢失状态——最终输出停留在 tile-0 局部值。触发边界：单迭代（num_full==2）不受影响，num_full ≥ 3（≥2 次更新迭代）才暴露。实测（argmax (4,102400) tn=5120、num_full=20，fp16）：inplace 得 `[4779,3248,2345,1833]`（全为 tile-0 局部索引，真值 `[31919,3248,44964,44710]`）；同 kernel 无别名形态 bit-exact 与 torch.argmax 一致。绕法 = select 到独立 scratch + `T.copy` 回写（多一对 (bm,1) 微缓冲的可忽略代价）。诊断指纹：输出全落 tile-0 局部索引 ⟹ loop-carried 状态未携带。
+
+---
+id: TRAP-vector-dst-must-ub
+kind: trap
+family: [elementwise, vector]
+apis: [T.vmul, T.vadd, T.vsub, T.vmax, T.vmin]
+dtype: [fp16, bf16, fp32]
+device: [910B3]
+status: verified
+origin_task: gdn_prefill probe / optimize
+toolchain: tilelang 0.1.2+417dae99 (dev-root) / CANN 8.5.2
+repro: repro-missing
+---
+
+### TRAP: 向量 op 的 dst 必须是 UB；写 GM 张量 → bishengir SIGABRT
+
+`T.vmul(x_ub, scalar, GM_tensor)`（把向量结果**直接写成 GM 输出张量**）会生成坏 IR →
+**bishengir 后端 SIGABRT（LLVM crash）**。必须写 UB，再 `T.copy(ub, GM)`。
+（同时：`T.copy` **不**做 dtype 转换，fp16→fp32 需 `T.copy(fp16GM,fp16UB)` + `T.vcast`。）
+
+---
+id: TRAP-cube-initc-no-accum
+kind: trap
+family: [cube, gemm]
+apis: [T.gemm]
+dtype: [fp16]
+device: [910B3]
+status: verified
+origin_task: gdn_prefill probe（Neumann 求逆）
+toolchain: tilelang 0.1.2+417dae99 (dev-root) / CANN 8.5.2
+repro: repro-missing
+---
+
+### TRAP: `T.gemm(initC=False)` 不跨多次 gemm/循环累加；环路中接 L0C→GM→L1 回喂不可靠
+
+- `M=I` 后连续 `T.gemm(Sn,I,l0,initC=False)`（展开或 `T.serial`）→ 期望 `I+3Sn`，实测**不累加**（err≈10）。
+- `term=Sn@term`（gemm 输出经 `L0C→GM(fp16 fixpipe)→L1` 再作 gemm 操作数）在循环/展开下**结果错**（err≈193）；
+  加 `T.rs("PIPE_FIX"/"PIPE_MTE2")` 亦无效。
+- ⇒ Cube 侧的**环路携带数值流**（累加/回喂）在本工具链不可靠；Neumann 求逆类算法受此阻塞（GDN prefill）。
+- **CANN 9.0** 另注：`hivm.hir.sync_block_set/wait` 的 `syn_instr_mode` 属性为旧 AscendNPU-IR 所加、9.0 不认；
+  删该属性可解多数（398/405），但 sync op 定义改版导致 7 个 kernel 在 9.0 后端 SEGV（需匹配版 AscendNPU-IR）。

@@ -126,3 +126,34 @@ repro: repro/repro_nsplit_pattern.py
 - merge：单 block，ws 按 (nchunk,M) 视图读入 shared → `T.transpose(...,[1,0])` → (M,nchunk) dims=1 tie-break 链（E1 同构：vselect 命中 chunk 的已全局化 idx，min = 首现）。
 - **tn 规则（扫描实测 tn∈{1280,2048,2560,5120} → 8.58µs@2560 最优）：最大单波 nchunk ≤ cores**（tn 升序 256 倍数扫首个除数）；nchunk>cores（双波 2:1）与 nchunk≪cores（核饥饿）均劣。
 - 实测：lm-head fp16 25.90→11.78µs（2.20×）、bf16 30.61→11.75µs（2.60×）；工厂契约保持单 callable（组合层 torch.empty workspace + 双发射）。
+
+---
+id: PL-1.21-vmax-nan-native
+kind: pattern
+family: [elementwise, unary]
+apis: [T.vmax, T.vmin, T.vclamp, T.vcmp, T.vselect]
+dtype: [fp16, bf16, fp32]
+device: 910B3
+status: verified
+origin_task: clamp_scalar/hardsigmoid/gelu_and_mul Stage-4 optimize
+toolchain: tilelang 0.1.2+417dae99 (dev-root) / CANN 8.5.2 / Ascend910B3
+repro: repro-missing
+---
+
+### 1.21 逐元素 clamp/多项式链已原生传播 NaN → 删冗余 vcmp+vselect（3 算子实证）
+
+**现象**：clamp / hardsigmoid / gelu_and_mul 等逐元素算子的 fp32 计算链后都接了一段"NaN 单点恢复"
+（`T.vcmp(x,x,"ne")` 掩码 + `T.vselect` 回填），据设计 R2「Ascend vmax/vmin 未文档化 NaN 传播」而加。
+
+**实测（本工具链）**：fp32 域的 `T.vmax/T.vmin/T.vclamp`（及 Horner 多项式链 `vmul/vadd`）**已原生传播 NaN**
+且不破坏 `±inf`：
+- 3 种边界形态（min-only/max-only/both）× fp16，586 个 NaN 点：`nan_ok=True`；
+- `vclamp` 有限值 `max_diff=0.00e+00`；`+inf→+inf`、`-inf→min`。
+
+**优化（慢→快）**：删除 `vcmp`+`vselect` 两点恢复（向量链 5→3 op）。三算子实测：
+- ClampScalar：16M fp16 **-38%**（45.5%→73.5%），bf16 -38.7%、fp32 -32.4%；256M -12~-16%。
+- Hardsigmoid：fc-wide **-40.6%**（50.5%→55.7%）。
+- GeluAndMul：prefill **-9.3%**（43.2%→46.0%，compute-bound）。
+
+**适用/边界**：仅在**实测确认**该工具链的 `vmax/vmin/vclamp` 传播 NaN 时成立；**换 CANN 版本后必须重验**
+（工具链变更可能改 NaN 语义）。`vcmp "ne"` 有序比较不可用于 NaN 检测（须用 `x<=x` 取反或 `!=` 语义注意）。
