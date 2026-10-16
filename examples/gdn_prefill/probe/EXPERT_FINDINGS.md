@@ -59,3 +59,14 @@
 - C2（Neumann）：建议**纯 Cube** 实现——累加矩阵幂 `M=I+Σ Sn^j`（`gemm(P_j, I, M_l0c, initC=False)` 累加；`P_{j+1}=Sn@P_j`），再 `W=M@rhs`，避免 Cube/Vector 交错。
 - C3/V3：`o=scale·exp(gc)·QS+(scale·G·QK)·W`；`S=gdb·S+(k·grev)ᵀ·W`。
 - 再拼成完整 chunk 循环 → op 层/manifest/tests/报告。
+
+## 9. 进度快照 / 恢复点（2026-10-16）
+- **真机实验脚本**（可重跑）：`experiments/`
+  - `01_expert_gemm.py` — Expert `T.gemm`（含 b_transpose）✅
+  - `02_gm_handoff_sync.py` — Cube→Vector 经 GM + flag 握手 ✅
+  - `03_c1_cube.py` — C1：KK/QK/KS/QS ✅ (~1e-6)
+  - `04_v1_gate.py` — V1：gc / G_strict / G_incl ✅ (gc 精确, G 6e-8)
+  - `05_v1b_ssys_rhs.py` — C1+V1b：S_sys→sn16 / rhs ✅ (1.2e-3 / 2.4e-7)
+  - `06_c2_neumann_FAILED.py` — C2 Neumann 纯 Cube 幂累加 ❌（W err 50.5，环路中接 hazard）
+- **恢复点**：修 `06` 的 L0C→GM→L1 环路同步（或改用 pairs 循环 + 已验证的 Cube/Vector 握手），通过后做 C3/V3，再拼整 kernel → op 层/manifest/tests/报告。
+- **注意**：本任务未产出可用内核；`GatedDeltaNetPrefillFwdOp` 仍**未交付**（gap CG-2026-0026 更新为"进行中/WIP"）。
