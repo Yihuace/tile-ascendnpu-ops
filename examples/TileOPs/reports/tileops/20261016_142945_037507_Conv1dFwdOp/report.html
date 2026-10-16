@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TileOPs Evaluation Report: Conv1dFwdOp</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #1a1a2e;
+      --ink-mid: #4a4a5e;
+      --ink-light: #7a7a8e;
+      --rule: #c8c8d0;
+      --rule-light: #e8e8ee;
+      --bg-page: #f0f2f5;
+      --bg-paper: #fff;
+      --bg-stripe: #f8f9fb;
+      --bg-callout: #f4f6fa;
+      --score-high: #1a6b3c;
+      --score-mid: #a66c00;
+      --score-low: #c0392b;
+      --accent: #1e4d7b;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-mono: "SF Mono", "Cascadia Code", Consolas, "Noto Sans Mono SC", monospace;
+      --content-width: 980px;
+      --pad-h: 40px;
+    }
+    html { font-size: 16px; }
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 24px 8px 48px;
+      background: var(--bg-page);
+      color: var(--ink);
+      font-family: var(--font-stack);
+      line-height: 1.6;
+    }
+    .report {
+      width: 100%;
+      max-width: var(--content-width);
+      background: var(--bg-paper);
+      box-shadow: 0 0 0 1px rgb(0 0 0 / 6%), 0 2px 16px rgb(0 0 0 / 8%);
+    }
+    .report-header {
+      padding: 10px var(--pad-h);
+      background: var(--ink);
+      color: #fff;
+      font-size: .6875rem;
+      letter-spacing: .18em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .report-header span { opacity: .55; font-weight: 400; }
+    .title-area {
+      padding: 34px var(--pad-h) 27px;
+      border-bottom: 3px double var(--ink);
+      text-align: center;
+    }
+    .title-area h1 { margin-bottom: 7px; font-size: 1.5rem; line-height: 1.4; }
+    .title-area h2 {
+      color: var(--ink-mid);
+      font-size: .875rem;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .meta-line { margin-top: 13px; color: var(--ink-mid); font-size: .75rem; }
+    .meta-line + .meta-line { margin-top: 2px; }
+    .status {
+      display: inline-block;
+      margin-left: 7px;
+      padding: 1px 7px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-size: .625rem;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .status.passed { color: var(--score-high); }
+    .status.partial { color: var(--score-mid); }
+    .status.failed { color: var(--score-low); }
+    .abstract {
+      margin: 20px var(--pad-h) 0;
+      padding: 18px 22px;
+      border: 1px solid var(--rule-light);
+      border-radius: 4px;
+      background: var(--bg-callout);
+    }
+    .abstract h3 {
+      margin-bottom: 7px;
+      font-size: .8125rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .abstract p { color: var(--ink-mid); font-size: .8125rem; line-height: 1.75; }
+    .section { padding: 0 var(--pad-h); margin-top: 28px; }
+    .section h3 {
+      margin-bottom: 16px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--rule);
+      font-size: 1rem;
+    }
+    .section h4 { margin: 20px 0 8px; font-size: .875rem; }
+    .operator-block { margin-top: 22px; }
+    .operator-block + .operator-block {
+      margin-top: 32px;
+      padding-top: 8px;
+      border-top: 1px solid var(--rule-light);
+    }
+    .sec-num { margin-right: 8px; }
+    .kpi-strip {
+      display: flex;
+      margin: 16px 0;
+      overflow: hidden;
+      border: 1px solid var(--rule-light);
+      border-radius: 4px;
+    }
+    .kpi-item {
+      flex: 1;
+      padding: 18px 10px;
+      border-right: 1px solid var(--rule-light);
+      text-align: center;
+    }
+    .kpi-item:last-child { border-right: 0; }
+    .kpi-value { color: var(--ink); font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+    .kpi-label {
+      margin-top: 5px;
+      color: var(--ink-light);
+      font-size: .6875rem;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+    .kpi-sub { margin-top: 2px; color: var(--ink-light); font-size: .625rem; }
+    .table-wrap { margin: 14px 0; overflow-x: auto; }
+    .table-wrap caption {
+      margin-bottom: 8px;
+      caption-side: top;
+      color: var(--ink-mid);
+      font-size: .75rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    .table-wrap table { width: 100%; border-collapse: collapse; font-size: .75rem; }
+    .table-wrap thead th {
+      padding: 9px 8px;
+      border-top: 2px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+      background: var(--bg-paper);
+      color: var(--ink);
+      font-size: .65rem;
+      letter-spacing: .025em;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .table-wrap tbody td {
+      padding: 8px;
+      border-bottom: 1px solid var(--rule-light);
+      color: var(--ink-mid);
+      text-align: center;
+      vertical-align: middle;
+    }
+    .table-wrap tbody tr:nth-child(even) { background: var(--bg-stripe); }
+    .table-wrap tbody tr:last-child { border-bottom: 1.5px solid var(--ink); }
+    .table-wrap .col-name { color: var(--ink); font-weight: 600; text-align: left; }
+    code { font-family: var(--font-mono); font-size: .6875rem; }
+    .number { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .strong { color: var(--ink) !important; font-weight: 700; }
+    .cell-sub { display: block; margin-top: 1px; color: var(--ink-light); font-size: .6rem; }
+    .score-cell { font-weight: 600; }
+    .score-high { color: var(--score-high) !important; }
+    .score-mid { color: var(--score-mid) !important; }
+    .score-low { color: var(--score-low) !important; }
+    .case-link { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .case-link:hover { text-decoration: underline; }
+    .note { margin-top: 6px; color: var(--ink-light); font-size: .6875rem; font-style: italic; }
+    .callout {
+      margin: 12px 0;
+      padding: 12px 16px;
+      border: 1px solid var(--rule-light);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      background: var(--bg-callout);
+      color: var(--ink-mid);
+      font-size: .75rem;
+    }
+    .callout.warning { border-left-color: var(--score-mid); }
+    .callout ul { margin: 5px 0 0 18px; }
+    .case-detail {
+      margin-bottom: 8px;
+      border: 1px solid var(--rule-light);
+      border-radius: 4px;
+      background: var(--bg-paper);
+    }
+    .case-detail[open] { border-left: 3px solid var(--accent); }
+    .case-detail summary {
+      display: grid;
+      grid-template-columns: minmax(100px, 160px) 90px 70px minmax(190px, 1fr) 90px 36px;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 14px;
+      color: var(--ink-mid);
+      cursor: pointer;
+      font-size: .75rem;
+      list-style-position: inside;
+    }
+    .case-detail summary strong { color: var(--ink); text-align: right; }
+    .case-detail summary::after { content: "展开"; color: var(--accent); font-size: .625rem; }
+    .case-detail[open] summary::after { content: "收起"; }
+    .timing-detail summary { grid-template-columns: minmax(180px, 1fr) 110px 100px 36px; }
+    .case-index { color: var(--accent); font-weight: 700; }
+    .detail-grid { padding: 0 14px 14px; }
+    .detail-grid table { width: 100%; border-collapse: collapse; font-size: .6875rem; }
+    .detail-grid td { padding: 5px 7px; border-bottom: 1px solid var(--rule-light); }
+    .detail-grid .kv-k { width: 29%; color: var(--ink); font-weight: 600; }
+    .setup-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+      align-items: start;
+    }
+    .setup-block {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--rule-light);
+      border-radius: 5px;
+      background: var(--bg-paper);
+    }
+    .setup-block h4 {
+      margin: 0;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--rule-light);
+      background: var(--bg-callout);
+      font-size: .6875rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .setup-block table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-size: .6875rem;
+    }
+    .setup-block td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--rule-light);
+      color: var(--ink-mid);
+      line-height: 1.45;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+    .setup-block tr:last-child td { border-bottom: 0; }
+    .setup-block .kv-k {
+      width: 36%;
+      color: var(--ink);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .empty { padding: 24px !important; color: var(--ink-light) !important; text-align: center; }
+    .footnote {
+      margin-top: 28px;
+      padding: 14px var(--pad-h);
+      border-top: 1px solid var(--rule);
+      color: var(--ink-light);
+      font-size: .625rem;
+      line-height: 1.8;
+    }
+    @media (max-width: 760px) {
+      :root { --pad-h: 20px; }
+      body { padding: 0; }
+      .kpi-strip { flex-wrap: wrap; }
+      .kpi-item { flex: 1 1 50%; }
+      .setup-grid { grid-template-columns: 1fr; }
+      .case-detail summary { grid-template-columns: 70px 1fr; }
+      .case-detail summary::after { display: none; }
+      .case-detail summary strong { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+<main class="report">
+  <div class="report-header">TILEOPS EVALUATION REPORT <span>· STRUCTURED NPU OPERATOR BENCHMARK</span></div>
+
+  <div class="title-area">
+    <h1>TileOPs 算子评测报告</h1>
+    <h2>Correctness-gated NPU Performance Evaluation</h2>
+    <div class="meta-line"><strong>Conv1dFwdOp</strong> · 16 Workloads · Profiler: msprof</div>
+    <div class="meta-line">2026-10-16T14:37:28.039701+08:00 <span class="status passed">PASSED</span></div>
+  </div>
+
+  <div class="abstract">
+    <h3>Abstract / 摘要</h3>
+    <p>本报告覆盖 <strong>1</strong> 个算子、<strong>28</strong> 个精度用例和 <strong>16</strong> 个性能 workload。精度由原有 pytest golden 对比判定，性能数据来自 BenchmarkReport 与 msprof；run.json 是机器可读的事实来源。</p>
+  </div>
+
+  <section class="section">
+    <h3><span class="sec-num">1.</span> Experiment Setup / 评测配置</h3>
+    <div class="setup-grid"><div class="setup-block"><h4>Metadata / 元信息</h4><table><tbody><tr><td class="kv-k">Framework</td><td>TileOPs Reporting 0.1.0</td></tr><tr><td class="kv-k">Date</td><td>2026-10-16T14:37:28.039701+08:00</td></tr><tr><td class="kv-k">Evaluation Scope</td><td>Conv1dFwdOp</td></tr><tr><td class="kv-k">Benchmark</td><td>TileOPs pytest operator suite</td></tr><tr><td class="kv-k">Profiler</td><td>msprof</td></tr><tr><td class="kv-k">Run ID</td><td>20261016_142945_037507_Conv1dFwdOp</td></tr><tr><td class="kv-k">Git Commit</td><td>405814d4b1e029ab505f242eb9020ca08f8e7552</td></tr><tr><td class="kv-k">Correctness Target</td><td>tests/ops/test_conv1d.py</td></tr><tr><td class="kv-k">Benchmark Target</td><td>benchmarks/ops/bench_conv1d.py</td></tr></tbody></table></div><div class="setup-block"><h4>Environment / 运行环境</h4><table><tbody><tr><td class="kv-k">NPU</td><td>Ascend910B3 x 1</td></tr><tr><td class="kv-k">CPU</td><td>aarch64</td></tr><tr><td class="kv-k">CANN</td><td>8.5.2</td></tr><tr><td class="kv-k">Driver</td><td>25.5.0</td></tr><tr><td class="kv-k">PyTorch</td><td>2.7.1+cpu</td></tr><tr><td class="kv-k">PyTorch NPU</td><td>2.7.1.post4</td></tr><tr><td class="kv-k">TileLang</td><td>0.1.2+417dae9908ad2ea5ffb74294a7075b6cb64b4f2b (/home/developer/tilelang-mlir-ascend@417dae9)</td></tr><tr><td class="kv-k">Python</td><td>3.11.4</td></tr><tr><td class="kv-k">OS</td><td>Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31</td></tr><tr><td class="kv-k">Container</td><td>container</td></tr></tbody></table></div></div>
+  </section>
+
+  <section class="section">
+    <h3><span class="sec-num">2.</span> Results Overview / 结果总览</h3>
+    <div class="kpi-strip">
+      <div class="kpi-item"><div class="kpi-value">100.0%</div><div class="kpi-label">Pass Rate / 通过率</div><div class="kpi-sub">28 / 28 cases</div></div>
+      <div class="kpi-item"><div class="kpi-value">1</div><div class="kpi-label">Operators / 算子数</div><div class="kpi-sub">evaluated operators</div></div>
+      <div class="kpi-item"><div class="kpi-value">28</div><div class="kpi-label">Total Cases / 总用例</div><div class="kpi-sub">correctness cases</div></div>
+      <div class="kpi-item"><div class="kpi-value">0</div><div class="kpi-label">Failed Cases / 失败用例</div><div class="kpi-sub">failure + error</div></div>
+    </div>
+  </section>
+
+  
+
+  <section class="section">
+    <h3><span class="sec-num">3.</span> Operator Analysis / 算子分析</h3>
+    <div class="table-wrap">
+      <table>
+        <caption>Table 1. Results by operator</caption>
+        <thead><tr><th>#</th><th>Operator</th><th>Correctness</th><th>Avg Max Abs Error</th><th>Performance Shapes</th><th>Ratio Range</th></tr></thead>
+        <tbody><tr><td>1</td><td class="col-name"><a class="case-link" href="#operator-1">Conv1dFwdOp</a></td><td class="score-cell score-high">100.0% (28/28)</td><td class="number">3.91e-02</td><td>16</td><td>0.31% – 11.68%</td></tr></tbody>
+      </table>
+    </div>
+    <p class="note">Correctness 格式为通过率 (通过用例/总用例)；Avg Max Abs Error 来自正确性测试，数值越低越好；Ratio 展示各 shape 的最小值–最大值，不跨 shape 求平均。</p>
+  </section>
+
+  <section class="section"><h3><span class="sec-num">4.</span> Operator Details / 算子明细</h3><div class="operator-block" id="operator-1"><h4>4.1 Conv1dFwdOp</h4><div class="table-wrap"><table><caption>Table 4.1. Per-shape performance results</caption><thead><tr><th>Label</th><th>Latency (us)</th><th>Ratio</th><th>AI (Ops/Byte)</th><th>Bound</th><th>Shape / Parameters</th><th>DType</th><th>Kernel</th><th>Bandwidth (TB/s)</th><th>Advice</th></tr></thead><tbody><tr><td class="col-name"><a class="case-link" href="#case-1-1">whisper-conv1</a></td><td class="number strong">53.220</td><td class="number score-cell score-low">11.68%</td><td class="number">2335.936</td><td>?</td><td><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code></td><td><code>float16</code></td><td><code>_conv1d_unit_stride_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-2">whisper-conv1</a></td><td class="number strong">53.460</td><td class="number score-cell score-low">11.63%</td><td class="number">2335.936</td><td>?</td><td><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_unit_stride_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-3">wav2vec2-layer1</a></td><td class="number strong">617.140</td><td class="number score-cell score-low">0.31%</td><td class="number">993.891</td><td>?</td><td><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code></td><td><code>float16</code></td><td><code>_conv1d_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-4">wav2vec2-layer1</a></td><td class="number strong">605.240</td><td class="number score-cell score-low">0.32%</td><td class="number">993.891</td><td>?</td><td><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-5">encodec-init</a></td><td class="number strong">262.840</td><td class="number score-cell score-low">0.44%</td><td class="number">1187.511</td><td>?</td><td><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code></td><td><code>float16</code></td><td><code>_conv1d_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-6">encodec-init</a></td><td class="number strong">250.120</td><td class="number score-cell score-low">0.46%</td><td class="number">1223.693</td><td>?</td><td><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-7">encodec-deep</a></td><td class="number strong">22.920</td><td class="number score-cell score-low">5.70%</td><td class="number">552.810</td><td>?</td><td><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code></td><td><code>float16</code></td><td><code>_conv1d_unit_stride_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-8">encodec-deep</a></td><td class="number strong">20.040</td><td class="number score-cell score-low">6.51%</td><td class="number">552.206</td><td>?</td><td><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_unit_stride_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-9">whisper-conv1-bias</a></td><td class="number strong">67.420</td><td class="number score-cell score-low">9.25%</td><td class="number">2350.972</td><td>?</td><td><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code></td><td><code>float16</code></td><td><code>_conv1d_unit_stride_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-10">whisper-conv1-bias</a></td><td class="number strong">66.300</td><td class="number score-cell score-low">9.43%</td><td class="number">2361.675</td><td>?</td><td><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_unit_stride_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-11">wav2vec2-layer1-bias</a></td><td class="number strong">619.040</td><td class="number score-cell score-low">0.31%</td><td class="number">1002.261</td><td>?</td><td><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code></td><td><code>float16</code></td><td><code>_conv1d_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-12">wav2vec2-layer1-bias</a></td><td class="number strong">614.080</td><td class="number score-cell score-low">0.32%</td><td class="number">1007.941</td><td>?</td><td><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:pipeline caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-13">encodec-init-bias</a></td><td class="number strong">269.820</td><td class="number score-cell score-low">0.43%</td><td class="number">1237.292</td><td>?</td><td><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code></td><td><code>float16</code></td><td><code>_conv1d_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:pipeline caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-14">encodec-init-bias</a></td><td class="number strong">249.020</td><td class="number score-cell score-low">0.47%</td><td class="number">1223.785</td><td>?</td><td><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:pipeline caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-15">encodec-deep-bias</a></td><td class="number strong">27.180</td><td class="number score-cell score-low">4.79%</td><td class="number">552.428</td><td>?</td><td><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code></td><td><code>float16</code></td><td><code>_conv1d_unit_stride_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr><tr><td class="col-name"><a class="case-link" href="#case-1-16">encodec-deep-bias</a></td><td class="number strong">25.520</td><td class="number score-cell score-low">5.10%</td><td class="number">553.499</td><td>?</td><td><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code></td><td><code>bfloat16</code></td><td><code>_conv1d_unit_stride_bias_main</code><span class="cell-sub">msprof</span></td><td class="number">1.750</td><td>latency bound:memory caused</td></tr></tbody></table></div><p class="note">Latency 是该 shape 重复测量后的统计值；Ratio 不跨 shape 求平均。</p><details class="case-detail" id="case-1-1"><summary><span class="case-index">whisper-conv1</span><strong>53.220 us</strong><span>11.68%</span><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-f5eeceafac0d</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 80, &quot;c_in_g&quot;: 80, &quot;c_out&quot;: 1280, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 80, 3000], &quot;kernel_size&quot;: 3, &quot;l_in&quot;: 3000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [1280, 80, 3]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>2335.9360</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>34.7260</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>53.2200 / 53.2200 / 53.2200</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_nvghqc_m</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-2"><summary><span class="case-index">whisper-conv1</span><strong>53.460 us</strong><span>11.63%</span><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-641990cb6e14</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 80, &quot;c_in_g&quot;: 80, &quot;c_out&quot;: 1280, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 80, 3000], &quot;kernel_size&quot;: 3, &quot;l_in&quot;: 3000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [1280, 80, 3]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>2335.9360</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>34.5701</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>53.4600 / 53.4600 / 53.4600</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_l63_fymr</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-3"><summary><span class="case-index">wav2vec2-layer1</span><strong>617.140 us</strong><span>0.31%</span><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-5029ac522ba4</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 512, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 16000], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 16000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 5, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [512, 1, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>993.8912</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>0.9287</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>617.1400 / 617.1400 / 617.1400</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_2muvo2p7</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-4"><summary><span class="case-index">wav2vec2-layer1</span><strong>605.240 us</strong><span>0.32%</span><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-4242f72164d2</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 512, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 16000], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 16000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 5, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [512, 1, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>993.8912</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>0.9469</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>605.2400 / 605.2400 / 605.2400</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_hayojnx6</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-5"><summary><span class="case-index">encodec-init</span><strong>262.840 us</strong><span>0.44%</span><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-c9aa57bb875b</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 32, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 24000], &quot;kernel_size&quot;: 7, &quot;l_in&quot;: 24000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [32, 1, 7]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>1187.5110</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>1.3104</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>262.8400 / 262.8400 / 262.8400</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_0_5ybrws</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-6"><summary><span class="case-index">encodec-init</span><strong>250.120 us</strong><span>0.46%</span><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-b61fa207198d</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 32, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 24000], &quot;kernel_size&quot;: 7, &quot;l_in&quot;: 24000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [32, 1, 7]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>1223.6926</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>1.3771</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>250.1200 / 250.1200 / 250.1200</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_ce7glutb</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-7"><summary><span class="case-index">encodec-deep</span><strong>22.920 us</strong><span>5.70%</span><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-59751a88257f</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 128, &quot;c_in_g&quot;: 128, &quot;c_out&quot;: 256, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 128, 600], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 600, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [256, 128, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>552.8105</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>16.9274</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>22.9200 / 22.9200 / 22.9200</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_xoadljy3</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-8"><summary><span class="case-index">encodec-deep</span><strong>20.040 us</strong><span>6.51%</span><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-bafe9f39ea61</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;bias&quot;: null, &quot;c_in&quot;: 128, &quot;c_in_g&quot;: 128, &quot;c_out&quot;: 256, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 128, 600], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 600, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: false, &quot;weight_shape&quot;: [256, 128, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>552.2062</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>19.3601</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>20.0400 / 20.0400 / 20.0400</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_p5nwdfcm</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-9"><summary><span class="case-index">whisper-conv1-bias</span><strong>67.420 us</strong><span>9.25%</span><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-3696fca1b6c6</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 80, &quot;c_in_g&quot;: 80, &quot;c_out&quot;: 1280, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 80, 3000], &quot;kernel_size&quot;: 3, &quot;l_in&quot;: 3000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [1280, 80, 3]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>2350.9722</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>27.5929</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>67.4200 / 67.4200 / 67.4200</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_gn6_edfs</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-10"><summary><span class="case-index">whisper-conv1-bias</span><strong>66.300 us</strong><span>9.43%</span><code>input_shape=[1, 80, 3000]; weight_shape=[1280, 80, 3]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-e5284771eae5</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 80, &quot;c_in_g&quot;: 80, &quot;c_out&quot;: 1280, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 80, 3000], &quot;kernel_size&quot;: 3, &quot;l_in&quot;: 3000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [1280, 80, 3]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>2361.6748</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>28.1777</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>66.3000 / 66.3000 / 66.3000</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_wp0hj7se</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-11"><summary><span class="case-index">wav2vec2-layer1-bias</span><strong>619.040 us</strong><span>0.31%</span><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-59c2812dbf96</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 512, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 16000], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 16000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 5, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [512, 1, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>1002.2609</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>0.9340</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>619.0400 / 619.0400 / 619.0400</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_rvz5yk6i</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-12"><summary><span class="case-index">wav2vec2-layer1-bias</span><strong>614.080 us</strong><span>0.32%</span><code>input_shape=[1, 1, 16000]; weight_shape=[512, 1, 10]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-ddd8f3a71b5d</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 512, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 16000], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 16000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 5, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [512, 1, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>1007.9410</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>0.9469</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>614.0800 / 614.0800 / 614.0800</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_yyghrajj</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-13"><summary><span class="case-index">encodec-init-bias</span><strong>269.820 us</strong><span>0.43%</span><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-ac8047fef70f</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 32, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 24000], &quot;kernel_size&quot;: 7, &quot;l_in&quot;: 24000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [32, 1, 7]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>1237.2916</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>1.2942</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>269.8200 / 269.8200 / 269.8200</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_0tu4mlhj</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-14"><summary><span class="case-index">encodec-init-bias</span><strong>249.020 us</strong><span>0.47%</span><code>input_shape=[1, 1, 24000]; weight_shape=[32, 1, 7]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-802571d618fd</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 1, &quot;c_in_g&quot;: 1, &quot;c_out&quot;: 32, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 1, 24000], &quot;kernel_size&quot;: 7, &quot;l_in&quot;: 24000, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [32, 1, 7]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>1223.7848</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>1.4147</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>249.0200 / 249.0200 / 249.0200</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_chf2_ank</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-15"><summary><span class="case-index">encodec-deep-bias</span><strong>27.180 us</strong><span>4.79%</span><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code><span>float16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-70d6f0e84fa3</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 128, &quot;c_in_g&quot;: 128, &quot;c_out&quot;: 256, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;float16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 128, 600], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 600, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [256, 128, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>552.4281</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>14.2931</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>27.1800 / 27.1800 / 27.1800</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_idtjq_sj</code></td></tr></tbody></table></div></details><details class="case-detail" id="case-1-16"><summary><span class="case-index">encodec-deep-bias</span><strong>25.520 us</strong><span>5.10%</span><code>input_shape=[1, 128, 600]; weight_shape=[256, 128, 10]</code><span>bfloat16</span></summary><div class="detail-grid"><table><tbody><tr><td class="kv-k">Internal case ID</td><td><code>Conv1dFwdOp-71d05debf21d</code></td></tr><tr><td class="kv-k">Parameters</td><td><code>{&quot;c_in&quot;: 128, &quot;c_in_g&quot;: 128, &quot;c_out&quot;: 256, &quot;dilation&quot;: 1, &quot;dtype&quot;: &quot;bfloat16&quot;, &quot;groups&quot;: 1, &quot;input_shape&quot;: [1, 128, 600], &quot;kernel_size&quot;: 10, &quot;l_in&quot;: 600, &quot;n&quot;: 1, &quot;padding&quot;: 0, &quot;stride&quot;: 1, &quot;use_bias&quot;: true, &quot;weight_shape&quot;: [256, 128, 10]}</code></td></tr><tr><td class="kv-k">Kernel config</td><td><code>{&quot;block_k&quot;: 128, &quot;block_m&quot;: 64, &quot;block_n&quot;: 128, &quot;num_stages&quot;: 1, &quot;taps&quot;: 1}</code></td></tr><tr><td class="kv-k">Profiler / kernel</td><td><code>msprof / _conv1d_unit_stride_bias_main</code></td></tr><tr><td class="kv-k">AI (Ops/Byte)</td><td><code>553.4985</code></td></tr><tr><td class="kv-k">Performance (TOPS)</td><td><code>15.2356</code></td></tr><tr><td class="kv-k">Computility (TOPS)</td><td><code>N/A</code></td></tr><tr><td class="kv-k">Samples</td><td><code>1</code></td></tr><tr><td class="kv-k">Min / median / max (us)</td><td><code>25.5200 / 25.5200 / 25.5200</code></td></tr><tr><td class="kv-k">Artifact</td><td><code>/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_142945_037507_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_7czx7uuv</code></td></tr></tbody></table></div></details></div></section>
+
+  <div class="footnote">
+    <strong>Framework:</strong> TileOPs Reporting ·
+    <strong>Data Source:</strong> pytest JUnit, BenchmarkReport JSON, msprof artifacts ·
+    <strong>Canonical Record:</strong> run.json
+  </div>
+</main>
+</body>
+</html>

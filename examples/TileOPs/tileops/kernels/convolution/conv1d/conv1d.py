@@ -77,14 +77,11 @@ from .conv1d_kernel import (
     _conv1d_group_kernel,
     _conv1d_kernel,
     _conv1d_pointwise_kernel,
-    _conv1d_unit_stride_kernel,
 )
-# --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .conv1d_kernel.perf_opt._conv1d_direct_kernel import _conv1d_direct_kernel
-# from .conv1d_kernel.perf_opt._conv1d_group_kernel import _conv1d_group_kernel
-# from .conv1d_kernel.perf_opt._conv1d_kernel import _conv1d_kernel
-# from .conv1d_kernel.perf_opt._conv1d_pointwise_kernel import _conv1d_pointwise_kernel
-# from .conv1d_kernel.perf_opt._conv1d_unit_stride_kernel import _conv1d_unit_stride_kernel
+# --- perf_opt (Stage 4 tuned): unit_stride dropped the in-kernel Vector prelude
+# (weight re-layout + x_pad), so the wrapper fills w_flat/x_pad on the host.
+from .conv1d_kernel.perf_opt._conv1d_unit_stride_kernel import _conv1d_unit_stride_kernel
+_HOST_LAYOUT = True
 
 __all__ = [
     "Conv1dKernel",
@@ -378,6 +375,11 @@ class Conv1dUnitStrideKernel(Conv1dKernel):
         )
         w_flat = torch.zeros((self.kernel_l, self.c_out, c_in_pad), dtype=x.dtype, device=x.device)
         x_pad = torch.zeros((self.n, c_in_pad, l_pad), dtype=x.dtype, device=x.device)
+        if _HOST_LAYOUT:
+            # host pre-layout (perf_opt): x_pad[n,ci,pad_left+i]=x[n,ci,i];
+            # w_flat[kw,co,ci]=weight[co,ci,kw]
+            x_pad[:, : self.c_in, self.pad_left : self.pad_left + self.l_in] = x
+            w_flat[:, :, : self.c_in] = weight.permute(2, 0, 1).to(x.dtype)
         workspaces = [w_flat, x_pad]
         bias_t = None
         if bias is not None:
