@@ -1,0 +1,18 @@
+diff --git a/tilelang/jit/jit_npu.py b/tilelang/jit/jit_npu.py
+index b833d98..e1e0926 100644
+--- a/tilelang/jit/jit_npu.py
++++ b/tilelang/jit/jit_npu.py
+@@ -1857,6 +1857,13 @@ class compiler_npu:
+ 
+     def _npuir_to_bin_enable_npu_compile(self):
+         linalg = self.mlir_content
++        # CANN 9.0 compatibility shim: the old AscendNPU-IR codegen emits the
++        # optional attribute `syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>` on
++        # hivm sync_block_set/wait; CANN 9.0's bishengir no longer defines it and
++        # fails to parse ("Dialect '' not found for custom op 'syn_instr_mode'").
++        # The attribute is optional (the sync op has a default), so strip it.
++        import re as _re
++        linalg = _re.sub(r"\s+syn_instr_mode\s*=\s*<[^>]*>", "", linalg)  # CANN9 shim: strip
+         with tempfile.TemporaryDirectory() as tmpdir:
+             ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+             Path(ttadapter_path).write_text(linalg)

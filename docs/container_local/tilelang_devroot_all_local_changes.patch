@@ -1,0 +1,141 @@
+# tilelang dev-root 全部本地改动（评审用）：
+diff --git a/3rdparty/AscendNPU-IR b/3rdparty/AscendNPU-IR
+--- a/3rdparty/AscendNPU-IR
++++ b/3rdparty/AscendNPU-IR
+@@ -1 +1 @@
+-Subproject commit 31f690369d1247fbd5529a3f88b758f7d470ae4f
++Subproject commit 31f690369d1247fbd5529a3f88b758f7d470ae4f-dirty
+diff --git a/3rdparty/tvm b/3rdparty/tvm
+--- a/3rdparty/tvm
++++ b/3rdparty/tvm
+@@ -1 +1 @@
+-Subproject commit c2921fdaf795b1103d21abc962e83a209c7258d7
++Subproject commit c2921fdaf795b1103d21abc962e83a209c7258d7-dirty
+diff --git a/examples/TileOPs/tileops/kernels/elementwise/__init__.py b/examples/TileOPs/tileops/kernels/elementwise/__init__.py
+index f3bdb04..8311733 100644
+--- a/examples/TileOPs/tileops/kernels/elementwise/__init__.py
++++ b/examples/TileOPs/tileops/kernels/elementwise/__init__.py
+@@ -1,4 +1,5 @@
++from tileops.kernels.elementwise.hardsigmoid import HardsigmoidFwdKernel
+ from tileops.kernels.elementwise.lerp_tensor import LerpTensorFwdKernel
+ from tileops.kernels.elementwise.mish import MishFwdKernel
+ 
+-__all__ = ["LerpTensorFwdKernel", "MishFwdKernel"]
++__all__ = ["HardsigmoidFwdKernel", "LerpTensorFwdKernel", "MishFwdKernel"]
+diff --git a/examples/TileOPs/tileops/manifest/elementwise.yaml b/examples/TileOPs/tileops/manifest/elementwise.yaml
+index d10eb7b..0ad74d4 100644
+--- a/examples/TileOPs/tileops/manifest/elementwise.yaml
++++ b/examples/TileOPs/tileops/manifest/elementwise.yaml
+@@ -97,3 +97,45 @@ LerpTensorFwdOp:
+     test: tests/ops/test_lerp_tensor.py
+     bench: benchmarks/ops/bench_lerp_tensor.py
+     bench_manifest_driven: true
++
++HardsigmoidFwdOp:
++  ref_api: "torch.nn.functional.hardsigmoid"
++  family: elementwise
++  status: implemented
++
++  torch_compile_fullgraph: true
++  signature:
++    inputs:
++      input: {dtype: "float16 | bfloat16 | float32"}
++    outputs:
++      output: {dtype: "same_as(input)"}
++    params:
++      inplace: {type: bool, default: false}
++    shape_rules:
++      - "output.shape == input.shape"
++
++  workloads:
++    # Smoke: small flat vector
++    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
++    # Full: MobileNetV3 SE-block gating (B, C, 1, 1)
++    - {input_shape: [32, 240, 1, 1], dtypes: [float16, bfloat16], label: "mbv3-se-gate"}
++    - {input_shape: [32, 960, 1, 1], dtypes: [float16, bfloat16], label: "mbv3-se-gate-deep"}
++    # Full: large FC layer
++    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "fc-wide"}
++
++  roofline:
++    vars:
++      N: "product(input.shape)"
++    # FLOPs: hardsigmoid(x) = clamp(x + 3, 0, 6) / 6.
++    # add(1) + two-sided-clamp(1, per convention) + div(1) = 3 per elem.
++    flops: "3 * N"
++    bytes: "2 * N * elem_bytes"
++
++  source:
++    kernel: tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py
++    kernel_map:
++      hardsigmoid: HardsigmoidFwdKernel
++    op: tileops/ops/elementwise/hardsigmoid.py
++    test: tests/ops/test_hardsigmoid.py
++    bench: benchmarks/ops/bench_hardsigmoid.py
++    bench_manifest_driven: true
+diff --git a/examples/TileOPs/tileops/ops/elementwise/__init__.py b/examples/TileOPs/tileops/ops/elementwise/__init__.py
+index 09eda98..e3388f7 100644
+--- a/examples/TileOPs/tileops/ops/elementwise/__init__.py
++++ b/examples/TileOPs/tileops/ops/elementwise/__init__.py
+@@ -1,4 +1,5 @@
++from tileops.ops.elementwise.hardsigmoid import HardsigmoidFwdOp
+ from tileops.ops.elementwise.lerp_tensor import LerpTensorFwdOp
+ from tileops.ops.elementwise.mish import MishFwdOp
+ 
+-__all__ = ["LerpTensorFwdOp", "MishFwdOp"]
++__all__ = ["HardsigmoidFwdOp", "LerpTensorFwdOp", "MishFwdOp"]
+diff --git a/examples/TileOPs/tileops/workloads/elementwise.py b/examples/TileOPs/tileops/workloads/elementwise.py
+index 7bc6601..d131db5 100644
+--- a/examples/TileOPs/tileops/workloads/elementwise.py
++++ b/examples/TileOPs/tileops/workloads/elementwise.py
+@@ -24,6 +24,10 @@ class MishWorkload(ShapedRandnWorkload):
+     """Workload definition for MishFwdOp (shape + dtype, randn input)."""
+ 
+ 
++class HardsigmoidWorkload(ShapedRandnWorkload):
++    """Workload definition for HardsigmoidFwdOp (shape + dtype, randn input)."""
++
++
+ class LerpTensorManifestWorkload:
+     """Workload definition for LerpTensorFwdOp (Tensor-weight torch.lerp).
+ 
+diff --git a/tilelang/jit/jit_npu.py b/tilelang/jit/jit_npu.py
+index b833d98..e1e0926 100644
+--- a/tilelang/jit/jit_npu.py
++++ b/tilelang/jit/jit_npu.py
+@@ -1857,6 +1857,13 @@ class compiler_npu:
+ 
+     def _npuir_to_bin_enable_npu_compile(self):
+         linalg = self.mlir_content
++        # CANN 9.0 compatibility shim: the old AscendNPU-IR codegen emits the
++        # optional attribute `syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>` on
++        # hivm sync_block_set/wait; CANN 9.0's bishengir no longer defines it and
++        # fails to parse ("Dialect '' not found for custom op 'syn_instr_mode'").
++        # The attribute is optional (the sync op has a default), so strip it.
++        import re as _re
++        linalg = _re.sub(r"\s+syn_instr_mode\s*=\s*<[^>]*>", "", linalg)  # CANN9 shim: strip
+         with tempfile.TemporaryDirectory() as tmpdir:
+             ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+             Path(ttadapter_path).write_text(linalg)
+diff --git a/tilelang/version.py b/tilelang/version.py
+index 651de2c..2e70379 100644
+--- a/tilelang/version.py
++++ b/tilelang/version.py
+@@ -36,6 +36,7 @@ def get_git_commit_id() -> Union[str, None]:
+     """
+     try:
+         return subprocess.check_output(['git', 'rev-parse', 'HEAD'],
++                                       cwd=current_dir,
+                                        stderr=subprocess.DEVNULL,
+                                        encoding='utf-8').strip()
+     except subprocess.SubprocessError:
+diff --git a/tilelangir/tools/tilelangir-opt/CMakeLists.txt b/tilelangir/tools/tilelangir-opt/CMakeLists.txt
+index af64916..08b375b 100644
+--- a/tilelangir/tools/tilelangir-opt/CMakeLists.txt
++++ b/tilelangir/tools/tilelangir-opt/CMakeLists.txt
+@@ -12,5 +12,6 @@ if(TILELANGIR_MLIR_LIBS)
+     ${TILELANGIR_MLIR_LIBS}
+     -Wl,--end-group
+     ${TILELANGIR_SYSTEM_LIBS}
++    pthread
+   )
+ endif()
