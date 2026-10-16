@@ -39,3 +39,23 @@
 ## 5. 参考
 - 验证最小件：`/tmp/opencode/{exp_gemm,sync_test}.py`（transient）。
 - 算法/数学：`gdn_prefill_probe.py` 顶部注释 + 本文件 §3。
+
+## 6. 分相位验证进度（真机对拍 torch）
+| 相位 | 内容 | 状态 | 误差 |
+|---|---|---|---|
+| C1 | Cube：`KK=k·kᵀ`、`QK=q·kᵀ`、`KS=k·S16`、`QS=q·S16` | ✅ | ~1e-6 |
+| V1(gate) | `gc=cumsum(g)`、`G_strict/G_incl`(arange+minmax 掩码)、`exp(gc)` | ✅ | gc 精确 / G 6e-8 |
+| V1b | `S_sys=β·G_strict·KK`→`sn16`；`rhs=β·(v−exp(gc)·KS)` | ✅ | S_sys 1.2e-3(fp16 舍入) / rhs 2.4e-7 |
+| C2 | Neumann `W=(I+S_sys)⁻¹rhs` | ⬜ 待做 | |
+| C3/V3 | `o`、状态传递 | ⬜ 待做 | |
+
+## 7. 关键 API 教训（踩坑）
+- **向量 op 的 dst 必须是 UB**：`T.vmul(v, s, Gstrict)` 直接写 GM 张量 → 生成坏 IR → **bishengir SIGABRT**。必须写 UB，再 `T.copy(ub, GM)`。
+- **`T.copy` 不做 dtype 转换**：fp16→fp32 需 `T.copy(fp16GM, fp16UB)` + `T.vcast(fp16UB, f32UB)`。
+- **Cube→Vector 经 GM 交接必须显式 `sync_block_set/wait`**（`with T.rs(...)`），否则读旧数据。
+- **非 out_idx 的工作区张量要显式传入**（kernel 报 "Expected N inputs"）。
+
+## 8. 下一步
+- C2（Neumann）：建议**纯 Cube** 实现——累加矩阵幂 `M=I+Σ Sn^j`（`gemm(P_j, I, M_l0c, initC=False)` 累加；`P_{j+1}=Sn@P_j`），再 `W=M@rhs`，避免 Cube/Vector 交错。
+- C3/V3：`o=scale·exp(gc)·QS+(scale·G·QK)·W`；`S=gdb·S+(k·grev)ᵀ·W`。
+- 再拼成完整 chunk 循环 → op 层/manifest/tests/报告。
