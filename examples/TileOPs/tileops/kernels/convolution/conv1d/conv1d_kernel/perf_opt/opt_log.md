@@ -26,3 +26,17 @@ Cube 阻塞在 `sync_block_wait(4)` 上等 prelude；对大 `C_out`（whisper 12
 ## 结论
 - **去 in-kernel prelude 是数量级收益**（whisper 100×、encodec-deep 80×）。
 - 剩余（ratio 5.7%–11.7%，未达 MixCV ≥40%）：是 **Cube gemm tiling/overlap** 的空间，属下一步。
+
+## 续：general kernel（`_conv1d_kernel`）同样去 prelude
+对 general 路径（wav2vec2 等）套用同一手法：perf_opt 删 `_prelude`；wrapper 在 host 预填
+`w_flat`(permute) + `x_pad`(pad) + `xdec`(多项式抽取)。
+
+| shape | base µs | opt µs | 加速 | base% | opt% |
+|---|---:|---:|---:|---:|---:|
+| wav2vec2-layer1 (C_in=1,K=10) | 619 | **218** | **~2.8×** | 0.31 | 0.81 |
+| encodec-init | 262 | **175** | ~1.5× | 0.44 | 0.66 |
+| whisper-conv1 | 5457 | 53 | ~100× | 0.115 | 11.6 |
+| encodec-deep | 1848 | 21 | ~88× | 0.072 | 6.2 |
+
+正确性 `pytest tests/ops/test_conv1d.py` 28/28。注：wav2vec2 `K=C_in·kW=10` 极小 → gemm 天生喂不饱 Cube，
+其 ratio 上限低（非 prelude 问题）。

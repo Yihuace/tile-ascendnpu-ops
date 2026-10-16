@@ -75,12 +75,13 @@ from tileops.kernels.kernel_base import Kernel
 from .conv1d_kernel import (
     _conv1d_direct_kernel,
     _conv1d_group_kernel,
-    _conv1d_kernel,
     _conv1d_pointwise_kernel,
 )
-# --- perf_opt (Stage 4 tuned): unit_stride dropped the in-kernel Vector prelude
-# (weight re-layout + x_pad), so the wrapper fills w_flat/x_pad on the host.
+# --- perf_opt (Stage 4 tuned): unit_stride + general dropped the in-kernel
+# Vector prelude (weight re-layout + x_pad + polyphase xdec), so the wrapper
+# fills w_flat/x_pad/xdec on the host.
 from .conv1d_kernel.perf_opt._conv1d_unit_stride_kernel import _conv1d_unit_stride_kernel
+from .conv1d_kernel.perf_opt._conv1d_kernel import _conv1d_kernel
 _HOST_LAYOUT = True
 
 __all__ = [
@@ -285,9 +286,17 @@ class Conv1dKernel(Kernel):
             self.dilation_l,
             self.stride_l,
         )
-        w_flat = torch.empty((self.kernel_l, self.c_out, c_in_pad), dtype=x.dtype, device=x.device)
+        w_flat = torch.zeros((self.kernel_l, self.c_out, c_in_pad), dtype=x.dtype, device=x.device)
         x_pad = torch.zeros((self.n, c_in_pad, l_pad), dtype=x.dtype, device=x.device)
-        xdec = torch.empty((self.n, c_in_pad, l_pad), dtype=x.dtype, device=x.device)
+        xdec = torch.zeros((self.n, c_in_pad, l_pad), dtype=x.dtype, device=x.device)
+        if _HOST_LAYOUT:
+            # host pre-layout (perf_opt): weight re-layout + padded input (+ polyphase)
+            w_flat[:, :, : self.c_in] = weight.permute(2, 0, 1).to(x.dtype)
+            x_pad[:, : self.c_in, self.pad_left : self.pad_left + self.l_in] = x
+            if need_poly:
+                j = torch.arange(l_pad, device=x.device)
+                src = (j % mdec) * self.stride_l + (j // mdec)
+                xdec = x_pad.index_select(-1, src)
         if need_poly:
             poly_idx = _general_poly_idx(mdec, self.stride_l, cg, l_pad).to(x.device)
         else:

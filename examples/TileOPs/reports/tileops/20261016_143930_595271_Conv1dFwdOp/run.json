@@ -1,0 +1,3672 @@
+{
+  "schema_version": 2,
+  "operator": "Conv1dFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261016_143930_595271_Conv1dFwdOp",
+    "generated_at": "2026-10-16T14:47:03.908244+08:00",
+    "project_root": "/mnt/workspace/npuir-migration/examples/TileOPs",
+    "git_commit": "ad6e103d477ac68ea14060c29f4a80b2e0c3851f",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_conv1d.py",
+    "benchmark_file": "benchmarks/ops/bench_conv1d.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_conv1d.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_conv1d.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-16T14:47:03.908244+08:00",
+      "evaluation_scope": "Conv1dFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261016_143930_595271_Conv1dFwdOp",
+      "git_commit": "ad6e103d477ac68ea14060c29f4a80b2e0c3851f",
+      "correctness_target": "tests/ops/test_conv1d.py",
+      "benchmark_target": "benchmarks/ops/bench_conv1d.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "8.5.2",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.2+417dae9908ad2ea5ffb74294a7075b6cb64b4f2b (/home/developer/tilelang-mlir-ascend@417dae9)",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 28,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 28,
+    "passed_cases": 28,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 17,
+    "benchmark_failed": 0,
+    "case_count": 16,
+    "msprof_case_count": 16,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[smoke-tcn-k3-s1-fp16]",
+        "name": "test_conv1d[smoke-tcn-k3-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 1.92,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[smoke-tcn-k3-s1-bf16]",
+        "name": "test_conv1d[smoke-tcn-k3-s1-bf16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.177,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.25e-01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[smoke-padding-wider-than-row-fp16]",
+        "name": "test_conv1d[smoke-padding-wider-than-row-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.182,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-convtasnet-pointwise-k1-s1-fp16]",
+        "name": "test_conv1d[full-convtasnet-pointwise-k1-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.169,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "3.12e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-seanet-residual-k3-s1-fp16]",
+        "name": "test_conv1d[full-seanet-residual-k3-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.17,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "6.25e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-audio-downsample-k5-s2-fp16]",
+        "name": "test_conv1d[full-audio-downsample-k5-s2-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.298,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "3.12e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-small-seanet-stem-k7-s1-fp16]",
+        "name": "test_conv1d[full-small-seanet-stem-k7-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.171,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-sequence-downsample-k3-s2-bf16]",
+        "name": "test_conv1d[full-sequence-downsample-k3-s2-bf16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.178,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "2.50e-01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-dilation-k3-d2-fp16]",
+        "name": "test_conv1d[full-dilation-k3-d2-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.173,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-padding-valid-fp16]",
+        "name": "test_conv1d[full-padding-valid-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.172,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-padding-same-fp16]",
+        "name": "test_conv1d[full-padding-same-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.172,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-groups2-k3-fp16]",
+        "name": "test_conv1d[full-groups2-k3-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.297,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-groups3-coutg24-fp16]",
+        "name": "test_conv1d[full-groups3-coutg24-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.299,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-conformer-depthwise-k31-fp16]",
+        "name": "test_conv1d[full-conformer-depthwise-k31-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.219,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "6.10e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_no_bias_matches_torch",
+        "name": "test_conv1d_no_bias_matches_torch",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.177,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_bias_matches_torch",
+        "name": "test_conv1d_bias_matches_torch",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.278,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dilation_matches_torch[no-bias]",
+        "name": "test_conv1d_dilation_matches_torch[no-bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.169,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dilation_matches_torch[bias]",
+        "name": "test_conv1d_dilation_matches_torch[bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.279,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_same_padding_even_kernel_matches_torch[no-bias]",
+        "name": "test_conv1d_same_padding_even_kernel_matches_torch[no-bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.175,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_same_padding_even_kernel_matches_torch[bias]",
+        "name": "test_conv1d_same_padding_even_kernel_matches_torch[bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.281,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dispatches_kernel[unit-stride]",
+        "name": "test_conv1d_dispatches_kernel[unit-stride]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.17,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dispatches_kernel[generic]",
+        "name": "test_conv1d_dispatches_kernel[generic]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.17,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dispatches_kernel[pointwise]",
+        "name": "test_conv1d_dispatches_kernel[pointwise]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.119,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_depthwise_matches_torch",
+        "name": "test_conv1d_depthwise_matches_torch",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.194,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_grouped_matches_torch[no-bias]",
+        "name": "test_conv1d_grouped_matches_torch[no-bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.274,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_grouped_matches_torch[bias]",
+        "name": "test_conv1d_grouped_matches_torch[bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.406,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_rejects_unsupported_dtype",
+        "name": "test_conv1d_rejects_unsupported_dtype",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_eval_roofline",
+        "name": "test_conv1d_eval_roofline",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.161,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[smoke-k3-s1-bfloat16]",
+        "name": "test_conv1d_manifest_bench[smoke-k3-s1-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 25.924,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "21.4000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-float16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 21.995,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "53.3800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-bfloat16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 23.148,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "54.4800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-float16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 26.059,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "217.7000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-bfloat16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 24.676,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "222.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 25.833,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "175.4200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 25.816,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "183.8800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 23.132,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "21.0800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 22.006,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "21.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-bias-float16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 22.328,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "67.1000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 23.361,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "67.2000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-bias-float16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 26.207,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "213.7200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 26.05,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "221.6600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-bias-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 25.423,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "184.5200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 25.525,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "181.5600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-bias-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 22.427,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "24.9000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 22.252,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "25.9800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-f5eeceafac0d",
+        "label": "whisper-conv1",
+        "params": {
+          "bias": null,
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 53.380001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 11.6487,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2335.93603515625,
+        "performance_tops": 34.621910095214844,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_n9pvf_iw",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.117397,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.117397,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.117397,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.117397,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.12908,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.117397,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.458385467529297,
+            "bw_name": "MTE1",
+            "ratio": 0.117397,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.142738,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.117397,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.117397,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.135234,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.117397,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.187841,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.116487,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.237787,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 53.380001,
+          "max_latency_us": 53.380001,
+          "min_latency_us": 53.380001,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-641990cb6e14",
+        "label": "whisper-conv1",
+        "params": {
+          "bias": null,
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 54.48,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 11.4135,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2335.93603515625,
+        "performance_tops": 33.92286682128906,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_b_kb392s",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.115027,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.115027,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.115027,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.115027,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.126473,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.115027,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.458385467529297,
+            "bw_name": "MTE1",
+            "ratio": 0.115027,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.139856,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.115027,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.115027,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.132504,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.115027,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.184049,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.114135,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.232986,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 54.48,
+          "max_latency_us": 54.48,
+          "min_latency_us": 54.48,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-5029ac522ba4",
+        "label": "wav2vec2-layer1",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": false,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 217.699997,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.8103000000000001,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1827.764404296875,
+        "performance_tops": 2.4083166122436523,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_hd6puref",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.008166,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.008166,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.008166,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.008166,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.008979,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.008166,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.008166,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.008166,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.008166,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.009407,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.008166,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.01967,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.008103,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.027193,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 217.699997,
+          "max_latency_us": 217.699997,
+          "min_latency_us": 217.699997,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-4242f72164d2",
+        "label": "wav2vec2-layer1",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": false,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 222.779999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.7918,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1795.71240234375,
+        "performance_tops": 2.353400468826294,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_73nt4asx",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.00798,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.00798,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.00798,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.00798,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.008774,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.00798,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.00798,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.00798,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.00798,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.009192,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.00798,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.019221,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.007918,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.026573,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 222.779999,
+          "max_latency_us": 222.779999,
+          "min_latency_us": 222.779999,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-c9aa57bb875b",
+        "label": "encodec-init",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 175.419998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.6598999999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1306.76708984375,
+        "performance_tops": 1.961387276649475,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_12_0wgw3",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.006651,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.006651,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.006651,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.006651,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.007312,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.006651,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.440687656402588,
+            "bw_name": "MTE1",
+            "ratio": 0.006651,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.006651,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.006651,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.006651,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.007661,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.006651,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.011273,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.006599,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.016195,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 175.419998,
+          "max_latency_us": 175.419998,
+          "min_latency_us": 175.419998,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-b61fa207198d",
+        "label": "encodec-init",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 183.880005,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.6296,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1291.075927734375,
+        "performance_tops": 1.8711472749710083,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_main_mix_aic_ocqx9ghq",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.006345,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.006345,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.006345,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.006345,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.006976,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.006345,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.440687656402588,
+            "bw_name": "MTE1",
+            "ratio": 0.006345,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.006345,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.006345,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.006345,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.007309,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.006345,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.010755,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.006296,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.01545,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 183.880005,
+          "max_latency_us": 183.880005,
+          "min_latency_us": 183.880005,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-59751a88257f",
+        "label": "encodec-deep",
+        "params": {
+          "bias": null,
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 21.08,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 6.1924,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 553.01220703125,
+        "performance_tops": 18.404918670654297,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_3k6h_1i_",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.062408,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.062408,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.062408,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.062408,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.068618,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.062408,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.513813495635986,
+            "bw_name": "MTE1",
+            "ratio": 0.067027,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.125729,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.062408,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.062408,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.07189,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.062408,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.062408,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.061924,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.086461,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 21.08,
+          "max_latency_us": 21.08,
+          "min_latency_us": 21.08,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-bafe9f39ea61",
+        "label": "encodec-deep",
+        "params": {
+          "bias": null,
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 21.459999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 6.0828,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 552.5081787109375,
+        "performance_tops": 18.079015731811523,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_main_mix_aic_7gcvspn2",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.061303,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.061303,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.061303,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.061303,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.067403,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.061303,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.513813495635986,
+            "bw_name": "MTE1",
+            "ratio": 0.06584,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.123503,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.061303,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.061303,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.070617,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.061303,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.061303,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.060828,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.08493,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_main",
+          "latency_us": 21.459999,
+          "max_latency_us": 21.459999,
+          "min_latency_us": 21.459999,
+          "op_name": "_conv1d_unit_stride_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-3696fca1b6c6",
+        "label": "whisper-conv1-bias",
+        "params": {
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 67.099998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.2934,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2349.451904296875,
+        "performance_tops": 27.72451400756836,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_x11ydmqu",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.093393,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.093393,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.093393,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.093393,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.102687,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.093393,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.458385467529297,
+            "bw_name": "MTE1",
+            "ratio": 0.115636,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.19825,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.093393,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.093393,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.107583,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.093393,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.093393,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.053279,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.11996,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.057133,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.053279,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.054985,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.12983,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.105354,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.110208,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.124113,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.092934,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.367348,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 67.099998,
+          "max_latency_us": 67.099998,
+          "min_latency_us": 67.099998,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-e5284771eae5",
+        "label": "whisper-conv1-bias",
+        "params": {
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 67.199997,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.306799999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2361.6748046875,
+        "performance_tops": 27.80028533935547,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_dn6szebs",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.093254,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.093254,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.093254,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.093254,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.102534,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.093254,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.458385467529297,
+            "bw_name": "MTE1",
+            "ratio": 0.115464,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.197955,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.093254,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.093254,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.107423,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.093254,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.093254,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.078596,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.134726,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.078596,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.078596,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.078596,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.129637,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.105197,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.110044,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.123928,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.093068,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.366801,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 67.199997,
+          "max_latency_us": 67.199997,
+          "min_latency_us": 67.199997,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-59c2812dbf96",
+        "label": "wav2vec2-layer1-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": true,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 213.720001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.8302999999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1870.524658203125,
+        "performance_tops": 2.4769484996795654,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_itaz0425",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.008318,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.008318,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.008318,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.008318,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.009146,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.008318,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.43813419342041,
+            "bw_name": "MTE1",
+            "ratio": 0.010033,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.017338,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.012179,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.008318,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.009582,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.008318,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.008318,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.007173,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.015805,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.007474,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.006974,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.007345,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.017344,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.014377,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.014723,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.016936,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.008303,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.051604,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 213.720001,
+          "max_latency_us": 213.720001,
+          "min_latency_us": 213.720001,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-ddd8f3a71b5d",
+        "label": "wav2vec2-layer1-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": true,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 221.660004,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.8045,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1822.746337890625,
+        "performance_tops": 2.403005838394165,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_poxmk16o",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.00802,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.00802,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.00802,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.00802,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.008818,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.00802,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.43813419342041,
+            "bw_name": "MTE1",
+            "ratio": 0.009674,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.016717,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.011742,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.00802,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.009239,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.00802,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.00802,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.009933,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.017127,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.009933,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.009933,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.009933,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.016723,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.013862,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.014195,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.01633,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.008045,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.049756,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 221.660004,
+          "max_latency_us": 221.660004,
+          "min_latency_us": 221.660004,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-ac8047fef70f",
+        "label": "encodec-init-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 184.520004,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.6336999999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1328.142333984375,
+        "performance_tops": 1.8905514478683472,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_3qa07tq5",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.006323,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.006323,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.006323,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.006323,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.006952,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.006323,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.440687656402588,
+            "bw_name": "MTE1",
+            "ratio": 0.007919,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.012304,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.006643,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.006323,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.007283,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.006323,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.006323,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.007594,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.015211,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.008137,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.007594,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.007594,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.009453,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.007651,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.008025,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.009013,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.006337,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.028163,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 184.520004,
+          "max_latency_us": 184.520004,
+          "min_latency_us": 184.520004,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-802571d618fd",
+        "label": "encodec-init-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 181.559998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.6489,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1353.7232666015625,
+        "performance_tops": 1.9383385181427002,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_bias_main_mix_aic_gv22fdwv",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.006426,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.006426,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.006426,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.006426,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.007065,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.006426,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.440687656402588,
+            "bw_name": "MTE1",
+            "ratio": 0.008048,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.012505,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.006752,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.006426,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.007402,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.006426,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.006426,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.011399,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.017626,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.011399,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.011399,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.011399,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.011399,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.011399,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.011399,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.011399,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.006489,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.028622,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_bias_main",
+          "kernel_name_resolved": "_conv1d_bias_main",
+          "latency_us": 181.559998,
+          "max_latency_us": 181.559998,
+          "min_latency_us": 181.559998,
+          "op_name": "_conv1d_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-70d6f0e84fa3",
+        "label": "encodec-deep-bias",
+        "params": {
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 24.9,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 5.2299999999999995,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 552.9313354492188,
+        "performance_tops": 15.601811408996582,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_fea7isp8",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.052833,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.052833,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.052833,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.052833,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.058091,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.052833,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.513813495635986,
+            "bw_name": "MTE1",
+            "ratio": 0.066634,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.114878,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.052833,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.052833,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.060861,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.052833,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.052833,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.006046,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.013372,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.006415,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.006046,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.006046,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.014145,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.011417,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.012007,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.01345,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.0523,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.093307,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 24.9,
+          "max_latency_us": 24.9,
+          "min_latency_us": 24.9,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-71d05debf21d",
+        "label": "encodec-deep-bias",
+        "params": {
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1,
+          "taps": 1
+        },
+        "tag": "tileops",
+        "latency_us": 25.98,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 5.0103,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 553.296875,
+        "performance_tops": 14.965850830078125,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261016_143930_595271_Conv1dFwdOp/artifacts/msprof/_conv1d_unit_stride_bias_main_mix_aic_rkjo7mlh",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.050637,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.050637,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.050637,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L0A",
+            "ratio": 0.050637,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Write to L0B",
+            "ratio": 0.055676,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.050637,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 0.0,
+            "bw_name": "FIXP",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 5.513813495635986,
+            "bw_name": "MTE1",
+            "ratio": 0.063864,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.463048934936523,
+            "bw_name": "MTE2",
+            "ratio": 0.110102,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "MTE3",
+            "ratio": 0.050637,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.31397819519043,
+            "bw_name": "GM/L1 to L0A",
+            "ratio": 0.050637,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 4.000211238861084,
+            "bw_name": "GM/L1 to L0B",
+            "ratio": 0.058331,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.977787494659424,
+            "bw_name": "L0C to GM",
+            "ratio": 0.050637,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 3.7898435592651367,
+            "bw_name": "L1 to GM",
+            "ratio": 0.050637,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.008532,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.014427,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.008532,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.008532,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.008532,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "MTE2 vector",
+            "ratio": 0.013557,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "MTE3 vector",
+            "ratio": 0.010943,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 4.181883335113525,
+            "bw_name": "GM to UB",
+            "ratio": 0.011508,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 3.5498311519622803,
+            "bw_name": "UB to GM",
+            "ratio": 0.012891,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.050103,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.089428,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_unit_stride_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_unit_stride_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_unit_stride_bias_main",
+          "kernel_name_resolved": "_conv1d_unit_stride_bias_main",
+          "latency_us": 25.98,
+          "max_latency_us": 25.98,
+          "min_latency_us": 25.98,
+          "op_name": "_conv1d_unit_stride_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "Conv1dFwdOp",
+      "family": "convolution",
+      "cases": 28,
+      "passed": 28,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.03907464285714284,
+      "max_abs_err": 0.25,
+      "performance_cases": 16,
+      "ratio_range": {
+        "min": 0.6296,
+        "max": 11.6487
+      }
+    }
+  ],
+  "warnings": []
+}
