@@ -188,6 +188,18 @@ fops        = Σ(FP32指令 × 64 + MISC指令 × 32)   # 计算单元指令计�
 - 判据须**按 AI 分类**（平衡点 = 计算上限 / 带宽上限）；达标口径、瓶颈判定、阈值一律以官方文档为准，**不得**把 Ratio 当成"带宽利用率"。
 - 报告须给出：AI、瓶颈类型（访存/算力受限）；如可得，附多级 roofline（Memory Unit / Memory Transfer / Pipeline）与 bin 的 `advice` 字段用于定位。
 
+#### 达标线（按瓶颈类型，暂行）
+
+| 类别 | 达标线（SOL 利用率 §3.1） | 依据 |
+|---|---|---|
+| **访存受限** | **≥ 70%** | 实测纯访存 elementwise 已达 72%–83%（Add/Sub/Lerp/ClampMin/ClampScalar），可达性已证；对齐"A/N Vector 70%"先例 |
+| **算力受限（Vector）** | **≥ 60%** | 计算单元打满更难；Hardswish 61.6% 为当前参考上限 |
+| **混合类（MixCV / Cube 主导）** | **≥ 40%（暂定）** | MixCV 有跨 scope/中继开销，天花板低于纯 Vector（官方 Mix 示例 GM ratio 25%、历史 SSDChunkScan 0.13–20.3%）；暂定，待用 MHA/SSD 标定后调整 |
+| **微型 shape（2–4µs）** | **豁免** | 固定启动开销主导其耗时，带宽/算力利用率物理不可达（已论证） |
+
+- **硬底线**：kernel 时间（`msprof op Task Duration`）**必须变短**——时间不降即未优化（判据不满足也不得硬凑）。
+- **达标定义** = `kernel 时间下降` **且** `对应类别的 SOL 利用率 ≥ 对应线`。
+
 报告禁开 pytest-xdist（`-n` / `--numprocesses` 会被 CLI 拒绝）；报告运行必须串行。
 
 ---
