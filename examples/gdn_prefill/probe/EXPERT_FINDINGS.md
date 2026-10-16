@@ -70,3 +70,17 @@
   - `06_c2_neumann_FAILED.py` — C2 Neumann 纯 Cube 幂累加 ❌（W err 50.5，环路中接 hazard）
 - **恢复点**：修 `06` 的 L0C→GM→L1 环路同步（或改用 pairs 循环 + 已验证的 Cube/Vector 握手），通过后做 C3/V3，再拼整 kernel → op 层/manifest/tests/报告。
 - **注意**：本任务未产出可用内核；`GatedDeltaNetPrefillFwdOp` 仍**未交付**（gap CG-2026-0026 更新为"进行中/WIP"）。
+
+## 10. 追加工具链限制（2026-10-16，Expert 重写中实测）
+在写 Neumann（`W=(I+S_sys)^{-1}rhs`）时又撞到两条 **Cube 侧工具链限制**，均以最小实验证实：
+1. **`T.gemm(..., initC=False)` 不跨多次 gemm / 循环累加**：
+   - 实验：`M=I` 后连续 3 次 `gemm(Sn,I,l0,initC=False)`（展开版）→ 期望 `I+3·Sn`，实测 err ≈ 10（量级=Sn），即**未累加**。
+   - ⇒ "用 gemm 累加矩阵幂 `M=I+ΣSn^j`" 的路子**不可用**。
+2. **环路携带的 Cube 中接（L0C→GM→L1）在 `T.serial` 循环里不正确**：
+   - 实验：`term=Sn@term` 三次（L0C→GM(fp16 fixpipe)→L1 反馈），期望 `Sn³@rhs`，实测 err ≈ 193（错）。
+   - 加 `with T.rs("PIPE_FIX")/("PIPE_MTE2")` 亦无效。
+   - ⇒ Neumann 的"幂/项反馈"（本征是 loop-carried）在当前工具链下**不可靠**。
+
+**影响**：Neumann 求逆（以及 chunk 循环里状态 S 的 loop-carried 传递）都依赖"环路携带的 Cube 依赖"，这在本工具链上是**硬伤**。
+**可能绕法**（待试）：① 把 chunk/幂循环**在 Python 层展开**（不用 `T.serial`）；② 换逆的算法（如按块 forward-substitution，小块）；③ 把 Neumann 改成**单次大 gemm 的增广矩阵**形式（避免环路）。
+**状态**：`GatedDeltaNetPrefillFwdOp` 仍**未交付**（CG-2026-0026，WIP，阻碍为上述工具链限制）。
