@@ -91,6 +91,34 @@ def _driver_version() -> str | None:
     return None
 
 
+def _tilelang_info() -> str | None:
+    """TileLang version + dev-root path + git commit (dev-root installs are not
+    pip packages, so ``importlib.metadata`` returns None)."""
+    try:
+        import tilelang
+
+        ver = getattr(tilelang, "__version__", None) or "?"
+        root = str(Path(tilelang.__file__).resolve().parents[1])
+        commit = None
+        try:
+            import subprocess
+
+            commit = (
+                subprocess.run(
+                    ["git", "-C", root, "rev-parse", "--short", "HEAD"],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                ).stdout.strip()
+                or None
+            )
+        except Exception:
+            commit = None
+        return f"{ver} ({root}@{commit})" if commit else f"{ver} ({root})"
+    except Exception:
+        return _package_version("tilelang")
+
+
 def _container_info() -> str | None:
     image = os.environ.get("TILEOPS_IMAGE") or os.environ.get("CANN_BENCH_IMAGE")
     if image:
@@ -135,7 +163,7 @@ def collect_setup_info(
             "driver": _driver_version(),
             "pytorch": _package_version("torch"),
             "pytorch_npu": _package_version("torch-npu"),
-            "tilelang": _package_version("tilelang"),
+            "tilelang": _tilelang_info(),
             "python": sys.version.split()[0] if sys.version else "unknown",
             "os": platform.platform() or f"{platform.system()} {platform.release()}",
             "container": _container_info(),
