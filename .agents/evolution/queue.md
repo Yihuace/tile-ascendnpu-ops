@@ -431,6 +431,7 @@ decided_by: evolver / human / -   # 裁决者
 - evidence:
   - task multi_head_attention-_gqa_prefill_fwd_kernel-20260916T033847Z（第六轮 Stage 4）：opt_log 第六轮头部「度量管线」段（TileOPs bench 框架 2026-09-16 修复：kernel-name 经 JitKernel_NPU 对象图解析 + 多 op 检测 + duration 匹配；禁止回退无过滤全捕获——profile_run_msprof_20260915_105716.log 的 0.15–0.65% 即该伪影，描述的是 ZerosLike 等辅助 op）+ Phase 1（修复后管线验证：--aic-metrics=Roofline + --kernel-name 过滤 → 单 op 捕获 mix_aic 无 ZerosLike 污染、bin roofline 条目可提取——第五轮 metrics 集不产出 bin 的问题确认并规避）+ DESIGN.md §11.2 指标结构锚定（Ratio = Perf/359.33 TOps/s，Computility 按 48 核计而实机 24 核——口径基数须实测锚定核对）
   - 现行 profile-collection.md 已有 target_kernel_name 命令模板与 captured_op 追溯要求（基础规则存在）；本条补 Roofline-metrics↔bin 耦合、全捕获伪影实录与口径基数核对（2026-09-15 会话产出过伪影 log——规则存在下的执行复发）
+  - 〔2026-10-17 同源第二任务证据，task gla_decode-GLADecodeOp-20261017T145257Z（optimize，不同 op 族）——与①②互补的「kernel-name 必须正确」第三面，非同一失效形态的独立复现，不计 confirmations〕opt_log Skill Retrospective P 条目 + 中断会话日志：`@tilelang.jit(out_idx=...)` 返回的 prim_func 名才是 `--kernel-name` 应过滤的名字——bf16/fp16 为 `_gla_decode_transit_main`（transit 变体）、fp32 为 `_gla_decode_main`，**不是** `main`；`--kernel-name=main` 时报 "Kernel skipped: not selected via --kernel-name" + "No profiling data dumped"（无数据，与①②的污染伪影是同一「kernel-name 必须正确」家族的两面）。toolchain：tilelang dev-root 7a4f77e184 + CANN 9.0.0 + Ascend910B3。
 - repro: repro-missing（需 msprof + 目标算子环境；伪影对照 = 同 workload 无过滤 vs --kernel-name 过滤双跑，Ratio 条目差异即伪影量级）
 - toolchain_stamp: CANN 8.5.0 msprof / Ascend910B2C / 2026-09-16（采数侧 tilelang 0.1.2+a13585dc）
 - target_doc: .agents/skills/tilelang-op-optimize/references/profile-collection.md
@@ -439,8 +440,8 @@ decided_by: evolver / human / -   # 裁决者
     定位锚: "- `captured_op_name` 能通过命令、输出目录和运行日志追溯到本次 `target_kernel_name` 或目标 TileLang kernel。"
     old 文本: （即上述定位锚原文）
     new 文本: |
-  - `captured_op_name` 能通过命令、输出目录和运行日志追溯到本次 `target_kernel_name` 或目标 TileLang kernel。**roofline Ratio 口径采数（2026-09-16 attention 第六轮实证）**：① `--aic-metrics=Roofline` 单命令同时产出 Task Duration + 诊断 CSV + `visualize_data.bin` 预计算 roofline 条目（Ratio =「GM/L2 · GM Read + Write」条目 ratio×100）——metrics 集不含 Roofline 时不产出 bin（第五轮实证）；② `--kernel-name` 过滤缺一不可：无过滤全捕获会把 ZerosLike 等辅助 op 当目标 kernel（实录：Ratio 0.15–0.65% 伪影，描述的是辅助 op 而非目标）；③ Ratio = Perf/Computility，Perf = msprof 计数 FLOPs / Task Duration——指标奖励执行利用率、不奖励 padding 缩减（flops 与时长同降时 Ratio 不动），Computility 归一基数以实测锚定核对（如 359.33 TOps/s 按 48 核计而实机 24 核——attention.md PL-1.12 指标结构段）。
-    动机: Ratio 类硬目标的采数链路三处坑（bin 不产出 / 辅助 op 污染 / 口径基数错）任一都会使目标判定失真——2026-09-15 会话已产出伪影 log，2026-09-16 修复管线后才可靠；规则化使下一次 Ratio 目标任务第一轮即采对。
+  - `captured_op_name` 能通过命令、输出目录和运行日志追溯到本次 `target_kernel_name` 或目标 TileLang kernel。**roofline Ratio 口径采数（2026-09-16 attention 第六轮实证）**：① `--aic-metrics=Roofline` 单命令同时产出 Task Duration + 诊断 CSV + `visualize_data.bin` 预计算 roofline 条目（Ratio =「GM/L2 · GM Read + Write」条目 ratio×100）——metrics 集不含 Roofline 时不产出 bin（第五轮实证）；② `--kernel-name` 过滤缺一不可：无过滤全捕获会把 ZerosLike 等辅助 op 当目标 kernel（实录：Ratio 0.15–0.65% 伪影，描述的是辅助 op 而非目标）；③ Ratio = Perf/Computility，Perf = msprof 计数 FLOPs / Task Duration——指标奖励执行利用率、不奖励 padding 缩减（flops 与时长同降时 Ratio 不动），Computility 归一基数以实测锚定核对（如 359.33 TOps/s 按 48 核计而实机 24 核——attention.md PL-1.12 指标结构段）。④ `target_kernel_name` 须取 `@tilelang.jit` 返回的 prim_func 名而非 `main`：bf16/fp16 为 `_{func}_transit_main`（transit 变体）、fp32 为 `_{func}_main`（gla_decode 2026-10-17 实证，`--kernel-name=main` → "Kernel skipped: not selected via --kernel-name" + "No profiling data dumped"）；§1 登记 `target_kernel_name` 时以编译期实际 prim_func 名为准（§4「captured_op_name 不一定机械等于 Python 函数名」的具体形态）。
+    动机: Ratio 类硬目标的采数链路四处坑（bin 不产出 / 辅助 op 污染 / 口径基数错 / kernel-name 取成 `main` 而非 prim_func 名）任一都会使目标判定失真——2026-09-15 会话已产出伪影 log，2026-09-16 修复管线后才可靠；规则化使下一次 Ratio 目标任务第一轮即采对。
 - status: pending
 - confirmations: 1/2
 - created_by: task multi_head_attention-_gqa_prefill_fwd_kernel-20260916T033847Z 2026-09-16
@@ -3280,6 +3281,29 @@ decided_by: evolver / human / -   # 裁决者
 - status: pending
 - confirmations: -/-
 - created_by: task hardsigmoid-hardsigmoid_fwd_kernel-20261012T132114Z 2026-10-12
+- decided_by: -
+- decided_note: -
+
+## VP-2026-0147
+- type: R
+- title: conductor 被作为 subagent 派发（depth 达上限，Subagent depth limit reached）时的降级执行契约与披露要求——原则 4「所有阶段都通过 Subagent 执行」补降级例外
+- evidence:
+  - task gla_decode-GLADecodeOp-20261017T145257Z（optimize 续跑会话）：conductor 以子会话（depth=1）续跑，`@tilelang-op-optimizer` 与 `@tilelang-skill-evolver` 均因 "Subagent depth limit reached (1)" 无法嵌套调度，conductor 转降级模式亲自执行 Stage 4（conductor 终态钩子输入——调度侧原因，复盘工件未覆盖）；该任务 `.task_timeline.jsonl` Stage 4 事件的 `subagent` 字段 = "tilelang-op-optimizer"（逻辑 Stage 所有者）而实际执行者为 conductor（降级）——披露缺口
+  - 现行 conductor 核心原则 4（.opencode/agents/tilelang-op-conductor.md「核心原则」）：「所有阶段都通过 Subagent 执行…绝对禁止自行修复问题」——无 depth 上限降级例外条款
+- repro: none（流程规则，无运行时依赖）
+- toolchain_stamp: opencode Subagent depth limit（2026-10-17 实证）；tilelang 工具链无关
+- target_doc: .opencode/agents/tilelang-op-conductor.md
+- delta: |
+    动作: update（核心原则第 4 条原位扩展，追加降级例外与披露要求）
+    定位锚: "4. **所有阶段都通过 Subagent 执行**——你的职责是编排和决策，不亲自生成工件，**绝对禁止自行修复问题**（失败时只能重新调度或标记失败；门禁失败时先走完「门禁失败处理流程」再调度）；"
+    old 文本: |
+      4. **所有阶段都通过 Subagent 执行**——你的职责是编排和决策，不亲自生成工件，**绝对禁止自行修复问题**（失败时只能重新调度或标记失败；门禁失败时先走完「门禁失败处理流程」再调度）；
+    new 文本: |
+      4. **所有阶段都通过 Subagent 执行**——你的职责是编排和决策，不亲自生成工件，**绝对禁止自行修复问题**（失败时只能重新调度或标记失败；门禁失败时先走完「门禁失败处理流程」再调度）；**〔降级例外〕当 conductor 自身被作为 subagent 派发（续跑/恢复场景 depth 已达上限，如 depth=1）致嵌套调度报 `Subagent depth limit reached` 时**：该报错属环境硬限制，非流程可重试的失败——降级为亲自执行该 Stage（遵循对应 Stage skill，不跳过门禁、不降低产物标准），并在最终报告「成本/进化结果」段如实披露三点：① 本任务 conductor 处于 depth={N} 子会话、哪些 Stage Subagent（如 @tilelang-op-optimizer / @tilelang-skill-evolver）无法嵌套调度；② 实际由 conductor 降级亲自执行的 Stage 清单；③ `.task_timeline.jsonl` 该 Stage 事件的 `subagent` 字段仍记**逻辑 Stage 所有者**（如 tilelang-op-optimizer）而非实际执行者 conductor——状态机与时间线不受降级影响，但该披露缺口由报告补齐（gla_decode-GLADecodeOp-20261017T145257Z 实证）。
+    动机: 原则 4 明令「所有阶段都通过 Subagent 执行」，但 conductor 被作为 subagent 派发（续跑场景）时 depth limit 使其无法嵌套调度——2026-10-17 gla_decode 续跑任务 conductor 于 depth=1 子会话被迫降级亲自执行 Stage 4；原则 4 无降级例外条款，且 timeline 的 subagent 字段记逻辑所有者，构成披露缺口。规则化后降级有据可依、披露有标准形态。
+- status: pending
+- confirmations: -/-
+- created_by: task gla_decode-GLADecodeOp-20261017T145257Z 2026-10-17
 - decided_by: -
 - decided_note: -
 

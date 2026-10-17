@@ -372,3 +372,23 @@ repro: none
 ### `examples/hardsigmoid/`（任务工作区，未上库）——带 NaN 传播语义逐元素激活迁移首例
 
 hardsigmoid（`HardsigmoidFwdOp`）为 hardsigmoid/hardswish/hardtanh/relu6 族首个迁移，确立三条可复用经验：① NaN 单点恢复链 `vclamp`→`vcmp(x,x,"ne")`→`vbrc(NaN, 复用死 buffer)`→`vselect` 实证成立（NaN 语义常数见 constants.md CONST-vcmp-ne-nan-unordered，repro 三 dtype 断言）；② sub-fp32 fp32 中转链（PL-1.17 第三个同族应用，fp32 路径 buffer 复用 −64KB）；③ TileOPs 集成 wrapper `forward()` 调用约定适配（GPU `threads/npt` → NPU `kernel(x, N)`，`default_config.block_size` 取 DESIGN §5.2 设计值 8192，勿沿用 GPU 派生 512/1024）。适用触发条件：hardsigmoid/hardswish/hardtanh/relu6 族迁移（NaN 传播语义 + fp32 中转 + 集成调用约定）；durable 载体 = constants.md CONST-vcmp-ne-nan-unordered + 本库 repro。
+
+---
+
+id: CASE-linear-attention-gla-decode
+kind: case
+family: [linear_attention, gla, recurrent]
+mode: [developer]
+dtype: [bf16]
+device: 910B3
+status: verified
+origin_task: gla_decode-GLADecodeOp-20261017T145257Z
+toolchain: tilelang dev-root 7a4f77e184 + CANN 9.0.0 + Ascend910B3 / 2026-10-17
+repro: none
+---
+
+### `examples/TileOPs/tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/`（任务工作区，未上库）
+
+**durable 载体**：单 token decode latency-bound 画像 + k_tile=32 参数级最优（数字自包含于本条）；UB 容量 910B3 确认见 constants.md CONST-capacity-910B2C 扩展注。
+
+gla_decode（GLA / gated linear attention）族首个单 token decode 优化档案：单 token decode 为 **latency-bound**——每 (b,h) 一个核、decode 并行度 = B×H 有限 + 逐头 state 递归串行依赖 + 小 per-head 工作集，GM SOL 上限约 18%（k_tile=32），达 70% 访存 SOL 需结构性改变而非参数级可解（msprof advice 全程 "latency bound:pipeline caused"，未触发 [DESIGN_LIMIT]——无 >2× 结构性加速依据）。参数级唯一杠杆 k_tile（K 维串行循环次数）：16→32 全 workload 提速 21.6–28.3%（Task Duration，bf16 DK=DV=128，9.01→6.82 / 11.03→8.63 / 18.77→14.71 / 57.59→41.31 / 106.31→76.44µs）；k_tile=8 回退 +43~47%（循环开销翻倍）；k_tile=64 不成立（fp32 缓冲 294KB+ 超 UB）。未探索 persistent 分核（grid=min(B*H,40) 核内串行）理论可回收 ~10–20% 但需运行时 guard + 按 shape 分派，风险高未执行。适用触发条件：linear_attention/GLA/retentive 族单 token decode 调优；latency-bound（advice 全程 latency bound:pipeline caused）算子的参数级收束判据参考；Vector 逐元素 K-tile 容量启发式上限核对（对照 CONST-capacity-910B2C 910B3 注）。

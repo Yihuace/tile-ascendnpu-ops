@@ -146,6 +146,7 @@
 | CASE-attention-mha-config-unvalidated | 反例：设计默认 config 路径未编译验证即出厂（bench 期 UB 溢出） | verified |
 | CASE-ssd-chunkscan-migration | mamba/SSD 族 MixCV Expert 迁移完整档案（模式切换实证 + 六轮 2.91× + 首过集成 + 4515de8 重跑重验 + 二轮调优 1.078× + 重建会话 repro 骨架重推导 +9.7%；Stage 4 知识 durable 载体集群） | verified |
 | CASE-elementwise-hardsigmoid-migration | hardsigmoid/hardswish/hardtanh/relu6 族首个迁移：NaN 单点恢复链 + fp32 中转 + 集成 wrapper 调用约定适配 | verified |
+| CASE-linear-attention-gla-decode | GLA 单 token decode latency-bound（GM SOL 上限 ~18%）；k_tile=32 提速 21.6–28.3%（910B3 首案） | verified |
 
 ### repro/ — 最小可复现代码（ED-B）
 
