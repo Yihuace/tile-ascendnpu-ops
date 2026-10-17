@@ -90,6 +90,28 @@ decided_by: evolver / human / -   # 裁决者
 - decided_by: -
 - decided_note: 与 VP-2026-0148（dtype 分化阶数）构成 erf/GELU 多项式设计的一正一反约束，合入时互链。
 
+## VP-2026-0155
+- type: P
+- title: 归因判据——roofline advice 与 pipe 级 ratio 矛盾时以 pipe 占比为准（`latency bound:pipeline caused` 会把 MTE2 混合 R/W 带宽地板误读为 pipeline 延迟）
+- evidence:
+  - task isnan-IsnanFwdOp-20261017T114928Z（2026-10-18 二次深挖 Round 6）：perf_opt/opt_log.md §6.1/§6.4（PipeUtilization 对账表：fp16/fp32 `aiv_mte2_ratio` 0.81–0.90 ≫ `aiv_vec_ratio` 0.25–0.39；4→3-pass 只降 fp16 vec_time 12.95→10.06µs〔−22%〕但 Task Duration 仅 −3.4%，mte2_time 21.2µs 不变）+ Skill Retrospective R/P 行
+  - 交叉验证：40→20 核 SOL 64%→39%（搬运并行减半 ≈ 有效带宽减半，与 MTE2-bound 归因一致）
+- repro: repro-missing（测量类结论——msprof PipeUtilization `aiv_mte2_ratio`/`aiv_vec_ratio` 观测 vs roofline advice 对照，非代码模式；知识域最小测量脚本待同族任务回填）
+- toolchain_stamp: tilelang 0.1.2 dev-root (AscendNPU-IR 31f6903) + CANN 9.0.0 (bishengir 1.1.0) + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/bottleneck-patterns.md
+- delta: |
+    add 新 BP 条目 BP_roofline_advice_vs_pipe_ratio（目录行与正文追加于 BP_ub_traffic_floor 之后）：
+    触发信号：roofline `advice = latency bound:pipeline caused`（暗示 pipeline 延迟可优化），但 PipeUtilization 实测 `aiv_mte2_ratio`（0.81–0.90）≫ `aiv_vec_ratio`（0.25–0.39）——搬运近饱和、向量单位大半空闲。
+    判据：**pipe 级 ratio 优先于 roofline advice**——MTE2 混合 R/W 带宽地板会被 roofline 误读为「pipeline 延迟」；带宽地板 vs pipeline 延迟二选一时以 `aiv_mte2_ratio`/`aiv_vec_ratio` 实测占比为准。
+    反证/交叉验证（isnan 2026-10-18）：4→3-pass 使 fp16 vec_time −22% 但 Task Duration 仅 −3.4%（mte2_time 不变）——向量链已隐藏于搬运窗口；40→20 核 SOL 64%→39%（搬运并行减半 ≈ 有效带宽减半）。
+    推荐动作：诊断时先读 PipeUtilization 的 pipe 占比（`aiv_mte2_ratio`/`aiv_vec_ratio`）再采信 roofline advice；mte2_ratio ≫ vec_ratio 时立项方向 = 搬运/带宽（对照 BP_memory_bandwidth_or_mte），不立项 pipeline 深度（BP_pipeline_overlap）。
+    验证指标：Task Duration 下限 ≈ mte2_time + kernel 启动（非向量吞吐下限）；vec 削减实验 Task Duration 不动即归因成立。
+- status: pending
+- confirmations: 1/2
+- created_by: task isnan-IsnanFwdOp-20261017T114928Z（2026-10-18 二次深挖） 2026-10-18
+- decided_by: -
+- decided_note: 单任务首证；同族/跨族 MTE2-bound 逐元素算子的独立第二证可确认；与 VP-2026-0149（GM SOL 判据失配）同「判据失配」族，合入时互链。
+
 ## VP-2026-0003
 
 - type: P
@@ -1097,6 +1119,30 @@ decided_by: evolver / human / -   # 裁决者
 - created_by: task gelu_tanh_and_mul-GeluTanhAndMulFwdOp-20261017T163233Z 2026-10-18
 - decided_by: -
 - decided_note: 两算子同源（同批 optimize 重开）；Tier 2 人工门保留；与 VP-2026-0153 合并评估。
+
+## VP-2026-0156
+- type: R
+- title: secondary deep-dive 改变 winner 时旧 `phase=final` 记录须降级为 `merged`（保留数据、只改 phase）——否则同 (kernel_id, workload_id) 两条 final 触发 gate 4 `S4-PERF-RECORDS-RECON`
+- evidence:
+  - task isinf-IsinfFwdOp-20261017T125803Z（2026-10-18 二次深挖 Round 5）：perf_opt/opt_log.md §证据 + Skill Retrospective R 行（round-4 旧 `abs-pipe2-bs8192` final 7 行降级 merged，数据未改；perf_records.jsonl 可核对——round-4 phase=merged / round-5 phase=final）
+  - task isfinite-IsfiniteFwdOp-20261017T131520Z（2026-10-18 二次深挖 Round 3）：同动作（round-2 旧 final 7 行降级 merged）
+  - .agents/tools/gate_lint.py L1026（`len(phases["final"]) != 1` → S4-PERF-RECORDS-RECON「必须恰有一条 final」）+ L1032（final 来自多个 candidate_id → S4-PERF-RECORDS-RECON）
+- repro: none（gate 机械规则；验证 = 对含两条 final 的 perf_records.jsonl 跑 gate 4 复现 S4-PERF-RECORDS-RECON）
+- toolchain_stamp: gate_lint.py（本仓工具，无版本戳）/ 2026-10-18
+- target_doc: .agents/skills/_shared/standards/signal-registry.md
+- delta: |
+    动作: update（§5 perf_records 契约 phase 枚举句原位扩展）
+    目标: .agents/skills/_shared/standards/signal-registry.md
+    定位锚: "`phase` 为 `baseline` / `candidate` / `merged` / `final`。"
+    old 文本: （该句原文）
+    new 文本: |
+      `phase` 为 `baseline` / `candidate` / `merged` / `final`。**二次深挖/重调优改变 winner 时**：被取代的旧 `phase=final` 记录须**降级为 `merged`**（保留全部测量数据、`artifact_sha256` 与 `duration_us`，仅更正已失效的 phase 标签），不得删除或伪造测量行——否则同一 `(kernel_id, workload_id)` 出现两条 final 或 final 来自多个 candidate_id，机械触发 gate 4 `S4-PERF-RECORDS-RECON`（「必须恰有一条 final」+「final 来自多个候选」）。该降级是「只追加不改写不删行」契约在 winner 变更时的唯一合法例外（只改 phase 标签、不动数据）。
+    动机: 2026-10-18 isinf/isfinite 二次深挖改变 winner（bf16 vand 6→4 pass）时，旧 final 若不降级会与新 final 的哈希/候选不一致触发 gate 4——两算子均按「旧 final → merged」收束；契约未显式约定该降级规范，规则化使 optimizer 首轮即写对 phase。备选修法 = gate_lint 对 superseded final 显式 deprecate 而非硬失败（与 VP-2026-0154 的旧 schema 行 deprecate 建议同向），审批时择一。
+- status: pending
+- confirmations: -/-
+- created_by: task isinf-IsinfFwdOp-20261017T125803Z（2026-10-18 二次深挖） 2026-10-18
+- decided_by: -
+- decided_note: 两算子同批同源（同族二次深挖）；Tier 2 人工门保留。与 VP-2026-0154（legacy perf_records 污染）、VP-2026-0114（S4 产物格式契约显式化）同属 perf_records 契约的 phase 语义缺口——审批时可合并评估。
 
 ## VP-2026-0008
 - type: R
