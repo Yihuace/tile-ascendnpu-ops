@@ -201,3 +201,33 @@ repro: repro/PL-1.22-tile-imbalance.py
   三项稳定收益 −2.3~−3.1%；但 Sub 首轮 baseline 处于慢态时曾伪造 llama-hidden **−13.5%** 的收益，
   相邻交错复测只剩 **−0.6%**——跨轮 baseline 比较会把机器双态误读为优化收益。
   ⇒ 同族迁移可用作起点，收益必须逐算子同批复测（origin_task: sub-SubFwdOp-20261017T094810Z）。
+
+---
+id: PL-1.24-hoist-invariant-const-fill
+kind: pattern
+family: [elementwise, activation]
+apis: [T.vbrc, T.vsub, T.serial]
+dtype: [fp16, bf16, fp32]
+device: 910B3
+status: verified
+origin_task: gelu_tanh_and_mul-GeluTanhAndMulFwdOp-20261017T163233Z（首证，hoist vbrc）/ gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z（第二证，hoist 常数 + 单条 vsub）
+toolchain: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+repro: repro-missing
+---
+
+### 1.24 循环不变量常数缓冲填充 hoist 出 persistent 循环（2 算子实证）
+
+- **现象**：逐元素 persistent tile 循环内，常数缓冲填充 `T.vbrc(1.0, one_ub)` 每 tile 重复执行
+  （prefill 每核 ~358 次），实为循环不变量——每核只需一次。
+- **优化（慢→快关键更改）**：把常数填充提到 persistent 循环外，省 ~357 次/核的向量 op。
+  GeluTanhAndMul prefill **−3.2%/−3.3%**（204.0→197.5µs，fold 起点）、swiglu −2.2%。
+- **配套代数化简**：hoisted 常数缓冲复用为单条 `T.vsub(one_ub, u, w)`（`w=1−u²`）替代
+  `vmul-negate+vadd` 两条——GeluAndMul prefill −2.24%（A/B 3 对方向一致，子阈值 tie 采纳）。
+- **优化见解（机制归因）**：compute-bound 逐元素算子（`Vec_FP32 ~99%`）的唯一可削项是**向量 op 数**——
+  循环不变量填充与可化简的多步算术（`1−u²` 单条 vsub）都是「白送」的 op 数削减（不新增 UB、不损精度、
+  数学严格等价）。delta 骨架：`for i in T.serial(iters): T.vbrc(1.0, one_ub); ...`（慢，每 tile 重复）→
+  `T.vbrc(1.0, one_ub); for i in T.serial(iters): T.vsub(one_ub, u, w); ...`（快，每核一次 + 复用化简）。
+- **边界**：hoist 若被迫引入 alias 形态（dst=src2）会 +17~20% 税（layout.md PL-1.15 形态二，ssd v11 实证）——
+  干净形态（fresh dst + 死后复用）才成立；本条「常数缓冲 hoist」无 alias 风险。跨引擎 MixCV 同族先例见
+  attention.md PL-1.18 vbrchoist（列广播 hoist）。子阈值（<3%）结果必须走交错 A/B（PL-1.22 测量纪律）。
+- repro：repro-missing（最小形态 = hoist `T.vbrc` 出 serial 循环 + 常数缓冲单条 vsub，ED-B delta 骨架待同族任务回填）。

@@ -392,3 +392,23 @@ repro: none
 **durable 载体**：单 token decode latency-bound 画像 + k_tile=32 参数级最优（数字自包含于本条）；UB 容量 910B3 确认见 constants.md CONST-capacity-910B2C 扩展注。
 
 gla_decode（GLA / gated linear attention）族首个单 token decode 优化档案：单 token decode 为 **latency-bound**——每 (b,h) 一个核、decode 并行度 = B×H 有限 + 逐头 state 递归串行依赖 + 小 per-head 工作集，GM SOL 上限约 18%（k_tile=32），达 70% 访存 SOL 需结构性改变而非参数级可解（msprof advice 全程 "latency bound:pipeline caused"，未触发 [DESIGN_LIMIT]——无 >2× 结构性加速依据）。参数级唯一杠杆 k_tile（K 维串行循环次数）：16→32 全 workload 提速 21.6–28.3%（Task Duration，bf16 DK=DV=128，9.01→6.82 / 11.03→8.63 / 18.77→14.71 / 57.59→41.31 / 106.31→76.44µs）；k_tile=8 回退 +43~47%（循环开销翻倍）；k_tile=64 不成立（fp32 缓冲 294KB+ 超 UB）。未探索 persistent 分核（grid=min(B*H,40) 核内串行）理论可回收 ~10–20% 但需运行时 guard + 按 shape 分派，风险高未执行。适用触发条件：linear_attention/GLA/retentive 族单 token decode 调优；latency-bound（advice 全程 latency bound:pipeline caused）算子的参数级收束判据参考；Vector 逐元素 K-tile 容量启发式上限核对（对照 CONST-capacity-910B2C 910B3 注）。
+
+---
+
+id: CASE-elementwise-gelu-activate-opt
+kind: case
+family: [elementwise, activation]
+mode: [developer]
+dtype: [fp16, bf16, fp32]
+device: 910B3
+status: verified
+origin_task: gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z（dtype 分化阶数）/ gelu_tanh_and_mul-GeluTanhAndMulFwdOp-20261017T163233Z（hoist vbrc）
+toolchain: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+repro: none
+---
+
+### `examples/TileOPs/tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/perf_opt/` + `gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/perf_opt/`（任务工作区，未上库）
+
+**durable 载体**：dtype 分化多项式阶数模式（queue VP-2026-0148，algorithm-candidates ALG-elementwise 待合入）；hoist 常数缓冲（elementwise.md PL-1.24）；erf 精确饱和约束（queue VP-2026-0150）；GM SOL 判据失配（queue VP-2026-0149）。
+
+GELU 激活族（erf GELU `gelu_and_mul` / tanh GELU `gelu_tanh_and_mul`，均 `y = gelu(x[:,:N]) * x[:,N:]`，纯 Vector）Stage 4 调优档案——**compute-bound 逐元素激活算子的两个有效杠杆**：① **dtype 分化 erf 阶数**（最高价值）：fp16/bf16 输出容差（1e-2 / 1.6e-2）远不需要 deg-20 的 2.98e-7 精度，换 deg-10 minimax（erf err 1.4e-4）把 Horner 从 40 减到 20 条向量 op，prefill **−36.8%**（800→506µs）、对 Stage 3 基线 −43.6%（877→494µs）、swiglu −35.4%/−33.2%；fp32 保持 deg-20（trace-time dtype 分支，非运行时条件路径）；② **hoist 循环不变量常数缓冲**（elementwise.md PL-1.24）。**反例**：fold `1/√2` 进 erf 系数破坏精确饱和（c0=1/A 精确不可妥协，`gelu(-inf)` 变 `-inf` 非 NaN——VP-2026-0150）。适用触发条件：activation/GELU/erf 多项式链调优（dtype 自适应阶数 + 常数缓冲 hoist + 精确饱和约束）；compute-bound（`Vec_FP32 ~99%`）逐元素算子的调优路线参考。

@@ -48,6 +48,7 @@
 | PL-1.19-scatter-col-write-amplification | (M,1) 列切片 UB→GM 写 42× 放大 → 扁平 chunk-major 连续写 | verified |
 | PL-1.20-nsplit-perrow-partial | C6 N-split per-row partial + transpose merge（小 M 大 N 2.2–2.6×；tn=最大单波 nchunk≤cores） | verified |
 | PL-1.22-small-shape-fixed-overhead | 小 shape 固定截距 1.6µs + 40 核 tile 不均公式（12288 +5.5%）+ 静态尾块/流水收益 + 连续分块反例 | verified |
+| PL-1.24-hoist-invariant-const-fill | 循环不变量常数缓冲填充 hoist 出 persistent 循环（−3.2%/−2.24%，compute-bound 下唯一可削 = 向量 op 数） | verified |
 
 ### predicate.md — bool 输出 predicate 族（isnan/isinf/isfinite）
 
@@ -147,6 +148,7 @@
 | CASE-ssd-chunkscan-migration | mamba/SSD 族 MixCV Expert 迁移完整档案（模式切换实证 + 六轮 2.91× + 首过集成 + 4515de8 重跑重验 + 二轮调优 1.078× + 重建会话 repro 骨架重推导 +9.7%；Stage 4 知识 durable 载体集群） | verified |
 | CASE-elementwise-hardsigmoid-migration | hardsigmoid/hardswish/hardtanh/relu6 族首个迁移：NaN 单点恢复链 + fp32 中转 + 集成 wrapper 调用约定适配 | verified |
 | CASE-linear-attention-gla-decode | GLA 单 token decode latency-bound（GM SOL 上限 ~18%）；k_tile=32 提速 21.6–28.3%（910B3 首案） | verified |
+| CASE-elementwise-gelu-activate-opt | GELU 激活族 compute-bound 档案：dtype 分化 erf 阶数（deg-20→deg-10）−43.6% + hoist 常数缓冲 + erf 精确饱和反例 | verified |
 
 ### repro/ — 最小可复现代码（ED-B）
 

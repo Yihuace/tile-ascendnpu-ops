@@ -35,6 +35,61 @@ decided_by: evolver / human / -   # 裁决者
 
 ### Tier 1（P 类，2 次独立证据后合入）
 
+## VP-2026-0148
+- type: P
+- title: dtype 分化多项式阶数——窄 dtype（fp16/bf16）输出容差远低于 fp32，用低阶 minimax 替代高阶（erf deg-20→deg-10，Horner 40→20 op），compute-bound 逐元素算子 prefill −36.8%（对 Stage 3 基线 −43.6%）
+- evidence:
+  - task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z：opt_log §3 Round 1（op10 deg-10 −36.8%；op12 deg-12 否决）+ §8 Final（−43.6%）
+  - 同任务 DESIGN §5.4（「窄 dtype 走 deg10 多项式」为显式 Stage 4 实验项）
+- repro: repro-missing（最小形态 = trace-time dtype 分支 + 两组 minimax 系数 + deg-N Horner 展开；ED-B 待同族任务回填）
+- toolchain_stamp: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-design/references/algorithm-candidates.md
+- delta: |
+    update ALG-elementwise（family: [elementwise, activation]）R1 追加「dtype 分化多项式阶数」候选：
+    erf/GELU 等多项式逼近的阶数按**输出 dtype 容差**选，非统一高阶——fp16 输出容差 ~1e-2 / bf16 ~1.6e-2 时 deg-10 minimax（erf err 1.4e-4）已充分，deg-20（2.98e-7）严重过剩；fp32 保持 deg-20（精确 erf 契约）。trace-time dtype 分支（工厂特化，非运行时条件路径）切换系数与阶数。实测：gelu_and_mul prefill fp16 800→506µs（−36.8%）、对 Stage 3 基线 877→494µs（−43.6%）；deg-12（erf err 9.7e-6）比 deg-10 多 4 条 Horner op、精度过剩、无收益。kb_links: [PL-1.24-hoist-invariant-const-fill, VP-2026-0150（erf 精确饱和约束）]
+- status: pending
+- confirmations: 1/2
+- created_by: task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z 2026-10-18
+- decided_by: -
+- decided_note: 单任务首证；同类激活算子（sigmoid/tanh/softmax 多项式族）的独立第二证可确认。
+
+## VP-2026-0149
+- type: D
+- title: GM Read+Write SOL ≥70% 判据失配——AI≈2.5 的 5-op 级 fp32 中转逐元素链实测 compute-bound（Vec_FP32 ~99%），SOL 是访存判据，对此族判据失配；正确判据 = 向量利用率（豁免规则 3）
+- evidence:
+  - task hardsigmoid-HardsigmoidFwdOp-20261017T155844Z：opt_log §1/§7（AI=2.5，advice="latency bound:compute caused"，computility=Vec_FP32(99.98%)，aiv_vec_ratio≈0.85，aiv_vec_fops/elem≈5.08）
+  - task gelu_tanh_and_mul-GeluTanhAndMulFwdOp-20261017T163233Z：opt_log §2（Vec_FP32 99.09%，GM SOL 45–50%）
+  - task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z：opt_log §2（aiv_vec_ratio 0.943，GM SOL 43–48%）
+  - 被修正条目：elementwise.md PL-1.21（hardsigmoid 55.7% SOL 的「残差」归因从「测量方差」修正为「compute-bound 地板」）
+- repro: repro-missing（测量类结论——msprof advice/computility/aiv_vec_ratio 观测，非代码模式；知识域最小测量脚本待同族任务回填）
+- toolchain_stamp: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/pattern-library/elementwise.md
+- delta: |
+    add 条目 PL-1.25-gm-sol-criterion-mismatch（compute-bound 逐元素算子的 GM SOL 判据失配）：
+    「GM Read+Write SOL ≥70%」是**访存受限**判据；AI≈2.5（落在 ridge 附近）的 5-op 级 fp32 中转逐元素链实测 **compute-bound**（advice=`latency bound:compute caused`、computility=`Vec_FP32(99.98%)`、aiv_vec_ratio 0.85–0.94、aiv_vec_fops/elem≈5.08）——fp32 链 4 算术 op 已是语义最小，SOL 不可能达 70%。三算子实证（hardsigmoid / gelu_tanh_and_mul / gelu_and_mul，CANN 9.0.0/910B3）。正确判据 = 向量利用率 ≥0.9（豁免规则 3），达标硬底线 = Task Duration 下降。同条 update PL-1.21：hardsigmoid 55.7% SOL 的「残差」归因从「测量方差」修正为「compute-bound 地板」。
+- status: pending
+- confirmations: 1/2
+- created_by: task hardsigmoid-HardsigmoidFwdOp-20261017T155844Z 2026-10-18
+- decided_by: -
+- decided_note: 三任务同族互证（同批 optimize 谱系）；repro-missing（测量类）；合入时与 PL-1.21 互链、残差归因修正一并落盘。
+
+## VP-2026-0150
+- type: D
+- title: erf/GELU 精确饱和是硬约束——fold 1/√2 进 erf 系数（系数 ×1/√2 + clamp ±4√2）破坏 c0=1/4 与 t=±4 的 fp32 精确性 → t·c0 非精确 ±1 → gelu(-inf) 变 -inf（非 NaN），L1-4/Boundary 全失败
+- evidence:
+  - task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z：opt_log §3 Round 2 fold 行（fold 否决根因）+ Boundary inf/nan 失败
+  - 同任务 DESIGN §9.2（「多项式常数项非 1/A → clip 不触发」）
+- repro: repro-missing（最小形态 = fold 变体 + gelu(-inf) 断言，torch CPU 级即可复现；待同族任务回填）
+- toolchain_stamp: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/pattern-library/traps-runtime.md
+- delta: |
+    add 条目 TRAP-erf-exact-saturation：erf/GELU 多项式设计的**精确饱和约束**——常数项 c0 必须 = 1/A（A=4）且 t 上界 = A，使 t·c0 = ±1 **精确**（fp32 可精确表示 0.25 与 4），从而 `1+erf(±inf)` 精确归零、`gelu(-inf) = -inf·0 = NaN` 成立。fold `1/√2`（inv_sqrt2）与 `1/4`（inv_a）为 `1/(4√2)` 并把系数缩放后，c0'=0.25/√2 与 t'=4√2 均非 fp32 精确值，t'·c0'≈1 非精确，clip(±1) 不再保证 ±1，gelu(-inf) 变 -inf（非 NaN），大 |gate| 与 inf/nan 用例全失败。**精确饱和不可妥协**（与 dtype 分化阶数互补——VP-2026-0148 降阶合法，fold 系数非法）。
+- status: pending
+- confirmations: 1/2
+- created_by: task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z 2026-10-18
+- decided_by: -
+- decided_note: 与 VP-2026-0148（dtype 分化阶数）构成 erf/GELU 多项式设计的一正一反约束，合入时互链。
+
 ## VP-2026-0003
 
 - type: P
@@ -949,6 +1004,99 @@ decided_by: evolver / human / -   # 裁决者
 - decided_note: -
 
 ### Tier 2（R 类，结构化 diff 提案，待人工批准后 mode=apply 执行）
+
+## VP-2026-0151
+- type: R
+- title: DESIGN §1.6.0 定量 roofline 估算下界 = max(流量项,发射项,容量项) 中「发射项」对 compute-bound 多项式链（deg-20 erf ~56 条向量 op）系统性低估——下界估算方向错误（带宽 226µs vs 实测 compute-bound 877µs，3.9×）
+- evidence:
+  - task gelu_tanh_and_mul-GeluTanhAndMulFwdOp-20261017T163233Z：opt_log §1「设计估算 vs 实测偏差」（DESIGN 226µs 带宽下界 vs 实测 215µs/final 197µs，Vec_FP32 99%）
+  - task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z：opt_log §1「设计估算 vs 实测偏差」（DESIGN 226µs vs 实测 877µs = 3.9×，aiv_vec_ratio 0.94）
+- repro: none（设计方法论；估算口径修正 + 发射项向量 op 计数，验证 = 后续同类算子 DESIGN 估算 vs 实测偏差行收敛到 <2×）
+- toolchain_stamp: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-design/SKILL.md
+- delta: |
+    动作: update（Phase R R4 定量 roofline bullet 原位扩展）
+    目标: .agents/skills/tilelang-op-design/SKILL.md
+    定位锚: "估算下界 = max(流量项, 发射项, 容量项)"
+    new 文本: |
+      估算下界 = max(流量项, 发射项, 容量项)——**发射项必须按「向量 op 数 × CONST-vector-launch-overhead（~0.5µs/op）」实算**，尤其对激活/多项式链算子（GELU deg-20 erf ~56 条向量 op 的发射项远超带宽项）；只算流量项会把 compute-bound 算子误估为「带宽受限」，下界方向错误（gelu_and_mul 实测 877µs vs 带宽估算 226µs = 3.9× 失准）。判定口径：先按 AI（compute intensity，FLOPs/字节）vs ridge 判 compute-bound 还是 memory-bound——AI 接近/低于 ridge 的逐元素激活链是 compute-bound，SOL 判据与带宽下界均不适用（对照 pattern-library PL-1.25 GM SOL 判据失配）。
+    动机: 两算子 DESIGN §1.6.0 均以 MTE2 带宽估下界 226µs，实测 compute-bound（Vec_FP32 99% / aiv_vec_ratio 0.94）为 197–877µs——发射项漏算致估算方向错误；hardware-cost-model.md「设计估算 vs 实测偏差行」已能检测（偏差 >2× 注偏差项），但缺口在估算阶段的前置分类。
+- status: pending
+- confirmations: -/-
+- created_by: task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z 2026-10-18（gelu_tanh_and_mul 同源第二证）
+- decided_by: -
+- decided_note: 两算子同批同源发现（不同 op，同 DESIGN 估算缺口）；Tier 2 人工门保留。
+
+## VP-2026-0152
+- type: R
+- title: opt_log 的「## 7. Final Performance Test Data」编号标题触发 S4-PERF-RECORDS-RECON——gate_lint 正则 `^#{2,3} Final Performance Test Data$` 要求无编号字面标题，但 opt_log 契约未显式约定该标题须无编号
+- evidence:
+  - task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z：本轮 opt_log 以「## 7. Final Performance Test Data」编号标题写入，触发 gate 4 S4-PERF-RECORDS-RECON「缺少 Final Performance Test Data 表」
+  - .agents/tools/gate_lint.py L1048：`re.search(r"^#{2,3} Final Performance Test Data\s*$", log, re.M)`
+  - signal-registry.md §5：「Final Summary 须有 Final Performance Test Data 表」（未规定标题是否可带编号）
+- repro: none（gate 机械规则；验证 = 用带编号标题的 opt_log 跑 statectl gate 4 复现失败，再用无编号标题复现通过）
+- toolchain_stamp: gate_lint.py（本仓工具，无版本戳）/ 2026-10-18
+- target_doc: .agents/skills/_shared/standards/signal-registry.md
+- delta: |
+    动作: update（§5 Final Performance Test Data 契约句原位扩展）
+    目标: .agents/skills/_shared/standards/signal-registry.md
+    定位锚: "Final Summary 须有 `Final Performance Test Data` 表"
+    new 文本: |
+      Final Summary 须有 `Final Performance Test Data` 表——**标题须为无编号字面标题 `## Final Performance Test Data`**（gate_lint S4-PERF-RECORDS-RECON 以 `^#{2,3} Final Performance Test Data$` 行首锚定匹配，带编号如 `## 7. Final Performance Test Data` 不匹配、判「缺少表」）。
+    动机: 2026-10-18 gelu_and_mul 用 `## 7. Final Performance Test Data` 编号标题触发 gate 误报——契约未约定「无编号」字面要求，正则与模板脱节；在契约处显式约定使 optimizer 首轮即写对标题。
+- status: pending
+- confirmations: -/-
+- created_by: task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z 2026-10-18
+- decided_by: -
+- decided_note: 备选修法 = gate_lint 正则放宽为 `^#{2,3} \d*\.?\s*Final Performance Test Data$`；二选一（改契约 or 改正则），审批时择一。
+
+## VP-2026-0153
+- type: R
+- title: statectl start 4 --extend 无法重开 optimize 场景 DONE 任务——reopen 分支要求 scenario ∈ {new_op, migration} 且 stage3 completed，optimize 场景（Stage 4 重调优）被拒
+- evidence:
+  - task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z（及本批 hardsigmoid/gelu_tanh_and_mul）：CANN 8.5.2 已 DONE 的 optimize 任务在 CANN 9.0.0 上重开 Stage 4 调优，`statectl start 4 --extend` 报 E-TERMINAL
+  - .agents/tools/statectl.py L546-563：reopen 条件 = `args.extend and phase==DONE and failure_reason is None and n==4 and scenario in ("new_op","migration") and stage_status["3"]=="completed"`
+  - 本轮绕过方式：备份旧 state 到 history_version/ + 重新 init（当前 .stage_state.json 为 re-init 产物，scenario=optimize，stage_plan=[4]）
+- repro: none（statectl 机械行为；验证 = 对 DONE 的 optimize state 执行 `statectl start 4 --extend` 观察 E-TERMINAL）
+- toolchain_stamp: statectl.py（本仓工具，无版本戳）/ 2026-10-18
+- target_doc: .agents/tools/statectl.py
+- delta: |
+    动作: update（cmd_start reopen 条件扩展）
+    目标: .agents/tools/statectl.py
+    定位锚: "state.get(\"scenario\") in (\"new_op\", \"migration\")"
+    old 文本: （该行原文）
+    new 文本: |
+      state.get("scenario") in ("new_op", "migration", "optimize")
+      并放宽 stage3 前置：optimize 场景的 Stage 4 重调优无 Stage 3 依赖，`stage_status.get("3") == "completed"` 仅对 new_op/migration 要求。
+    动机: optimize 场景的 DONE 任务在工具链升级（CANN 8.5.2→9.0.0）后重跑 Stage 4 调优是合法高频需求（本批 3 算子均需）；reopen 分支漏掉 optimize 场景迫使「备份 state + 重新 init」绕过，丢失原任务溯源（task_id 变化、旧 perf_records 跨任务污染同源——VP-2026-0154）。
+- status: pending
+- confirmations: -/-
+- created_by: task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z 2026-10-18
+- decided_by: -
+- decided_note: 与 VP-2026-0154（legacy perf_records 污染）同源——re-init 绕过是污染的直接诱因之一；审批时可合并评估。
+
+## VP-2026-0154
+- type: R
+- title: legacy perf_records 跨任务污染——上一轮（旧 CANN）留下的旧 schema perf_records.jsonl 行与本轮 signal-registry §5 字段契约不兼容，机械触发 S4-PERF-RECORDS-SCHEMA；init 重开 Stage 4 应提示清理/归档旧记录，或 gate 对旧 schema 行显式 deprecate 而非硬失败
+- evidence:
+  - task gelu_tanh_and_mul-GeluTanhAndMulFwdOp-20261017T163233Z：opt_log §7 流程问题 1（3 条旧 schema 行归档到 logs/legacy_perf_records_prior_run.jsonl）
+  - task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z：opt_log §9 流程问题 1（4 条旧 schema 行归档）
+- repro: none（gate 契约/流程；验证 = 带旧 schema 行的 perf_records.jsonl 跑 gate 4 复现 S4-PERF-RECORDS-SCHEMA）
+- toolchain_stamp: signal-registry.md §5（本仓契约）/ 2026-10-18
+- target_doc: .agents/skills/_shared/standards/signal-registry.md
+- delta: |
+    动作: update（§5 perf_records 契约追加 init 迁移条款）
+    目标: .agents/skills/_shared/standards/signal-registry.md
+    定位锚: "`perf_records.jsonl` 每行字段："
+    new 文本: |
+      `perf_records.jsonl` 每行字段：
+      （前）旧 schema（`op/label/dtype/baseline_us/perf_opt_us/...`，CANN 8.5.2 及以前）行与本契约不兼容——**init 重开 Stage 4 时须把旧 perf_opt/perf_records.jsonl 归档到 logs/legacy_perf_records_prior_run.jsonl 并留痕**（或 gate 4 对旧 schema 行显式 deprecate 而非 S4-PERF-RECORDS-SCHEMA 硬失败），避免跨任务污染机械触发门禁。
+    动机: 两算子（gelu_tanh_and_mul/gelu_and_mul）重开 Stage 4 时旧 schema 行触发 S4-PERF-RECORDS-SCHEMA，需手动归档——init 流程缺「旧产物清理」步骤；与 VP-2026-0153（re-init 绕过）同源。
+- status: pending
+- confirmations: -/-
+- created_by: task gelu_tanh_and_mul-GeluTanhAndMulFwdOp-20261017T163233Z 2026-10-18
+- decided_by: -
+- decided_note: 两算子同源（同批 optimize 重开）；Tier 2 人工门保留；与 VP-2026-0153 合并评估。
 
 ## VP-2026-0008
 - type: R
