@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T15:40:27.643125+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "Conv1dFwdOp",
+      "case_id": "Conv1dFwdOp-4242f72164d2",
+      "config": {
+        "block_k": 128,
+        "block_m": 64,
+        "block_n": 128,
+        "num_stages": 1
+      },
+      "label": "wav2vec2-layer1",
+      "params": {
+        "bias": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 512,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          16000
+        ],
+        "kernel_size": 10,
+        "l_in": 16000,
+        "n": 1,
+        "padding": 0,
+        "stride": 5,
+        "use_bias": false,
+        "weight_shape": [
+          512,
+          1,
+          10
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 993.8912353515625,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 297.8273620605469,
+        "Perf(TOps/s)": 0.9840418696403503,
+        "Ratio(%)": 0.3304,
+        "advice": "latency bound:memory caused",
+        "artifact_dir": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/profiles/wav2vec2-bf16/_conv1d_main_mix_aic_zdtjhxe_",
+        "latency_us": 582.411621,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_main"
+          ],
+          "kernel_name_requested": "_conv1d_main",
+          "kernel_name_resolved": "_conv1d_main",
+          "latency_us": 582.411621,
+          "max_latency_us": 582.411621,
+          "min_latency_us": 582.411621,
+          "op_name": "_conv1d_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.003052,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.003052,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.003052,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.003052,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.162109375,
+            "bw_name": "FIXP",
+            "ratio": 0.003052,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.023305,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "L1 to GM",
+            "ratio": 0.007154,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.028758,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.04137,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.028758,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.028758,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.028758,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.028758,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.028758,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.028758,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.028758,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.003304,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.051761,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    }
+  ]
+}

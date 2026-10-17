@@ -1,0 +1,580 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "smoke-k3-s1-float16",
+      "label": "smoke-k3-s1",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          1,
+          8,
+          128
+        ],
+        "weight": [
+          16,
+          8,
+          3
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "smoke",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "smoke-k3-s1-bfloat16",
+      "label": "smoke-k3-s1",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          8,
+          128
+        ],
+        "weight": [
+          16,
+          8,
+          3
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "whisper-conv1-float16",
+      "label": "whisper-conv1",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          80,
+          3000
+        ],
+        "weight": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "whisper-conv1-bfloat16",
+      "label": "whisper-conv1",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          80,
+          3000
+        ],
+        "weight": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "wav2vec2-layer1-float16",
+      "label": "wav2vec2-layer1",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          16000
+        ],
+        "weight": [
+          512,
+          1,
+          10
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 5,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "wav2vec2-layer1-bfloat16",
+      "label": "wav2vec2-layer1",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          16000
+        ],
+        "weight": [
+          512,
+          1,
+          10
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 5,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "encodec-init-float16",
+      "label": "encodec-init",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          24000
+        ],
+        "weight": [
+          32,
+          1,
+          7
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "encodec-init-bfloat16",
+      "label": "encodec-init",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          24000
+        ],
+        "weight": [
+          32,
+          1,
+          7
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "encodec-deep-float16",
+      "label": "encodec-deep",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          128,
+          600
+        ],
+        "weight": [
+          256,
+          128,
+          10
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "encodec-deep-bfloat16",
+      "label": "encodec-deep",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          128,
+          600
+        ],
+        "weight": [
+          256,
+          128,
+          10
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": false
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "whisper-conv1-bias-float16",
+      "label": "whisper-conv1-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          80,
+          3000
+        ],
+        "weight": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "whisper-conv1-bias-bfloat16",
+      "label": "whisper-conv1-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          80,
+          3000
+        ],
+        "weight": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "wav2vec2-layer1-bias-float16",
+      "label": "wav2vec2-layer1-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          16000
+        ],
+        "weight": [
+          512,
+          1,
+          10
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 5,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "wav2vec2-layer1-bias-bfloat16",
+      "label": "wav2vec2-layer1-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          16000
+        ],
+        "weight": [
+          512,
+          1,
+          10
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 5,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "encodec-init-bias-float16",
+      "label": "encodec-init-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          24000
+        ],
+        "weight": [
+          32,
+          1,
+          7
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+      "workload_id": "encodec-init-bias-bfloat16",
+      "label": "encodec-init-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          1,
+          24000
+        ],
+        "weight": [
+          32,
+          1,
+          7
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "encodec-deep-bias-float16",
+      "label": "encodec-deep-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          128,
+          600
+        ],
+        "weight": [
+          256,
+          128,
+          10
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": "CANN 9.0 bishengir SIGSEGV (CG-2026-0003), no valid profile"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+      "kernel_id": "conv1d_unit_stride",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+      "workload_id": "encodec-deep-bias-bfloat16",
+      "label": "encodec-deep-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          128,
+          600
+        ],
+        "weight": [
+          256,
+          128,
+          10
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 0,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "reason": ""
+    }
+  ]
+}
