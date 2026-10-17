@@ -49,6 +49,12 @@
 | PL-1.20-nsplit-perrow-partial | C6 N-split per-row partial + transpose merge（小 M 大 N 2.2–2.6×；tn=最大单波 nchunk≤cores） | verified |
 | PL-1.22-small-shape-fixed-overhead | 小 shape 固定截距 1.6µs + 40 核 tile 不均公式（12288 +5.5%）+ 静态尾块/流水收益 + 连续分块反例 | verified |
 
+### predicate.md — bool 输出 predicate 族（isnan/isinf/isfinite）
+
+| ID | 一句话 | 状态 |
+|----|--------|------|
+| PL-1.23-predicate-pass-floor | bool 输出无 i1→i8/bool vnot/int8 vselect ⇒ ≥3 pass；isnan 3-pass、isinf/isfinite 4-pass（vabs）；bf16 无 vabs 且 vselect 更慢，保持 6-pass | verified |
+
 ### attention.md — Expert persistent / attention 族
 
 | ID | 一句话 | 状态 |
