@@ -88,6 +88,16 @@ repro: repro-missing
 - **UB 预算**：中转路径按 Σ(elem_bytes × buffer_count) 复算（bf16 中转 24B/elem、fp16 中转 20B/elem——VP-2026-0009 混合字节口径）。
 - **实测**（lerp 首证）：max_diff ≤1 ulp fp16（抽样 binade 4.883e-04～1.953e-03）、全量 0 violations；NaN/Inf 角点 IEEE 传播与舍入路径无关（中转后 inf-corner 逐位不变）。
 - repro：repro-missing（知识域最小 repro 待同族任务回填；两证任务内复现命令见 queue VP-2026-0002 证据链——provenance 允许失效）。
+- **〔2026-10-17 证伪更正，CANN 9.0.0 / 910B3，origin_task add-AddFwdOp-20261017T080410Z〕**
+  「bf16 无原生 v-prefix 算术」是 **CANN 8.5 绑定结论**；在 CANN 9.0.0 + tilelang dev root
+  （AscendNPU-IR 31f6903）上 `T.vadd/T.vsub` **bf16 可编译**，Add/Sub 的 `alpha==1` 路径实测
+  **max_diff = 0**（`--level L0/L1` 全过）。**边界**：本条只对「单次 add/sub」成立（精确和/差可被
+  fp32 精确表示，两种路径都是单次正确舍入）；多步 bf16 链仍必须走 fp32 中转（中间舍入）。
+  `vmul/vexp` 的 bf16 原生形态未测，禁止外推。文档（`docs/Tilelang.language/数学操作/` dtype 矩阵）
+  仍写不支持——以本实测为准，换工具链后须重验。
+  **性能边界（同日实测）**：bf16 原生 add 的时延**不一致**——探针 2 次 −2.0%/−2.8%，
+  官方交错复测 +3.8%（`linear-bias`，n=1/轮）⇒ 正确性可用但**收益不可靠**，本任务只采纳 fp16 原生，
+  bf16 保持 fp32 中转。采用前必须按 shape/dtype 做 ≥5 对 A/B，禁止因「能编译」直接上线。
 
 ---
 id: PL-1.19-scatter-col-write-amplification

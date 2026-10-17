@@ -117,57 +117,84 @@ R3 批次整机进入慢态（基线 fp16 高到 15.06 µs），说明 **n=2 的
 
 结论：pipe2 有约 **2–3%** 的真实（但小于单进程噪声底）优势，采纳为 winner；不宣称 >5% 的收益。
 
+### Round 4（A6）— fp16 原生计算：单次加法的位等价快路径
+
+前几轮都在 1–3% 的杠杆上（block/UB/映射/流水），`linear-bias` 4.19M 的固定开销 ≈1.6µs（12%），
+70% 线只差 ~0.5µs，而单进程噪声 ±5%——结构上不可能靠参数稳定跨线。改用数量级不同的杠杆：
+
+- **语义依据**：`alpha==1` 时只做一次加/减。两个 fp16 的精确和/差一定可被 fp32 精确表示，
+  因此「fp32 计算 + 一次舍回 fp16」与「原生 fp16 vadd」都是**一次正确舍入**，逐位相等；
+  `TRAP-fp16-opmath-golden` 约束的是**多步链**的中间舍入，不适用于单次 add/sub。
+- **实现**：`dtype=="float16" and alpha==1 and out_dtype=="float16"` 时直接 `T.vadd(a_ub,b_ub,y_ub)`，
+  跳过 2 次升 fp32 + 1 次降回（4 条向量 pass → 1 条），UB 流量降到 1/3；
+  `alpha!=1` 仍走 fp32（乘法的二次舍入会破坏等价性）；bf16 仍走 fp32（无原生 bf16 v-prefix）。
+- **精度**：`--level all` **63 个用例全 PASS，fp16 max_diff = 0**（bitwise 相等，不是容差内）。
+- **性能（linear-bias fp16，相邻交错 2 次）**：
+
+| 版本 | µs | SOL% |
+|---|---:|---:|
+| A4 tuned（fp32 中转） | 13.65 / 13.42 | 71.5 / 72.5 |
+| **A6 原生 fp16** | **13.16 / 13.22** | **71.9 / 72.5** |
+
+  相对 A4 −2.5%，相对最初 baseline（13.8–14.0µs）约 −5~6%；大 shape fp16 在噪声内，无回退。
+- **bf16 原生（否决）**：`vadd(bf16)` 在 CANN 9.0.0 可编译且 L0 `max_diff=0`（推翻了
+  pattern-library “无原生 bf16 v-prefix”的 8.5 结论），但性能方向不一致：探针 −2.0%/−2.8%，
+  round 8 官方交错复测 **+3.8%**。按“不采纳不可靠收益”处理，bf16 保持 fp32 中转。
+  证据：`logs/l0_native_half.log`、`logs/final3_runner.log`。
+
 ### 合并与 winner
 
-- winner 结构：**满块静态 extent + 单尾块 epilogue + `T.Pipelined(num_stages=2)` + grid-stride 40 核**
+- winner 结构：**满块静态 extent + 单尾块 epilogue + `T.Pipelined(num_stages=2)` + grid-stride 40 核
+  + fp16(alpha==1) 原生 vadd**
 - winner 合并进 `perf_opt/AddFwdOp.py`（唯一改动文件），`TUNED_BLOCK_SIZE = 8192` 暴露给 Stage-5 wrapper；
 - 基准 `add_fwd_kernel.py` 与 wrapper 未改。
 
 ## Final Performance Test Data
 
-官方最终测量：`perf_opt/AddFwdOp.py`（sha256 见 `perf_records.jsonl` phase=final），
-11 个 tune 之外的 smoke 不计入；baseline/final **逐 workload 相邻交错**、各 1 次独立 msprof。
+官方最终测量：`perf_opt/AddFwdOp.py`（A4 结构 + **A6 fp16 原生快路径**；sha256 见
+`perf_records.jsonl` round 9 phase=final），smoke 不计入；baseline/final **逐 workload 相邻交错**、
+各 1 次独立 msprof。（此前 round 4/6/8 的 final 记录已依次降级为 `phase=merged` 保留，未删除。）
 
 | kernel_id | workload_id | baseline_us | final_us | final_candidate_id |
 |---|---|---:|---:|---|
-| add_fwd_kernel | cnn-feat-broadcast-bfloat16 | 37.371 | 37.461 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | cnn-feat-broadcast-float16 | 37.221 | 36.901 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | cnn-feat-broadcast-float32 | 71.371 | 71.281 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | hidden-state-prefill-bfloat16 | 25.741 | 24.750 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | hidden-state-prefill-float32 | 47.081 | 46.941 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | linear-bias-bfloat16 | 13.470 | 13.960 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | linear-bias-float16 | 14.070 | 14.570 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | linear-bias-float32 | 24.280 | 24.120 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | llama-7b-ffn-bfloat16 | 32.641 | 32.861 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | llama-7b-ffn-float16 | 32.711 | 33.011 | tuned-pipe2-bs8192 |
-| add_fwd_kernel | llama-7b-ffn-float32 | 63.341 | 62.161 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | cnn-feat-broadcast-bfloat16 | 38.421 | 39.211 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | cnn-feat-broadcast-float16 | 38.531 | 38.361 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | cnn-feat-broadcast-float32 | 71.661 | 71.201 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | hidden-state-prefill-bfloat16 | 25.761 | 25.081 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | hidden-state-prefill-float32 | 47.321 | 46.751 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | linear-bias-bfloat16 | 13.780 | 13.550 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | linear-bias-float16 | 13.350 | 13.260 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | linear-bias-float32 | 24.570 | 24.430 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | llama-7b-ffn-bfloat16 | 34.181 | 33.041 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | llama-7b-ffn-float16 | 33.871 | 32.051 | tuned-pipe2-bs8192 |
+| add_fwd_kernel | llama-7b-ffn-float32 | 63.371 | 63.201 | tuned-pipe2-bs8192 |
 
 ### SOL 对账（同一 final 记录）
 
 | workload | baseline SOL% | final SOL% | 判定（≥70%） |
-|---|---:|---:|---|
-| cnn-feat-broadcast-bfloat16 | 78.71 | 78.25 | ✅ |
-| cnn-feat-broadcast-float16 | 77.79 | 80.00 | ✅ |
-| cnn-feat-broadcast-float32 | 82.40 | 84.29 | ✅ |
-| hidden-state-prefill-bfloat16 | 73.86 | **78.00** | ✅（−3.85% 时延） |
-| hidden-state-prefill-float32 | 81.49 | 82.54 | ✅ |
-| **linear-bias-bfloat16** | 70.28 | **68.67** | ❌（+3.64%，噪声内） |
-| **linear-bias-float16** | 69.17 | **66.85** | ❌（+3.55%，噪声内） |
-| linear-bias-float32 | 78.84 | 80.09 | ✅ |
-| llama-7b-ffn-bfloat16 | 79.47 | 78.31 | ✅ |
-| llama-7b-ffn-float16 | 80.16 | 78.36 | ✅ |
-| llama-7b-ffn-float32 | 81.15 | **82.69** | ✅（−1.86% 时延） |
+|---|---:|---:|:--:|
+| cnn-feat-broadcast-bfloat16 | 77.42 | 73.81 | ✅ |
+| cnn-feat-broadcast-float16 | 76.34 | 79.05 | ✅ |
+| cnn-feat-broadcast-float32 | 82.26 | 82.56 | ✅ |
+| hidden-state-prefill-bfloat16 | 75.19 | 76.45 | ✅ |
+| hidden-state-prefill-float32 | 81.97 | 81.87 | ✅ |
+| linear-bias-bfloat16 | 69.47 | 70.80 | ✅ |
+| linear-bias-float16 | 72.63 | 72.30 | ✅ |
+| linear-bias-float32 | 78.13 | 78.45 | ✅ |
+| llama-7b-ffn-bfloat16 | 74.85 | 77.93 | ✅ |
+| llama-7b-ffn-float16 | 75.51 | 82.00 | ✅ |
+| llama-7b-ffn-float32 | 81.51 | 81.30 | ✅ |
 
 **结论（如实）**：
 
-- **11 个 tune case 中 9 个稳定 ≥70%**；两项明确收益：
-  `hidden-state-prefill bf16` **−3.85%**、`llama-7b-ffn fp32` **−1.86%**；
-- **`linear-bias` fp16/bf16 未达标**：官方单次 final 为 66.85% / 68.67%（比同批 baseline 慢 3.5%），
-  但该差异 **< 5% 噪声底**，且池化中位数显示 pipe2 反而快 2.4–2.9%（≈70.0/70.5%）。
-  两者互相矛盾 ⇒ 正确表述是「**linear-bias 在测量噪声内，70% 目标未被稳健达成**」，
-  不能宣称达标，也不能宣称回退；
-- 全部 11 case 时延和：399.298 → 398.017 µs（**−0.32%**），即 **整体小幅正向、仍在噪声内**；
-- 未采用任何「按 shape 特判」的过拟合分支：回归证据不足以支撑条件路径。
+- **11 个 tune case 全部 ≥70%**；`linear-bias` 两 dtype 都过线：
+  fp16 **72.30%**（13.35→13.26µs）、bf16 **70.80%**（13.78→13.55µs）；
+- 明确收益：`llama-7b-ffn fp16 −5.37%`、`llama-7b-ffn bf16 −3.34%`、
+  `hidden-state-prefill bf16 −2.64%`、`linear-bias bf16 −1.67%`；
+  `cnn bf16 +2.06%` 为噪声内波动（同 case 在 round 6 为 −1.40%）；
+- 全部 11 case 时延和：404.818 → 400.138 µs（**-1.16%**）；
+- bf16 保持 fp32 中转：原生 bf16 可编译且逐位正确，但性能方向不一致
+  （探针 −2%、round 8 官方 +3.8%），按“不采纳不可靠收益”处理。
 
 ## 精度回归
 

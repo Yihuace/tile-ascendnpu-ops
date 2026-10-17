@@ -59,6 +59,12 @@ repro: repro-missing
 
 torch.lerp（torch 2.9.0+cpu）对 fp16 输入经**fp32 opmath + 单次舍回**计算，NPU fp16 原生域三步链（逐步 fp16 舍入）与之差 ~2–3 ulp fp16，N=2^24、atol=rtol=1e-3 下违反率 ~0.125% 且与 shape/block_size/核数无关（纯舍入路径统计性质，非 tiling/同步缺陷）；bf16 golden 与 fp32 中转 kernel 逐位一致。对齐通解：`vcast(rint)` 升 fp32 → fp32 域 v-prefix 链 → `vcast(rint)` 单次舍回，差 ≤1 ulp fp16（rtol≥5e-4 即覆盖）；NaN/Inf 角点 IEEE 传播不受中转影响。复现（provenance，允许失效）：`python examples/lerp_tensor/_make_lerp_tensor_kernel/history_version/_make_lerp_tensor_kernel_impl_s3_attempt1.py --level L0`（fp16 违反）vs `python examples/lerp_tensor/_make_lerp_tensor_kernel/_make_lerp_tensor_kernel.py --level all`（全过）。
 
+**〔2026-10-17 边界补充，CANN 9.0.0 / 910B3，origin_task add-AddFwdOp-20261017T080410Z〕**
+本陷阱针对**多步链的中间舍入**；**单次** `vadd/vsub` 不适用：两个 fp16（或两个 bf16）的精确和/差
+一定能被 fp32 精确表示，"fp32 计算 + 一次舍回" 与 "原生 dtype 计算" 都是**单次正确舍入**，逐位相等。
+Add/Sub 的 `alpha==1` 原生路径实测 `--level all` **max_diff = 0**（63 用例）。
+⇒ 单算子 add/sub 可以安全走原生 dtype；`alpha!=1`（含乘法）与多步链仍须 fp32 中转。
+
 ---
 id: TRAP-load-nd2nz-strided
 kind: trap
