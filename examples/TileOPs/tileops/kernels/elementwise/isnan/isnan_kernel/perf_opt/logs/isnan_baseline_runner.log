@@ -1,0 +1,23 @@
+[npu_lock] start 2026-10-17T20:01:56+08:00: bash -c source ./env.sh; python3 -u run_experiments.py --experiments experiments_isnan_baseline.json --all-tune --round 1 --order workload --reps 1
+[runner] phase=candidate round=1 reps=1 workloads=10 experiments=1
+[L0] FAIL /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/perf_opt/../isnan_fwd_kernel.py rc=0 (log: /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/perf_opt/logs/l0_isnan_fwd_kernel.log)
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L0] PASS: shape=(1048576,) dtype=float16 max_diff=0.00e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L0] PASS: shape=(1048576,) dtype=bfloat16 max_diff=0.00e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L0] PASS: shape=(1048576,) dtype=float32 max_diff=0.00e+00
+[L0] PASS: dtype int32 rejected
+[L0] PASS: dtype bool rejected
+[L0] PASS: dtype int8 rejected
+[92mAll check passed![0m
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+[runner] baseline: L0=FAIL module=../isnan_fwd_kernel.py bs=8192
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+[npu_lock] end   2026-10-17T20:03:08+08:00: rc=0

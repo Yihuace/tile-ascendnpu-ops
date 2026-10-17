@@ -1,3 +1,4 @@
+
 # 编译器能力缺口登记簿（Capability Gaps）
 
 > 编译器层面自进化机制的登记簿。与 skill 层自进化（`queue.md` / pattern-library）平行：skill 层沉淀「如何在现有能力下绕」，本簿登记「npuir 缺什么能力」并驱动补齐。
@@ -815,13 +816,30 @@ evidence:
     空转 >19min、VmRSS 仅 50MB（非死锁、非 SIGSEGV）；IR 存证
     /tmp/opencode/rebasing/hang_evidence/mamba_hang_kernel.npuir。
   - 对照基线：同一棵 Oct tilelang 树在 CANN 8.5.2 下 tests/ops 405/405（docs §9.3.4）。
+  - 第三证（2026-10-17，GDN prefill 函数 2/6 `prefill_blocksolve_A_bthd`，同一 CANN 9.0.0 基线）：
+    **同一份 Expert MixCV 源码（13 个 `hivm.hir.mmadL1` + 3 个 `hivm.hir.fixpipe`）按
+    (total_tokens, head) 分档，部分形状必崩、部分形状可编译且数值正确**——说明该缺陷的下游表现
+    取决于 IR 的偶然形态（与"读取越界得到垃圾 pointer/attr"一致），不是"有 mmadL1 就必崩"：
+      · 编译+精度通过：`S=64,H=1`（dk=64/128、fp16/bf16）、`S=100,H=1`（尾 chunk 36 行）、
+        `S=64,H=16,dk=128`；max_abs_err 2.8e-5 … 2.3e-4；
+      · 必崩（SIGSEGV，`err code: -11`）：`S=64,H=2`、`S=1600,H=1`、`S=1024,H=4`、
+        `S=3000,H=16`、`S=4096,H=16`、`S=56/65,H=2`。
+    IR 级二分（同一源码逐项改动）：删掉 Cube 的 1 个 `nd2nz`（R3-a 的 `kz→l1k`）→ 通过；
+    删掉 6 级 doubling 链（-10 fixpipe -10 nd2nz）→ 通过；给 Vector 段**加** 2 个 UB buffer →
+    原本通过的形状转为必崩。⇒ 触发阈值是"IR 规模/形态"而非某个具体 op，**且通过的形状也存在
+    被静默误编译的风险**（数值对拍是唯一护栏）。
+    复现/回归看门狗：`examples/gdn_prefill/prefill_blocksolve_A_bthd/repro/TRAP-hfusion-mmadl1-segv.py`
+    （good shape + blocked shape 双建，末行给 verdict）。
+    另记一条**易混淆的独立触发**（不属于本缺口）：非方形的 `[64,128]` fp16 L1 tile 同时作
+    `b_transpose=True` gemm 的 A 与 B 也会 SIGSEGV，方形 `[64,64]` 共享同一 buffer 正常
+    （2-op 微探针两种都通过 ⇒ 也是"交互触发"，实现上改为 A/B 各一块 L1）。
 workaround: >-
   当前无 kernel 级绕法（IR 改名/删属性/补 result 均失败，见 blocked_algo）。可行途径：
   ① 取得与 Oct 树同代的 hivmc（原 8.5.2 内那份，本容器不可得）；② 自建 v1.2.0 发布分支
   AscendNPU-IR 并回合主线修复（去掉/保护该 walk）后重编 tilelang；③ 等 CANN 修版工具链。
   过渡期（CANN 9.0）：**接受卷积族 6 用例失败并记录**，Vector 族完全可用。
-occurrences: 2
-tasks: [FA 三实现性能对比 baseline/npuir/gqa 2026-09-07, CANN 9.0.0 重定基线-工作流② 2026-10-17]
+occurrences: 3
+tasks: [FA 三实现性能对比 baseline/npuir/gqa 2026-09-07, CANN 9.0.0 重定基线-工作流② 2026-10-17, GDN-prefill 函数2/6 prefill_blocksolve_A_bthd Stage3 2026-10-17]
 toolchain_stamp: >-
   首证 tilelang 默认激活构建 j00919838 checkout（jit_npu.py dacebc3d 2026-08-05，3rdparty
   bishengir 1.1.0 2026-09-02）+ CANN 8.5.0 bishengir-compile 0.1.0（2026-01-16）+
@@ -841,7 +859,7 @@ proposal: >-
   issue 草稿（[npuir] 前缀，**须用户批准后建**）：[npuir] ConvertHFusionToHIVM 对 buffer
   形态 op 取 getResult(0) 越界（mmadL1 形态 SIGSEGV / 挂死；主线已修未回合发布分支）。
 created_by: FA 3-impl perf comparison 2026-09-07
-last_seen: CANN 9.0.0 重定基线-工作流②（2026-10-17，mmadL1 buffer 形态 + 新坏法挂死）
+last_seen: GDN-prefill prefill_blocksolve_A_bthd Stage3（2026-10-17：同一 Expert MixCV 源码按 (S,head) 分档——部分形状编译+精度通过、部分必崩；IR 规模/形态决定，非"有 mmadL1 必崩"）
 ```
 
 > **升级依据**：task FA 三实现性能对比（2026-09-07，Expert fixpipe `dma_mode` 触发）+ CANN 9.0.0 重定基线-工作流②（2026-10-17，Cube `mmadL1` buffer 形态触发，含新坏法挂死）——两个不同任务、双触发形态、跨工具链（CANN 8.5.0 → 9.0.0）独立识别同一缺口（`ConvertHFusionToHIVM` 的 `getResult(0)` 越界），达 ≥2 任务阈值。proposal 字段已产出（result 数守卫 / 删 walk + 回合发布分支），待向用户显式列出并推动（外部 issue 须用户批准后建）。
@@ -970,6 +988,33 @@ last_seen: ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260920T122332Z Stage 2 �
 ```
 
 > **升级依据**：task multi_head_attention/_gqa_prefill_fwd_kernel Stage 3（2026-09-04，Developer vbrc lowering 路径）+ task ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260920T122332Z Stage 2（2026-09-20，Expert 显式 T.copy 路径）——两个不同任务、双触发形态、跨工具链（67db6f3/CANN 26.0.rc1 → 4515de8/CANN 8.5.0）独立识别同一缺口（cbuf→cbuf 搬运不支持），达 ≥2 任务阈值。proposal 字段已产出，待向用户显式列出并推动（外部 issue 须用户批准后建）。
+
+### CG-2026-0027
+
+```yaml
+gap_id: CG-2026-0027
+layer: Frontend API / codegen
+capability: bool/int1 到 int8 无直接 vcast 边；无 bool/int1 的 vnot；T.vselect 的 Out 不支持 int8/uint8。
+  导致 isnan/isinf/isfinite 这类 predicate 至少需要 3 条向量 pass（vcmp -> vselect/vsub -> vcast）。
+blocked_algo: 纯 Vector predicate 族（Isnan/Isinf/Isfinite）性能上限：16m/256m fp16 SOL ~65%、
+  bf16 ~55–62%，低于访存受限 70% 线；1m 小 shape 固定开销主导（~25–43%）。
+evidence:
+  - docs/Tilelang.language/数据类型转换操作/T.vcast.md（dtype 边表：无 i1->i8）
+  - docs/Tilelang.language/条件操作/T.vselect.md §2.2.1（Out 不支持 int8/uint8/bool）
+  - 实测：examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/perf_opt/logs/
+    （pipe2 4-pass vs select 3-pass 仅 -1~-3%）
+  - msprof roofline advice = "latency bound:pipeline caused"（非 bandwidth 饱和）
+workaround: 3-pass 链 vcmp(le) -> vselect(mask, 0.0, 1.0, f16) -> vcast(f16->i8)；
+  相对 4-pass 链（vcast->vsub->vcast）-1~-3%。block_size 8192 是 UB 上限（16384 编译/采集失败）。
+occurrences: 1
+tasks: [isnan-IsnanFwdOp-20261017T114928Z]
+toolchain_stamp: tilelang 0.1.2 dev-root (AscendNPU-IR 31f6903) + CANN 9.0.0 (bishengir 1.1.0) / Ascend910B3 / 2026-10-17
+status: open
+created_by: isnan-IsnanFwdOp-20261017T114928Z 2026-10-17
+last_seen: isnan-IsnanFwdOp-20261017T114928Z Stage 4 (2026-10-17)
+```
+
+---
 
 ---
 

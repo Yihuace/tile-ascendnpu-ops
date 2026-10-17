@@ -1,0 +1,51 @@
+[npu_lock] start 2026-10-17T20:41:33+08:00: bash -c source ./env.sh; python3 -u IsnanFwdOp.py --level all > logs/final_level_all.log 2>&1; echo "level_rc=$?"; python3 -u run_experiments.py --experiments experiments_isnan_final.json --all-tune --round 5 --order workload --reps 1 --skip-l0
+level_rc=0
+[runner] phase=candidate round=5 reps=1 workloads=10 experiments=2
+[runner] baseline: L0=PASS module=../isnan_fwd_kernel.py bs=8192
+[runner] select-pipe2-bs8192: L0=PASS module=IsnanFwdOp.py bs=8192
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+  baseline-r5-baseline-bs8192-16m-bfloat16-rep1: 36.861us ratio=51.13%
+  final-r5-select-pipe2-bs8192-bs8192-16m-bfloat16-rep1: 34.791us ratio=55.256%
+  baseline-r5-baseline-bs8192-16m-float16-rep1: 31.131us ratio=60.83%
+  final-r5-select-pipe2-bs8192-bs8192-16m-float16-rep1: 30.841us ratio=62.947%
+  baseline-r5-baseline-bs8192-16m-float32-rep1: 49.831us ratio=77.344%
+  final-r5-select-pipe2-bs8192-bs8192-16m-float32-rep1: 49.301us ratio=78.452%
+  baseline-r5-baseline-bs8192-16m-half-bfloat16-rep1: 37.031us ratio=51.321%
+  final-r5-select-pipe2-bs8192-bs8192-16m-half-bfloat16-rep1: 34.751us ratio=55.351%
+  baseline-r5-baseline-bs8192-16m-half-float16-rep1: 30.181us ratio=64.732%
+  final-r5-select-pipe2-bs8192-bs8192-16m-half-float16-rep1: 30.111us ratio=64.688%
+  baseline-r5-baseline-bs8192-256m-bfloat16-rep1: 688.644us ratio=60.915%
+  final-r5-select-pipe2-bs8192-bs8192-256m-bfloat16-rep1: 681.684us ratio=61.994%
+  baseline-r5-baseline-bs8192-256m-float16-rep1: 644.903us ratio=65.492%
+  final-r5-select-pipe2-bs8192-bs8192-256m-float16-rep1: 648.443us ratio=64.989%
+  baseline-r5-baseline-bs8192-smoke-1m-bfloat16-rep1: 5.190us ratio=23.136%
+  final-r5-select-pipe2-bs8192-bs8192-smoke-1m-bfloat16-rep1: 5.070us ratio=23.047%
+  baseline-r5-baseline-bs8192-smoke-1m-float16-rep1: 4.480us ratio=25.94%
+  final-r5-select-pipe2-bs8192-bs8192-smoke-1m-float16-rep1: 4.400us ratio=27.741%
+  baseline-r5-baseline-bs8192-smoke-1m-float32-rep1: 5.620us ratio=41.902%
+  final-r5-select-pipe2-bs8192-bs8192-smoke-1m-float32-rep1: 5.490us ratio=43.578%
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+| baseline | 8192 | 16m-bfloat16 | 1 | 36.861 | 51.13 |
+| select-pipe2-bs8192 | 8192 | 16m-bfloat16 | 1 | 34.791 | 55.256 |
+| baseline | 8192 | 16m-float16 | 1 | 31.131 | 60.83 |
+| select-pipe2-bs8192 | 8192 | 16m-float16 | 1 | 30.841 | 62.947 |
+| baseline | 8192 | 16m-float32 | 1 | 49.831 | 77.344 |
+| select-pipe2-bs8192 | 8192 | 16m-float32 | 1 | 49.301 | 78.452 |
+| baseline | 8192 | 16m-half-bfloat16 | 1 | 37.031 | 51.321 |
+| select-pipe2-bs8192 | 8192 | 16m-half-bfloat16 | 1 | 34.751 | 55.351 |
+| baseline | 8192 | 16m-half-float16 | 1 | 30.181 | 64.732 |
+| select-pipe2-bs8192 | 8192 | 16m-half-float16 | 1 | 30.111 | 64.688 |
+| baseline | 8192 | 256m-bfloat16 | 1 | 688.644 | 60.915 |
+| select-pipe2-bs8192 | 8192 | 256m-bfloat16 | 1 | 681.684 | 61.994 |
+| baseline | 8192 | 256m-float16 | 1 | 644.903 | 65.492 |
+| select-pipe2-bs8192 | 8192 | 256m-float16 | 1 | 648.443 | 64.989 |
+| baseline | 8192 | smoke-1m-bfloat16 | 1 | 5.190 | 23.136 |
+| select-pipe2-bs8192 | 8192 | smoke-1m-bfloat16 | 1 | 5.070 | 23.047 |
+| baseline | 8192 | smoke-1m-float16 | 1 | 4.480 | 25.94 |
+| select-pipe2-bs8192 | 8192 | smoke-1m-float16 | 1 | 4.400 | 27.741 |
+| baseline | 8192 | smoke-1m-float32 | 1 | 5.620 | 41.902 |
+| select-pipe2-bs8192 | 8192 | smoke-1m-float32 | 1 | 5.490 | 43.578 |
+[npu_lock] end   2026-10-17T20:55:00+08:00: rc=0
