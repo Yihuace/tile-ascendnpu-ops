@@ -173,6 +173,14 @@ repro: repro-missing
 
 `T.vcmp` 标量操作数拒绝 `tir.Cast`（codegen `NpuirOperand::FromExpr cannot handle the expr with type of "tir.Cast"`）；**〔2026-09-15 第五轮实测补充，工具链 6797758〕vcmp 在 int16 上对所有操作数形态（运行时标量 PrimExpr / 文档合法的同 shape int16 张量）一律降级为标量指令执行**（编译警告 `will execute by scalar instruction with low efficiency`，[32,256] 实测 **236µs/链**）——在 causal mask 链上占整 kernel 壁钟 ~45%（aiv_scalar 94–97% 的主成分，与 flag 自旋同形，须查编译警告区分）。**绕法 = 算术惩罚掩码**：`scr = clamp(tpl - thr, 0, 1)`（vmax/vmin 标量广播，文档合法）→ `S += scr·(-1e38)`（f32 大数吸收，masked 位精确变 -1e38，与 vselect 假支逐位一致；NaN 无法被算术掩埋——stale 列/band 垃圾须 vselect 选择语义或源头零初始化）。标量 PrimExpr B 操作数合法有先例（`examples/deepseek_v4/example_sparse_attn_kernel_highperf.py` L353）；`T.vbrc` 标量源须 let 绑定局部量（字面量触发 rank 断言）；`T.vtanh` 需 fp32 同 dtype 操作数（int16 scratch 不可复用，MLIR verify 报错）。**v-op 切片仅接受静态边界**（运行时 Var 触发 parser `int(Var)` 拒绝，P10 探针）；**脚本解析器只折叠纯名常量 if**（`not X`/`X and Y` 表达式生成 TIR runtime if，须预组合纯名）；**条件 T.alloc 永不折叠**（含常量条件，v3_deadbuf 的强化实证——用宽度切换 `w = X if cond else 16` 替代）。证据：debug_log.md D4/D5 + 本轮任务工作区 `examples/multi_head_attention/_gqa_prefill_fwd_kernel/perf_opt/`（溯源：probe_vcmp_forms.py P6 / probe_forms.py P1-P5 / probe_rt_slice2.py P10 / opt_log.md Round 2）；origin_task: multi_head_attention-_gqa_prefill_fwd_kernel-20260915（第五轮 Stage 4，工具链 6797758）。
 
+**〔2026-10-17 AddFwdOp 实证，tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 / 910B3〕** 输出 UB 别名复用
+`if out_dtype == dtype: y_ub = a_ub else: y_ub = T.alloc_ub(...)` 编译报 `error: Undefined variable: y_ub`
+（赋值作用域困在分支，函数末尾引用失败）；改成两个 else-less if、但条件仍是表达式
+`out_dtype == dtype` / `out_dtype != dtype` 同样报错——只有「纯名 Python bool」才 trace 期折叠。
+绕法：不用 Python 层 buffer 别名（显式分配第二块 UB），或把条件提成工厂层纯名 bool 再 `if alias_out:`。
+证据：`examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/l0_a2_alias.log`、
+`l0_add_fwd_kernel_pipe2_alias.log`；origin_task: add-AddFwdOp-20261017T080410Z。
+
 **〔第六轮补充实证，2026-09-16，tilelang a13585dc，origin_task 同上〕**v-op 操作数拒绝**带 runtime 首维索引的多维 buffer 切片**：`T.vlog2(ub_ell_snap[st, 0:half, 0:1], ...)`（snap 为 [2,half,1]，st 是 runtime Var）在 codegen `getBroadcastDim` 报 `buffer_shape0.size() == buffer_shape1.size()` 检查失败（3 维 vs 2 维不折叠）；`T.vmul(ub_m_snap[st, ...], ...)` 同型。绕法：**先 `T.copy` 拷回单槽 buffer 再喂 v-op**（plain `T.copy` 的源/目标接受 runtime 索引切片——`ws_s[kernel_id, slot, ...]` 先例，r8g epi 修复实证）。与既有「v-op 切片仅静态边界」（P10）同族：静态边界 + runtime 首维索引亦不可用。
 ---
 id: TRAP-transpose-epilogue-poison

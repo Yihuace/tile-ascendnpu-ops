@@ -35,7 +35,7 @@
 4. 保留 fp32 中转与 `alpha==1` 折叠语义不变（精度契约未动）。
 
 **否决项**（源码保留在 `perf_opt/candidates/`，可复跑）：
-- `block_size` 12288/16384：40 核上 tile 数 342/256 → 9/8 或 7/6 分配，关键路径 +7.5~9.4%，实测 +5~7%；
+- `block_size` 12288/16384：40 核上 tile 数 342/256 → 9/8 或 7/6 分配，关键路径 +5.5~9.4%，实测 +5~7%；
 - 输出缓冲别名 `y_ub = a_ub`：prim_func 内 if/else 不折叠 → `Undefined variable: y_ub`（TRAP-tvm-parser-rules）；
 - 每核等元素连续分块：破坏 grid-stride 的 HBM 聚集窗口，−3%；
 - `T.Pipelined` @12288：UB 超限，采集失败。

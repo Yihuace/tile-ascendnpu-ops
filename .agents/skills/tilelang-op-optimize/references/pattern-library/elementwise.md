@@ -157,3 +157,33 @@ repro: repro-missing
 
 **适用/边界**：仅在**实测确认**该工具链的 `vmax/vmin/vclamp` 传播 NaN 时成立；**换 CANN 版本后必须重验**
 （工具链变更可能改 NaN 语义）。`vcmp "ne"` 有序比较不可用于 NaN 检测（须用 `x<=x` 取反或 `!=` 语义注意）。
+
+---
+id: PL-1.22-small-shape-fixed-overhead
+kind: pattern
+family: [elementwise]
+apis: [T.copy, T.serial, T.Pipelined]
+dtype: [fp16, bf16, fp32]
+device: 910B3
+status: verified
+origin_task: add-AddFwdOp-20261017T080410Z
+toolchain: tilelang 0.1.2 dev-root (AscendNPU-IR 31f6903) + CANN 9.0.0 (bishengir 1.1.0) / 910B3 / 2026-10-17
+repro: repro/PL-1.22-tile-imbalance.py
+---
+
+### 1.22 小 shape 固定截距 + 40 核 tile 负载不均：block_size 不能只看迭代次数 ✅ 已验证
+
+- **固定截距 1.6 µs**：4.19M fp16/bf16 元素加法两点拟合（4.19M→13.7µs、8.39M→25.8µs）：
+  `t ≈ 1.6µs + 12.1µs/4.19M`。截距占 12%，所以 `linear-bias`（N=4.19M）的 70% 线
+  等价于「压掉约 0.5µs/tile 开销」，而不是单纯放大 tile。
+- **40 AIV + grid-stride 的关键路径** = `ceil(ceil(N/bs)/40) × bs`：
+  N=4,194,304 时 bs=8192 → 512 tiles → 13/12（关键路径 +1.6%）；
+  bs=12288 → 342 → 9/8（**+5.5%**）；bs=16384 → 256 → 7/6（**+9.4%**）。
+  实测 bs=12288 慢 5~7%，与公式同向——**大 block 的收益必须先扣尾部不均**。
+- **有效结构**：满块静态 extent（去每 tile `T.min`）+ 单尾块 epilogue + `T.Pipelined(num_stages=2)`。
+  相邻对比 fp16 −1.7~−4.6%、bf16 −1.1~−2.0%；大 shape 更明显（Add hidden bf16 −3.85%，
+  Sub llama-7b-hidden −13.5%）。
+- **反例**：每核等元素连续分块（理论上消除不均 1.6%）实测 **−3%**——grid-stride 的 HBM 聚集窗口
+  收益更大（承 PL-1.6），小 shape 同样成立。
+- **测量纪律**：同配置跨进程双态 ±5%（fp16 13.4/14.9µs），<5% 的决策必须走交错 A/B；
+  单次 70% 判定不可信（Add 的 linear-bias 单次 66.9~71.2% 均出现过）。

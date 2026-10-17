@@ -47,6 +47,7 @@
 | PL-1.14-mte3-strided-ws | 跨引擎 ws 中继写侧必须块连续（band 化 MTE3 3× 回退；读侧逐块入 L1 band 列偏移区两全） | verified |
 | PL-1.19-scatter-col-write-amplification | (M,1) 列切片 UB→GM 写 42× 放大 → 扁平 chunk-major 连续写 | verified |
 | PL-1.20-nsplit-perrow-partial | C6 N-split per-row partial + transpose merge（小 M 大 N 2.2–2.6×；tn=最大单波 nchunk≤cores） | verified |
+| PL-1.22-small-shape-fixed-overhead | 小 shape 固定截距 1.6µs + 40 核 tile 不均公式（12288 +5.5%）+ 静态尾块/流水收益 + 连续分块反例 | verified |
 
 ### attention.md — Expert persistent / attention 族
 

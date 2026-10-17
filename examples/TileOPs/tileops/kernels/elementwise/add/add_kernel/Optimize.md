@@ -42,7 +42,7 @@ smoke：`hidden-state-prefill fp16`（N=8,388,608）精度 PASS（max_diff=0）�
 
 | 候选 | 否决原因 |
 |---|---|
-| block_size 12288 / 16384 | 40 核上 tile 数 342/256 → 9/8 或 7/6 分配，关键路径 +7.5~9.4%，实测 +5~7% |
+| block_size 12288 / 16384 | 40 核上 tile 数 342/256 → 9/8 或 7/6 分配，关键路径 +5.5~9.4%，实测 +5~7% |
 | 输出缓冲别名 `y_ub = a_ub` | prim_func 内 if/else 不折叠，`Undefined variable: y_ub`（TRAP-tvm-parser-rules） |
 | 每核等元素连续分块 | 破坏 grid-stride HBM 聚集窗口，−3% |
 | pipe2 @12288 | UB 超限，采集失败 |

@@ -64,7 +64,7 @@
 | `a2-bs8192`（A2） | `y_ub = a_ub` 别名 | — | — | **FAIL** | ❌ 编译失败 |
 
 - **A1 否决根因（负载不均）**：N=4,194,304 时 12288 → 342 tiles，40 核按 grid-stride 分成
-  9/8 tiles（关键路径 9×12288=110,592 elems，比均值 104,858 高 **+7.5%**），把「减少 4 次迭代」的收益吃掉。
+  9/8 tiles（关键路径 9×12288=110,592 elems，比均值 104,858 高 **+5.5%**），把「减少 4 次迭代」的收益吃掉。
   8192 → 512 tiles 分 13/12，关键路径仅 +1.6%。
 - **A2 编译失败**：`error: Undefined variable: y_ub`。`if out_dtype == dtype: y_ub = a_ub else: ...`
   写在 `@T.prim_func` 体内时被当作 runtime 分支，赋值作用域困在分支里（pattern-library
@@ -196,7 +196,7 @@ R3 批次整机进入慢态（基线 fp16 高到 15.06 µs），说明 **n=2 的
 ## Skill Retrospective
 
 - **D（实测数据）**：`linear-bias`（N=4.19M）固定截距 ≈1.6 µs；block 12288 在 40 核上 9/8 分配，
-  关键路径 +7.5%，实测 +5~7%；`hidden-state-prefill bf16` 流水化 −3.85%。回写：`pattern-library/elementwise.md`
+  关键路径 +5.5%，实测 +5~7%；`hidden-state-prefill bf16` 流水化 −3.85%。回写：`pattern-library/elementwise.md`
   （新增 PL-4.x「小 shape 固定截距与 tile 负载不均」条目 + repro）。
 - **D（陷阱二次实证）**：prim_func 内 `if/else` 给跨分支变量赋值 → trace 期不折叠、变量未定义；
   条件为表达式（`out_dtype == dtype`）时两无-else if 也不折叠。回写：`traps-compiler.md`
