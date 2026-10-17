@@ -1,7 +1,7 @@
 # 当前工作状态（每轮更新）
 
 > 本窗口只做 **Stage 4 优化**，执行 `optimize` 工作流。
-> 更新：2026-10-17 21:10 (+08:00) · 会话：Stage4 优化：Add → Sub → Isnan → Isinf/Isfinite
+> 更新：2026-10-17 22:20 (+08:00) · 会话：Stage4 优化：Add/Sub/Isnan/Isinf/Isfinite/FALN
 
 ## 已完成
 
@@ -28,7 +28,7 @@
 | 已有报告 + 含 Cube | BatchNormBwd、Conv1d/Bias、Conv3dBias | 按 9.0 重测（Cube lowering 变更） |
 | predicate 族 | Isfinite（进行中） | 完成收尾 |
 
-## 下一步：Isfinite → FusedAddLayerNorm → GLA → BatchNormBwd → Conv
+## 下一步：GLA → BatchNormBwd（Cube）→ Conv1d/Conv3dBias（Cube）
 
 - 目录：`elementwise/isinf/`、`elementwise/isfinite/`
 - 复用 Isnan 的 3-pass predicate 结构与 `perf_opt/` 骨架；判据仍按 AI 分类（访存 70%）
