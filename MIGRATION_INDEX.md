@@ -33,6 +33,13 @@
 
 来源：`examples/TileOPs/reports/report.md`（统一 run `20261009_022152_829230_all`，环境 910B2C / CANN 8.5.0 / git `84519be`）。
 
+> ⚠️ **2026-10-17 决策：表 B 退出本次 CANN 9.0 重定基线范围。**
+> 这 7 个算子**不属于本批迁移/优化目标**，后续阶段（②正确性 / ③性能 / ④记录）**一律不再纳入**，除非另行下令；
+> 本节数据**维持 8.5.0 口径不动**（不做 9.0 重测）。仅存档观察到的事实：
+> `SSDChunkScanFwdOp`（test_mamba）在 9.0 下 `bishengir-compile` **挂死**（CPU 空转 >19min）、
+> `MultiHeadAttentionFwdOp` 按此决策跳过、`MishFwdOp` 7/7 ✅。
+> 详见 `docs/cann9_adaptation.md` §11.2。
+
 | 算子 | 正确性 | avg max_abs_err | shapes | ratio 范围 |
 |---|---|---|---|---|
 | `AdaLayerNormFwdOp` | 22/22 | 1.13e-02 | 5 | 0.41%–69.38% |

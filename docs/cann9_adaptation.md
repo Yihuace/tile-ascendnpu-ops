@@ -183,3 +183,284 @@ repro 用 `os.environ.setdefault("TILELANG_ASCEND_MODE", ...)` 声明目标模�
 - ③ 性能比全部失效，需 `tileops-report run --all` 重测（含 `NPUUtils.get().get_aicore_num()` 实查）。
 - ④ `MIGRATION_INDEX.md §C` / `versions.txt` 版本戳收尾；复核「删 NaN 恢复」优化在 9.0 下是否仍有效。
 
+## 11. 2026-10-17：工作流② 正确性重跑（表 A 全量）+ 表 B 退出重定基线范围
+
+跑法：`pytest tests/ops/<file>.py` **逐文件串行**（每个文件独立进程 + 独立 summary，抗中断），
+原始日志 `/tmp/opencode/rebasing/ops_suite/`。环境 = CANN 9.0.0（§10 定格配置）。
+
+### 11.1 表 A（19 交付算子）正确性结果
+
+| 算子 | 测试文件 | 结果 |
+|---|---|---|
+| `HardsigmoidFwdOp` | `test_hardsigmoid` | ✅ 7/7 |
+| `ClampScalarFwdOp` | `test_clamp_scalar` | ✅ 11/11 |
+| `HardswishFwdOp` | `test_hardswish` | ✅ 7/7 |
+| `AddFwdOp` | `test_add` | ✅ 24/24 |
+| `SubFwdOp` | `test_sub` | ✅ 24/24 |
+| `GeluAndMulFwdOp` | `test_gelu_and_mul` | ✅ 11/11 |
+| `GeluTanhAndMulFwdOp` | `test_gelu_tanh_and_mul` | ✅ 11/11 |
+| `IsnanFwdOp` | `test_isnan` | ✅ 9/9 |
+| `IsinfFwdOp` | `test_isinf` | ✅ 9/9 |
+| `IsfiniteFwdOp` | `test_isfinite` | ✅ 9/9 |
+| `FusedAddLayerNormFwdOp` | `test_fused_add_layer_norm` | ✅ 14/14 |
+| `BatchNormBwdOp` | `test_batch_norm_bwd` | ✅ 12/12 |
+| `ClampMinFwdOp` | `test_clamp_min` | ✅ 14/14 |
+| `LerpFwdOp` | `test_lerp_scalar` | ✅ 36/36 |
+| `Conv3dBiasFwdOp` | `test_conv3d_bias` | ✅ 17/17 |
+| `GLADecodeOp` | `test_gla_decode` | ✅ 11/11 |
+| **`Conv1dFwdOp`** | `test_conv1d` | ❌ **1 failed** / 27 passed |
+| **`Conv1dBiasFwdOp`** | `test_conv1d_bias` | ❌ **5 failed** / 23 passed |
+| `GatedDeltaNetPrefillFwdOp` | （无测试文件） | — 未交付（CG-2026-0026） |
+
+**合计：276 / 282 passed（6 failed）。**
+
+失败的 6 个**全部**在卷积族，形态**全部为 SIGSEGV**（`bishengir-compile` 带 LLVM crash backtrace）：
+
+| 用例 | 形态 |
+|---|---|
+| `test_conv1d.py::test_conv1d_same_padding_even_kernel_matches_torch[bias]` | SIGSEGV |
+| `test_conv1d_bias.py::test_conv1d_bias[smoke-tcn-k3-s1-fp16]` | SIGSEGV |
+| `test_conv1d_bias.py::test_conv1d_bias[smoke-tcn-k3-s1-bf16]` | SIGSEGV |
+| `test_conv1d_bias.py::test_conv1d_bias[full-seanet-residual-k3-s1-fp16]` | SIGSEGV |
+| `test_conv1d_bias.py::test_conv1d_bias[full-groups2-k3-fp16]` | SIGSEGV |
+| `test_conv1d_bias.py::test_conv1d_bias_same_padding_even_kernel_matches_torch` | SIGSEGV |
+
+根因见 §9.3（`ConvertHFusionToHIVM` 的 `mmadL1.getResult(0)` 越界，仅 Cube 算子受影响）。
+**是工具链缺陷，不是算子缺陷**（同树在 8.5.2 下 405/405）。
+注：并非"只有 fp16"——`smoke-tcn-k3-s1-bf16` 同样失败。
+
+### 11.2 表 B 退出重定基线范围（决策记录）
+
+**决策（2026-10-17）**：表 B 的 7 个算子（`AdaLayerNormFwdOp` / `ArgmaxFwdOp` / `LerpTensorFwdOp` /
+`LogSumExpFwdOp` / `MishFwdOp` / `MultiHeadAttentionFwdOp` / `SSDChunkScanFwdOp`）
+**不属于本次迁移/优化目标**；后续阶段（②/③/④）**一律不再纳入**，除非另行下令。
+先前它们多次阻塞任务推进（见下），故**只记录、不深究**。
+
+已观察到的事实（仅存档）：
+- `SSDChunkScanFwdOp`（`test_mamba.py`）：第 1 例通过后，第 2 例的 `bishengir-compile`
+  **挂死**——`STAT=R`、CPU 99.8% 空转、`Time>19min`、`VmRSS` 仅 50 MB（**非 SIGSEGV、非死锁**）。
+  IR 存证：`/tmp/opencode/rebasing/hang_evidence/mamba_hang_kernel.npuir`（30 KB）+ 完整 tmpdir。
+- `MultiHeadAttentionFwdOp`（`test_multi_head_attention.py`）：按本决策**期间跳过**。
+- `MishFwdOp`（`test_mish`）：7/7 ✅（本次已跑完）。
+- 其余表 B 文件本次未单独验证。
+
+### 11.3 新事实：同一根因的**第二种坏法**（挂死）
+
+§7.3 / §9.3 记录的失败形态是**确定性 SIGSEGV**；本次新增观察到 **CPU 空转挂死**（mamba）。
+**两者同源**（Cube 形态 IR × CANN 9.0 的 4 月版 `bishengir-compile`），
+即该编译器在这类 IR 上**要么崩、要么转不出来**。后续遇到"编译不返回"应据此判定，勿误判为环境/死锁。
+
+### 11.4 方法学：逐文件串行
+
+全量 `pytest tests/ops` 单进程跑一次约 40+ min，且**一旦被中断则全部结果丢失**（首轮即因此丢在 84%）。
+改为**逐文件独立进程**后：中断只丢当前文件、可得逐文件对账、且挂死文件可被单文件 timeout 隔离。
+建议后续同类重跑沿用（脚本思路见 `/tmp/opencode/rebasing/run_ops_suite.sh`）。
+
+### 11.5 处置决策：工具链绑定 xfail（方案 A，2026-10-17）
+
+对 §11.1 的 6 个失败**不改算子、不改 kernel**，改为在 `examples/TileOPs/tests/conftest.py`
+加**工具链绑定的 xfail**（`pytest_collection_modifyitems` 钩子）：
+
+- **只在** `_cann_version() == "9.0.0"` 时生效 → 换工具链自动失效；
+- `strict=False` → 编译器修好后这 6 个变 **XPASS**（提醒摘标），不判红；
+- 理由字符串带 CG 号与证据路径（`docs/cann9_adaptation.md §9.3/§11.1`）；
+- **不是无条件 skip**，缺陷保持可见。
+
+已验证：命中**恰好 6 项**（`--collect-only -m xfail` → 6/56）；
+摘掉 `ASCEND_TOOLKIT_HOME` 模拟其它工具链 → **0 项**（自失效生效）。
+
+效果：CANN 9.0.0 下这两个卷积文件由 `1 failed` / `5 failed` 变为 **passed + xfailed**，
+表 A 套件**转绿且留痕**。
+
+未采用：B（保持红，只文档记录）、C（自建修复版编译器，见 §9.4 路径 B）、D（报 issue，待批准）。
+
+## 12. 2026-10-17：工作流③ 性能口径改为「细粒度快扫」（T4 全量 run 的替代）
+
+### 12.1 决策与理由
+
+原 T4 计划 = 18 个表 A 算子各跑一次 `tileops-report run --op X` 全量 msprof（约 4.5 h）。
+用户提出「时间紧迫，T4 的工作能否由 optimize 阶段承接」→ 复盘后确认：
+
+- **optimize 阶段（`tilelang-op-optimize`）第一步本身就是采 baseline**，口径与 T4 完全同源
+  （`signal-registry.md` §5：`msprof op Task Duration(us)` 是**唯一时延口径**）。
+  所以全量 T4 与 optimize 的基线采集**互为重复劳动**。
+- 唯一**不可逆**的是顺序：被 optimize 的算子必须「先采基线、再改 kernel」——该约束由 optimize 自身保证。
+  未被 optimize 的算子，基线随时可补 → **基线是「后置」而非「丢失」**。
+- 因此放弃全量 T4，改为「**廉价保险**」：只做一次**粗粒度回归体检**，回答
+  「9.0 工具链相对 8.5.2 有没有把哪个算子的性能打坏」这一唯一无法后补的问题。
+
+### 12.2 快扫设计（细粒度）
+
+- **范围**：表 A 18 算子（GDN 未交付，CG-2026-0026）；表 B 不纳入（§11.2）。
+- **粒度**：每个算子取**元素量最小 + 最大**两个非 smoke workload，**各带全部 dtype** → 共 **77 个 case**
+  （全量非 smoke = 249，即 **31%**）。比「1 shape/op」更细：保留 shape 跨度与 dtype 维度。
+- **方法**：**只跑 benchmark 阶段**，跳过 correctness（结论已由 T1 给出），
+  直接复用 runner 的环境变量组合：
+
+  ```bash
+  TILEOPS_PROF_MODE=msprof TILEOPS_MSPROF_KEEP_OUTPUT=1 \
+  TILEOPS_MSPROF_ARTIFACT_ROOT=<out>/msprof/<Op> \
+  TILEOPS_BENCHMARK_REPORT_PATH=<out>/bench_<Op>.md \
+  pytest benchmarks/ops/bench_<op>.py -m 'not smoke' -k '<label-dtype or ...>'
+  ```
+
+  - 用 **exact `<label>-<dtype>` token** 选 case，避开 `-k` 子串陷阱（`mbv3-se-gate` 是 `mbv3-se-gate-deep` 的前缀）。
+  - 逐算子独立 `timeout`，隔离编译挂死（§11.3）。
+  - 产出 `bench_<Op>.json`（`records[].result.{latency_us,Ratio(%)}`），与 `run.json` 同 schema。
+- **口径自校验**：`HardsigmoidFwdOp/mbv3-se-gate/fp16` 快扫 2.380 µs vs T4 全量 run 2.420 µs（噪声 1.7%）→ 可比。
+- **驱动/解析**：`/tmp/opencode/rebasing/{fast_sweep_plan.py,gen_sweep_cmds.py,run_fast_sweep.sh,parse_fast_sweep.py}`。
+
+### 12.3 回归判据（8.5.2 ↔ 9.0）
+
+- **可比性已确认**：8.5.2 基线 run 的环境戳全部为 `Ascend910B3 x 1`，**与当前同芯片**（无芯片混淆）。
+- 对比器 `/tmp/opencode/rebasing/compare_85_90.py`：按 `(op, label, dtype, shape)` join
+  8.5.2 的 `reports/tileops/<run>/benchmark.json` 与 9.0 快扫 JSON。
+- **告警阈值**：`|Δlatency| > 15%` 或 `Δratio < −8 pt`。
+- 首批结果（`HardsigmoidFwdOp`）：4/4 匹配，最大 Δlatency **+4.7%**，ratio 持平 → **无回退**。
+
+### 12.4 顺带确认的事实：多个算子当前生效的是 perf_opt 变体
+
+`perf_opt/` 变体通过 loader 顶部的「注释切换」生效（同一时刻只有一个 import 未被注释）。
+**当前处于 ACTIVE（perf_opt）的算子**：`ArgmaxFwdOp`、`MultiHeadAttentionFwdOp`、`SSDChunkScanFwdOp`、
+`AdaLayerNormFwdOp`、`LerpTensorFwdOp`、`GeluAndMulFwdOp`、`GeluTanhAndMulFwdOp`、
+`HardsigmoidFwdOp`、`ClampScalarFwdOp`、`MishFwdOp`（10 个；表 A 内 4 个）。
+
+→ **快扫/T4 测到的就是「优化后」版本**；`MIGRATION_INDEX.md` 的 perf 列含义随之定为
+「当前生效内核在 9.0 下的实测值」。
+
+### 12.5 由此暴露的 T6 复核点（重要）
+
+`GeluAndMulFwdOp` 的 Stage-4 优化 = **删除冗余 NaN 恢复**（`vcmp` + `vselect` 两点），
+依据是「erf 多项式链 + `vclamp` 已传播 NaN」。该依据是**编译器/IR 级行为假设**，
+拿 8.5.2 测出来的（`perf_opt/opt_log.md`）。
+
+**9.0 下必须重验**，且**现有 `tests/ops/test_gelu_and_mul.py` 不含 nan/inf 边界用例**
+→ 若 9.0 的 `vclamp` 或多项式链不再传播 NaN，**测试仍会全绿而结果已错**（静默失效）。
+
+T6 复核动作：
+1. A/B（msprof，9.0）：baseline（带 `vcmp`/`vselect`）vs perf_opt（当前生效），确认 −9% 量级增益仍在；
+2. **新增显式 nan/inf 边界用例**，验证 NaN 传播假设在 9.0 成立；
+3. 结论回写 `perf_opt/opt_log.md` 并**打上 9.0 工具链戳**（现文档只戳 8.5.2）。
+
+### 12.6 事故记录：残留进程污染 + 重跑（2026-10-17 10:12）
+
+**现象**：清理 T4 时用的 `pkill -f run_perf_all.sh` **自匹配**了执行它的 shell 自身命令行
+（命令串里含该字面量）→ shell 先收到 `SIGTERM`，**第二条 `pkill`（针对 `tileops.reporting.cli run`）未执行**。
+结果：`run_perf_all.sh` 被杀死，但其**当时正在跑的 `--op HardswishFwdOp` 报告进程树被孤儿化**（`ppid→1`）
+并**继续占用 NPU ~15 min**，与首次快扫（含 Hardsigmoid 验证跑）**并发**。
+
+**处置**：
+- 按 **PID** 杀掉孤儿树（379838/379839/380752），确认 `npu-smi info` → `No running processes found`；
+- **作废**并归档 10:02–10:09 的 Hardsigmoid 结果（`fast_sweep_prev/`），**10:12:27 干净重启**快扫；
+- 快扫重跑后 Hardsigmoid 的数字以**重启后版本**为准（§12.3 中「2.380 µs」为污染期样本，结论方向仍成立：与 T4 的 2.420 µs 同量级）。
+
+**教训（写入流程约定）**：
+1. 用 `pkill -f` 时**模式必须做自匹配规避**（如 `pkill -f 'run_perf_[a]ll.sh'`），否则会杀掉自身 shell 而漏掉后续清理；
+2. 杀父进程**不会**终止已 fork 的子进程（尤其 `timeout`/`bash -ic`/pytest 链），必须**按 PID 逐层清理 + `npu-smi info` 复核**；
+3. 性能测量前**必须**确认 NPU 无其它进程，否则数字作废。
+
+---
+
+## 13. 2026-10-17：工作流③ 结果 —— 18 算子「迁移态」偏差复核（9.0 ↔ 8.5.2）
+
+### 13.1 方法纠正：先测迁移态，不是"当前生效态"
+
+初版快扫测的是「当前生效态」。对 4 个 kernel 目录（5 个算子：`HardsigmoidFwdOp`、
+`ClampScalarFwdOp`、`ClampMinFwdOp`、`GeluAndMulFwdOp`、`GeluTanhAndMulFwdOp`）来说，
+生效态是 **perf_opt（优化态）**——那不是本阶段要验的**迁移交付物**。方法错误，已纠正：
+
+1. 4 个 loader 切回迁移态（`perf_opt` import 注释、baseline import 打开），源码级确认；
+2. 补测**迁移态正确性**：5 个算子 **54/54 passed**（7+11+14+11+11，与索引一致）；
+3. 全量 18 算子 / 77 用例**迁移态**重扫（10:53 起，约 2h，18/18）；
+4. 收尾 `git checkout` 还原 4 个 loader，`git status` 确认干净。
+
+### 13.2 8.5 基线口径：**"层"比"时间"重要**（本节是本次最大的方法学收获）
+
+8.5 报告**本体**（`run.json`、`report.md`）**不含"层"字段**，且两种"常识挑法"都会取错：
+
+| 挑法 | 结果 | 结论 |
+|---|---|---|
+| 按 `git_commit` 分 | ❌ 不可行 | `20261015_195138`（**迁移态**）与 `20261015_202825`（**优化态**）`git_commit` **同为** `88d028d251…`；`evaluation_scope`、`benchmark_file`、用例数(11) 全同，**仅数值不同**（ratio 45.54–62.85% vs 71.86–82.83%） |
+| 按时间戳分 | ❌ 不可行 | 优化**先在工作区、后提交**：`Hardsigmoid` 的 `20261015_213240`（21:32）已是优化态数字 15.92 µs，而优化提交 `4f34565` 在 **22:03** |
+| 按"最新 8.5 run" | ❌ 会把优化态当迁移态 | 对 `Hardsigmoid fc-wide/fp16`：最新 run = 17.20 µs → 得出 **−42%** 假偏差；正确取迁移态 30.32 µs → **−1.4%**（噪声内） |
+
+**权威分层来源（已落地到对比器）**：
+
+1. `<kernel>/<op>_kernel/integration_report.json` 的 `run_json` —— **迁移态**报告指针（14/18 有）；
+2. `MIGRATION_INDEX.md` §A 引用的 run —— 补齐后 **18/19 明确**（仅 `LerpFwdOp` 无 run 指针，索引记 `git show 5fd2613`）；
+3. `perf_opt/opt_log.md` / `perf_records.jsonl` —— **优化态**（baseline→perf_opt；仅 `clamp_scalar` 记了双报告指针，其余 4 个只有数值）；
+4. 兜底：数值签名（latency/ratio）反查；最后才回退"最新 run"。
+
+对比器（`compare_85_90.py`）默认 `--state=migrated` 即按上述优先级取基线。
+
+### 13.3 结果概览（18/18）
+
+| 项 | 值 |
+|---|---|
+| 算子 | 18/18 完成；EXIT=0 ×16，**EXIT=1 ×2** |
+| EXIT=1 | `Conv1dFwdOp`、`Conv1dBiasFwdOp`（**fp16** 用例，CG-2026-0003 崩溃，非性能问题；同族 bf16 为 +2.2%/+0.4%，正常） |
+| 有效用例 | **70**（剔除 2 个崩溃 + 1 个基线缺失） |
+
+| \|Δlat\| | 用例数 |
+|---|---|
+| ≤ 2% | **39**（56%） |
+| 2–5% | 15 |
+| 5–10% | 9 |
+| 10–15% | 5 |
+| > 15% | 2 |
+
+**中位 1.64%，P90 10.13%**。
+
+### 13.4 噪声底（同态重复实测，判据标尺）
+
+| 用例规模 | 同态重复 Δ% |
+|---|---|
+| 256M 档 | **±1.1 – 1.3%** |
+| 16M 档 | **±2.0 – 6.5%**（中位 1.3%） |
+| µs 级（3–15 µs） | 相对噪声更大，实测 ±7 – 15% |
+
+### 13.5 >5% 用例三分类
+
+**① 无效（不是性能偏差）**
+
+| 用例 | Δ | 原因 |
+|---|---:|---|
+| `Conv1d fp16` | +199.8% | EXIT=1 崩溃产物 |
+| `Conv1dBias fp16` | +238.7% | 同上 |
+| `ClampScalar 16M/fp32` | +34.0% | **其中 +22.3% 是 `block_size` 8192→4096 的配置差异**；8.5 自证：`20261013_141507`(8192)=55.98 → `20261015_195138`(4096)=68.48（+22.3%）。工具链部分仅 **+9.6%**（68.48→75.02） |
+
+**② 已用复测定性**
+
+| 用例 | 首测 | 复测 | 结论 |
+|---|---:|---:|---|
+| `BatchNormBwd large-spatial fp16` | 2567.61 | 2571.39 | **+0.1% 复现 → +22.7% 是真偏差**（2.1 ms 大用例，代码自迁移后零提交） |
+| `BatchNormBwd resnet-stage1 fp16` | 21.96 | 21.00 | 首测偏高，偏差收窄至 **+5.3%** |
+| `BatchNormBwd resnet-stage1 bf16` | 21.48 | 20.74 | 首测偏高，偏差收窄至 **+3.9%** |
+
+**③ fp32（clamp 家族）—— 复测完成，确认 +7~8%**
+
+`ClampMin 16M/fp32` 的真迁移态基线应为 **64.0 µs**（`perf_records` 的 `baseline_us`；此前误用
+`20261015_205133` 的 49.70，那是 **perf_opt 优化态**）。
+
+| 用例 | 8.5 迁移态 | 9.0 首测 | 9.0 复测 | 重复差 | 判定 |
+|---|---:|---:|---:|---:|---|
+| ClampScalar 16M/fp32（bs 均 4096） | 68.48 | 75.02 | 72.96 | −2.7% | **+8.0%**（取均值 74.0） |
+| ClampMin 16M/fp32 | 64.0 | 68.40 | 69.26 | +1.3% | **+7.5%** |
+
+→ 两算子一致落在 **+7~8%**，重复性良好（±1.3~2.7%），**确认为真实的 fp32 路径回退**；
+但 `Isnan/Isinf/Isfinite` 的 fp32 为 −6.2%/+3.6%/−2.2%，故**不是全面 fp32 回退**，而是
+**clamp 家族特有**（其 fp32 计算链为 `vmax`/`vmin`/`vclamp`，与 9.0 的 fp32 向量化调度交互）。
+
+### 13.6 阶段性结论
+
+1. **迁移态在 9.0 上主体无偏差**：56% 用例 ≤2%，中位 1.64%；`Hardswish`（无优化变体、无层歧义）
+   全档 **−1.5% ~ +1.1%**，可作"无偏差"锚点。
+2. **一处确认真异常**：`BatchNormBwd large-spatial/fp16` **+22.7%**（已复现，代码冻结）——需单独立项定位。
+3. **一处确认回退**：clamp 家族 fp32 **+7~8%**（复测复现，仅此家族；isnan/isinf/isfinite 的 fp32 无此现象）。
+4. **8.5 报告的可用性判定**：
+   - 正确性：**可照用**（6 个 conv 用例受 CG-2026-0003 影响，已版本绑定 xfail）；
+   - 性能（大 shape、fp16/bf16）：**可照用**（±2%）；
+   - clog fp32、`BatchNormBwd`：**需修正后再用**；
+   - µs 级小用例：**只作量级参考**（±10%）。
+5. **用 8.5 报告前必须先定"层"**：按 §13.2 的优先级取基线，否则会得到 ±40% 的假偏差。
+

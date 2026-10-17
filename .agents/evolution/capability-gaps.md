@@ -83,50 +83,7 @@ created_by: multi_head_attention/_gqa_prefill_fwd_kernel Stage 3 attempt 3, 2026
 last_seen: 2026-09-07
 ```
 
-### CG-2026-0003
-
-```yaml
-gap_id: CG-2026-0003
-layer: TileLangIR pass (Expert 模式 fixpipe lowering) 与 BishengIR 版本配对
-capability: >-
-  新版 tilelang 前端（机器默认激活构建 /home/tilelang/j00919838/tilelang-mlir-ascend，
-  2026-09-02 期）在 Expert 模式下把 L0C→GM 的 T.copy lowering 为 hivm.hir.fixpipe 并
-  携带 dma_mode = #hivm.dma_mode<nz2nd> 属性；本机全部 3 个可用 bishengir-compile 均
-  无法编译该 IR：CANN 8.5.0 版（0.1.0，e4e2ba9841d1，2026-01-16，PATH 默认）与 upload
-  仓库 3rdparty 版（19.1.7，31f690369d，2026-07-24）解析期报 "unknown attribute
-  `dma_mode` in dialect `hivm`"；j00919838 配套 3rdparty 版（1.1.0，139bb6c7aef6，
-  2026-09-02）解析通过但在 ConvertHFusionToHIVMPass 段错误
-  （mlir::utils::getAnnotateOpWithAttr，HFusionToHIVM.cpp）。
-blocked_algo: >-
-  Expert 模式示例（examples/flash_attention/flash_attn_npuir.py，T.rs("PIPE_*") +
-  T.sync_block_set/wait 跨核同步结构）在机器默认激活的 tilelang 构建下无法编译，
-  迫使三实现性能对比任务整体切换到 upload 仓库的旧版前端构建完成。
-evidence:
-  - 复现（默认工具链）：PYTHONPATH 默认（tilelang 解析到 j00919838 checkout）下
-    python flash_attn_npuir.py --seq_len 512 → bishengir-compile 报
-    loc(kernel.npuir:41:42): error: unknown attribute `dma_mode` in dialect `hivm`；
-  - 三编译器交叉实测（同一份 .npuir）：CANN 8.5.0 与 upload 3rdparty（2026-07-24）
-    报同一 parse 错误；j00919838 3rdparty 1.1.0 在 ConvertHFusionToHIVMPass 崩溃
-    （LLVM stack dump，栈顶 getAnnotateOpWithAttr）；
-  - 绕法实测：PYTHONPATH 前置 upload 仓库构建后（其前端不产出 dma_mode），同一源码
-    用 CANN 8.5.0 bishengir-compile 编译运行通过（含精度自检 All check passed，
-    seq_len=512/4096）。
-  - 未文档化假设：docs/ 未找到 bishengir-compile 与前端产物的版本配对说明；估计依据
-    为本任务三编译器交叉实测。
-workaround: >-
-  PYTHONPATH 前置 upload 仓库 tilelang 构建（旧版前端，fixpipe 不带 dma_mode），
-  三种实现（Expert npuir / Developer baseline / Developer gqa）统一在其下编译对比；
-  代价：任务级工具链钉版本，机器默认 tilelang 构建的 Expert 路径完全不可用。
-occurrences: 1
-tasks: [FA 三实现性能对比 baseline/npuir/gqa 2026-09-07]
-toolchain_stamp: >-
-  tilelang 默认激活构建 j00919838 checkout（jit_npu.py dacebc3d 2026-08-05，3rdparty
-  bishengir 1.1.0 2026-09-02）+ CANN 8.5.0 bishengir-compile 0.1.0（2026-01-16）+
-  910B2C(IT21HMDB01-B2) + torch_npu 2.7.1
-status: open
-created_by: FA 3-impl perf comparison 2026-09-07
-last_seen: FA 3-impl perf comparison 2026-09-07
-```
+### CG-2026-0003 → 已升级 recurring，条目移入下方 Recurring 区（2026-10-17 occurrences 2：CANN 9.0.0 重定基线下 `mmadL1` buffer 形态独立复现，并发现新坏法「挂死」）
 
 ---
 
@@ -819,6 +776,77 @@ last_seen: gdn_prefill/GatedDeltaNetPrefillFwdOp Stage-0 probe（2026-10-15）
 ```
 
 ## Recurring（达升级阈值，待推动补齐）
+
+### CG-2026-0003
+
+```yaml
+gap_id: CG-2026-0003
+layer: BishengIR（pass ConvertHFusionToHIVM：getAnnotateOpWithAttr 前的 result 取值）+ 前端/BishengIR 版本配对
+capability: >-
+  bishengir-compile 的 pass ConvertHFusionToHIVM（bishengir/lib/Conversion/HFusionToHIVM/
+  HFusionToHIVM.cpp）在 walk 中对 hivm op 取 `op.getResult(0)` 后调
+  utils::getAnnotateOpWithAttr，**不区分 op 形态**：当 IR 为 **buffer 形态**
+  （如 `hivm.hir.mmadL1 ins(...) outs(%m : memref<...>)`，0 个 result）时 `getResult(0)`
+  越界。历史两种触发形态：
+  ① 首证（2026-09-07）——Expert 模式 fixpipe lowering 产出 `hivm.hir.fixpipe` +
+     `dma_mode = #hivm.dma_mode<nz2nd>`，j00919838 配套 3rdparty 1.1.0 在
+     ConvertHFusionToHIVMPass 段错误（栈顶 getAnnotateOpWithAttr）；
+  ② 第二证（2026-10-17，CANN 9.0.0 重定基线）——Cube 族 kernel 的 `hivm.hir.mmadL1`
+     buffer 形态 IR 命中同一缺陷，形态为 **SIGSEGV**；另有**第二种坏法：CPU 空转挂死**。
+  源码级根因：CANN 9.0 的发布分支（v1.1.0-post2 428ab8fdab46 / v1.2.0）保留
+  `moduleOp->walk([&](hivm::MmadL1Op op){ utils::getAnnotateOpWithAttr(op.getResult(0), ...); })`
+  （HFusionToHIVM.cpp 1349-1351，见 docs/cann9_adaptation.md §9.3）；主线（≥feature/0725）
+  已删除该 walk，但**未回合到发布分支**。
+blocked_algo: >-
+  Cube / MixCV 族算子在 CANN 9.0.0 工具链下**不可编译**（Vector 算子无 mmadL1，全部正常）。
+  实测影响面 = 本批 19 交付算子中卷积族 6 个用例（`Conv1dFwdOp` 1/28、`Conv1dBiasFwdOp`
+  5/28），以及表 B 的 MHA/SSD（后者表现为挂死）。IR 级规避全部失败：改名/删属性对
+  该缺陷无效；给 mmadL1 补 tensor result 被 DPS 校验拒绝
+  （expected #tensor results(1) == #output tensors(0)）。
+evidence:
+  - 复现（首证 2026-09-07）：`python flash_attn_npuir.py --seq_len 512`（j00919838 3rdparty
+    1.1.0）→ ConvertHFusionToHIVMPass 崩溃（LLVM stack dump，栈顶 getAnnotateOpWithAttr）。
+  - 复现（第二证 2026-10-17，CANN 9.0.0 = bishengir 1.1.0/428ab8fdab46 + hivmc 0.2.0）：
+    `pytest tests/ops/test_conv1d.py` → 1 failed；`test_conv1d_bias.py` → 5 failed；
+    全部 `died with <Signals.SIGSEGV: 11>`（LLVM "PLEASE submit a bug report" backtrace）；
+    逐文件日志 /tmp/opencode/rebasing/ops_suite/；用例清单见 docs/cann9_adaptation.md §11.1。
+  - 最小化：把 mmadL1 op 从 IR 删除 → pass 通过；只留它 → 必崩。
+  - 新坏法（挂死）：`test_mamba.py`（表 B）第 2 例 bishengir-compile `STAT=R`、CPU 99.8%
+    空转 >19min、VmRSS 仅 50MB（非死锁、非 SIGSEGV）；IR 存证
+    /tmp/opencode/rebasing/hang_evidence/mamba_hang_kernel.npuir。
+  - 对照基线：同一棵 Oct tilelang 树在 CANN 8.5.2 下 tests/ops 405/405（docs §9.3.4）。
+workaround: >-
+  当前无 kernel 级绕法（IR 改名/删属性/补 result 均失败，见 blocked_algo）。可行途径：
+  ① 取得与 Oct 树同代的 hivmc（原 8.5.2 内那份，本容器不可得）；② 自建 v1.2.0 发布分支
+  AscendNPU-IR 并回合主线修复（去掉/保护该 walk）后重编 tilelang；③ 等 CANN 修版工具链。
+  过渡期（CANN 9.0）：**接受卷积族 6 用例失败并记录**，Vector 族完全可用。
+occurrences: 2
+tasks: [FA 三实现性能对比 baseline/npuir/gqa 2026-09-07, CANN 9.0.0 重定基线-工作流② 2026-10-17]
+toolchain_stamp: >-
+  首证 tilelang 默认激活构建 j00919838 checkout（jit_npu.py dacebc3d 2026-08-05，3rdparty
+  bishengir 1.1.0 2026-09-02）+ CANN 8.5.0 bishengir-compile 0.1.0（2026-01-16）+
+  910B2C(IT21HMDB01-B2) + torch_npu 2.7.1；二证（9.0.0 重验）tilelang 0.1.2 dev-root
+  （AscendNPU-IR 31f6903）+ CANN 9.0.0（bishengir 1.1.0/428ab8fdab46 + hivmc 0.2.0）+
+  Ascend910B3 / 2026-10-17
+status: recurring
+proposal: >-
+  目标层 BishengIR（ConvertHFusionToHIVM pass）。建议改动：在
+  `utils::getAnnotateOpWithAttr(op.getResult(0), ...)` 前加 result 数守卫
+  （`if (op->getNumResults() == 0) return;`），或按主线 feature/0725 直接删除该 walk
+  （buffer 形态 DPS op 无 result，annotate 语义本不适用）；并把该修复**回合到发布分支**
+  （v1.1.0-post2 / v1.2.0）。收益量化（两任务实测）：首证阻断 Expert fixpipe 路径
+  （迫使任务级钉旧前端）；二证使 CANN 9.0 下卷积族 6 用例不可编译、表 B 出现挂死——
+  **直接决定 Cube/MixCV 算子在新工具链上的可达性**。受影响算子：Conv1dFwdOp /
+  Conv1dBiasFwdOp / Conv3dBiasFwdOp（及表 B MHA / SSDChunkScan）等一切含 Cube 的算子。
+  issue 草稿（[npuir] 前缀，**须用户批准后建**）：[npuir] ConvertHFusionToHIVM 对 buffer
+  形态 op 取 getResult(0) 越界（mmadL1 形态 SIGSEGV / 挂死；主线已修未回合发布分支）。
+created_by: FA 3-impl perf comparison 2026-09-07
+last_seen: CANN 9.0.0 重定基线-工作流②（2026-10-17，mmadL1 buffer 形态 + 新坏法挂死）
+```
+
+> **升级依据**：task FA 三实现性能对比（2026-09-07，Expert fixpipe `dma_mode` 触发）+ CANN 9.0.0 重定基线-工作流②（2026-10-17，Cube `mmadL1` buffer 形态触发，含新坏法挂死）——两个不同任务、双触发形态、跨工具链（CANN 8.5.0 → 9.0.0）独立识别同一缺口（`ConvertHFusionToHIVM` 的 `getResult(0)` 越界），达 ≥2 任务阈值。proposal 字段已产出（result 数守卫 / 删 walk + 回合发布分支），待向用户显式列出并推动（外部 issue 须用户批准后建）。
+
+---
 
 ### CG-2026-0008
 
