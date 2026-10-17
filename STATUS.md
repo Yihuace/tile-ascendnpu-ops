@@ -17,7 +17,18 @@
 - bf16 原生可编译且 max_diff=0，但时延方向不一致，不采纳（保持 fp32 中转）；
 - 小 shape 的判定受 ±5% 进程双态支配，<5% 差异一律走交错 A/B，不做单次快照结论。
 
-## 下一步：Isinf / Isfinite
+## 优化范围修订（2026-10-17 21:30，用户口径）
+
+**已有优化报告且不含 Cube 的算子不再重测**；只有含 Cube 的算子需要按 CANN 9.0 重测。
+
+| 类别 | 算子 | 处理 |
+|---|---|---|
+| 已有报告 + 纯 Vector | ClampScalar、GeluAndMul、GeluTanhAndMul、Hardswish、Hardsigmoid | **跳过重测**（沿用 8.5 报告） |
+| 无报告 + 纯 Vector | FusedAddLayerNorm、GLADecode | 仍需 Stage 4 |
+| 已有报告 + 含 Cube | BatchNormBwd、Conv1d/Bias、Conv3dBias | 按 9.0 重测（Cube lowering 变更） |
+| predicate 族 | Isfinite（进行中） | 完成收尾 |
+
+## 下一步：Isfinite → FusedAddLayerNorm → GLA → BatchNormBwd → Conv
 
 - 目录：`elementwise/isinf/`、`elementwise/isfinite/`
 - 复用 Isnan 的 3-pass predicate 结构与 `perf_opt/` 骨架；判据仍按 AI 分类（访存 70%）

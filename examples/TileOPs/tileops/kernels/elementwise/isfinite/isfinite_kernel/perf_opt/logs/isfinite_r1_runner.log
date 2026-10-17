@@ -1,0 +1,35 @@
+[npu_lock] start 2026-10-17T21:24:54+08:00: bash -c source ./env.sh; python3 -u candidates/isfinite_fwd_kernel_abs.py --level L0 > logs/l0_abs.log 2>&1; echo "l0_rc=$?"; python3 -u run_experiments.py --experiments experiments_isfinite_r1.json --workloads 16m,256m,16m-half --round 1 --order workload --reps 1 --skip-l0
+l0_rc=0
+[runner] phase=candidate round=1 reps=1 workloads=6 experiments=2
+[runner] baseline: L0=PASS module=../isfinite_fwd_kernel.py bs=8192
+[runner] abs-pipe2-bs8192: L0=PASS module=candidates/isfinite_fwd_kernel_abs.py bs=8192
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+  baseline-r1-baseline-bs8192-16m-bfloat16-rep1: 58.261us ratio=41.156%
+  candidate-r1-abs-pipe2-bs8192-bs8192-16m-bfloat16-rep1: 56.581us ratio=42.569%
+  baseline-r1-baseline-bs8192-16m-float16-rep1: 38.721us ratio=48.788%
+  candidate-r1-abs-pipe2-bs8192-bs8192-16m-float16-rep1: 33.221us ratio=59.288%
+  baseline-r1-baseline-bs8192-16m-half-bfloat16-rep1: 58.301us ratio=41.311%
+  candidate-r1-abs-pipe2-bs8192-bs8192-16m-half-bfloat16-rep1: 56.771us ratio=42.151%
+  baseline-r1-baseline-bs8192-16m-half-float16-rep1: 38.471us ratio=50.114%
+  candidate-r1-abs-pipe2-bs8192-bs8192-16m-half-float16-rep1: 33.361us ratio=57.441%
+  baseline-r1-baseline-bs8192-256m-bfloat16-rep1: 932.309us ratio=45.361%
+  candidate-r1-abs-pipe2-bs8192-bs8192-256m-bfloat16-rep1: 913.428us ratio=46.323%
+  baseline-r1-baseline-bs8192-256m-float16-rep1: 704.864us ratio=59.507%
+  candidate-r1-abs-pipe2-bs8192-bs8192-256m-float16-rep1: 669.753us ratio=62.493%
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+| baseline | 8192 | 16m-bfloat16 | 1 | 58.261 | 41.156 |
+| abs-pipe2-bs8192 | 8192 | 16m-bfloat16 | 1 | 56.581 | 42.569 |
+| baseline | 8192 | 16m-float16 | 1 | 38.721 | 48.788 |
+| abs-pipe2-bs8192 | 8192 | 16m-float16 | 1 | 33.221 | 59.288 |
+| baseline | 8192 | 16m-half-bfloat16 | 1 | 58.301 | 41.311 |
+| abs-pipe2-bs8192 | 8192 | 16m-half-bfloat16 | 1 | 56.771 | 42.151 |
+| baseline | 8192 | 16m-half-float16 | 1 | 38.471 | 50.114 |
+| abs-pipe2-bs8192 | 8192 | 16m-half-float16 | 1 | 33.361 | 57.441 |
+| baseline | 8192 | 256m-bfloat16 | 1 | 932.309 | 45.361 |
+| abs-pipe2-bs8192 | 8192 | 256m-bfloat16 | 1 | 913.428 | 46.323 |
+| baseline | 8192 | 256m-float16 | 1 | 704.864 | 59.507 |
+| abs-pipe2-bs8192 | 8192 | 256m-float16 | 1 | 669.753 | 62.493 |
+[npu_lock] end   2026-10-17T21:33:20+08:00: rc=0
