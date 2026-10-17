@@ -1,0 +1,391 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "hidden-state-prefill-float32",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          2048,
+          4096
+        ],
+        "other": [
+          2048,
+          4096
+        ],
+        "output": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "alpha": 1
+      },
+      "N": 8388608,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "hidden-state-prefill-float16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          2048,
+          4096
+        ],
+        "other": [
+          2048,
+          4096
+        ],
+        "output": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 8388608,
+      "kind": "smoke",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "hidden-state-prefill-bfloat16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          2048,
+          4096
+        ],
+        "other": [
+          2048,
+          4096
+        ],
+        "output": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 8388608,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "cnn-feat-broadcast-float32",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other": [
+          256,
+          1,
+          1
+        ],
+        "output": [
+          16,
+          256,
+          56,
+          56
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "alpha": 1
+      },
+      "N": 12845056,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "cnn-feat-broadcast-float16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other": [
+          256,
+          1,
+          1
+        ],
+        "output": [
+          16,
+          256,
+          56,
+          56
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 12845056,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "cnn-feat-broadcast-bfloat16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other": [
+          256,
+          1,
+          1
+        ],
+        "output": [
+          16,
+          256,
+          56,
+          56
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 12845056,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "llama-7b-ffn-float32",
+      "label": "llama-7b-ffn",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1024,
+          11008
+        ],
+        "other": [
+          1024,
+          11008
+        ],
+        "output": [
+          1024,
+          11008
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "alpha": 1
+      },
+      "N": 11272192,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "llama-7b-ffn-float16",
+      "label": "llama-7b-ffn",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1024,
+          11008
+        ],
+        "other": [
+          1024,
+          11008
+        ],
+        "output": [
+          1024,
+          11008
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 11272192,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "llama-7b-ffn-bfloat16",
+      "label": "llama-7b-ffn",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1024,
+          11008
+        ],
+        "other": [
+          1024,
+          11008
+        ],
+        "output": [
+          1024,
+          11008
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 11272192,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "linear-bias-float32",
+      "label": "linear-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1024,
+          4096
+        ],
+        "other": [
+          1,
+          4096
+        ],
+        "output": [
+          1024,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "alpha": 1
+      },
+      "N": 4194304,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "linear-bias-float16",
+      "label": "linear-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1024,
+          4096
+        ],
+        "other": [
+          1,
+          4096
+        ],
+        "output": [
+          1024,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 4194304,
+      "kind": "tune",
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_add.py::test_add_manifest_bench",
+      "kernel_id": "add_fwd_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py",
+      "workload_id": "linear-bias-bfloat16",
+      "label": "linear-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1024,
+          4096
+        ],
+        "other": [
+          1,
+          4096
+        ],
+        "output": [
+          1024,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1
+      },
+      "N": 4194304,
+      "kind": "tune",
+      "reason": ""
+    }
+  ]
+}
