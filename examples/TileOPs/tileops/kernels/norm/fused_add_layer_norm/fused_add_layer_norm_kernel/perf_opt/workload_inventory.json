@@ -1,0 +1,370 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "smoke-llama-float32",
+      "label": "smoke-llama",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          64,
+          4096
+        ],
+        "residual": [
+          64,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          64,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 262144,
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "smoke-llama-float16",
+      "label": "smoke-llama",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          64,
+          4096
+        ],
+        "residual": [
+          64,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          64,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 262144,
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "smoke-llama-bfloat16",
+      "label": "smoke-llama",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          64,
+          4096
+        ],
+        "residual": [
+          64,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          64,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 262144,
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-8b-prefill-float16",
+      "label": "llama-8b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          4096
+        ],
+        "residual": [
+          2048,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 8388608,
+      "kind": "tune",
+      "reason": "latency-bound (pipeline caused); hoist weight/bias -6~-14% time, SOL still 27-45% (below 60/70 line); needs one-pass variance/pipelining round",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-8b-prefill-bfloat16",
+      "label": "llama-8b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          4096
+        ],
+        "residual": [
+          2048,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 8388608,
+      "kind": "tune",
+      "reason": "latency-bound (pipeline caused); hoist weight/bias -6~-14% time, SOL still 27-45% (below 60/70 line); needs one-pass variance/pipelining round",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-8b-decode-bfloat16",
+      "label": "llama-8b-decode",
+      "marks": [],
+      "shape": {
+        "input": [
+          1,
+          4096
+        ],
+        "residual": [
+          1,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 4096,
+      "kind": "tune",
+      "reason": "latency-bound (pipeline caused); hoist weight/bias -6~-14% time, SOL still 27-45% (below 60/70 line); needs one-pass variance/pipelining round",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-70b-prefill-float16",
+      "label": "llama-70b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          8192
+        ],
+        "residual": [
+          2048,
+          8192
+        ],
+        "weight": [
+          8192
+        ],
+        "bias": [
+          8192
+        ],
+        "output": [
+          2048,
+          8192
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 16777216,
+      "kind": "tune",
+      "reason": "latency-bound (pipeline caused); hoist weight/bias -6~-14% time, SOL still 27-45% (below 60/70 line); needs one-pass variance/pipelining round",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-70b-prefill-bfloat16",
+      "label": "llama-70b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          8192
+        ],
+        "residual": [
+          2048,
+          8192
+        ],
+        "weight": [
+          8192
+        ],
+        "bias": [
+          8192
+        ],
+        "output": [
+          2048,
+          8192
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 16777216,
+      "kind": "tune",
+      "reason": "latency-bound (pipeline caused); hoist weight/bias -6~-14% time, SOL still 27-45% (below 60/70 line); needs one-pass variance/pipelining round",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-70b-decode-bfloat16",
+      "label": "llama-70b-decode",
+      "marks": [],
+      "shape": {
+        "input": [
+          1,
+          8192
+        ],
+        "residual": [
+          1,
+          8192
+        ],
+        "weight": [
+          8192
+        ],
+        "bias": [
+          8192
+        ],
+        "output": [
+          1,
+          8192
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 8192,
+      "kind": "tune",
+      "reason": "latency-bound (pipeline caused); hoist weight/bias -6~-14% time, SOL still 27-45% (below 60/70 line); needs one-pass variance/pipelining round",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-13b-prefill-float32",
+      "label": "llama-13b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          5120
+        ],
+        "residual": [
+          2048,
+          5120
+        ],
+        "weight": [
+          5120
+        ],
+        "bias": [
+          5120
+        ],
+        "output": [
+          2048,
+          5120
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 10485760,
+      "kind": "tune",
+      "reason": "latency-bound (pipeline caused); hoist weight/bias -6~-14% time, SOL still 27-45% (below 60/70 line); needs one-pass variance/pipelining round",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+[npu_lock] start 2026-10-17T21:49:03+08:00: bash -c source ./env.sh; python3 -u run_experiments.py --experiments experiments_faln_baseline.json --all-tune --round 1 --order workload --reps 1
+[runner] phase=candidate round=1 reps=1 workloads=7 experiments=1
+[runner] baseline: L0=PASS module=../_fused_add_layer_norm_kernel.py bs=0
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+  baseline-r1-baseline-bs0-llama-13b-prefill-float32-rep1: 108.152us ratio=44.354%
+  baseline-r1-baseline-bs0-llama-70b-decode-bfloat16-rep1: 4.620us ratio=0.863%
+  baseline-r1-baseline-bs0-llama-70b-prefill-bfloat16-rep1: 169.583us ratio=33.071%
+  baseline-r1-baseline-bs0-llama-70b-prefill-float16-rep1: 164.913us ratio=29.538%
+  baseline-r1-baseline-bs0-llama-8b-decode-bfloat16-rep1: 4.190us ratio=0.506%
+  baseline-r1-baseline-bs0-llama-8b-prefill-bfloat16-rep1: 84.352us ratio=30.879%
+  baseline-r1-baseline-bs0-llama-8b-prefill-float16-rep1: 82.442us ratio=27.362%
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+| baseline | 0 | llama-13b-prefill-float32 | 1 | 108.152 | 44.354 |
+| baseline | 0 | llama-70b-decode-bfloat16 | 1 | 4.620 | 0.863 |
+| baseline | 0 | llama-70b-prefill-bfloat16 | 1 | 169.583 | 33.071 |
+| baseline | 0 | llama-70b-prefill-float16 | 1 | 164.913 | 29.538 |
+| baseline | 0 | llama-8b-decode-bfloat16 | 1 | 4.190 | 0.506 |
+| baseline | 0 | llama-8b-prefill-bfloat16 | 1 | 84.352 | 30.879 |
+| baseline | 0 | llama-8b-prefill-float16 | 1 | 82.442 | 27.362 |
+[npu_lock] end   2026-10-17T21:53:51+08:00: rc=0
