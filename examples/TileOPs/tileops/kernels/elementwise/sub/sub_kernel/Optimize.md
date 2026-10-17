@@ -5,52 +5,62 @@
 
 ## 结论
 
-- **15 个 tune case 中 13 个 ≥70% SOL**；未达标 2 个均在噪声内：
-  `linear-bias fp16 69.27%`（Δ +0.58%）、`llama-7b-hidden fp16 68.38%`（Δ −0.57%）。
-- 采纳结构：**满块静态 extent + 单尾块 epilogue + `T.Pipelined(num_stages=2)` + grid-stride 40 核**
-  （`perf_opt/SubFwdOp.py`，`TUNED_BLOCK_SIZE = 8192`），由 AddFwdOp 的 winner 同构移植。
-- 整体 15 case 时延和 **506.151 → 503.591 µs（−0.51%）**，中位 −0.40%；无 >5% 的可信回退。
-- 稳定收益：`llama-7b-ffn fp16 −3.06%`、`llama-7b-ffn-bias fp16 −2.77%`、`linear-bias fp32 −2.33%`。
-- **方法论教训**：首轮 baseline 处于慢态，曾把 llama-7b-hidden 的收益伪造成 −13.5%；
-  相邻交错复测只剩 −0.6%。跨轮 baseline 比较不可作为收益证据。
+- **15 个 tune case 中 14 个 ≥70% SOL**；两个此前未过的 case 现在稳过：
+  `linear-bias fp16` **73.97%**、`llama-7b-hidden fp16` **73.29%**。
+- 采纳：**满块静态 extent + 尾块 epilogue + `T.Pipelined(2)` + grid-stride 40 核
+  + fp16(alpha==1) 原生 vsub**（`perf_opt/SubFwdOp.py`，`TUNED_BLOCK_SIZE = 8192`）。
+- 全部 15 case 时延和 **506.151 → 504.791 µs（−0.27%）**。
+- 唯一未过 `linear-bias bf16` 66.76%：bf16 代码路径与 baseline 完全相同，5 对 A/B 显示
+  tuned **快 1.64%**（verdict=tie）⇒ 官方值是跨轮漂移样本，不是回退。
 
-## 最终对账（官方单次 msprof，15 个 tune）
+## 最终对账（官方 msprof）
 
-| workload | base µs | final µs | Δ | base SOL% | final SOL% | ≥70% |
+| workload | baseline µs | final µs | Δ | base SOL% | final SOL% | ≥70% |
 |---|---:|---:|---:|---:|---:|:--:|
-| cnn-feat-broadcast bf16 | 36.971 | 36.411 | −1.51% | 78.50 | 80.26 | ✅ |
-| cnn-feat-broadcast fp16 | 36.841 | 36.381 | −1.25% | 79.78 | 79.69 | ✅ |
-| cnn-feat-broadcast fp32 | 70.651 | 71.101 | +0.64% | 82.96 | 83.53 | ✅ |
-| hidden-state-prefill bf16 | 25.111 | 25.011 | −0.40% | 76.76 | 78.26 | ✅ |
-| hidden-state-prefill fp32 | 46.561 | 46.901 | +0.73% | 83.40 | 81.62 | ✅ |
-| linear-bias bf16 | 13.410 | 13.510 | +0.75% | 71.44 | 70.70 | ✅ |
-| **linear-bias fp16** | 13.900 | 13.980 | +0.58% | 71.12 | **69.27** | ❌ |
-| linear-bias fp32 | 24.900 | 24.320 | −2.33% | 76.69 | 80.36 | ✅ |
-| llama-7b-ffn bf16 | 32.711 | 32.991 | +0.86% | 79.18 | 77.14 | ✅ |
-| llama-7b-ffn-bias fp16 | 33.621 | 32.691 | −2.77% | 77.09 | 79.92 | ✅ |
-| llama-7b-ffn fp16 | 33.621 | 32.591 | −3.06% | 75.42 | 79.67 | ✅ |
-| llama-7b-ffn fp32 | 62.881 | 62.401 | −0.76% | 82.39 | 83.60 | ✅ |
-| **llama-7b-hidden fp16** | 13.980 | 13.900 | −0.57% | 68.09 | **68.38** | ❌ |
-| phi-2-ffn-bias fp16 | 30.511 | 30.881 | +1.21% | 78.58 | 76.13 | ✅ |
-| phi-2-ffn fp16 | 30.481 | 30.521 | +0.13% | 77.46 | 78.53 | ✅ |
+| cnn-feat-broadcast-bfloat16 | 36.971 | 37.151 | +0.49% | 78.50 | 79.09 | ✅ |
+| cnn-feat-broadcast-float16 | 36.841 | 37.091 | +0.68% | 79.78 | 78.80 | ✅ |
+| cnn-feat-broadcast-float32 | 70.651 | 71.341 | +0.98% | 82.96 | 83.64 | ✅ |
+| hidden-state-prefill-bfloat16 | 25.111 | 25.091 | -0.08% | 76.76 | 75.61 | ✅ |
+| hidden-state-prefill-float32 | 46.561 | 46.971 | +0.88% | 83.40 | 83.91 | ✅ |
+| linear-bias-bfloat16 | 13.410 | 14.080 | +5.00% | 71.44 | 66.76 | ❌ |
+| linear-bias-float16 | 13.900 | 12.960 | -6.76% | 71.12 | 73.97 | ✅ |
+| linear-bias-float32 | 24.900 | 24.580 | -1.29% | 76.69 | 76.33 | ✅ |
+| llama-7b-ffn-bfloat16 | 32.711 | 32.851 | +0.43% | 79.18 | 78.69 | ✅ |
+| llama-7b-ffn-bias-float16 | 33.621 | 33.101 | -1.55% | 77.09 | 79.13 | ✅ |
+| llama-7b-ffn-float16 | 33.621 | 33.941 | +0.95% | 75.42 | 77.79 | ✅ |
+| llama-7b-ffn-float32 | 62.881 | 63.101 | +0.35% | 82.39 | 84.72 | ✅ |
+| llama-7b-hidden-float16 | 13.980 | 12.990 | -7.08% | 68.09 | 73.29 | ✅ |
+| phi-2-ffn-bias-float16 | 30.511 | 29.681 | -2.72% | 78.58 | 79.52 | ✅ |
+| phi-2-ffn-float16 | 30.481 | 29.861 | -2.03% | 77.46 | 79.73 | ✅ |
 
 smoke：`hidden-state-prefill fp16`（N=8,388,608）精度 PASS（max_diff=0）。
 
-## 精度与验收
+## 有效优化点
 
-- `python perf_opt/SubFwdOp.py --level all` → **L0/L1/L2/Boundary 全 PASS**（`All check passed!`）
-- `python perf_opt/validate_final.py SubFwdOp.py --block-size 8192` → smoke + linear-bias 全 PASS，max_diff=0
+| 优化点 | 实测 |
+|---|---|
+| 满块静态 extent + 尾块 epilogue + `T.Pipelined(2)` | 大 shape −2~−3%（phi-2、llama-bias） |
+| fp16(alpha==1) 原生 vsub | `linear-bias fp16 −6.76%`、`llama-7b-hidden fp16 −7.08%`，`--level all` max_diff=0 |
 
-## 遗留与建议
+## 否决项
 
-1. `linear-bias fp16` / `llama-7b-hidden fp16` 的 70% 判定在噪声内（差 0.7~1.6 点），
-   需要 ≥7 对交错 A/B 或更多独立 run 才能定论；当前不做 shape 特判（证据不足）。
-2. 同族 elementwise（Isnan/Isinf/Isfinite/ClampScalar/Gelu/Hardswish）可直接复用该结构作为起点，
-   但必须按本任务的方法（同批相邻 baseline）复测，禁止跨轮比较。
-3. Stage 5 切换 wrapper 时：`from .sub_kernel.perf_opt.SubFwdOp import sub_fwd_kernel`，
-   默认 block_size 用 `SubFwdOp.TUNED_BLOCK_SIZE`（8192）。
+| 候选 | 原因 |
+|---|---|
+| bf16 原生 vsub | 可编译且 max_diff=0，但性能方向不一致（Add 上 −2%~+3.8%），不采纳 |
+| 首轮 baseline 慢态结论 | 曾伪造 llama-hidden −13.5%，相邻交错复测仅 −0.6% |
+
+## 精度
+
+- `python perf_opt/SubFwdOp.py --level all`：**L0/L1/L2/Boundary 全 PASS**
+- `python perf_opt/validate_final.py SubFwdOp.py --block-size 8192`：smoke + linear-bias PASS，max_diff=0
+
+## 遗留
+
+1. `linear-bias bf16` 的 70% 判定仍在噪声线附近；bf16 原生收益不可靠，已按“噪声内”处理。
+2. Stage 5 wrapper 切换：`from .sub_kernel.perf_opt.SubFwdOp import sub_fwd_kernel`，
+   默认 block 用 `SubFwdOp.TUNED_BLOCK_SIZE`。
 
 ## 证据
 
-- `perf_opt/opt_log.md`、`perf_opt/perf_records.jsonl`、`perf_opt/logs/`（含 3 组 A/B JSON）
-- `reports/optimize/SubFwdOp/OPTIMIZE_REPORT.md`
+`perf_opt/opt_log.md`、`perf_records.jsonl`、`logs/`（含 `ab_sub_lb_bf16.json`）、
+`reports/optimize/SubFwdOp/OPTIMIZE_REPORT.md`

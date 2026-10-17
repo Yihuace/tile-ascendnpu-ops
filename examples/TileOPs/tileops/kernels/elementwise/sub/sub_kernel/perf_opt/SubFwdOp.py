@@ -36,9 +36,21 @@ NPU redesign (DESIGN.md section 0.6):
         vector_cores)`` with an in-core ``T.serial`` grid-stride loop and
         an if-guard for out-of-range tiles (static bounds).
 
+Stage-4 tuning (see ``perf_opt/opt_log.md``):
+    T1: full static-extent tiles + one dynamic tail tile (no per-tile T.min).
+    T2: the full-tile loop is software-pipelined (``T.Pipelined`` 2 stages).
+    T3 (A6): fp16 with ``alpha == 1`` computes natively in fp16.  A single
+        subtract of two fp16 values has an exact fp32-representable
+        difference, so native and fp32-transit results are both one correct
+        rounding and are bitwise equal (L0/L1 max_diff = 0).  Removes 3 of 4
+        vector passes and 2/3 of the UB traffic.  bf16 keeps the fp32 transit
+        (native bf16 vadd compiles on CANN 9.0.0 but its latency is
+        inconsistent: probe -2%, official retest +3.8%, so it is not adopted).
+        ``alpha != 1`` keeps fp32 (the multiply would double-round).
+
 Run the embedded hierarchical tests:
-    python sub_fwd_kernel.py --level L0
-    python sub_fwd_kernel.py --level all
+    python SubFwdOp.py --level L0
+    python SubFwdOp.py --level all
 """
 
 import os
@@ -179,27 +191,37 @@ def sub_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_
                         T.copy(a[offset : offset + block_size], a_ub)
                         T.copy(b[offset : offset + block_size], b_ub)
 
-                        # 2. Cast to fp32 (fp16/bf16) or copy (fp32).
-                        if dtype != compute_dtype:
-                            T.vcast(a_ub, a32, round_mode="rint")
-                            T.vcast(b_ub, b32, round_mode="rint")
+                        # A6: native-fp16 fast path.  For alpha==1 a single
+                        # fp16 subtraction has an exact fp32-representable
+                        # difference, so fp32-compute-then-round and native
+                        # fp16 sub are both one correct rounding -> bitwise
+                        # equal (L0/L1 max_diff = 0).  Saves 2 up-casts +
+                        # 1 down-cast and 2/3 of the UB traffic.
+                        # alpha!=1 keeps fp32 (mul would double-round); bf16
+                        # keeps fp32 transit (no native bf16 v-prefix).
+                        if dtype == "float16" and fold and out_dtype == "float16":
+                            T.vsub(a_ub, b_ub, y_ub)
                         else:
-                            T.copy(a_ub, a32)
-                            T.copy(b_ub, b32)
+                            # 2. Cast to fp32 (fp16/bf16) or copy (fp32).
+                            if dtype != compute_dtype:
+                                T.vcast(a_ub, a32, round_mode="rint")
+                                T.vcast(b_ub, b32, round_mode="rint")
+                            else:
+                                T.copy(a_ub, a32)
+                                T.copy(b_ub, b32)
 
-                        # 3. Compute in fp32: fold alpha==1, else scaled subtract.
-                        #    Subtraction order preserved: src0 (minuend) is a32.
-                        if fold:
-                            T.vsub(a32, b32, a32)  # y = a - b (identity fold)
-                        else:
-                            T.vmul(b32, alpha_scalar, b32)  # t = alpha * b
-                            T.vsub(a32, b32, a32)           # y = a - t
+                            # 3. Compute in fp32: fold, else scaled subtract.
+                            if fold:
+                                T.vsub(a32, b32, a32)  # y = a - b
+                            else:
+                                T.vmul(b32, alpha_scalar, b32)
+                                T.vsub(a32, b32, a32)
 
-                        # 4. Cast back to output dtype (fp16/bf16) or copy (fp32).
-                        if out_dtype != compute_dtype:
-                            T.vcast(a32, y_ub, round_mode="rint")
-                        else:
-                            T.copy(a32, y_ub)
+                            # 4. Cast back to output dtype or copy (fp32).
+                            if out_dtype != compute_dtype:
+                                T.vcast(a32, y_ub, round_mode="rint")
+                            else:
+                                T.copy(a32, y_ub)
 
                         # 5. Store UB -> GM (full tile, static extent).
                         T.copy(y_ub, y[offset : offset + block_size])
@@ -210,21 +232,24 @@ def sub_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_
                     offset = num_full * block_size
                     T.copy(a[offset : offset + tail], a_ub[0:tail])
                     T.copy(b[offset : offset + tail], b_ub[0:tail])
-                    if dtype != compute_dtype:
-                        T.vcast(a_ub, a32, round_mode="rint")
-                        T.vcast(b_ub, b32, round_mode="rint")
+                    if dtype == "float16" and fold and out_dtype == "float16":
+                        T.vsub(a_ub, b_ub, y_ub)
                     else:
-                        T.copy(a_ub, a32)
-                        T.copy(b_ub, b32)
-                    if fold:
-                        T.vsub(a32, b32, a32)
-                    else:
-                        T.vmul(b32, alpha_scalar, b32)
-                        T.vsub(a32, b32, a32)
-                    if out_dtype != compute_dtype:
-                        T.vcast(a32, y_ub, round_mode="rint")
-                    else:
-                        T.copy(a32, y_ub)
+                        if dtype != compute_dtype:
+                            T.vcast(a_ub, a32, round_mode="rint")
+                            T.vcast(b_ub, b32, round_mode="rint")
+                        else:
+                            T.copy(a_ub, a32)
+                            T.copy(b_ub, b32)
+                        if fold:
+                            T.vsub(a32, b32, a32)
+                        else:
+                            T.vmul(b32, alpha_scalar, b32)
+                            T.vsub(a32, b32, a32)
+                        if out_dtype != compute_dtype:
+                            T.vcast(a32, y_ub, round_mode="rint")
+                        else:
+                            T.copy(a32, y_ub)
                     T.copy(y_ub[0:tail], y[offset : offset + tail])
 
     return main

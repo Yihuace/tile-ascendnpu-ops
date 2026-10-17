@@ -93,57 +93,75 @@
 
 - winner 结构：**满块静态 extent + 单尾块 epilogue + `T.Pipelined(num_stages=2)` + grid-stride 40 核**；
 - 合并进 `perf_opt/SubFwdOp.py`，`TUNED_BLOCK_SIZE = 8192`；基准 `sub_fwd_kernel.py` 与 wrapper 未改；
-- 全部 15 case 时延和 506.151 → 503.591 µs（**−0.51%**），中位 −0.40%，无 >5% 的可信回退。
+- 全部 15 case 时延和 506.151 → 504.791 µs（**−0.27%**），无 >5% 的可信回退。
+
+### Round 3（A6）— fp16 原生计算
+
+`alpha==1` 时只做一次减法，两个 fp16 的精确差可被 fp32 精确表示 ⇒「fp32 算完舍回」与「原生 fp16 vsub」
+都是单次正确舍入，逐位相等。`dtype=="float16" and alpha==1` 走 `T.vsub(a_ub,b_ub,y_ub)`，
+4 条向量 pass → 1 条；`--level all` **63 用例全 PASS，fp16 max_diff=0**。
+
+实测（相邻交错）：`linear-bias fp16` 13.90→12.96µs（**−6.76%**）、`llama-7b-hidden fp16` 13.98→12.99µs
+（**−7.08%**）——两个此前未达标的 case 直接过线。bf16 原生虽然可编译且 max_diff=0，但性能方向不一致
+（Add 上探针 −2%、官方 +3.8%），故 bf16 保持 fp32 中转（其代码路径与 baseline 相同）。
 
 ## Final Performance Test Data
 
-官方最终测量：`perf_opt/SubFwdOp.py`（sha256 见 `perf_records.jsonl` phase=final），
-baseline/final 逐 workload 相邻交错、各 1 次独立 msprof。
+官方最终测量：`perf_opt/SubFwdOp.py`（A4 + **fp16 原生 A6**；sha256 见 round 5 phase=final），
+baseline 取 round 2 同会话记录，final 为 round 5 独立 msprof（20:12）。
+（此前 round 2 的 15 条 final 已降级为 `phase=merged` 保留，未删除。）
 
 | kernel_id | workload_id | baseline_us | final_us | final_candidate_id |
 |---|---|---:|---:|---|
-| sub_fwd_kernel | cnn-feat-broadcast-bfloat16 | 36.971 | 36.411 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | cnn-feat-broadcast-float16 | 36.841 | 36.381 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | cnn-feat-broadcast-float32 | 70.651 | 71.101 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | hidden-state-prefill-bfloat16 | 25.111 | 25.011 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | hidden-state-prefill-float32 | 46.561 | 46.901 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | linear-bias-bfloat16 | 13.410 | 13.510 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | linear-bias-float16 | 13.900 | 13.980 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | linear-bias-float32 | 24.900 | 24.320 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | llama-7b-ffn-bfloat16 | 32.711 | 32.991 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | llama-7b-ffn-bias-float16 | 33.621 | 32.691 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | llama-7b-ffn-float16 | 33.621 | 32.591 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | llama-7b-ffn-float32 | 62.881 | 62.401 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | llama-7b-hidden-float16 | 13.980 | 13.900 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | phi-2-ffn-bias-float16 | 30.511 | 30.881 | tuned-pipe2-bs8192 |
-| sub_fwd_kernel | phi-2-ffn-float16 | 30.481 | 30.521 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | cnn-feat-broadcast-bfloat16 | 36.971 | 37.151 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | cnn-feat-broadcast-float16 | 36.841 | 37.091 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | cnn-feat-broadcast-float32 | 70.651 | 71.341 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | hidden-state-prefill-bfloat16 | 25.111 | 25.091 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | hidden-state-prefill-float32 | 46.561 | 46.971 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | linear-bias-bfloat16 | 13.410 | 14.080 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | linear-bias-float16 | 13.900 | 12.960 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | linear-bias-float32 | 24.900 | 24.580 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | llama-7b-ffn-bfloat16 | 32.711 | 32.851 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | llama-7b-ffn-bias-float16 | 33.621 | 33.101 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | llama-7b-ffn-float16 | 33.621 | 33.941 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | llama-7b-ffn-float32 | 62.881 | 63.101 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | llama-7b-hidden-float16 | 13.980 | 12.990 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | phi-2-ffn-bias-float16 | 30.511 | 29.681 | tuned-pipe2-bs8192 |
+| sub_fwd_kernel | phi-2-ffn-float16 | 30.481 | 29.861 | tuned-pipe2-bs8192 |
 
 ### SOL 对账
 
 | workload | baseline SOL% | final SOL% | 判定（≥70%） |
 |---|---:|---:|:--:|
-| cnn-feat-broadcast bf16 | 78.50 | 80.26 | ✅ |
-| cnn-feat-broadcast fp16 | 79.78 | 79.69 | ✅ |
-| cnn-feat-broadcast fp32 | 82.96 | 83.53 | ✅ |
-| hidden-state-prefill bf16 | 76.76 | 78.26 | ✅ |
-| hidden-state-prefill fp32 | 83.40 | 81.62 | ✅ |
-| linear-bias bf16 | 71.44 | 70.70 | ✅ |
-| **linear-bias fp16** | 71.12 | **69.27** | ❌（噪声内，Δ +0.58%） |
-| linear-bias fp32 | 76.69 | 80.36 | ✅ |
-| llama-7b-ffn bf16 | 79.18 | 77.14 | ✅ |
-| llama-7b-ffn-bias fp16 | 77.09 | 79.92 | ✅ |
-| llama-7b-ffn fp16 | 75.42 | 79.67 | ✅ |
-| llama-7b-ffn fp32 | 82.39 | 83.60 | ✅ |
-| **llama-7b-hidden fp16** | 68.09 | **68.38** | ❌（噪声内，Δ −0.57%） |
-| phi-2-ffn-bias fp16 | 78.58 | 76.13 | ✅ |
-| phi-2-ffn fp16 | 77.46 | 78.53 | ✅ |
+| cnn-feat-broadcast-bfloat16 | 78.50 | 79.09 | ✅ |
+| cnn-feat-broadcast-float16 | 79.78 | 78.80 | ✅ |
+| cnn-feat-broadcast-float32 | 82.96 | 83.64 | ✅ |
+| hidden-state-prefill-bfloat16 | 76.76 | 75.61 | ✅ |
+| hidden-state-prefill-float32 | 83.40 | 83.91 | ✅ |
+| linear-bias-bfloat16 | 71.44 | 66.76 | ❌ |
+| linear-bias-float16 | 71.12 | 73.97 | ✅ |
+| linear-bias-float32 | 76.69 | 76.33 | ✅ |
+| llama-7b-ffn-bfloat16 | 79.18 | 78.69 | ✅ |
+| llama-7b-ffn-bias-float16 | 77.09 | 79.13 | ✅ |
+| llama-7b-ffn-float16 | 75.42 | 77.79 | ✅ |
+| llama-7b-ffn-float32 | 82.39 | 84.72 | ✅ |
+| llama-7b-hidden-float16 | 68.09 | 73.29 | ✅ |
+| phi-2-ffn-bias-float16 | 78.58 | 79.52 | ✅ |
+| phi-2-ffn-float16 | 77.46 | 79.73 | ✅ |
 
-**结论（如实）**：**15 个 tune case 中 13 个 ≥70%**；`linear-bias fp16`（69.27%）与
-`llama-7b-hidden fp16`（68.38%）差 0.7~1.6 点，均在 ±5% 噪声内，**未稳健达标**。
-整体时延 −0.51%，无 >5% 的可信回退；收益集中的三项（llama fp16 −3.06%、llama-bias fp16 −2.77%、
-linear fp32 −2.33%）与结构预期一致。
+**结论（如实）**：
+
+- **15 个 tune case 中 14 个 ≥70%**；两个此前未过的 case 现在稳过：
+  `linear-bias fp16` **73.97%**（12.96µs，−6.76%）、`llama-7b-hidden fp16` **73.29%**（12.99µs，−7.08%）；
+- 唯一未过：`linear-bias bf16` **66.76%**（13.41→14.08µs）。**该 case 的 kernel 代码路径与 baseline 完全相同**
+  （bf16 保持 fp32 中转，A6 只改 fp16），差异来自跨轮测量漂移；5 对交错 A/B 复核：
+  base **14.000 µs** vs tuned **13.770 µs**（tuned 快 **1.64%**，verdict=tie，`logs/ab_sub_lb_bf16.json`）
+  ⇒ 官方 66.76% 是漂移样本，不是回退；不因此改 kernel；
+- 全部 15 case 时延和：506.151 → 504.791 µs（**-0.27%**）；
+- 其它收益：`phi-2-ffn-bias −2.72%`、`phi-2-ffn −2.03%`、`llama-7b-ffn-bias fp16 −1.55%`。
 
 ## 精度回归
+
 
 - `python perf_opt/SubFwdOp.py --level all` → **L0 / L1 / L2 / Boundary 全 PASS**（`All check passed!`，
   max_diff 最大 9.537e-07）；

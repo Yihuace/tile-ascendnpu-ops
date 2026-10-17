@@ -90,7 +90,7 @@ def run_l0(module):
     )
     with open(log_path, "w") as handle:
         handle.write(tail)
-    ok = proc.returncode == 0 and "[L0] ALL PASS" in tail
+    ok = proc.returncode == 0 and ("[L0] ALL PASS" in tail or "All check passed!" in tail)
     if not ok:
         print(f"[L0] FAIL {module} rc={proc.returncode} (log: {log_path})")
         print("\n".join(tail.splitlines()[-15:]))
