@@ -93,3 +93,56 @@
 - 另：GLADecode（同族）能交付是因为**单步、纯 Vector、无 Cube 环路**；GDN prefill（chunked + Cube + 环路）不满足该条件。
 
 **最终状态**：`GatedDeltaNetPrefillFwdOp` **未交付**（18/19），阻碍为工具链对"Cube 环路携带数值流"的支持缺陷（CG-2026-0026，已升级说明）。可能的**长期**出路：工具链修复（L0C→L1 直连 / initC 累加），或纯 Vector 顺序实现（慢但无 Cube 环路，需另评估）。
+
+---
+
+## 12. CANN 9.0 复探（2026-10-17）——**修正版**
+
+### 12.0 先记一个致命的测量陷阱（本轮最大教训）
+
+`.bashrc` 导出 `TILELANG_ASCEND_MODE=Developer`，而本批探针用
+`os.environ.setdefault("TILELANG_ASCEND_MODE", "Expert")` —— **静默无效**，
+于是前 11 个探针全部跑在 **Developer** 模式。Developer 模式下出现的三类"限制"**全是假象**：
+
+- `'hivm.hir.store' op only support store ub to gm currently!`
+- `multiple entry functions detected (previous: 'main_mix_aiv', this: 'main_mix_aic')`
+- 以及由前者派生的"L0C 存过之后不能再用"
+
+**纪律（已落实到所有探针脚本）**：模式必须**强制赋值** `os.environ["TILELANG_ASCEND_MODE"]="Expert"`
+或在命令行 `export`；**不得用 `setdefault`**。
+
+### 12.1 Expert 模式下的真实结论（全部重测）
+
+| 项 | 结论 | 探针 |
+|---|---|---|
+| **MixCV（同 kernel 内 Cube+Vector）** | ✅ **可用**（单次交接、双循环多轮握手均通过） | `02` / `17` / `14` |
+| 交付内核佐证 | `Conv3dBiasFwdOp` 在 9.0 下 **17/17 通过**（今日实测） | `tests/ops/test_conv3d_bias.py` |
+| **L0C "存后再用"** | ✅ **无此限制**（A/B/C/D 与 E/F/G 全通过） | `08` / `09` |
+| **`initC=False` 跨 gemm 累加** | ✅ **可用**，`I+3P` 实测 **err = 0** | `10` K1 |
+| 回喂经 **out_idx** 张量 | ⚠️ 能编译但**数值错**（err 9.7 / 23.0 / 32.5，3 步链） | `10` K2 |
+| 回喂经 **独立 fp16 scratch**（fixpipe 转型） | ✅ **正确**，err **9.7e-3**（fp16 链式舍入量级） | `13` K5 |
+| **双循环 + 双向多轮握手** | ✅ **正确**，err **9.8e-4**（对比 fp16 通路参考） | `14` R0 |
+
+> `14` 对"全 fp32 参考"的误差是 3.36，但它**全部来自 fp16 中间量舍入**；
+> 用等价的 fp16 通路参考对齐后误差 9.8e-4，因此结构本身是正确的。
+
+### 12.2 对 GDN 设计的直接影响
+
+1. **结构可行**：单 Cube 段 + 单 Vector 段，**各自跑 chunk 循环**，用 `sync_block_set/wait`
+   双向多轮握手（`14` 已验证，含动态 chunk 索引与多轮）。
+2. **C2 Neumann 可行**：`initC=False` 做累加（K1）+ **独立 fp16 scratch 回喂**（K5）。
+3. **必须避免**：把中间积回喂到 `out_idx` 张量（K2 的数值错）。
+4. **精度**：fp16 回喂有舍入累积（3 步 9.7e-3）；Neumann 累加器应留 fp32，只在回喂时降到 fp16。
+
+### 12.3 探针清单（一律 Expert 强制模式）
+
+`07`（C1，9.0 版）｜`08`/`09`（L0C store/reuse 形式矩阵）｜`10`（累加 + out_idx 回喂）｜
+`11`（scratch 回喂，旧版）｜`12`（三段式 Cube→Vector→Cube，见 12.0 说明）｜
+`13`（**K5：fp16 scratch 回喂，可行方案**）｜`14`（**R0：双循环握手，结构验证**）｜
+`15`/`16`/`17`（握手形态与 conv3d 骨架对照）｜`_dump_ir.py`（保留临时 IR）
+
+### 12.4 CG-2026-0026 状态
+
+- **CANN 9.0 上不再阻塞**：结构、累加、回喂三条路径均有实测可用的实现。
+- 8.5.2 的阻塞结论**保留为历史记录**（§10/§11 不删），但在 9.0 上已降级为"工程量大"。
+- 剩余真实风险：**Neumann 链长的 fp16 舍入累积**（需在 L1 阶段用 fp32 累加器 + 分块求解控制）。

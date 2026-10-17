@@ -1,0 +1,23 @@
+{
+  "op_name": "GatedDeltaNetPrefillFwdOp",
+  "op_slug": "gdn_prefill",
+  "family": "linear_attention",
+  "gpu_repo_root": "/mnt/workspace/TileOPs-main",
+  "kernel_class_name": "GDNDensePrefillFwdKernel",
+  "op_class_name": "GDNFwdOp",
+  "test_path": "tests/ops/test_gdn.py",
+  "test_slug": "gdn",
+  "bench_path": "benchmarks/ops/bench_gdn.py",
+  "bench_slug": "gdn",
+  "wrapper_path": "tileops/kernels/linear_attention/gdn_prefill/gdn_prefill.py",
+  "extracted_file": "_gdn_prefill_kernels.py",
+  "extracted_functions": [
+    "prefill_chunk_local_cumsum_bthd_tl",
+    "prefill_blocksolve_A_bthd",
+    "get_warmup_chunks",
+    "correct_initial_states",
+    "fused_gdr_h",
+    "fused_gdr_fwd"
+  ],
+  "created_at": "2026-10-17T06:39:02Z"
+}

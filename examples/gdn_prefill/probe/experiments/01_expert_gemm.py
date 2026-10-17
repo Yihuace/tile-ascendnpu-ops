@@ -1,4 +1,4 @@
-import os; os.environ.setdefault("TILELANG_ASCEND_MODE","Expert")
+import os; os.environ["TILELANG_ASCEND_MODE"] = "Expert"  # MUST force: .bashrc exports Developer
 import tilelang, tilelang.language as T, torch, torch_npu
 def build(C=64,D=64,bt=False):
     @tilelang.jit(out_idx=[2], target="npuir")
