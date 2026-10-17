@@ -1,31 +1,37 @@
 # 当前工作状态（每轮更新）
 
 > 本窗口只做 **Stage 4 优化**，执行 `optimize` 工作流。
-> 更新：2026-10-17 17:48 (+08:00) · 会话：Stage4 优化：Add → Sub
+> 更新：2026-10-17 18:56 (+08:00) · 会话：Stage4 优化：Add → Sub → Isnan/Isinf/Isfinite
 
-## 已完成：AddFwdOp（`phase=DONE`）
+## 已完成
+
+### AddFwdOp（`phase=DONE`，commit `5a4367e`）
 
 | 项 | 内容 |
 |---|---|
-| 基线 kernel | `tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py` |
-| 调优产物 | `.../add_kernel/perf_opt/AddFwdOp.py`（`TUNED_BLOCK_SIZE=8192`） |
-| 报告 | `.../add_kernel/perf_opt/opt_log.md` + `.../add_kernel/Optimize.md` |
-| 达标线 | 访存受限 ≥ 70%（微缩 2–4µs 豁免） |
-| 门禁 | `statectl gate 4` → pass（0 failures / 0 warnings） |
+| 产物 | `.../elementwise/add/add_kernel/perf_opt/AddFwdOp.py`（`TUNED_BLOCK_SIZE=8192`） |
+| 报告 | `perf_opt/opt_log.md` + `add_kernel/Optimize.md` + `reports/optimize/AddFwdOp/OPTIMIZE_REPORT.md` |
+| 结果 | 11 tune 中 9 个 ≥70%；hidden bf16 −3.85%、llama fp32 −1.86%；`linear-bias fp16/bf16` 66.9/68.7%（噪声内，未稳健达标） |
+| 门禁 | gate 4 pass |
 
-**结论（如实）**
-- 11 个 tune case：**9 个 ≥70%**；明确收益 `hidden-state-prefill bf16 −3.85%`、`llama-7b-ffn fp32 −1.86%`；
-- `linear-bias fp16/bf16` 官方单次 final **66.85% / 68.67%（未达标）**，但差异 <±5% 噪声、
-  池化中位数反而快 2.4–2.9%（≈70.0/70.5%）→ 判定为「**噪声内，70% 未被稳健达成**」，不宣称达标；
-- 采纳结构：满块静态 extent + 尾块 epilogue + `T.Pipelined(num_stages=2)` + grid-stride 40 核；
-- 否决：block 12288/16384（负载不均 +5~7%）、UB 输出别名（trace 作用域编译失败）、
-  等元素连续分块（−3% vs grid-stride）。
+### SubFwdOp（`phase=DONE`）
 
-## 下一步：SubFwdOp
+| 项 | 内容 |
+|---|---|
+| 产物 | `.../elementwise/sub/sub_kernel/perf_opt/SubFwdOp.py`（`TUNED_BLOCK_SIZE=8192`，Add winner 同构移植） |
+| 报告 | `perf_opt/opt_log.md` + `sub_kernel/Optimize.md` + `reports/optimize/SubFwdOp/OPTIMIZE_REPORT.md` |
+| 结果 | 15 tune 中 **13 个 ≥70%**；整体 −0.51%；llama fp16 −3.06%、llama-bias fp16 −2.77%、linear fp32 −2.33%；`linear-bias fp16` 69.27%、`llama-hidden fp16` 68.38%（噪声内） |
+| 门禁 | gate 4 pass |
 
-- 目录：`examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/`
-- 现状：只有 Stage 3 产物（`sub_fwd_kernel.py` + DESIGN），**无 `perf_opt/`、无 `.stage_state.json`**
-- 入口：`statectl init --scenario optimize` → Stage 4（同 Add 的采数/门禁/报告流程）
+**关键方法论结论**：Sub 首轮 baseline 处于慢态，曾把 `llama-hidden` 收益伪造成 −13.5%；相邻交错复测只剩 −0.6%。**跨轮 baseline 比较不可作为收益证据**，已回写 pattern-library PL-1.22 边界。
+
+## 下一步：Isnan / Isinf / Isfinite（elementwise 1c）
+
+- 目录：`examples/TileOPs/tileops/kernels/elementwise/{isnan,isinf,isfinite}/`
+- 现状：已有 Stage 3 产物 + 迁移报告；无 `perf_opt/`
+- 入口：`statectl init --scenario optimize` → 同 Add/Sub 流程（baseline 与候选**同批相邻交错**）
+- 注意：`MIGRATION_INDEX` 显示这三个算子最大 shape SOL 仅 40–75%，属**算力/访存混合受限**，
+  判据按 AI 分类（≥70% 仅适用访存受限；算力受限线为 60%），不能一律套 70%。
 
 ## 已挂起
 
@@ -34,7 +40,6 @@
 
 ## 环境纪律
 
-- 所有上机命令经 `.agents/tools/npu_lock.sh`（互斥 + 空闲等待 + 超时回收）。
-- 非交互 shell 必须 `source perf_opt/env.sh`（tilelang dev root + CANN 9.0.0）。
+- 所有上机命令经 `.agents/tools/npu_lock.sh`；非交互 shell 必须 `source perf_opt/env.sh`。
 - **长测试运行期间禁止编辑被测源文件**（TileLang JIT 的 `inspect.getsource` 行号映射会失效，伪造编译失败）。
-- 原计划：Add ✅ → Sub → Isnan/Isinf/Isfinite → ClampScalar → Gelu/Hardswish → Norm → GLA → Conv。
+- 序：Add ✅ → Sub ✅ → Isnan/Isinf/Isfinite → ClampScalar → Gelu/Hardswish → Norm → GLA → Conv。

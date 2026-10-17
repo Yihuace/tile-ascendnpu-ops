@@ -1,0 +1,70 @@
+[npu_lock] start 2026-10-17T17:49:12+08:00: bash -c source ./env.sh; python3 -u run_experiments.py --experiments experiments_sub_r1.json --all-tune --round 1 --order workload --reps 1
+[runner] phase=candidate round=1 reps=1 workloads=15 experiments=2
+[runner] baseline: L0=PASS module=../sub_fwd_kernel.py bs=8192
+[runner] tuned-pipe2-bs8192: L0=PASS module=SubFwdOp.py bs=8192
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+  baseline-r1-baseline-bs8192-cnn-feat-broadcast-bfloat16-rep1: 37.531us ratio=76.898%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-cnn-feat-broadcast-bfloat16-rep1: 36.341us ratio=81.149%
+  baseline-r1-baseline-bs8192-cnn-feat-broadcast-float16-rep1: 37.711us ratio=76.457%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-cnn-feat-broadcast-float16-rep1: 36.081us ratio=81.374%
+  baseline-r1-baseline-bs8192-cnn-feat-broadcast-float32-rep1: 70.891us ratio=84.561%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-cnn-feat-broadcast-float32-rep1: 72.401us ratio=79.672%
+  baseline-r1-baseline-bs8192-hidden-state-prefill-bfloat16-rep1: 25.031us ratio=76.695%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-hidden-state-prefill-bfloat16-rep1: 26.481us ratio=73.519%
+  baseline-r1-baseline-bs8192-hidden-state-prefill-float32-rep1: 47.251us ratio=82.114%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-hidden-state-prefill-float32-rep1: 46.831us ratio=81.451%
+  baseline-r1-baseline-bs8192-linear-bias-bfloat16-rep1: 13.820us ratio=68.97%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-linear-bias-bfloat16-rep1: 13.550us ratio=70.804%
+  baseline-r1-baseline-bs8192-linear-bias-float16-rep1: 13.950us ratio=68.576%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-linear-bias-float16-rep1: 13.840us ratio=69.672%
+  baseline-r1-baseline-bs8192-linear-bias-float32-rep1: 24.850us ratio=76.756%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-linear-bias-float32-rep1: 24.420us ratio=78.969%
+  baseline-r1-baseline-bs8192-llama-7b-ffn-bfloat16-rep1: 35.041us ratio=73.487%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-llama-7b-ffn-bfloat16-rep1: 32.661us ratio=79.569%
+  baseline-r1-baseline-bs8192-llama-7b-ffn-bias-float16-rep1: 34.341us ratio=76.453%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-llama-7b-ffn-bias-float16-rep1: 32.681us ratio=79.816%
+  baseline-r1-baseline-bs8192-llama-7b-ffn-float16-rep1: 34.661us ratio=77.001%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-llama-7b-ffn-float16-rep1: 33.031us ratio=78.027%
+  baseline-r1-baseline-bs8192-llama-7b-ffn-float32-rep1: 62.591us ratio=82.157%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-llama-7b-ffn-float32-rep1: 62.581us ratio=82.0%
+  baseline-r1-baseline-bs8192-llama-7b-hidden-float16-rep1: 15.680us ratio=58.314%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-llama-7b-hidden-float16-rep1: 13.560us ratio=71.544%
+  baseline-r1-baseline-bs8192-phi-2-ffn-bias-float16-rep1: 32.741us ratio=73.383%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-phi-2-ffn-bias-float16-rep1: 30.051us ratio=79.997%
+  baseline-r1-baseline-bs8192-phi-2-ffn-float16-rep1: 32.411us ratio=74.155%
+  candidate-r1-tuned-pipe2-bs8192-bs8192-phi-2-ffn-float16-rep1: 29.841us ratio=81.41%
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+| baseline | 8192 | cnn-feat-broadcast-bfloat16 | 1 | 37.531 | 76.898 |
+| tuned-pipe2-bs8192 | 8192 | cnn-feat-broadcast-bfloat16 | 1 | 36.341 | 81.149 |
+| baseline | 8192 | cnn-feat-broadcast-float16 | 1 | 37.711 | 76.457 |
+| tuned-pipe2-bs8192 | 8192 | cnn-feat-broadcast-float16 | 1 | 36.081 | 81.374 |
+| baseline | 8192 | cnn-feat-broadcast-float32 | 1 | 70.891 | 84.561 |
+| tuned-pipe2-bs8192 | 8192 | cnn-feat-broadcast-float32 | 1 | 72.401 | 79.672 |
+| baseline | 8192 | hidden-state-prefill-bfloat16 | 1 | 25.031 | 76.695 |
+| tuned-pipe2-bs8192 | 8192 | hidden-state-prefill-bfloat16 | 1 | 26.481 | 73.519 |
+| baseline | 8192 | hidden-state-prefill-float32 | 1 | 47.251 | 82.114 |
+| tuned-pipe2-bs8192 | 8192 | hidden-state-prefill-float32 | 1 | 46.831 | 81.451 |
+| baseline | 8192 | linear-bias-bfloat16 | 1 | 13.820 | 68.97 |
+| tuned-pipe2-bs8192 | 8192 | linear-bias-bfloat16 | 1 | 13.550 | 70.804 |
+| baseline | 8192 | linear-bias-float16 | 1 | 13.950 | 68.576 |
+| tuned-pipe2-bs8192 | 8192 | linear-bias-float16 | 1 | 13.840 | 69.672 |
+| baseline | 8192 | linear-bias-float32 | 1 | 24.850 | 76.756 |
+| tuned-pipe2-bs8192 | 8192 | linear-bias-float32 | 1 | 24.420 | 78.969 |
+| baseline | 8192 | llama-7b-ffn-bfloat16 | 1 | 35.041 | 73.487 |
+| tuned-pipe2-bs8192 | 8192 | llama-7b-ffn-bfloat16 | 1 | 32.661 | 79.569 |
+| baseline | 8192 | llama-7b-ffn-bias-float16 | 1 | 34.341 | 76.453 |
+| tuned-pipe2-bs8192 | 8192 | llama-7b-ffn-bias-float16 | 1 | 32.681 | 79.816 |
+| baseline | 8192 | llama-7b-ffn-float16 | 1 | 34.661 | 77.001 |
+| tuned-pipe2-bs8192 | 8192 | llama-7b-ffn-float16 | 1 | 33.031 | 78.027 |
+| baseline | 8192 | llama-7b-ffn-float32 | 1 | 62.591 | 82.157 |
+| tuned-pipe2-bs8192 | 8192 | llama-7b-ffn-float32 | 1 | 62.581 | 82.0 |
+| baseline | 8192 | llama-7b-hidden-float16 | 1 | 15.680 | 58.314 |
+| tuned-pipe2-bs8192 | 8192 | llama-7b-hidden-float16 | 1 | 13.560 | 71.544 |
+| baseline | 8192 | phi-2-ffn-bias-float16 | 1 | 32.741 | 73.383 |
+| tuned-pipe2-bs8192 | 8192 | phi-2-ffn-bias-float16 | 1 | 30.051 | 79.997 |
+| baseline | 8192 | phi-2-ffn-float16 | 1 | 32.411 | 74.155 |
+| tuned-pipe2-bs8192 | 8192 | phi-2-ffn-float16 | 1 | 29.841 | 81.41 |
+[npu_lock] end   2026-10-17T18:10:37+08:00: rc=0
