@@ -31,8 +31,8 @@ apis: [T.copy, T.vcast, T.serial, T.alloc_shared]
 dtype: [fp16, bf16, fp32]
 device: 910B2C
 status: verified
-origin_task: ada_layer_norm-_ada_layer_norm_kernel-20260910T145715Z（2026-09-10 蒸馏溯源归位：原回写误标 145312Z，实际 optimize task_id 以 stage_state.json 为准）
-toolchain:tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）+ Ascend910B3 / 2026-10-16
+origin_task: ada_layer_norm-_ada_layer_norm_kernel-20260910T145715Z（2026-09-10 蒸馏溯源归位：原回写误标 145312Z，实际 optimize task_id 以 stage_state.json 为准）/ fused_add_layer_norm-FusedAddLayerNormFwdOp-20261017T193506Z（2026-10-18 第二算子复证 + block_m=1 边界）
+toolchain:tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0（bishengir 1.1.0 + hivmc 0.2.0）+ Ascend910B3 / 2026-10-16（910B3 重验）；第二算子复证 CANN 9.0.0 + Ascend910B3 / 2026-10-18
 repro: repro/PL-1.10-loads-first-decoupling.py
 ---
 
@@ -46,7 +46,9 @@ repro: repro/PL-1.10-loads-first-decoupling.py
 
 **注意**：bm 选择与该结构正交但交互——bm 上限受 multi-buffer 平台 footprint 约束（见上）；且最优 bm 非单调（ada dit 1024×1152：bm 曲线 {5:9.75, 6:9.66, 7:8.76, 8:9.55}µs，bm=7 局部最优；同 N 下 4096×1152 则 bm=8 胜——**按 shape 实测扫描，勿从单点泛化 UB 松弛律**）。
 
-- 溯源：ada_layer_norm Stage 4（2026-09-10），`examples/TileOPs/tileops/kernels/norm/ada_layer_norm/ada_layer_norm_kernel/perf_opt/opt_log.md`（Iteration 2 机制确认 + A/B 裁决记录）。
+- **第二算子复证 + block_m=1 边界**（FusedAddLayerNorm，add+layernorm 融合 4 输入 2 输出，2026-10-18，CANN 9.0.0 / Ascend910B3，`origin_task: fused_add_layer_norm-FusedAddLayerNormFwdOp-20261017T193506Z`）：loads-first 在 8b prefill（block_m≥2）上 fp16/bf16 各 **−18%**（叠加 weight/bias hoist 后 −23.2~−23.3%）。**block_m=1 边界**——70b prefill（N=8192, block_m=1）上双输入前置装载 **UB overflow（差 256 bits，需 1573120 / 有 1572864）**，根因是本工具链 MTE2 不支持跨 dtype DMA、`T.copy` 的 copy-cast（fp16→fp32 上转）内部仍物化 staging 缓冲（不省 staging）。绕法 = 编译期 `block_m` 分支：`block_m==1` 保留单 staging vcast 链、`block_m>=2` 走 loads-first，同一 `@T.prim_func` 家族内按 shape 分化，不污染 factory/wrapper。**copy-cast 精确性**：fp16→fp32 上转 copy-cast 精确（L0 max_diff 与原版 vcast 一致：fp16 9.766e-04 / bf16 3.125e-02 / fp32 1.907e-06），可替代 vcast 上转省掉 dtype staging（staging 省不掉的场景见 block_m=1 边界）。
+
+- 溯源：ada_layer_norm Stage 4（2026-09-10），`examples/TileOPs/tileops/kernels/norm/ada_layer_norm/ada_layer_norm_kernel/perf_opt/opt_log.md`（Iteration 2 机制确认 + A/B 裁决记录）；FusedAddLayerNorm 二次深挖（2026-10-18），`examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/opt_log.md`（§2.2/§2.3 round 5 + Skill Retrospective）。
 
 ---
 id: PL-1.14-mte3-strided-ws

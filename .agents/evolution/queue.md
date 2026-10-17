@@ -35,6 +35,41 @@ decided_by: evolver / human / -   # 裁决者
 
 ### Tier 1（P 类，2 次独立证据后合入）
 
+## VP-2026-0157
+- type: P
+- title: PL-1.13 subid 分片适用范围扩展到纯 Vector-only 逐通道归约族——判据「两 AIV 子块指标相同 + Mix Block Dim=2×Block Dim」在无 Cube/无 ws/无 flag 的 persistent 分核同样成立；迁移形态从 lt-tile 蛇形简化为「通道索引 + subid 线性偏移」
+- evidence:
+  - task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z（2026-10-18）：opt_log §3 Iteration 1（`_batch_norm_bwd_wide_kernel`/`_split_kernel` baseline：Mix Block Dim=80=2×40、vector0/vector1 `aiv_vec_ratio` 均 0.230873 / `aiv_vec_fops` 均 229376）+ §3 实验分支（`num_kernels=min(C, aicore_num)` + `c = i*(num_kernels*2) + cid*2 + subid`）+ Final Performance Test Data（全域 −28~−46%，几何 −40.3%）
+  - 同任务 Skill Flow Issues「Pattern 迁移」行 + Value Point Proposals 首行（迁移形态简化：无 ws 正交约束）
+- repro: repro/PL-1.13-aiv-dup-subid-split.py（知识域既有；本条为范围扩展 + 简化形态，delta 骨架同 PL-1.13）
+- toolchain_stamp: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/pattern-library/attention.md
+- delta: |
+    update 条目 PL-1.13-aiv-dup-subid-split（family 扩 [expert, mixcv, persistent, vector-only, norm]）：
+    追加「纯 Vector-only 逐通道归约族」适用 bullet：`T.Kernel(n)+T.Scope("Vector")` 的 persistent 逐通道归约分核（BN 反向、逐通道 softmax 归约等，无 Cube/无 ws/无 flag 握手）同样命中双 AIV 重复执行（Mix Block Dim=80=2×40，判据「两 AIV 子块指标相同」成立）；迁移形态从 lt-tile 蛇形简化为「通道索引 + subid 线性偏移」——`num_kernels = min(C, aicore_num)`（`aicore_num`=实查 20）+ `c = i*(num_kernels*2) + cid*2 + subid`，无需 ws 正交约束（无 ws）。实测 batch_norm_bwd：wide/split/general 三 kernel 全域 Task Duration −28~−46%（msprof op median-of-20）。机制归因同 PL-1.13（互链 BP_aiv_duplication_check）。
+- status: pending
+- confirmations: 1/2
+- created_by: task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z 2026-10-18
+- decided_by: -
+- decided_note: 纯 Vector-only 族首证（ssd/GQA 为 MixCV 族，不直接支持无 Cube 扩展）；另一纯 Vector 逐通道归约算子的独立第二证可确认。合入时 PL-1.13 family 扩展 + 简化形态 bullet。
+
+## VP-2026-0158
+- type: D
+- title: subid 分片使 msprof roofline ratio/AI 减半（counted_flops 去双计）——重复执行期 `performance=counted_flops/duration` 把两 AIV 重复 flops 各计一遍，分片后减半而 Task Duration 减半；跨 subid 前后对比只用 Task Duration，勿用 ratio
+- evidence:
+  - task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z（2026-10-18）：opt_log §3 B2 对比表注（resnet-stage1-fp16 baseline ratio 17.995% / AI 7.0 → candidate ratio 14.345% / AI 3.5，同 workload duration 21.08→13.26µs）+ OPTIMIZE_REPORT §msprof 对比表注（「ratio 下降是正确现象——roofline counted_flops 去重复执行双计，不用于跨 subid 前后对比」）
+- repro: repro-missing（测量类结论——msprof roofline `visualize_data.bin` counted_flops 观测，非代码模式；知识域最小测量脚本待同族任务回填）
+- toolchain_stamp: tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/pattern-library/constants.md
+- delta: |
+    add 条目 CONST-roofline-subid-double-count（roofline 口径注）：
+    msprof roofline `performance = counted_flops / Task Duration` 的 `counted_flops` 在「Vector 程序双 AIV 重复执行」期把两 AIV 的重复 FLOPs 各计一遍——subid 分片后 counted_flops 减半，`ratio`/`AI` 随之减半而 Task Duration 减半（batch_norm_bwd resnet-stage1-fp16 实证：ratio 17.995%→14.345%、AI 7.0→3.5、duration 21.08→13.26µs）。**跨 subid 分片前后对比只用 Task Duration**（ratio/AI 在重复执行下被高估，不可作裁决口径）。与 BP_aiv_duplication_check / PL-1.13 互链（分片动作触发本口径注意）。
+- status: pending
+- confirmations: 1/2
+- created_by: task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z 2026-10-18
+- decided_by: -
+- decided_note: repro-missing（测量类）；同族 subid 分片任务的独立第二证可确认。
+
 ## VP-2026-0148
 - type: P
 - title: dtype 分化多项式阶数——窄 dtype（fp16/bf16）输出容差远低于 fp32，用低阶 minimax 替代高阶（erf deg-20→deg-10，Horner 40→20 op），compute-bound 逐元素算子 prefill −36.8%（对 Stage 3 基线 −43.6%）
@@ -89,28 +124,6 @@ decided_by: evolver / human / -   # 裁决者
 - created_by: task gelu_and_mul-GeluAndMulFwdOp-20261017T173224Z 2026-10-18
 - decided_by: -
 - decided_note: 与 VP-2026-0148（dtype 分化阶数）构成 erf/GELU 多项式设计的一正一反约束，合入时互链。
-
-## VP-2026-0155
-- type: P
-- title: 归因判据——roofline advice 与 pipe 级 ratio 矛盾时以 pipe 占比为准（`latency bound:pipeline caused` 会把 MTE2 混合 R/W 带宽地板误读为 pipeline 延迟）
-- evidence:
-  - task isnan-IsnanFwdOp-20261017T114928Z（2026-10-18 二次深挖 Round 6）：perf_opt/opt_log.md §6.1/§6.4（PipeUtilization 对账表：fp16/fp32 `aiv_mte2_ratio` 0.81–0.90 ≫ `aiv_vec_ratio` 0.25–0.39；4→3-pass 只降 fp16 vec_time 12.95→10.06µs〔−22%〕但 Task Duration 仅 −3.4%，mte2_time 21.2µs 不变）+ Skill Retrospective R/P 行
-  - 交叉验证：40→20 核 SOL 64%→39%（搬运并行减半 ≈ 有效带宽减半，与 MTE2-bound 归因一致）
-- repro: repro-missing（测量类结论——msprof PipeUtilization `aiv_mte2_ratio`/`aiv_vec_ratio` 观测 vs roofline advice 对照，非代码模式；知识域最小测量脚本待同族任务回填）
-- toolchain_stamp: tilelang 0.1.2 dev-root (AscendNPU-IR 31f6903) + CANN 9.0.0 (bishengir 1.1.0) + Ascend910B3 / 2026-10-18
-- target_doc: .agents/skills/tilelang-op-optimize/references/bottleneck-patterns.md
-- delta: |
-    add 新 BP 条目 BP_roofline_advice_vs_pipe_ratio（目录行与正文追加于 BP_ub_traffic_floor 之后）：
-    触发信号：roofline `advice = latency bound:pipeline caused`（暗示 pipeline 延迟可优化），但 PipeUtilization 实测 `aiv_mte2_ratio`（0.81–0.90）≫ `aiv_vec_ratio`（0.25–0.39）——搬运近饱和、向量单位大半空闲。
-    判据：**pipe 级 ratio 优先于 roofline advice**——MTE2 混合 R/W 带宽地板会被 roofline 误读为「pipeline 延迟」；带宽地板 vs pipeline 延迟二选一时以 `aiv_mte2_ratio`/`aiv_vec_ratio` 实测占比为准。
-    反证/交叉验证（isnan 2026-10-18）：4→3-pass 使 fp16 vec_time −22% 但 Task Duration 仅 −3.4%（mte2_time 不变）——向量链已隐藏于搬运窗口；40→20 核 SOL 64%→39%（搬运并行减半 ≈ 有效带宽减半）。
-    推荐动作：诊断时先读 PipeUtilization 的 pipe 占比（`aiv_mte2_ratio`/`aiv_vec_ratio`）再采信 roofline advice；mte2_ratio ≫ vec_ratio 时立项方向 = 搬运/带宽（对照 BP_memory_bandwidth_or_mte），不立项 pipeline 深度（BP_pipeline_overlap）。
-    验证指标：Task Duration 下限 ≈ mte2_time + kernel 启动（非向量吞吐下限）；vec 削减实验 Task Duration 不动即归因成立。
-- status: pending
-- confirmations: 1/2
-- created_by: task isnan-IsnanFwdOp-20261017T114928Z（2026-10-18 二次深挖） 2026-10-18
-- decided_by: -
-- decided_note: 单任务首证；同族/跨族 MTE2-bound 逐元素算子的独立第二证可确认；与 VP-2026-0149（GM SOL 判据失配）同「判据失配」族，合入时互链。
 
 ## VP-2026-0003
 
@@ -613,22 +626,6 @@ decided_by: evolver / human / -   # 裁决者
 - decided_by: -
 - decided_note: -
 
-## VP-2026-0088
-- type: P
-- title: BP_aiv_duplication_check——MixCV（Mix Block Dim = 2× Block Dim）画像两 AIV 子块指标相同 ⟹ Vector 程序重复执行 ⟹ subid 分片为第一候选（本轮 −34% 单点）
-- evidence:
-  - task ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260917T035420Z：opt_log §9 流程观察 1（发现花了 4 轮——前 3 轮把 vector0/vector1 相同指标读作"分摊或镜像"，R4 才用「若分摊则 ratio 应减半」反证确认）+ R4/R5（v8_aivsplit w2 −34.4%；数据侧已回写 attention.md PL-1.13）
-- repro: repro/PL-1.13-aiv-dup-subid-split.py（知识域，2026-09-17 转正——分片骨架 + 机制归因 + 判据）
-- toolchain_stamp: tilelang 0.1.2+1990aa9fe4 / CANN 8.5.0 / Ascend910B2C / 2026-09-17
-- target_doc: .agents/skills/tilelang-op-optimize/references/bottleneck-patterns.md
-- delta: |
-    add 新 BP 条目 BP_aiv_duplication_check（目录行置于 BP_compute_granularity 之后）：触发信号：MixCV kernel（Mix Block Dim = 2× Block Dim）的 msprof PipeUtilization 中两 AIV 子块 vec/mte ratio **完全相同**而非各半（相同时每 AIV 承担 100% 向量工作——AIV 产能 2× 浪费）。反证：ratio 各半 ⟹ 已分摊（GQA v11 类先例已分片）。动作：subid 边界表达式分片（蛇形均衡式见 PL-1.13；禁 if 守卫——TRAP-tvm-parser-rules）为第一候选；分片维度须与 ws 写区域正交。验证：per-AIV vec/mte2/mte3 时间减半 + Task Duration 下降（ssd 实测 −28~−36%）。机制与完整形态：attention.md PL-1.13（互链，不复制）。
-- status: pending
-- confirmations: 1/2
-- created_by: task ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260917T035420Z 2026-09-17
-- decided_by: -
-- decided_note: -
-
 ## VP-2026-0095
 - type: D
 - title: L1→L1（cbuf→cbuf）`T.copy` 硬编译失败（Expert 最小探针实证）——L1 域内重排/组装须单 buffer GM→L1 列偏移直载（dst 侧尾块裁剪联防）
@@ -1026,6 +1023,28 @@ decided_by: evolver / human / -   # 裁决者
 - decided_note: -
 
 ### Tier 2（R 类，结构化 diff 提案，待人工批准后 mode=apply 执行）
+
+## VP-2026-0159
+- type: R
+- title: 实验批处理 runner 的 `opt_id` 必须含 kernel 前缀（`{opt}_{kernel}`）防多 kernel 冲突——多 kernel 算子（如 BatchNormBwd 的 wide/split/general 三工厂）共用同一 opt_id 时 `modules[opt_id]` 被后写入覆盖（AttributeError 或 final 候选 id 冲突）
+- evidence:
+  - task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z（2026-10-18）：opt_log §7 Skill Flow Issues 首行（run_experiments.py 两次报 `no attribute _batch_norm_bwd_wide_kernel`；perf_records.jsonl 出现 large-spatial 两条 phase=final——均因 wide/split 共用 "baseline"/"final_subidsplit" opt_id 被覆盖）
+  - 同任务 Value Point Proposals 第三行（suggested_doc_change：T-4 模板注 opt_id 须含 kernel 前缀）
+- repro: none（runner 模板约定；验证 = 多 kernel 算子同 opt_id 复现 AttributeError / 重复 final 行）
+- toolchain_stamp: run_experiments_template.py（本仓模板，无版本戳）/ 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/autotune.md
+- delta: |
+    动作: update（T-4 实验批处理 runner 节第 1 项追加 opt_id 约定）
+    目标: .agents/skills/tilelang-op-optimize/references/autotune.md
+    定位锚: "适配 `kernel_id`、直接运行 kernel 的命令与 EXPERIMENTS；模板只读取 inventory 中该 kernel 的 tune workload"
+    new 文本: |
+      适配 `kernel_id`、直接运行 kernel 的命令与 EXPERIMENTS；模板只读取 inventory 中该 kernel 的 tune workload。**多 kernel 算子（单 Op 多工厂，如 wide/split/general）的 `opt_id` 必须含 kernel 前缀（`{opt}_{kernel}`）**——同 opt_id 会被 `modules[opt_id]` 后写入覆盖，导致跨 kernel 测错（AttributeError）或 final 候选 id 冲突（违反「同一 kernel 全部 final 用同一 candidate_id」）
+    动机: batch_norm_bwd 三 kernel 共用 "baseline"/"final_subidsplit" opt_id，首次 final 跑产生 AttributeError + 1 条重复 final 行（已按「恰一条 phase=final」删除）；T-4 模板未约定多 kernel 的 opt_id 前缀，规则化使 optimizer 首轮即写对。
+- status: pending
+- confirmations: -/-
+- created_by: task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z 2026-10-18
+- decided_by: -
+- decided_note: Tier 2 人工门保留；与 VP-2026-0156（final 来自多 candidate_id → S4-PERF-RECORDS-RECON）同源——opt_id 冲突是重复 final 行的直接诱因之一，审批时可合并评估。
 
 ## VP-2026-0151
 - type: R
@@ -3502,6 +3521,48 @@ decided_by: evolver / human / -   # 裁决者
 - decided_note: -
 
 ## Decided（merged / rejected / expired / conflict 归档）
+
+## VP-2026-0155
+- type: P
+- title: 归因判据——roofline advice 与 pipe 级 ratio 矛盾时以 pipe 占比为准（`latency bound:pipeline caused` 会把 MTE2 混合 R/W 带宽地板误读为 pipeline 延迟）
+- evidence:
+  - task isnan-IsnanFwdOp-20261017T114928Z（2026-10-18 二次深挖 Round 6）：perf_opt/opt_log.md §6.1/§6.4（PipeUtilization 对账表：fp16/fp32 `aiv_mte2_ratio` 0.81–0.90 ≫ `aiv_vec_ratio` 0.25–0.39；4→3-pass 只降 fp16 vec_time 12.95→10.06µs〔−22%〕但 Task Duration 仅 −3.4%，mte2_time 21.2µs 不变）+ Skill Retrospective R/P 行
+  - 交叉验证：40→20 核 SOL 64%→39%（搬运并行减半 ≈ 有效带宽减半，与 MTE2-bound 归因一致）
+  - task fused_add_layer_norm-FusedAddLayerNormFwdOp-20261017T193506Z（2026-10-18，第二证——指令数启发式反例）：opt_log §2.1/§2.2（`aiv_vec` 0.605 / `aiv_mte2` 0.296 / `aiv_scalar_wait` 64.5µs；单遍方差 `E[x²]−E[x]²` 实验 tie——瓶颈不在 reduce 链而在 MTE2/VEC 装载串行，loads-first −18% 命中）+ Skill Retrospective R 行（「不能凭 15 pass + 2 reduce 直接归因到 reduce」）
+- repro: repro-missing（测量类结论——msprof PipeUtilization `aiv_mte2_ratio`/`aiv_vec_ratio` 观测 vs roofline advice / 指令数启发式对照，非代码模式；知识域最小测量脚本待同族任务回填）
+- toolchain_stamp: tilelang 0.1.2 dev-root (AscendNPU-IR 31f6903) + CANN 9.0.0 (bishengir 1.1.0) + Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/bottleneck-patterns.md
+- delta: |
+    add 新 BP 条目 BP_roofline_advice_vs_pipe_ratio（目录行与正文追加于 BP_ub_traffic_floor 之后）：
+    触发信号：roofline `advice = latency bound:pipeline caused`（暗示 pipeline 延迟可优化），但 PipeUtilization 实测 `aiv_mte2_ratio`（0.81–0.90）≫ `aiv_vec_ratio`（0.25–0.39）——搬运近饱和、向量单位大半空闲。
+    判据：**pipe 级 ratio 优先于 roofline advice**——MTE2 混合 R/W 带宽地板会被 roofline 误读为「pipeline 延迟」；带宽地板 vs pipeline 延迟二选一时以 `aiv_mte2_ratio`/`aiv_vec_ratio` 实测占比为准。
+    反证/交叉验证（isnan 2026-10-18）：4→3-pass 使 fp16 vec_time −22% 但 Task Duration 仅 −3.4%（mte2_time 不变）——向量链已隐藏于搬运窗口；40→20 核 SOL 64%→39%（搬运并行减半 ≈ 有效带宽减半）。
+    推荐动作：诊断时先读 PipeUtilization 的 pipe 占比（`aiv_mte2_ratio`/`aiv_vec_ratio`）再采信 roofline advice；mte2_ratio ≫ vec_ratio 时立项方向 = 搬运/带宽（对照 BP_memory_bandwidth_or_mte），不立项 pipeline 深度（BP_pipeline_overlap）。
+    验证指标：Task Duration 下限 ≈ mte2_time + kernel 启动（非向量吞吐下限）；vec 削减实验 Task Duration 不动即归因成立。
+- status: merged
+- confirmations: 2/2
+- created_by: task isnan-IsnanFwdOp-20261017T114928Z（2026-10-18 二次深挖） 2026-10-18
+- confirmed_by: task fused_add_layer_norm-FusedAddLayerNormFwdOp-20261017T193506Z 2026-10-18
+- decided_by: evolver
+- decided_note: 第二证（fused_add_layer_norm 指令数启发式反例：凭「15 pass + 2 reduce」误归因 reduce、实际是装载串行）与首证（isnan roofline advice 误读带宽地板）同「归因须看 pipe 占比」族，2/2 合入 bottleneck-patterns.md `BP_roofline_advice_vs_pipe_ratio`（触发信号扩至指令数启发式）。
+
+## VP-2026-0088
+- type: P
+- title: BP_aiv_duplication_check——MixCV（Mix Block Dim = 2× Block Dim）画像两 AIV 子块指标相同 ⟹ Vector 程序重复执行 ⟹ subid 分片为第一候选（本轮 −34% 单点）
+- evidence:
+  - task ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260917T035420Z：opt_log §9 流程观察 1（发现花了 4 轮——前 3 轮把 vector0/vector1 相同指标读作"分摊或镜像"，R4 才用「若分摊则 ratio 应减半」反证确认）+ R4/R5（v8_aivsplit w2 −34.4%；数据侧已回写 attention.md PL-1.13）
+  - task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z（2026-10-18，纯 Vector-only 逐通道归约族第二证）：opt_log §3 Iteration 1（baseline vector0/vector1 `aiv_vec_ratio` 均 0.230873、fops 均 229376、Mix Block Dim=80=2×40——判据「两 AIV 子块指标相同」在无 Cube/无 ws/无 flag 的纯 Vector 分核同样成立）+ Final Performance Test Data（subid 通道分片全域 −28~−46%）；迁移形态从 lt-tile 蛇形简化为「通道索引 + subid 线性偏移」（`num_kernels=min(C,aicore_num)` + `c = i*(num_kernels*2) + cid*2 + subid`）
+- repro: repro/PL-1.13-aiv-dup-subid-split.py（知识域，2026-09-17 转正——分片骨架 + 机制归因 + 判据）
+- toolchain_stamp: tilelang 0.1.2+1990aa9fe4 / CANN 8.5.0 / Ascend910B2C / 2026-09-17（首证）；tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3 / 2026-10-18（第二证）
+- target_doc: .agents/skills/tilelang-op-optimize/references/bottleneck-patterns.md
+- delta: |
+    add 新 BP 条目 BP_aiv_duplication_check（目录行置于 BP_compute_granularity 之后）：触发信号：MixCV kernel（Mix Block Dim = 2× Block Dim）的 msprof PipeUtilization 中两 AIV 子块 vec/mte ratio **完全相同**而非各半（相同时每 AIV 承担 100% 向量工作——AIV 产能 2× 浪费）。反证：ratio 各半 ⟹ 已分摊（GQA v11 类先例已分片）。动作：subid 边界表达式分片（蛇形均衡式见 PL-1.13；禁 if 守卫——TRAP-tvm-parser-rules）为第一候选；分片维度须与 ws 写区域正交。验证：per-AIV vec/mte2/mte3 时间减半 + Task Duration 下降（ssd 实测 −28~−36%）。机制与完整形态：attention.md PL-1.13（互链，不复制）。
+- status: merged
+- confirmations: 2/2
+- created_by: task ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260917T035420Z 2026-09-17
+- confirmed_by: task batch_norm_bwd-BatchNormBwdOp-20261017T204821Z 2026-10-18
+- decided_by: evolver
+- decided_note: 第二证（batch_norm_bwd，纯 Vector-only 逐通道归约族）使判据「两 AIV 子块指标相同」跨 MixCV→Vector-only 成立，2/2 合入 bottleneck-patterns.md `BP_aiv_duplication_check`（触发信号扩至纯 Vector-only、推荐动作补「通道索引 + subid 线性偏移」简化形态 + subid 分片后 ratio 减半口径注意）。PL-1.13 数据侧范围扩展另立 VP-2026-0157（attention.md）。
 
 ## VP-2026-0002
 - type: P

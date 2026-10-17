@@ -15,9 +15,11 @@
 - `BP_memory_bandwidth_or_mte`：GM/MTE 搬运效率不足。
 - `BP_ub_pressure`：UB/L0 资源压力限制性能。
 - `BP_ub_traffic_floor`：UB 流量或 vector pass 数成为地板。
+- `BP_roofline_advice_vs_pipe_ratio`：瓶颈归因判据——pipe 级 ratio 优先于表面信号（roofline advice / 指令数启发式）。
 - `BP_pipeline_overlap`：搬运和计算未重叠。
 - `BP_block_balance_or_tail`：block 负载不均或 tail 开销。
 - `BP_compute_granularity`：计算粒度或硬件管线使用不足。
+- `BP_aiv_duplication_check`：两 AIV 子块指标相同 ⟹ Vector 程序重复执行 ⟹ subid 分片为第一候选。
 - `BP_redundant_work_or_roundtrip`：重复计算或多余 GM 往返。
 - `BP_parameter_uncertain`：结构稳定但参数不确定。
 - `BP_run_state_bimodality`：同配置跨 run 快/慢双态，小差异裁决需交错多 run 协议。
@@ -247,6 +249,31 @@
 - `Task Duration` 改善。
 - 精度不退化，当前 kernel 的全部非 smoke benchmark workload 无可信性能回退，smoke 精度通过。
 
+## BP_roofline_advice_vs_pipe_ratio：瓶颈归因判据——pipe 级 ratio 优先于表面信号
+
+> 溯源：isnan-IsnanFwdOp-20261017T114928Z（2026-10-18 二次深挖，首证）+ fused_add_layer_norm-FusedAddLayerNormFwdOp-20261017T193506Z（2026-10-18，第二证）。tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3。
+
+触发信号：
+
+- roofline `advice = latency bound:pipeline caused`（暗示 pipeline 延迟可优化），但 PipeUtilization 实测 `aiv_mte2_ratio`（0.81–0.90）≫ `aiv_vec_ratio`（0.25–0.39）——搬运近饱和、向量单位大半空闲。
+- 凭指令数直接归因到某条链：如「15 条 pass + 2 次 reduce」→ 归因到 reduce 链，但实测 pipe 占比显示瓶颈在装载（`aiv_vec` 0.605 / `aiv_mte2` 0.296 / `aiv_scalar_wait` 64.5µs）——指令数启发式会误判瓶颈链。
+
+判据：**pipe 级 ratio 优先于表面信号**——MTE2 混合 R/W 带宽地板会被 roofline 误读为「pipeline 延迟」；reduce 链会被指令数启发式误判为瓶颈。二选一时以 `aiv_mte2_ratio` / `aiv_vec_ratio` / `aiv_scalar_wait` 实测占比为准。
+
+常见反证/不确定点：
+
+- isnan 2026-10-18：4→3-pass 使 fp16 vec_time −22% 但 Task Duration 仅 −3.4%（mte2_time 不变）——向量链已隐藏于搬运窗口；40→20 核 SOL 64%→39%（搬运并行减半 ≈ 有效带宽减半）。
+- fused_add_layer_norm 2026-10-18：单遍方差（reduce→center→square→reduce 改 `E[x²]−E[x]²`）实测 tie——reduce 链非瓶颈，瓶颈是 MTE2/VEC 装载串行（loads-first −18% 命中，见 PL-1.10）。
+
+推荐动作：
+
+- 诊断时先读 PipeUtilization 的 pipe 占比（`aiv_mte2_ratio` / `aiv_vec_ratio` / `aiv_scalar`）再采信 roofline advice 或指令数启发式。
+- `mte2_ratio ≫ vec_ratio` 时立项方向 = 搬运/带宽（对照 `BP_memory_bandwidth_or_mte`）；reduce 链未被 pipe 占比证实时，先用变体对照消歧（对照 `BP_mixcv_cumulative_order`），不立项 reduce 削减。
+
+验证指标：
+
+- Task Duration 下限 ≈ mte2_time + kernel 启动（非向量吞吐下限）；vec 削减实验 Task Duration 不动即归因成立（瓶颈不在该链）。
+
 ## BP_pipeline_overlap：搬运和计算未重叠
 
 触发信号：
@@ -331,6 +358,29 @@
 - Cube/Vector 利用率改善。
 - `Task Duration` 降低。
 - GM/MTE 或 UB 压力没有明显恶化。
+
+## BP_aiv_duplication_check：两 AIV 子块指标相同 ⟹ Vector 程序重复执行 ⟹ subid 分片为第一候选
+
+> 溯源：ssd_chunk_scan-_ssd_chunk_scan_fwd_kernel-20260917T035420Z（MixCV 首证，−28~−36%）+ batch_norm_bwd-BatchNormBwdOp-20261017T204821Z（2026-10-18，纯 Vector-only 逐通道归约族第二证，−28~−46%）。tilelang 0.1.2 dev-root（AscendNPU-IR 31f6903）+ CANN 9.0.0 + Ascend910B3。
+
+触发信号：
+
+- `T.Kernel(n, is_npu=True)` + `T.Scope("Vector")` 的程序（**含纯 Vector-only、无 Cube/无 ws/无 flag 的逐通道归约 persistent 分核，不止 MixCV**）默认在每 block 的**两个 AIV 上重复执行**（Mix Block Dim = 2× Block Dim）。profile 判据：PipeUtilization 中 vector0/vector1 子块的 `aiv_vec_ratio` / `aiv_vec_fops` **完全相同**而非各半（ssd w2 两 AIV vec_ratio 均 0.66；batch_norm_bwd baseline vector0/vector1 `aiv_vec_ratio` 均 0.230873、fops 均 229376）。
+- 设计期 `num_kernels = min(C, aicore_num×2)`（「AI cores ×2」）假设会引入 2× 产能浪费而非 2× 吞吐——batch_norm_bwd 实证：40 block × 双 AIV 冗余 = 2× 浪费（非 40 个独立向量核）。
+
+常见反证/不确定点：
+
+- ratio **各半** ⟹ 已分摊（GQA v11 类先例已分片）——判「重复执行」前先核对是否各半而非相同。
+
+推荐动作：
+
+- **subid 分片为第一候选**：MixCV 用蛇形均衡式（`lt = i + subid + (i%2)*(L_tiles − 2i − 2*subid)`，分片维度与 ws 写区域正交）；纯 Vector 逐通道归约用**更简形态「通道索引 + subid 线性偏移」**——`num_kernels = min(C, aicore_num)` + `c = i*(num_kernels*2) + cid*2 + subid`（无 ws，无需正交约束）。禁用 if 守卫（TRAP-tvm-parser-rules）。
+- **口径注意**：subid 分片后 msprof roofline ratio / AI 会减半（counted_flops 去双计），跨 subid 前后对比只用 Task Duration（见 constants.md roofline 口径注）。
+
+验证指标：
+
+- per-AIV vec/mte2/mte3 时间减半 + Task Duration 下降（ssd −28~−36%；batch_norm_bwd −28~−46%）。
+- 机制与完整形态：attention.md PL-1.13（互链，不复制）。
 
 ## BP_redundant_work_or_roundtrip：重复计算或多余 GM 往返
 
