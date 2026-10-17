@@ -1,0 +1,52 @@
+[npu_lock] start 2026-10-17T17:05:27+08:00: bash -c source ./env.sh; python3 -u run_experiments.py --experiments experiments_r3.json --workloads linear-bias --dtypes float16,bfloat16 --reps 2 --round 3 --order workload
+[runner] phase=candidate round=3 reps=2 workloads=2 experiments=5
+[runner] base-bs8192: L0=PASS module=../add_fwd_kernel.py bs=8192
+[runner] a4-pipe2-bs8192: L0=PASS module=candidates/add_fwd_kernel_pipe2.py bs=8192
+[L0] FAIL /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/candidates/add_fwd_kernel_pipe2_alias.py rc=1 (log: /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/l0_add_fwd_kernel_pipe2_alias.log)
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/candidates/add_fwd_kernel_pipe2_alias.py:203:29
+     |  
+ 203 |                              T.copy(a32, y_ub)
+     |                              ^^^^^^^^^^^^^^^^^
+error: Undefined variable: y_ub
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/candidates/add_fwd_kernel_pipe2_alias.py:201:29
+     |  
+ 201 |                              T.vcast(a32, y_ub, round_mode="rint")
+     |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/candidates/add_fwd_kernel_pipe2_alias.py", line 618, in <module>
+    main()
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/candidates/add_fwd_kernel_pipe2_alias.py", line 611, in main
+    raise AssertionError(
+AssertionError: 15 case(s) failed: L0-1/float32; L0-1/float16; L0-1/bfloat16; L0-2/float32/alpha=2.0; L0-2/float32/alpha=-1.5; L0-2/float16/alpha=2.0; L0-2/float16/alpha=-1.5; L0-2/bfloat16/alpha=2.0; L0-2/bfloat16/alpha=-1.5; L0-3/float16/N=10000; L0-3/float16/N=4097; L0-3/float32/N=10000; L0-3/float32/N=4097; L0-4/fp32/[64,128]x[1,128]; L0-4/fp16/[2,512,768]x[1,1,768]
+[runner] a4p-alias-bs8192: L0=FAIL module=candidates/add_fwd_kernel_pipe2_alias.py bs=8192
+[runner] a4-pipe2-bs12288: L0=PASS module=candidates/add_fwd_kernel_pipe2.py bs=12288
+[runner] a4p-alias-bs16384: L0=FAIL module=candidates/add_fwd_kernel_pipe2_alias.py bs=16384
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+  candidate-r3-base-bs8192-bs8192-linear-bias-bfloat16-rep1: 13.650us ratio=68.576%
+  candidate-r3-a4-pipe2-bs8192-bs8192-linear-bias-bfloat16-rep1: 14.100us ratio=68.478%
+[measure] FAIL candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-bfloat16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-bfloat16-rep1.log
+  candidate-r3-base-bs8192-bs8192-linear-bias-float16-rep1: 15.060us ratio=62.091%
+  candidate-r3-a4-pipe2-bs8192-bs8192-linear-bias-float16-rep1: 14.460us ratio=65.306%
+[measure] FAIL candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-float16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-float16-rep1.log
+  candidate-r3-base-bs8192-bs8192-linear-bias-bfloat16-rep2: 14.210us ratio=68.185%
+  candidate-r3-a4-pipe2-bs8192-bs8192-linear-bias-bfloat16-rep2: 14.740us ratio=65.395%
+[measure] FAIL candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-bfloat16-rep2: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-bfloat16-rep2.log
+  candidate-r3-base-bs8192-bs8192-linear-bias-float16-rep2: 14.000us ratio=67.896%
+  candidate-r3-a4-pipe2-bs8192-bs8192-linear-bias-float16-rep2: 13.710us ratio=69.875%
+[measure] FAIL candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-float16-rep2: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r3-a4-pipe2-bs12288-bs12288-linear-bias-float16-rep2.log
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+| base-bs8192 | 8192 | linear-bias-bfloat16 | 1 | 13.650 | 68.576 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-bfloat16 | 1 | 14.100 | 68.478 |
+| base-bs8192 | 8192 | linear-bias-float16 | 1 | 15.060 | 62.091 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-float16 | 1 | 14.460 | 65.306 |
+| base-bs8192 | 8192 | linear-bias-bfloat16 | 2 | 14.210 | 68.185 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-bfloat16 | 2 | 14.740 | 65.395 |
+| base-bs8192 | 8192 | linear-bias-float16 | 2 | 14.000 | 67.896 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-float16 | 2 | 13.710 | 69.875 |
+[npu_lock] WARNING: reaping leftover processes after command:
+  pid=616905 /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmpkhg_2y1v/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --en
+[npu_lock] leftovers reaped
+[npu_lock] end   2026-10-17T17:12:26+08:00: rc=0

@@ -1,0 +1,141 @@
+# msprof op --kernel-name=main --launch-count=20 --warm-up=5 --aic-metrics=Default,Roofline --output=/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/profiles/candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-bfloat16-rep2 /opt/buildtools/Python-3.11.4/bin/python3 /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/bench_kernel.py --module /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/candidates/add_fwd_kernel_balanced.py --workload linear-bias --dtype bfloat16 --block-size 16384 --launches 25
+2026-10-17 17:01:02 [INFO]  Op profiling analysis start.
+2026-10-17 17:01:02 [INFO]  Running device task: DeviceProf
+2026-10-17 17:01:11  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-17 17:01:11  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-17 17:01:11  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+AscendNPU IR:
+
+module attributes {hivm.module_core_type = #hivm.module_core_type<AIV>, memref.memref_as_ptr} {
+  func.func @main(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8> {hacc.arg_type = #hacc.arg_type<sync_block_lock>}, %arg2: memref<?xi8> {hacc.arg_type = #hacc.arg_type<workspace>}, %arg3: memref<?xbf16>, %arg4: memref<?xbf16>, %arg5: memref<?xbf16>, %arg6: i32, %arg7: i32, %arg8: i32, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, mix_mode = "aiv"} {
+    %c1 = arith.constant 1 : index
+    %c4096000_i32 = arith.constant 4096000 : i32
+    %c6560_i32 = arith.constant 6560 : i32
+    %c98304_i32 = arith.constant 98304 : i32
+    %c16384_i32 = arith.constant 16384 : i32
+    %c104864_i32 = arith.constant 104864 : i32
+    %c6_i32 = arith.constant 6 : i32
+    %c0_i32 = arith.constant 0 : i32
+    %c1_i32 = arith.constant 1 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [4194304], strides: [%c1] : memref<?xbf16> to memref<4194304xbf16, strided<[1]>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg5 to offset: [0], sizes: [4194304], strides: [%c1] : memref<?xbf16> to memref<4194304xbf16, strided<[1]>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [4194304], strides: [%c1] : memref<?xbf16> to memref<4194304xbf16, strided<[1]>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    %2 = tensor.empty() : tensor<16384xbf16>
+    %3 = tensor.empty() : tensor<16384xbf16>
+    %4 = tensor.empty() : tensor<16384xf32>
+    %5 = tensor.empty() : tensor<16384xf32>
+    %6 = tensor.empty() : tensor<16384xbf16>
+    %7:4 = scf.for %arg13 = %c0_i32 to %c6_i32 step %c1_i32 iter_args(%arg14 = %2, %arg15 = %3, %arg16 = %4, %arg17 = %5) -> (tensor<16384xbf16>, tensor<16384xbf16>, tensor<16384xf32>, tensor<16384xf32>)  : i32 {
+      %20 = arith.muli %1, %c104864_i32 : i32
+      %21 = arith.muli %arg13, %c16384_i32 : i32
+      %22 = arith.addi %20, %21 : i32
+      %23 = arith.index_cast %22 : i32 to index
+      %subview_8 = memref.subview %reinterpret_cast[%23] [16384] [1] : memref<4194304xbf16, strided<[1]>> to memref<16384xbf16, strided<[1], offset: ?>>
+      %alloc_9 = memref.alloc() : memref<16384xbf16>
+      memref.copy %subview_8, %alloc_9 : memref<16384xbf16, strided<[1], offset: ?>> to memref<16384xbf16>
+      %24 = bufferization.to_tensor %alloc_9 restrict : memref<16384xbf16>
+      %subview_10 = memref.subview %reinterpret_cast_1[%23] [16384] [1] : memref<4194304xbf16, strided<[1]>> to memref<16384xbf16, strided<[1], offset: ?>>
+      %alloc_11 = memref.alloc() : memref<16384xbf16>
+      memref.copy %subview_10, %alloc_11 : memref<16384xbf16, strided<[1], offset: ?>> to memref<16384xbf16>
+      %25 = bufferization.to_tensor %alloc_11 restrict : memref<16384xbf16>
+      %26 = hivm.hir.vcast ins(%24 : tensor<16384xbf16>) outs(%arg16 : tensor<16384xf32>) -> tensor<16384xf32>
+      %27 = hivm.hir.vcast ins(%25 : tensor<16384xbf16>) outs(%arg17 : tensor<16384xf32>) -> tensor<16384xf32>
+      %28 = hivm.hir.vadd ins(%26, %27 : tensor<16384xf32>, tensor<16384xf32>) outs(%26 : tensor<16384xf32>) -> tensor<16384xf32>
+      %29 = hivm.hir.vcast ins(%28 : tensor<16384xf32>) outs(%6 : tensor<16384xbf16>) -> tensor<16384xbf16>
+      %subview_12 = memref.subview %reinterpret_cast_0[%23] [16384] [1] : memref<4194304xbf16, strided<[1]>> to memref<16384xbf16, strided<[1], offset: ?>>
+      bufferization.materialize_in_destination %29 in writable %subview_12 : (tensor<16384xbf16>, memref<16384xbf16, strided<[1], offset: ?>>) -> ()
+      scf.yield %24, %25, %28, %27 : tensor<16384xbf16>, tensor<16384xbf16>, tensor<16384xf32>, tensor<16384xf32>
+    }
+    %8 = arith.muli %1, %c104864_i32 : i32
+    %9 = arith.addi %8, %c98304_i32 : i32
+    %10 = arith.index_cast %9 : i32 to index
+    %11 = arith.subi %c4096000_i32, %8 : i32
+    %12 = arith.minsi %11, %c6560_i32 : i32
+    %13 = arith.index_cast %12 : i32 to index
+    %subview = memref.subview %reinterpret_cast[%10] [%13] [1] : memref<4194304xbf16, strided<[1]>> to memref<?xbf16, strided<[1], offset: ?>>
+    %alloc = memref.alloc() : memref<16384xbf16>
+    %subview_2 = memref.subview %alloc[0] [%13] [1] : memref<16384xbf16> to memref<?xbf16, strided<[1]>>
+    memref.copy %subview, %subview_2 : memref<?xbf16, strided<[1], offset: ?>> to memref<?xbf16, strided<[1]>>
+    %14 = bufferization.to_tensor %subview_2 restrict : memref<?xbf16, strided<[1]>>
+    %inserted_slice = tensor.insert_slice %14 into %7#0[0] [%13] [1] : tensor<?xbf16> into tensor<16384xbf16>
+    %subview_3 = memref.subview %reinterpret_cast_1[%10] [%13] [1] : memref<4194304xbf16, strided<[1]>> to memref<?xbf16, strided<[1], offset: ?>>
+    %alloc_4 = memref.alloc() : memref<16384xbf16>
+    %subview_5 = memref.subview %alloc_4[0] [%13] [1] : memref<16384xbf16> to memref<?xbf16, strided<[1]>>
+    memref.copy %subview_3, %subview_5 : memref<?xbf16, strided<[1], offset: ?>> to memref<?xbf16, strided<[1]>>
+    %15 = bufferization.to_tensor %subview_5 restrict : memref<?xbf16, strided<[1]>>
+    %inserted_slice_6 = tensor.insert_slice %15 into %7#1[0] [%13] [1] : tensor<?xbf16> into tensor<16384xbf16>
+    %16 = hivm.hir.vcast ins(%inserted_slice : tensor<16384xbf16>) outs(%7#2 : tensor<16384xf32>) -> tensor<16384xf32>
+    %17 = hivm.hir.vcast ins(%inserted_slice_6 : tensor<16384xbf16>) outs(%7#3 : tensor<16384xf32>) -> tensor<16384xf32>
+    %18 = hivm.hir.vadd ins(%16, %17 : tensor<16384xf32>, tensor<16384xf32>) outs(%16 : tensor<16384xf32>) -> tensor<16384xf32>
+    %19 = hivm.hir.vcast ins(%18 : tensor<16384xf32>) outs(%6 : tensor<16384xbf16>) -> tensor<16384xbf16>
+    %extracted_slice = tensor.extract_slice %19[0] [%13] [1] : tensor<16384xbf16> to tensor<?xbf16>
+    %subview_7 = memref.subview %reinterpret_cast_0[%10] [%13] [1] : memref<4194304xbf16, strided<[1]>> to memref<?xbf16, strided<[1], offset: ?>>
+    bufferization.materialize_in_destination %extracted_slice in writable %subview_7 : (tensor<?xbf16>, memref<?xbf16, strided<[1], offset: ?>>) -> ()
+    return
+  }
+}
+err cmd: /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmppwwjym95/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true -o /tmp/tmppwwjym95/kernel
+err code: 1
+[ERROR] 2026-10-17-17:01:14 (PID:602783, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+2026-10-17 17:01:16 [WARN]  Child process exited with status 256
+2026-10-17 17:01:18 [ERROR] Get profiling data failed.
+2026-10-17 17:01:18 [WARN]  Profiling running finished. May cause generating performance files to fail.
+2026-10-17 17:01:18 [WARN]  Running task failed, data parsing start
+2026-10-17 17:01:18 [WARN]  No profiling data dumped.
+2026-10-17 17:01:18 [ERROR] Profiling data parse failed. Please check
+2026-10-17 17:01:18 [INFO]  Op profiling finish. Welcome to next use.
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+Traceback (most recent call last):
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py", line 1932, in _npuir_to_bin_enable_npu_compile
+    ret = subprocess.run(
+          ^^^^^^^^^^^^^^^
+  File "/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmppwwjym95/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '-o', '/tmp/tmppwwjym95/kernel']' returned non-zero exit status 1.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/bench_kernel.py", line 74, in <module>
+    main()
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/bench_kernel.py", line 59, in main
+    prog = mod.add_fwd_kernel(N, args.dtype, alpha=alpha, block_size=args.block_size)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py", line 151, in wrapper
+    kernel_result = compile(
+                    ^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py", line 66, in compile
+    return cached_npu(
+           ^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/cache/__init__.py", line 29, in cached_npu
+    return _kernel_cache_instance.cached_npu(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/cache/kernel_cache.py", line 186, in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py", line 1585, in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py", line 1943, in _npuir_to_bin_enable_npu_compile
+    raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+RuntimeError: NPU IR opt failed: loc("/tmp/tmppwwjym95/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+
+loc("/tmp/tmppwwjym95/kernel.npuir":2:3): error: ub overflow, requires 2097152 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+loc("/tmp/tmppwwjym95/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+
+loc("/tmp/tmppwwjym95/kernel.npuir":2:3): error: ub overflow, requires 2097152 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+loc("/tmp/tmppwwjym95/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+
+loc("/tmp/tmppwwjym95/kernel.npuir":2:3): error: ub overflow, requires 2097152 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+loc("/tmp/tmppwwjym95/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+
+loc("/tmp/tmppwwjym95/kernel.npuir":2:3): error: ub overflow, requires 2097152 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+loc("/tmp/tmppwwjym95/kernel.npuir":1:1): error: Failed to run BiShengHIR pipeline
+
+loc("/tmp/tmppwwjym95/kernel.npuir":2:3): error: ub overflow, requires 2097152 bits while 1572864 bits available! (possible reason: tiling basic block is too large or block number is more than what user expect due to multi-buffer feature is enabled and some ops need extra local buffer.)
+[ERROR] Failed to run BiShengIR pipeline
+
