@@ -5,8 +5,9 @@ are listed in ``DESIGN.md`` §1.  Shapes / dtypes are taken from the standalone
 manifest (``tileops/manifest/linear_attention.yaml``, key ``GDNFwdOp``), filtered
 to the prefill rows.
 
-STAGE 0 SCAFFOLD: skipped until the kernel lands in Stage 3; the case list below
-is the in-scope subset and will be wired to ``benchmarks.api`` then.
+CORRECTNESS-FIRST DELIVERY: the op is exposed and correctness-tested; the
+benchmark stays skipped until the six-kernel TileLang pipeline lands (the current
+reference path is not a meaningful performance target).
 """
 
 import pytest

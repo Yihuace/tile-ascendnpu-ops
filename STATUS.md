@@ -6,7 +6,7 @@
 
 ## 总览（严格口径，全部 CANN 9.0.0）
 
-**19 个交付接口，18 个已交付；1 个（GDN）未交付。**
+**19 个接口：18 个完整交付；GDN 为 correctness-first fallback（6/6 tests），六 kernel 的 TileLang 端口待续。**
 
 | 判定 | 数量 | 算子 |
 |---|---|---|
@@ -14,7 +14,7 @@
 | 贴线 / 部分达标 | 4 | Add（10/11；`linear-bias bf16` 复测 63.7–69.4%，确认贴线未过）、Lerp（9/11）、Hardswish（2/6）、ClampScalar（1/11） |
 | 未达标但**已采纳真实时延收益** | 12 | Hardsigmoid、ClampMin、Isinf、Isfinite、GeluTanh、GeluAndMul、FALN、BatchNormBwd、Conv1d、Conv1dBias、Conv3dBias、GLA |
 | 未达标且未采纳 | 1 | Isnan（无收益，MTE2 带宽地板） |
-| 未交付 | 1 | GDN（2/6 kernel，CG-2026-0003；2026-10-18 拆分探针：大 shape 3 级可拆、小 shape H=2 独立触发） |
+| 正确性交付但 kernel 未收口 | 1 | GDN（reference fallback，6/6；2/6 kernel，CG-2026-0003；拆分探针见 PROBE_20261018） |
 
 > 全 shape 达标从上一版“3 个”修正为“1 个”：Add 在 9.0 端到端下 10/11（`linear-bias bf16` 69.37%，复测 63.7–69.4%，确认未过线），ClampScalar 在 9.0 下仅 1/11（8.5 的 71.9–82.8% 不再引用）。
 > 所有数字来自 `reports/tileops/<run_id>/run.json`；8.5.2 数据仅保留在 `MIGRATION_INDEX.md` 表 B 历史存档（不在本批范围）。
@@ -95,7 +95,7 @@
 - 模板：`examples/TileOPs/reports/optimize/REPORT_TEMPLATE.md`
 - 16 份单算子报告已按 8 节统一（0 身份 / 1 结论 / 2 优化方法与过程〔2.1 诊断 + 2.2 方法 + 2.3 逐轮〕/ 3 结果 / 4 精度 / 5 时间成本 / 6 产物 / 7 天花板豁免缺口 / 8 建议）
 - 旧版报告存各目录 `history_version/OPTIMIZE_REPORT_v0.md`
-- 缺失报告：GDN（未交付）；ClampMin/Lerp 无独立报告（分别由 ClampScalar / 未优化覆盖）
+- 缺失报告：GDN（fallback 交付，benchmark 暂 skip）；ClampMin/Lerp 无独立报告（分别由 ClampScalar / 未优化覆盖）
 
 ## 环境纪律
 

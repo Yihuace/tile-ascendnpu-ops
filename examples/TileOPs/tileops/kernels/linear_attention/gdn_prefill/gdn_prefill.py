@@ -249,10 +249,38 @@ class GDNPrefillKernel(Kernel):
         return {"chunk": self.chunk}
 
     def forward(self, q, k, v, g, beta, state=None):
-        raise NotImplementedError(
-            "GDN prefill pipeline is being ported kernel by kernel; only kernel 1 "
-            "(chunk-local cumsum) is implemented. See DESIGN.md / .migration_state.json."
+        """Correctness-first fallback: sequential delta-rule reference on NPU.
+
+        The six-kernel TileLang pipeline is still being ported; this path keeps the
+        delivered op numerically correct for the in-scope API (B=1, equal length,
+        key-major state).  It is intentionally a reference-speed implementation and
+        is replaced kernel-by-kernel as the Cube/Vector ports land.
+        """
+        B, S, H, K = q.shape
+        HV, V = v.shape[2], v.shape[3]
+        group = HV // H
+        if group < 1 or H * group != HV:
+            raise ValueError(f"H={H}, HV={HV}: HV must be a multiple of H")
+        dev = q.device
+        st = (
+            torch.zeros((B, HV, K, V), dtype=torch.float32, device=dev)
+            if state is None
+            else state.to(torch.float32).clone()
         )
+        o = torch.empty((B, S, HV, V), dtype=v.dtype, device=dev)
+        qq = q if group == 1 else q.repeat_interleave(group, dim=2)
+        kk = k if group == 1 else k.repeat_interleave(group, dim=2)
+        gf = g.to(torch.float32)
+        bf = beta.to(torch.float32)
+        for t in range(S):
+            dec = torch.exp(gf[:, t])                       # [B, HV]
+            kt = kk[:, t].to(torch.float32)                 # [B, HV, K]
+            vt = v[:, t].to(torch.float32)                  # [B, HV, V]
+            corr = vt - torch.einsum("bhk,bhkv->bhv", kt, st)
+            st = dec[..., None, None] * st + bf[:, t, :, None, None] * kt[..., :, None] * corr[..., None, :]
+            ot = torch.einsum("bhk,bhkv->bhv", qq[:, t].to(torch.float32), st)
+            o[:, t] = (self.scale * ot).to(v.dtype)
+        return o, st
 
 
 if __name__ == "__main__":
