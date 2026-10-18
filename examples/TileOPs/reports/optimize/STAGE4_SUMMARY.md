@@ -21,7 +21,7 @@
 | FusedAddLayerNormFwdOp | **8b prefill −23.2%**、70b −14.2% | ✅ | 0.54–43.89%（0/5；2 微型豁免） | loads-first 装载前置；单遍方差 tie 弃用 |
 | BatchNormBwdOp | **−33~−46%**（几何 −40.3%） | ✅ | 11.91–24.44%（0/6，subid 不可比） | subid 分片从 MixCV 迁到 Vector 归约族 |
 | Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep **3.6×**；通用 kernel wav2vec2 **17.7×**、encodec-init **4.2×** | ✅ | 0.03–1.79%（Conv1d 0/15、Bias 0/8；按 Task Duration 判据） | 形状路由 + taps-in-K；wav2vec2 的 CG-2026-0003 已被新 IR 绕开；Conv1d report partial |
-| Conv3dBiasFwdOp | **r3d-stem 1.99×** | ✅ | 0.76–6.29%（0/3） | tap 打包 + 权重 L1 常驻；其余 shape 编译期回退 baseline |
+| Conv3dBiasFwdOp | **r3d-stem 2.36×、unet 21.3×** | ✅ | 1.68–20.43%（0/3；按 Task Duration） | tap 打包 + padded-N 分块 + NDHWC 暂存；im2col DMA 段数 91774→973 |
 
 ## 2. 18 个接口：CANN 9.0.0 端到端现状（全可调 shape 范围）
 
@@ -46,7 +46,7 @@
 | GLADecode | 5 | 3.16–18.24% | 60 | **0/5** ❌ | `perf_opt` | ✅ |
 | Conv1d | 15 | 0.04–1.79% | 60 | **0/15** ❌（Task Duration 17.7×） | `perf_opt` | ✅ |
 | Conv1dBias | 8 | 0.03–1.73% | 60 | **0/8** ❌（Task Duration 8.3–8.9×） | `perf_opt` | ✅ |
-| Conv3dBias | 3 | 0.76–6.29% | 60 | **0/3** ❌ | `perf_opt` | ✅ |
+| Conv3dBias | 3 | 1.68–20.43% | 60 | **0/3** ❌（Task Duration 21.3×） | `perf_opt` | ✅ |
 
 > 备注：
 > - Add 的 `linear-bias bf16` 为 **69.37%**（贴线）；2026-10-18 单点复测 3 次为 **14.00/14.28/15.06µs、68.48/67.13/63.66%**，确认稳定在 63.7–69.4%，未过 70%，10/11 结论成立。Sub 原直跑唯一未过的 `linear-bias bf16` 在 9.0 端到端为 **70.70%**，已过线。
@@ -90,11 +90,12 @@
 4. loads-first 双输入前置装载：FALN 8b prefill −23%
 5. implicit-GEMM 权重 L1 常驻 + tap 打包：Conv3d r3d-stem 2×；Conv1d co 块切分 15×
 6. 形状路由绕开编译器缺陷：dilation 分流 + `c_in>=64` 门，使 Conv1d 族在官方 9.0 上可交付
+7. **im2col DMA 段数削减**：padded-N 多行分块 + NDHWC 暂存，把 `c_in_pad` 个 128B 小段降到 973 条，Conv3d unet 21.3×
 
 **能力缺口**
 - **CG-2026-0003（recurring, occurrences=4）**：9.0.0 与 9.2.0 官方包均带该缺陷；8.5.2 无（405/405）
 - `T.gemm` 忽略 L1 切片偏移（TRAP 已入库）
-- 权重 L1 常驻存在 `c_in_pad` 依赖（16 生效 / 32 不生效）
+- **L1 常驻归因更正**：`c_in_pad=32` 常驻早已表达（IR 中 27 次 `nd2nz` 在 task 循环外），不是杠杆；真正病根是 im2col 输入 copy 的 DMA 段数（91774→973 后 unet 21.3×）
 - L1 超配 → bishengir SIGSEGV（`n_max` 绕法）
 - predicate 缺 `i1→i8` 直转 / bool `vnot`（CG-2026-0027）
 - **CG-2026-0028**：Vector prelude「1D GM 切片 → 带列偏移 GM 子区域」写必崩（`Unknown core type: llvm.func @malloc`）；bias-in-K 折叠被迫放弃，bias 路径保留中继

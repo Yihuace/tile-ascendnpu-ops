@@ -1,9 +1,204 @@
 {
   "workloads": [
-    {"benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench", "kernel_id": "conv3d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py", "workload_id": "smoke-k3-s1-bias-float16", "label": "smoke-k3-s1-bias", "marks": ["smoke"], "shape": {"input": [1, 8, 8, 16, 16], "weight": [16, 8, 3, 3, 3], "bias": [16]}, "dtype": "float16", "params": {"stride": 1, "padding": 1, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "smoke", "precision_pass": true, "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench", "kernel_id": "conv3d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py", "workload_id": "smoke-k3-s1-bias-bfloat16", "label": "smoke-k3-s1-bias", "marks": ["full"], "shape": {"input": [1, 8, 8, 16, 16], "weight": [16, 8, 3, 3, 3], "bias": [16]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 1, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "smoke", "precision_pass": true, "reason": "smoke 标记由 benchmark _mark(idx=0, fp16) 给出；bf16 同 label 仍属 smoke（label 含 smoke 标识符）"},
-    {"benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench", "kernel_id": "conv3d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py", "workload_id": "r3d-stem-bias-float16", "label": "r3d-stem-bias", "marks": ["full"], "shape": {"input": [1, 3, 16, 112, 112], "weight": [64, 3, 3, 3, 3], "bias": [64]}, "dtype": "float16", "params": {"stride": 1, "padding": 1, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench", "kernel_id": "conv3d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py", "workload_id": "video-down-bias-float16", "label": "video-down-bias", "marks": ["full"], "shape": {"input": [1, 64, 8, 56, 56], "weight": [128, 64, 3, 3, 3], "bias": [128]}, "dtype": "float16", "params": {"stride": 2, "padding": 1, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "no_gain", "reason": "本 workload 本就很快（87µs，stride-2 使 out_d=4/out_h=28/out_w=28 → 仅 224 个逻辑任务）；R1 tap-packing + weight-resident 合并后 89.7µs，与 baseline 持平（噪声内，无有效增益）"},
-    {"benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench", "kernel_id": "conv3d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py", "workload_id": "unet-encoder-bias-bfloat16", "label": "unet-encoder-bias", "marks": ["full"], "shape": {"input": [1, 32, 32, 64, 64], "weight": [64, 32, 3, 3, 3], "bias": [64]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 1, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "no_gain", "reason": "weight-resident restructure 对 c_in_pad=32 未生效（编译器对 110KB 常驻权重仍逐 task 从 L2 重载，aic_scalar_mte2_stall 不变）；MTE2 仍由 27-tap im2col 输入重复读主导；见 opt_log §3"}
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench",
+      "kernel_id": "conv3d",
+      "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py",
+      "workload_id": "smoke-k3-s1-bias-float16",
+      "label": "smoke-k3-s1-bias",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          1,
+          8,
+          8,
+          16,
+          16
+        ],
+        "weight": [
+          16,
+          8,
+          3,
+          3,
+          3
+        ],
+        "bias": [
+          16
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 1,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "smoke",
+      "precision_pass": true,
+      "reason": ""
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench",
+      "kernel_id": "conv3d",
+      "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py",
+      "workload_id": "smoke-k3-s1-bias-bfloat16",
+      "label": "smoke-k3-s1-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          8,
+          8,
+          16,
+          16
+        ],
+        "weight": [
+          16,
+          8,
+          3,
+          3,
+          3
+        ],
+        "bias": [
+          16
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 1,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "smoke",
+      "precision_pass": true,
+      "reason": "smoke 标记由 benchmark _mark(idx=0, fp16) 给出；bf16 同 label 仍属 smoke（label 含 smoke 标识符）"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench",
+      "kernel_id": "conv3d",
+      "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py",
+      "workload_id": "r3d-stem-bias-float16",
+      "label": "r3d-stem-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          3,
+          16,
+          112,
+          112
+        ],
+        "weight": [
+          64,
+          3,
+          3,
+          3,
+          3
+        ],
+        "bias": [
+          64
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 1,
+        "padding": 1,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "R2 padded-N 多行分块（c_in_pad=16 走 R2）：3095.80 → 2588.67 µs（对 Stage-3 6116.38 共 2.36×）；见 opt_log §6.4/§6.7"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench",
+      "kernel_id": "conv3d",
+      "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py",
+      "workload_id": "video-down-bias-float16",
+      "label": "video-down-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          64,
+          8,
+          56,
+          56
+        ],
+        "weight": [
+          128,
+          64,
+          3,
+          3,
+          3
+        ],
+        "bias": [
+          128
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "stride": 2,
+        "padding": 1,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "tuning_status": "no_gain",
+      "reason": "stride=2 多相（xdec）路径无结构空间，走 Stage-3 等效回退；86.48 → 86.70 µs（噪声内）；见 opt_log §6.7"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench",
+      "kernel_id": "conv3d",
+      "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv3d/conv3d_kernel/_conv3d_kernel.py",
+      "workload_id": "unet-encoder-bias-bfloat16",
+      "label": "unet-encoder-bias",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input": [
+          1,
+          32,
+          32,
+          64,
+          64
+        ],
+        "weight": [
+          64,
+          32,
+          3,
+          3,
+          3
+        ],
+        "bias": [
+          64
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "stride": 1,
+        "padding": 1,
+        "dilation": 1,
+        "groups": 1,
+        "use_bias": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "R3 = padded-N 多行分块 + channel-last(NDHWC) 暂存 + b_transpose，每次 tap copy 单连续段：6428.57 → 301.59 µs（21.3×）；MTE2 指令 91774→973，bw 5.63%→19.97%；见 opt_log §6.3/§6.7"
+    }
   ]
 }

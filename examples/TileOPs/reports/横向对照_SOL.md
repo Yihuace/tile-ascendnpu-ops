@@ -23,10 +23,11 @@
 | GeluAndMulFwdOp | 9.01 | compute | 47.71 | 8.5 | 47.71 | ❌ |
 | Conv1dFwdOp | 1.41e+03 | compute | 0.24 | 0.01 | 0.24 | ❌ |
 | Conv1dBiasFwdOp | 1.41e+03 | compute | 1.73 | 0.01 | 1.73 | ❌ |
-| Conv3dBiasFwdOp | 4.89e+03 | compute | 0.76 | 0.03 | 0.76 | ❌ |
+| Conv3dBiasFwdOp | 1.67e+03 | compute | 20.43 | 20.43 | 20.43 | ❌ |
 
 > 说明：
 > - 访存受限算子的 SOL = GM Read+Write 带宽利用率；Add/Sub/Lerp 已 82–84%，Clamp 族在 9.0 下降到 68.7%。
 > - 算力受限算子看 Vector/Cube 计算单元利用率；Hardswish 是唯一过 60% 线的算力型算子。
+> - Conv3d unet 已由 padded-N 分块 + NDHWC 暂存优化（21.3×）；上表为最大 shape 的 SOL。
 > - Conv1d 通用 kernel 已由 taps-in-K 优化（Task Duration wav2vec2 17.7×、encodec-init 4.2×）；上表是最大 shape 的 SOL，不代表优化倍数。
 > - 8.5.2 历史横评（Add 78.44%、ClampScalar 71.86% 等）已不再引用；如需追溯见 `MIGRATION_INDEX.md` 表 B。

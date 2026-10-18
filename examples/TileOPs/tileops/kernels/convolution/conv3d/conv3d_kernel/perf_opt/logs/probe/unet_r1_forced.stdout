@@ -1,0 +1,673 @@
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+2026-10-18 18:27:47  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-18 18:27:47  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-18 18:27:47  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+====== TVM IR ======
+# from tvm.script import ir as I
+# from tvm.script import tir as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    def _conv3d_bias_main(x_pad: T.Buffer((1, 32, 179520), "bfloat16"), w_flat: T.Buffer((27, 64, 32), "bfloat16"), out: T.Buffer((1, 64, 131072), "bfloat16"), bias: T.Buffer((64,), "bfloat16"), xdec: T.Buffer((1, 32, 179520), "bfloat16"), ws: T.Buffer((20, 2, 64, 128), "float32")):
+        T.func_attr({"target": T.target({"host": {"keys": ["cpu"], "kind": "stackvm", "tag": ""}, "keys": [], "kind": "npuir", "tag": ""})})
+        kernel_id = T.launch_thread("blockIdx.x", 20)
+        _ = T.launch_thread("blockIdx.z", 40)
+        l1_a = T.decl_buffer((64, 864), "bfloat16", scope="shared.dyn")
+        with T.attr(0, "resource_scope", 0):
+            with T.attr(0, "PIPE_MTE2", 1):
+                for tap in range(27):
+                    T.copy(T.region(w_flat[tap, 0, 0], 1, 1, 64, 32), T.region(l1_a[0, tap * 32], 2, 64, 32))
+            for task_id in range((2067 - kernel_id) // 20):
+                l1_b = T.decl_buffer((864, 64), "bfloat16", scope="shared.dyn")
+                l0_c = T.decl_buffer((64, 128), scope="wmma.accumulator")
+                for tap in range(27):
+                    T.attr(0, "PIPE_MTE2", 1)
+                    T.copy(T.region(x_pad[(task_id * 20 + kernel_id) // 2048, 0, (task_id * 20 + kernel_id) % 2048 // 64 * 5280 + tap // 9 * 5280 + tap % 9 // 3 * 80 + (task_id * 20 + kernel_id) % 64 * 80 + tap % 3], 1, 1, 32, 64), T.region(l1_b[tap * 32, 0], 2, 32, 64))
+                with T.attr(0, "PIPE_C", 1):
+                    T.npuir_dot(T.region(l1_a[0, 0], 1, 64, 864), T.region(l1_b[0, 0], 1, 864, 64), T.region(l0_c[0, 0], 3, 64, 64), T.bool(True), T.bool(False), T.bool(False))
+                T.attr(0, "PIPE_FIX", 1)
+                T.npuir_sync_block_wait("PIPE_FIX", task_id % 2 * 2 + 1)
+                T.copy(T.region(l0_c[0, 0], 1, 64, 64), T.region(ws[kernel_id, task_id % 2, 0, 0], 2, 1, 1, 64, 64))
+                T.npuir_sync_block_set(2, "PIPE_FIX", task_id % 2 * 2)
+        T.attr(0, "resource_scope", 1)
+        with T.attr(0, "PIPE_MTE2", 1):
+            T.npuir_sync_block_set(2, "PIPE_MTE2", 1)
+            T.npuir_sync_block_set(2, "PIPE_MTE2", 3)
+        for task_id in range((2067 - kernel_id) // 20):
+            ub_f32 = T.decl_buffer((64, 128), scope="shared")
+            ub_f16 = T.decl_buffer((64, 128), "bfloat16", scope="shared")
+            bias_16 = T.decl_buffer((64, 1), "bfloat16", scope="shared")
+            bias_col = T.decl_buffer((64, 1), scope="shared")
+            bias_brc = T.decl_buffer((64, 128), scope="shared")
+            with T.attr(0, "PIPE_MTE2", 1):
+                T.npuir_sync_block_wait("PIPE_MTE2", task_id % 2 * 2)
+                T.copy(T.region(ws[kernel_id, task_id % 2, 0, 0], 1, 1, 1, 64, 64), T.region(ub_f32[0, 0], 2, 64, 64))
+                T.copy(T.region(bias[0], 1, 64), T.region(bias_16[0, 0], 2, 64, 1))
+            T.npuir_cast(T.region(bias_16[0, 0], 1, 64, 1), T.region(bias_col[0, 0], 2, 64, 1), "rint")
+            T.npuir_brc(T.region(bias_col[0, 0], 1, 64, 1), T.region(bias_brc[0, 0], 2, 64, 128))
+            T.npuir_add(T.region(bias_brc[0, 0], 1, 64, 128), T.region(ub_f32[0, 0], 1, 64, 128), T.region(ub_f32[0, 0], 2, 64, 128))
+            T.npuir_cast(T.region(ub_f32[0, 0], 1, 64, 128), T.region(ub_f16[0, 0], 2, 64, 128), "rint")
+            T.attr(0, "PIPE_MTE3", 1)
+            T.copy(T.region(ub_f16[0, 0], 1, 64, 64), T.region(out[(task_id * 20 + kernel_id) // 2048, 0, (task_id * 20 + kernel_id) % 2048 * 64], 2, 1, 64, 64))
+            T.npuir_sync_block_set(2, "PIPE_MTE3", task_id % 2 * 2 + 1)
+
+====== npuir ======
+module attributes {hivm.module_core_type = #hivm.module_core_type<MIX>, memref.memref_as_ptr} {
+  func.func @_conv3d_bias_main_mix_aic(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIC>, hivm.part_of_mix, mix_mode = "mix"} {
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1, 32, 179520], strides: [5744640, 179520, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg5 to offset: [0], sizes: [1, 64, 131072], strides: [8388608, 131072, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg7 to offset: [0], sizes: [1, 32, 179520], strides: [5744640, 179520, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_2 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_3 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [27, 64, 32], strides: [2048, 32, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_4 = memref.reinterpret_cast %arg6 to offset: [0], sizes: [64], strides: [1] : memref<?xbf16, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    %alloc = memref.alloc() : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>
+    %c0_i32 = arith.constant 0 : i32
+    %c27_i32 = arith.constant 27 : i32
+    %c1_i32 = arith.constant 1 : i32
+    scf.for %arg15 = %c0_i32 to %c27_i32 step %c1_i32  : i32 {
+      %4 = arith.index_cast %arg15 : i32 to index
+      %subview = memref.subview %reinterpret_cast_3[%4, 0, 0] [1, 64, 32] [1, 1, 1] : memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>> to memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>
+      %c32_i32 = arith.constant 32 : i32
+      %5 = arith.muli %arg15, %c32_i32 : i32
+      %6 = arith.index_cast %5 : i32 to index
+      %subview_6 = memref.subview %alloc[0, %6] [64, 32] [1, 1] : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>> to memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>
+      hivm.hir.nd2nz {dst_continuous} ins(%subview : memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_6 : memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+    }
+    %c2067_i32 = arith.constant 2067 : i32
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    %c1_i32_5 = arith.constant 1 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32_5  : i32 {
+      %alloc_6 = memref.alloc() : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>
+      %alloc_7 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      %c0_i32_8 = arith.constant 0 : i32
+      %c27_i32_9 = arith.constant 27 : i32
+      %c1_i32_10 = arith.constant 1 : i32
+      scf.for %arg16 = %c0_i32_8 to %c27_i32_9 step %c1_i32_10  : i32 {
+        %c20_i32_13 = arith.constant 20 : i32
+        %13 = arith.muli %arg15, %c20_i32_13 : i32
+        %14 = arith.addi %13, %1 : i32
+        %c2048_i32 = arith.constant 2048 : i32
+        %15 = arith.divsi %14, %c2048_i32 : i32
+        %16 = arith.index_cast %15 : i32 to index
+        %17 = arith.remsi %14, %c2048_i32 : i32
+        %c64_i32_14 = arith.constant 64 : i32
+        %18 = arith.divsi %17, %c64_i32_14 : i32
+        %c5280_i32 = arith.constant 5280 : i32
+        %19 = arith.muli %18, %c5280_i32 : i32
+        %c9_i32 = arith.constant 9 : i32
+        %20 = arith.divsi %arg16, %c9_i32 : i32
+        %21 = arith.muli %20, %c5280_i32 : i32
+        %22 = arith.addi %19, %21 : i32
+        %23 = arith.remsi %arg16, %c9_i32 : i32
+        %c3_i32 = arith.constant 3 : i32
+        %24 = arith.divsi %23, %c3_i32 : i32
+        %c80_i32 = arith.constant 80 : i32
+        %25 = arith.muli %24, %c80_i32 : i32
+        %26 = arith.addi %22, %25 : i32
+        %27 = arith.remsi %14, %c64_i32_14 : i32
+        %28 = arith.muli %27, %c80_i32 : i32
+        %29 = arith.addi %26, %28 : i32
+        %30 = arith.remsi %arg16, %c3_i32 : i32
+        %31 = arith.addi %29, %30 : i32
+        %32 = arith.index_cast %31 : i32 to index
+        %subview_15 = memref.subview %reinterpret_cast[%16, 0, %32] [1, 32, 64] [1, 1, 1] : memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>> to memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>
+        %c32_i32 = arith.constant 32 : i32
+        %33 = arith.muli %arg16, %c32_i32 : i32
+        %34 = arith.index_cast %33 : i32 to index
+        %subview_16 = memref.subview %alloc_6[%34, 0] [32, 64] [1, 1] : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>> to memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_15 : memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_16 : memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+      }
+      %true = arith.constant true
+      %c64_i32 = arith.constant 64 : i32
+      %4 = arith.index_cast %c64_i32 : i32 to index
+      %c864_i32 = arith.constant 864 : i32
+      %5 = arith.index_cast %c864_i32 : i32 to index
+      hivm.hir.mmadL1 ins(%alloc, %alloc_6, %true, %4, %5, %4 : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>, memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>, i1, index, index, index) outs(%alloc_7 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>)
+      %c2_i32 = arith.constant 2 : i32
+      %6 = arith.remsi %arg15, %c2_i32 : i32
+      %7 = arith.muli %6, %c2_i32 : i32
+      %c1_i32_11 = arith.constant 1 : i32
+      %8 = arith.addi %7, %c1_i32_11 : i32
+      %9 = arith.extsi %8 : i32 to i64
+      hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_FIX>] flag = %9
+      %subview = memref.subview %alloc_7[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      %10 = arith.index_cast %1 : i32 to index
+      %11 = arith.index_cast %6 : i32 to index
+      %subview_12 = memref.subview %reinterpret_cast_2[%10, %11, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      hivm.hir.fixpipe {enable_nz2nd} ins(%subview : memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>) outs(%subview_12 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>)
+      %12 = arith.extsi %7 : i32 to i64
+      hivm.hir.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_S>] flag = %12 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+  func.func @_conv3d_bias_main_mix_aiv(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, hivm.part_of_mix, mix_mode = "mix"} {
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1, 32, 179520], strides: [5744640, 179520, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg5 to offset: [0], sizes: [1, 64, 131072], strides: [8388608, 131072, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg7 to offset: [0], sizes: [1, 32, 179520], strides: [5744640, 179520, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_2 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_3 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [27, 64, 32], strides: [2048, 32, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_4 = memref.reinterpret_cast %arg6 to offset: [0], sizes: [64], strides: [1] : memref<?xbf16, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 1 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 3 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    %c0_i32 = arith.constant 0 : i32
+    %c2067_i32 = arith.constant 2067 : i32
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    %c1_i32 = arith.constant 1 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_6 = memref.alloc() : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_7 = memref.alloc() : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_8 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %c2_i32 = arith.constant 2 : i32
+      %4 = arith.remsi %arg15, %c2_i32 : i32
+      %5 = arith.muli %4, %c2_i32 : i32
+      %6 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_wait[<VECTOR>, <PIPE_S>, <PIPE_MTE2>] flag = %6
+      %7 = arith.index_cast %1 : i32 to index
+      %8 = arith.index_cast %4 : i32 to index
+      %c16384 = arith.constant 16384 : index
+      %9 = arith.muli %7, %c16384 : index
+      %c8192 = arith.constant 8192 : index
+      %10 = arith.muli %8, %c8192 : index
+      %11 = arith.addi %9, %10 : index
+      %subview = memref.subview %reinterpret_cast_2[%7, %8, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      %subview_9 = memref.subview %alloc[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_10 = memref.reinterpret_cast %subview to offset: [%11], sizes: [64, 64], strides: [128, 1] : memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %reinterpret_cast_10, %subview_9 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_11 = memref.reinterpret_cast %alloc_6 to offset: [0], sizes: [64], strides: [1] : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      memref.copy %reinterpret_cast_4, %reinterpret_cast_11 : memref<64xbf16, strided<[1]>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      hivm.hir.vcast ins(%alloc_6 : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_7 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vbrc ins(%alloc_7 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_8 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) broadcast_dims = [1]
+      hivm.hir.vadd ins(%alloc_8, %alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>, memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vcast ins(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc_5 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>)
+      %c20_i32_12 = arith.constant 20 : i32
+      %12 = arith.muli %arg15, %c20_i32_12 : i32
+      %13 = arith.addi %12, %1 : i32
+      %c2048_i32 = arith.constant 2048 : i32
+      %14 = arith.divsi %13, %c2048_i32 : i32
+      %15 = arith.index_cast %14 : i32 to index
+      %16 = arith.remsi %13, %c2048_i32 : i32
+      %c64_i32 = arith.constant 64 : i32
+      %17 = arith.muli %16, %c64_i32 : i32
+      %18 = arith.index_cast %17 : i32 to index
+      %c8388608 = arith.constant 8388608 : index
+      %19 = arith.muli %15, %c8388608 : index
+      %20 = arith.addi %19, %18 : index
+      %subview_13 = memref.subview %alloc_5[0, 0] [64, 64] [1, 1] : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %subview_14 = memref.subview %reinterpret_cast_0[%15, 0, %18] [1, 64, 64] [1, 1, 1] : memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>> to memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_15 = memref.reinterpret_cast %subview_14 to offset: [%20], sizes: [64, 64], strides: [131072, 1] : memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview_13, %reinterpret_cast_15 : memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %c1_i32_16 = arith.constant 1 : i32
+      %21 = arith.addi %5, %c1_i32_16 : i32
+      %22 = arith.extsi %21 : i32 to i64
+      hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = %22 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+}
+// -----// IR Dump After Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module attributes {hivm.module_core_type = #hivm.module_core_type<MIX>, memref.memref_as_ptr} {
+  func.func @_conv3d_bias_main_mix_aic(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIC>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c864 = arith.constant 864 : index
+    %c64 = arith.constant 64 : index
+    %c2_i32 = arith.constant 2 : i32
+    %true = arith.constant true
+    %c80_i32 = arith.constant 80 : i32
+    %c3_i32 = arith.constant 3 : i32
+    %c9_i32 = arith.constant 9 : i32
+    %c5280_i32 = arith.constant 5280 : i32
+    %c64_i32 = arith.constant 64 : i32
+    %c2048_i32 = arith.constant 2048 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c2067_i32 = arith.constant 2067 : i32
+    %c32_i32 = arith.constant 32 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c27_i32 = arith.constant 27 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1, 32, 179520], strides: [5744640, 179520, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [27, 64, 32], strides: [2048, 32, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    %alloc = memref.alloc() : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>
+    scf.for %arg15 = %c0_i32 to %c27_i32 step %c1_i32  : i32 {
+      %4 = arith.index_cast %arg15 : i32 to index
+      %subview = memref.subview %reinterpret_cast_1[%4, 0, 0] [1, 64, 32] [1, 1, 1] : memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>> to memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>
+      %5 = arith.muli %arg15, %c32_i32 : i32
+      %6 = arith.index_cast %5 : i32 to index
+      %subview_2 = memref.subview %alloc[0, %6] [64, 32] [1, 1] : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>> to memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>
+      hivm.hir.nd2nz {dst_continuous} ins(%subview : memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_2 : memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+    }
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc_2 = memref.alloc() : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>
+      %alloc_3 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      scf.for %arg16 = %c0_i32 to %c27_i32 step %c1_i32  : i32 {
+        %11 = arith.muli %arg15, %c20_i32 : i32
+        %12 = arith.addi %11, %1 : i32
+        %13 = arith.divsi %12, %c2048_i32 : i32
+        %14 = arith.index_cast %13 : i32 to index
+        %15 = arith.remsi %12, %c2048_i32 : i32
+        %16 = arith.divsi %15, %c64_i32 : i32
+        %17 = arith.muli %16, %c5280_i32 : i32
+        %18 = arith.divsi %arg16, %c9_i32 : i32
+        %19 = arith.muli %18, %c5280_i32 : i32
+        %20 = arith.addi %17, %19 : i32
+        %21 = arith.remsi %arg16, %c9_i32 : i32
+        %22 = arith.divsi %21, %c3_i32 : i32
+        %23 = arith.muli %22, %c80_i32 : i32
+        %24 = arith.addi %20, %23 : i32
+        %25 = arith.remsi %12, %c64_i32 : i32
+        %26 = arith.muli %25, %c80_i32 : i32
+        %27 = arith.addi %24, %26 : i32
+        %28 = arith.remsi %arg16, %c3_i32 : i32
+        %29 = arith.addi %27, %28 : i32
+        %30 = arith.index_cast %29 : i32 to index
+        %subview_5 = memref.subview %reinterpret_cast[%14, 0, %30] [1, 32, 64] [1, 1, 1] : memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>> to memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>
+        %31 = arith.muli %arg16, %c32_i32 : i32
+        %32 = arith.index_cast %31 : i32 to index
+        %subview_6 = memref.subview %alloc_2[%32, 0] [32, 64] [1, 1] : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>> to memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_5 : memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_6 : memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+      }
+      hivm.hir.mmadL1 ins(%alloc, %alloc_2, %true, %c64, %c864, %c64 : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>, memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>, i1, index, index, index) outs(%alloc_3 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>)
+      %4 = arith.remsi %arg15, %c2_i32 : i32
+      %5 = arith.muli %4, %c2_i32 : i32
+      %6 = arith.addi %5, %c1_i32 : i32
+      %7 = arith.extsi %6 : i32 to i64
+      hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_FIX>] flag = %7
+      %subview = memref.subview %alloc_3[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      %8 = arith.index_cast %1 : i32 to index
+      %9 = arith.index_cast %4 : i32 to index
+      %subview_4 = memref.subview %reinterpret_cast_0[%8, %9, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      hivm.hir.fixpipe {enable_nz2nd} ins(%subview : memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>) outs(%subview_4 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>)
+      %10 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_S>] flag = %10 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+  func.func @_conv3d_bias_main_mix_aiv(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c8388608 = arith.constant 8388608 : index
+    %c64_i32 = arith.constant 64 : i32
+    %c2048_i32 = arith.constant 2048 : i32
+    %c8192 = arith.constant 8192 : index
+    %c16384 = arith.constant 16384 : index
+    %c2_i32 = arith.constant 2 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c2067_i32 = arith.constant 2067 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg5 to offset: [0], sizes: [1, 64, 131072], strides: [8388608, 131072, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg6 to offset: [0], sizes: [64], strides: [1] : memref<?xbf16, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 1 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 3 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_2 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_3 = memref.alloc() : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %4 = arith.remsi %arg15, %c2_i32 : i32
+      %5 = arith.muli %4, %c2_i32 : i32
+      %6 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_wait[<VECTOR>, <PIPE_S>, <PIPE_MTE2>] flag = %6
+      %7 = arith.index_cast %1 : i32 to index
+      %8 = arith.index_cast %4 : i32 to index
+      %9 = arith.muli %7, %c16384 : index
+      %10 = arith.muli %8, %c8192 : index
+      %11 = arith.addi %9, %10 : index
+      %subview = memref.subview %reinterpret_cast_0[%7, %8, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      %subview_6 = memref.subview %alloc[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_7 = memref.reinterpret_cast %subview to offset: [%11], sizes: [64, 64], strides: [128, 1] : memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %reinterpret_cast_7, %subview_6 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_8 = memref.reinterpret_cast %alloc_3 to offset: [0], sizes: [64], strides: [1] : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      memref.copy %reinterpret_cast_1, %reinterpret_cast_8 : memref<64xbf16, strided<[1]>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      hivm.hir.vcast ins(%alloc_3 : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_4 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vbrc ins(%alloc_4 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_5 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) broadcast_dims = [1]
+      hivm.hir.vadd ins(%alloc_5, %alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>, memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vcast ins(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc_2 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>)
+      %12 = arith.muli %arg15, %c20_i32 : i32
+      %13 = arith.addi %12, %1 : i32
+      %14 = arith.divsi %13, %c2048_i32 : i32
+      %15 = arith.index_cast %14 : i32 to index
+      %16 = arith.remsi %13, %c2048_i32 : i32
+      %17 = arith.muli %16, %c64_i32 : i32
+      %18 = arith.index_cast %17 : i32 to index
+      %19 = arith.muli %15, %c8388608 : index
+      %20 = arith.addi %19, %18 : index
+      %subview_9 = memref.subview %alloc_2[0, 0] [64, 64] [1, 1] : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %subview_10 = memref.subview %reinterpret_cast[%15, 0, %18] [1, 64, 64] [1, 1, 1] : memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>> to memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_11 = memref.reinterpret_cast %subview_10 to offset: [%20], sizes: [64, 64], strides: [131072, 1] : memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview_9, %reinterpret_cast_11 : memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %21 = arith.addi %5, %c1_i32 : i32
+      %22 = arith.extsi %21 : i32 to i64
+      hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = %22 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+}
+
+
+// -----// IR Dump After AdaptTritonKernel (adapt-triton-kernel) ('builtin.module' operation) //----- //
+module attributes {hivm.module_core_type = #hivm.module_core_type<MIX>, memref.memref_as_ptr} {
+  func.func @_conv3d_bias_main_mix_aic(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIC>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c864 = arith.constant 864 : index
+    %c64 = arith.constant 64 : index
+    %c2_i32 = arith.constant 2 : i32
+    %true = arith.constant true
+    %c80_i32 = arith.constant 80 : i32
+    %c3_i32 = arith.constant 3 : i32
+    %c9_i32 = arith.constant 9 : i32
+    %c5280_i32 = arith.constant 5280 : i32
+    %c64_i32 = arith.constant 64 : i32
+    %c2048_i32 = arith.constant 2048 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c2067_i32 = arith.constant 2067 : i32
+    %c32_i32 = arith.constant 32 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c27_i32 = arith.constant 27 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1, 32, 179520], strides: [5744640, 179520, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [27, 64, 32], strides: [2048, 32, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    %alloc = memref.alloc() : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>
+    scf.for %arg15 = %c0_i32 to %c27_i32 step %c1_i32  : i32 {
+      %4 = arith.index_cast %arg15 : i32 to index
+      %subview = memref.subview %reinterpret_cast_1[%4, 0, 0] [1, 64, 32] [1, 1, 1] : memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>> to memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>
+      %5 = arith.muli %arg15, %c32_i32 : i32
+      %6 = arith.index_cast %5 : i32 to index
+      %subview_2 = memref.subview %alloc[0, %6] [64, 32] [1, 1] : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>> to memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>
+      hivm.hir.nd2nz {dst_continuous} ins(%subview : memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_2 : memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+    }
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc_2 = memref.alloc() : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>
+      %alloc_3 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      scf.for %arg16 = %c0_i32 to %c27_i32 step %c1_i32  : i32 {
+        %11 = arith.muli %arg15, %c20_i32 : i32
+        %12 = arith.addi %11, %1 : i32
+        %13 = arith.divsi %12, %c2048_i32 : i32
+        %14 = arith.index_cast %13 : i32 to index
+        %15 = arith.remsi %12, %c2048_i32 : i32
+        %16 = arith.divsi %15, %c64_i32 : i32
+        %17 = arith.muli %16, %c5280_i32 : i32
+        %18 = arith.divsi %arg16, %c9_i32 : i32
+        %19 = arith.muli %18, %c5280_i32 : i32
+        %20 = arith.addi %17, %19 : i32
+        %21 = arith.remsi %arg16, %c9_i32 : i32
+        %22 = arith.divsi %21, %c3_i32 : i32
+        %23 = arith.muli %22, %c80_i32 : i32
+        %24 = arith.addi %20, %23 : i32
+        %25 = arith.remsi %12, %c64_i32 : i32
+        %26 = arith.muli %25, %c80_i32 : i32
+        %27 = arith.addi %24, %26 : i32
+        %28 = arith.remsi %arg16, %c3_i32 : i32
+        %29 = arith.addi %27, %28 : i32
+        %30 = arith.index_cast %29 : i32 to index
+        %subview_5 = memref.subview %reinterpret_cast[%14, 0, %30] [1, 32, 64] [1, 1, 1] : memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>> to memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>
+        %31 = arith.muli %arg16, %c32_i32 : i32
+        %32 = arith.index_cast %31 : i32 to index
+        %subview_6 = memref.subview %alloc_2[%32, 0] [32, 64] [1, 1] : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>> to memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_5 : memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_6 : memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+      }
+      hivm.hir.mmadL1 ins(%alloc, %alloc_2, %true, %c64, %c864, %c64 : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>, memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>, i1, index, index, index) outs(%alloc_3 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>)
+      %4 = arith.remsi %arg15, %c2_i32 : i32
+      %5 = arith.muli %4, %c2_i32 : i32
+      %6 = arith.addi %5, %c1_i32 : i32
+      %7 = arith.extsi %6 : i32 to i64
+      hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_FIX>] flag = %7
+      %subview = memref.subview %alloc_3[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      %8 = arith.index_cast %1 : i32 to index
+      %9 = arith.index_cast %4 : i32 to index
+      %subview_4 = memref.subview %reinterpret_cast_0[%8, %9, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      hivm.hir.fixpipe {enable_nz2nd} ins(%subview : memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>) outs(%subview_4 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>)
+      %10 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_S>] flag = %10 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+  func.func @_conv3d_bias_main_mix_aiv(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c8388608 = arith.constant 8388608 : index
+    %c64_i32 = arith.constant 64 : i32
+    %c2048_i32 = arith.constant 2048 : i32
+    %c8192 = arith.constant 8192 : index
+    %c16384 = arith.constant 16384 : index
+    %c2_i32 = arith.constant 2 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c2067_i32 = arith.constant 2067 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg5 to offset: [0], sizes: [1, 64, 131072], strides: [8388608, 131072, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg6 to offset: [0], sizes: [64], strides: [1] : memref<?xbf16, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 1 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 3 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_2 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_3 = memref.alloc() : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %4 = arith.remsi %arg15, %c2_i32 : i32
+      %5 = arith.muli %4, %c2_i32 : i32
+      %6 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_wait[<VECTOR>, <PIPE_S>, <PIPE_MTE2>] flag = %6
+      %7 = arith.index_cast %1 : i32 to index
+      %8 = arith.index_cast %4 : i32 to index
+      %9 = arith.muli %7, %c16384 : index
+      %10 = arith.muli %8, %c8192 : index
+      %11 = arith.addi %9, %10 : index
+      %subview = memref.subview %reinterpret_cast_0[%7, %8, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      %subview_6 = memref.subview %alloc[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_7 = memref.reinterpret_cast %subview to offset: [%11], sizes: [64, 64], strides: [128, 1] : memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %reinterpret_cast_7, %subview_6 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_8 = memref.reinterpret_cast %alloc_3 to offset: [0], sizes: [64], strides: [1] : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      memref.copy %reinterpret_cast_1, %reinterpret_cast_8 : memref<64xbf16, strided<[1]>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      hivm.hir.vcast ins(%alloc_3 : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_4 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vbrc ins(%alloc_4 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_5 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) broadcast_dims = [1]
+      hivm.hir.vadd ins(%alloc_5, %alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>, memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vcast ins(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc_2 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>)
+      %12 = arith.muli %arg15, %c20_i32 : i32
+      %13 = arith.addi %12, %1 : i32
+      %14 = arith.divsi %13, %c2048_i32 : i32
+      %15 = arith.index_cast %14 : i32 to index
+      %16 = arith.remsi %13, %c2048_i32 : i32
+      %17 = arith.muli %16, %c64_i32 : i32
+      %18 = arith.index_cast %17 : i32 to index
+      %19 = arith.muli %15, %c8388608 : index
+      %20 = arith.addi %19, %18 : index
+      %subview_9 = memref.subview %alloc_2[0, 0] [64, 64] [1, 1] : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %subview_10 = memref.subview %reinterpret_cast[%15, 0, %18] [1, 64, 64] [1, 1, 1] : memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>> to memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_11 = memref.reinterpret_cast %subview_10 to offset: [%20], sizes: [64, 64], strides: [131072, 1] : memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview_9, %reinterpret_cast_11 : memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %21 = arith.addi %5, %c1_i32 : i32
+      %22 = arith.extsi %21 : i32 to i64
+      hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = %22 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+}
+
+
+
+====== final npuir ======
+module attributes {hivm.module_core_type = #hivm.module_core_type<MIX>, memref.memref_as_ptr} {
+  func.func @_conv3d_bias_main_mix_aic(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIC>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c864 = arith.constant 864 : index
+    %c64 = arith.constant 64 : index
+    %c2_i32 = arith.constant 2 : i32
+    %true = arith.constant true
+    %c80_i32 = arith.constant 80 : i32
+    %c3_i32 = arith.constant 3 : i32
+    %c9_i32 = arith.constant 9 : i32
+    %c5280_i32 = arith.constant 5280 : i32
+    %c64_i32 = arith.constant 64 : i32
+    %c2048_i32 = arith.constant 2048 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c2067_i32 = arith.constant 2067 : i32
+    %c32_i32 = arith.constant 32 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c27_i32 = arith.constant 27 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1, 32, 179520], strides: [5744640, 179520, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [27, 64, 32], strides: [2048, 32, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    %alloc = memref.alloc() : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>
+    scf.for %arg15 = %c0_i32 to %c27_i32 step %c1_i32  : i32 {
+      %4 = arith.index_cast %arg15 : i32 to index
+      %subview = memref.subview %reinterpret_cast_1[%4, 0, 0] [1, 64, 32] [1, 1, 1] : memref<27x64x32xbf16, strided<[2048, 32, 1]>, #hivm.address_space<gm>> to memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>
+      %5 = arith.muli %arg15, %c32_i32 : i32
+      %6 = arith.index_cast %5 : i32 to index
+      %subview_2 = memref.subview %alloc[0, %6] [64, 32] [1, 1] : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>> to memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>
+      hivm.hir.nd2nz {dst_continuous} ins(%subview : memref<64x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_2 : memref<64x32xbf16, strided<[864, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+    }
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc_2 = memref.alloc() : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>
+      %alloc_3 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      scf.for %arg16 = %c0_i32 to %c27_i32 step %c1_i32  : i32 {
+        %11 = arith.muli %arg15, %c20_i32 : i32
+        %12 = arith.addi %11, %1 : i32
+        %13 = arith.divsi %12, %c2048_i32 : i32
+        %14 = arith.index_cast %13 : i32 to index
+        %15 = arith.remsi %12, %c2048_i32 : i32
+        %16 = arith.divsi %15, %c64_i32 : i32
+        %17 = arith.muli %16, %c5280_i32 : i32
+        %18 = arith.divsi %arg16, %c9_i32 : i32
+        %19 = arith.muli %18, %c5280_i32 : i32
+        %20 = arith.addi %17, %19 : i32
+        %21 = arith.remsi %arg16, %c9_i32 : i32
+        %22 = arith.divsi %21, %c3_i32 : i32
+        %23 = arith.muli %22, %c80_i32 : i32
+        %24 = arith.addi %20, %23 : i32
+        %25 = arith.remsi %12, %c64_i32 : i32
+        %26 = arith.muli %25, %c80_i32 : i32
+        %27 = arith.addi %24, %26 : i32
+        %28 = arith.remsi %arg16, %c3_i32 : i32
+        %29 = arith.addi %27, %28 : i32
+        %30 = arith.index_cast %29 : i32 to index
+        %subview_5 = memref.subview %reinterpret_cast[%14, 0, %30] [1, 32, 64] [1, 1, 1] : memref<1x32x179520xbf16, strided<[5744640, 179520, 1]>, #hivm.address_space<gm>> to memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>
+        %31 = arith.muli %arg16, %c32_i32 : i32
+        %32 = arith.index_cast %31 : i32 to index
+        %subview_6 = memref.subview %alloc_2[%32, 0] [32, 64] [1, 1] : memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>> to memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_5 : memref<32x64xbf16, strided<[179520, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_6 : memref<32x64xbf16, strided<[64, 1], offset: ?>, #hivm.address_space<cbuf>>) init_out_buffer = false
+      }
+      hivm.hir.mmadL1 ins(%alloc, %alloc_2, %true, %c64, %c864, %c64 : memref<64x864xbf16, strided<[864, 1]>, #hivm.address_space<cbuf>>, memref<864x64xbf16, strided<[64, 1]>, #hivm.address_space<cbuf>>, i1, index, index, index) outs(%alloc_3 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>)
+      %4 = arith.remsi %arg15, %c2_i32 : i32
+      %5 = arith.muli %4, %c2_i32 : i32
+      %6 = arith.addi %5, %c1_i32 : i32
+      %7 = arith.extsi %6 : i32 to i64
+      hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_FIX>] flag = %7
+      %subview = memref.subview %alloc_3[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      %8 = arith.index_cast %1 : i32 to index
+      %9 = arith.index_cast %4 : i32 to index
+      %subview_4 = memref.subview %reinterpret_cast_0[%8, %9, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      hivm.hir.fixpipe {enable_nz2nd} ins(%subview : memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<cc>>) outs(%subview_4 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>)
+      %10 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_S>] flag = %10 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+  func.func @_conv3d_bias_main_mix_aiv(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xf32, #hivm.address_space<gm>>, %arg9: i32, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c8388608 = arith.constant 8388608 : index
+    %c64_i32 = arith.constant 64 : i32
+    %c2048_i32 = arith.constant 2048 : i32
+    %c8192 = arith.constant 8192 : index
+    %c16384 = arith.constant 16384 : index
+    %c2_i32 = arith.constant 2 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c2067_i32 = arith.constant 2067 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg5 to offset: [0], sizes: [1, 64, 131072], strides: [8388608, 131072, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg8 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg6 to offset: [0], sizes: [64], strides: [1] : memref<?xbf16, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 1 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 3 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    %2 = arith.subi %c2067_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg15 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_2 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_3 = memref.alloc() : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %4 = arith.remsi %arg15, %c2_i32 : i32
+      %5 = arith.muli %4, %c2_i32 : i32
+      %6 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_wait[<VECTOR>, <PIPE_S>, <PIPE_MTE2>] flag = %6
+      %7 = arith.index_cast %1 : i32 to index
+      %8 = arith.index_cast %4 : i32 to index
+      %9 = arith.muli %7, %c16384 : index
+      %10 = arith.muli %8, %c8192 : index
+      %11 = arith.addi %9, %10 : index
+      %subview = memref.subview %reinterpret_cast_0[%7, %8, 0, 0] [1, 1, 64, 64] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      %subview_6 = memref.subview %alloc[0, 0] [64, 64] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_7 = memref.reinterpret_cast %subview to offset: [%11], sizes: [64, 64], strides: [128, 1] : memref<1x1x64x64xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %reinterpret_cast_7, %subview_6 : memref<64x64xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_8 = memref.reinterpret_cast %alloc_3 to offset: [0], sizes: [64], strides: [1] : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      memref.copy %reinterpret_cast_1, %reinterpret_cast_8 : memref<64xbf16, strided<[1]>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      hivm.hir.vcast ins(%alloc_3 : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_4 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vbrc ins(%alloc_4 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_5 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) broadcast_dims = [1]
+      hivm.hir.vadd ins(%alloc_5, %alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>, memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vcast ins(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc_2 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>)
+      %12 = arith.muli %arg15, %c20_i32 : i32
+      %13 = arith.addi %12, %1 : i32
+      %14 = arith.divsi %13, %c2048_i32 : i32
+      %15 = arith.index_cast %14 : i32 to index
+      %16 = arith.remsi %13, %c2048_i32 : i32
+      %17 = arith.muli %16, %c64_i32 : i32
+      %18 = arith.index_cast %17 : i32 to index
+      %19 = arith.muli %15, %c8388608 : index
+      %20 = arith.addi %19, %18 : index
+      %subview_9 = memref.subview %alloc_2[0, 0] [64, 64] [1, 1] : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %subview_10 = memref.subview %reinterpret_cast[%15, 0, %18] [1, 64, 64] [1, 1, 1] : memref<1x64x131072xbf16, strided<[8388608, 131072, 1]>, #hivm.address_space<gm>> to memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_11 = memref.reinterpret_cast %subview_10 to offset: [%20], sizes: [64, 64], strides: [131072, 1] : memref<1x64x64xbf16, strided<[8388608, 131072, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview_9, %reinterpret_cast_11 : memref<64x64xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x64xbf16, strided<[131072, 1], offset: ?>, #hivm.address_space<gm>>
+      %21 = arith.addi %5, %c1_i32 : i32
+      %22 = arith.extsi %21 : i32 to i64
+      hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = %22 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+}
+AscendNPU IR compile success: 
+Workspace size: /tmp/tmpn8y46swp/libkernel.so not found, kernel gets no workspace
+[probe] kernel source -> logs/probe/unet_r1_forced.npuir.txt (5000 bytes)
+[probe] host source unavailable: 'JitKernel_NPU' object has no attribute 'get_host_source'

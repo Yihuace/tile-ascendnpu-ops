@@ -1,5 +1,9 @@
 # 优化报告：Conv3dBiasFwdOp（Stage-4 optimize）
 
+> **本文件版本 v1（2026-10-18 晚，第二轮 Stage-4）**：§0–§8 为第一轮（r3d-stem 1.99×）原文保留；
+> 第二轮新增 **§9：unet 路径 6428 → 301.6 µs（21.3×）**、r3d-stem 追加到 **2588.7 µs（对 Stage-3 2.36×）**。
+> 当前产物：`perf_opt/Conv3dBiasFwdOp.py`，sha256 `2e226a27…`（§9.6 给出最终表与 run_id）。
+
 ## 0. 身份
 
 | 项 | 值 |
@@ -13,6 +17,7 @@
 | benchmark | `benchmarks/ops/bench_conv3d_bias.py::test_conv3d_bias_manifest_bench`（**3 tune + 2 smoke**） |
 | 过程日志 | `.../perf_opt/opt_log.md`、`perf_records.jsonl`、`workload_inventory.json`、`profiles/`、`logs/`；实验分支 `perf_opt/candidates/r1_tap_pack_weight_resident.py`；探针 `perf_opt/probe_sliced_gemm.py` |
 | 前置报告 | 本文件 v0 归档 `history_version/OPTIMIZE_REPORT_v0.md`（内容相同，仅结构未归一） |
+| **当前产物（v1，第二轮）** | `perf_opt/Conv3dBiasFwdOp.py`，sha256 `2e226a27abaf…`：R3(NDHWC) ∥ R2(padded-N) ∥ R1 ∥ Stage-3 回退，四个**兄弟编译期分支**（详见 §9） |
 
 ## 1. 结论
 
@@ -164,3 +169,91 @@
    L1 超配是否仍以 SIGSEGV 失败（影响 `n_max` 绕法是否可简化）。
 5. 未解决项：unet-encoder-bias 的常驻失效属编译器对该 shape 的 L1 生命周期行为，参数/tiling 级不可解
    （原文已用 fp16 对照、`block_m=32` 对照、切片 gemm 探针三条证据排除）。
+
+
+---
+
+# 9. 第二轮优化（2026-10-18 晚）：unet 路径 21.3×
+
+> 目标：unet-encoder（`c_in_pad=32`）此前完全走 Stage-3 回退，未获任何优化。本轮不改 `DESIGN.md` /
+> `_conv3d_kernel.py` / wrapper，产物全在 `perf_opt/`。口径仍为 `msprof op Task Duration(us)`。
+
+## 9.1 本轮起点（同工具链复测，分两候选）
+
+| workload | Stage-3 基线 µs | perf_opt(R1) µs | 起点判定 |
+|---|---:|---:|---|
+| r3d-stem-bias-fp16 | 6116.38 | 3095.80 | R1 已 1.98× |
+| video-down-bias-fp16 | 86.48 | 87.10 | 已快 |
+| unet-encoder-bias-bf16 | 6428.05 | 6428.57 | **与 Stage-3 相同**（`c_in_pad==16` 闸门回退）|
+
+## 9.2 病根更正（推翻「权重常驻没写进去」的旧解释）
+
+第一轮把 unet 无收益归因为「编译器对 110 KB 常驻权重仍逐 task 从 L2 重载」。本轮用三条实测更正：
+
+1. **IR 层**：强制 R1（放开 `c_in_pad==16`）dump npuir IR，权重 27 次 `nd2nz` 位于 task 循环**外**，
+   `l1_a` 的 `memref.alloc` 也在循环外 ⇒ 常驻**已经写进 IR**。
+2. **copy 拆分探针**（把一侧 copy 缩到 16×16，只测时间）：A 全量/B 缩小 → 2749 µs；
+   B 全量/A 缩小 → 7160 µs；原版 6428 µs ⇒ 两侧各占约一半且部分重叠，**单改一侧最多 2.3×**。
+3. **机理**：常驻把 `l1_a`(110 KB)+`l1_b`(110 KB) 顶到 220 KB，**丧失多缓冲/流水重叠**，
+   逐 tap 串行化，抵消了「少一半 copy」的收益；真正的病根是 **im2col 输入 copy 的 DMA 段数**
+   （`aic_mte2_instructions = 91 774`，每次 copy 的源是 `c_in_pad` 个 128 B 小段、跨 359 KB 平面；
+   `GM_to_L1_bw_usage_rate` 仅 **5.63%**，即额定带宽的 1/18）。
+
+## 9.3 结构改造（两轮）
+
+| 轮次 | 改动（单一主要优化点） | unet µs | 相对起点 | r3d-stem µs | 关键 profile |
+|---|---|---:|---:|---:|---|
+| R2 | **padded-N 多行分块**：N 轴 = R 条输出行 × `w_pad` padded 坐标（`n_tile=R*w_pad`），一条连续 span 覆盖 R 行且自带 kw 平移；kw 打包进 K；尾部行组重叠；逐行 fixpipe 丢弃 padding 列 | **1534.21** | −76.1%（4.19×）| 2609.39（**−15.7%**）| MTE2 指令 91 774 → 16 039；bw 5.63% → 27.98% |
+| R3 | **+ channel-last（NDHWC）暂存**：通道改最内轴，每次 tap copy 变成**单条连续段**，GEMM 用 `b_transpose=True` 读 `[N,K]` | **306.41** | −80.0%（再 5.0×）| 4961.30（**回退，见 9.4**）| MTE2 指令 → 973；cube 0.018 → 0.248 |
+| 合并 | R3 闸门加 `c_in_pad>=32`，`c_in_pad<32` 走 R2（兄弟编译期分支） | 315.27 | — | 2630.27 | 全 tune + smoke 非回退 |
+| 参数 | `r3_rows` 4/5/6、`r2_rows` 2/3/4 扫描 | 309.8/303.7/**302.5** | 默认即最优 | 3547.7/**2641.4**/3065.1 | 上界 = L0C 容量 ⇒ `config_no_gain` |
+
+**新增工具链实测（两个探针，均已落地为可复现脚本）**：
+
+- `probes/probe_cube_caps.py` P1：`T.copy(l0_c[0:M, off:off+N], gm)` 的 **L0C 列偏移被正确执行**
+  （`max_abs=7.6e-6`，off=32）。这正是 R2/R3 逐行丢弃 padding 列的前提；与
+  `TRAP-cube-gemm-sliced-operand`（gemm 操作数偏移被忽略）互补 —— 结论绑定 CANN 9.0.0。
+- 同脚本 P2：**Expert+L1 的 `b_transpose=True` 可用且数值正确**（`max_abs=9.5e-6`）。
+  CG-2026-0026 记录的 `b_transpose` 崩溃是 **Developer 模式 + shared buffer** 形态，不适用于本形态。
+- **陷阱**：`@T.prim_func` 若比同级分支多嵌一层 Python `if`，tilelang 的 source line-map 错位，
+  报 `InternalError: requested line: N at index: N-1 ... line_map size`（真实报错被渲染器吞掉）。
+  绕法：所有 prim_func 分支放同一层 `if`。
+
+## 9.4 r3d-stem 的反例（为什么 R3 要按 `c_in_pad` 分闸）
+
+NDHWC 下 `c_in_pad=16` 的内层连续段只有 **32 B**：`aic_mte2_instructions` 降到 1675 条，但
+`aic_mte2_time` 4712 µs = **2.8 µs/条**（unet 为 0.19 µs/条）⇒ 比「16 段 × 256 B 跨步」更差，
+实测 2609 → 4961 µs（+90%）。因此 R3 闸门收紧为 `c_in_pad >= 32`，`c_in_pad==16` 保留 R2。
+**「通道最内」不是普适优化，段宽 < 64 B 时反而退化**（新 D 类实测）。
+
+## 9.5 精度与回归
+
+- `python perf_opt/Conv3dBiasFwdOp.py --level all` → **All check passed**：L0 5 例、L1 10 例、
+  L2 6 例（6/6）、boundary 3 例（3/3）全 PASS；`max_abs` 与基线一致（unet bf16 5e-1 级）。
+- `python -m pytest tests/ops/test_conv3d_bias.py -q`（经 `tileops-report` correctness 阶段）→
+  **17/17 通过，0 failed，无 skip**（不再需要 CG-2026-0003 豁免）。
+- `tileops-report --op Conv3dBiasFwdOp --prof-mode msprof` → **status=passed**，
+  run_id `20261018_185919_687302_Conv3dBiasFwdOp`。
+
+## 9.6 最终结果（同一最终候选 `r3_merged`，sha256 `2e226a27…`）
+
+| workload | Stage-3 µs | 起点 µs | final µs | 对 Stage-3 | 对起点 | ratio（report）| 路径 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| r3d-stem-bias-fp16 | 6116.38 | 3095.80 | **2588.67** | −57.7%（**2.36×**）| −16.4% | 1.68% | R2 |
+| video-down-bias-fp16 | 86.48 | 87.10 | 86.70 | −0.2%（噪声内）| −0.5% | 6.26% | base（stride-2）|
+| unet-encoder-bias-bf16 | 6428.05 | 6428.57 | **301.59** | **−95.3%（21.3×）** | −95.3% | **20.43%** | R3 |
+| smoke-k3-s1-bias（仅精度）| 174.76 | — | 74.22 / 74.64 | −57.5% | — | 不计入 | R2 |
+
+- 报告 ratio 区间：**0.76–6.29% → 1.68–20.43%**（unet 0.76% → **20.43%**）。
+- 采纳判定：**建议采纳**（三 workload 均非回退；correctness 17/17）。
+- 中止原因：**plateau/budget** —— 结构方向两轮已落地、参数方向探到 L0C 上界（`config_no_gain`）。
+
+## 9.7 剩余 gap 与 ceiling 证据
+
+unet（301.6 µs）已从「MTE2 单侧独大」转为**三管道均衡**：
+`aic_mte2_ratio 0.621` / `aic_mte1_ratio 0.338`（L1→L0 操作数端口）/ `aic_cube_ratio 0.256` /
+`aic_fixpipe_ratio 0.107`。剩余成本来自 implicit-GEMM 的**固有 3× kh 重复读**
+（同一输入行被 kh=0/1/2 各读一次）：继续消除需要「按 kh 预移位的主机侧布局把 K 扩到 `kh*c_in`」
+（主机侧 3× 流量）或「gemm 支持操作数平移视图」（被 TRAP-cube-gemm-sliced-operand 阻断）。
+据此判定为**参数/tiling 之外的结构收益递减**，不满足 `[DESIGN_LIMIT]` 触发条件
+（结构加速估计 < 2×、且归因不在 DESIGN 假设），**不产出 `perf_feedback.md`**。
