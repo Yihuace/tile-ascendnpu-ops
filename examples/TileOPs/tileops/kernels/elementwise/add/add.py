@@ -54,24 +54,9 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-# ---------------------------------------------------------------------------
-# Kernel source selection: baseline vs perf_opt (Stage 4 tuned)
-#
-# Exactly one source block below is active; toggle by swapping the comment.
-# Default policy: the perf_opt source becomes active once tuned drop-in
-# kernels (same factory signatures) land at
-# .add_kernel/perf_opt/{func}.py and pass their L0/L1 regression;
-# the baseline (Stage 3) source is active otherwise.  ``pytest tests/ops/``
-# and ``pytest benchmarks/ops/`` dispatch through whichever source is
-# active here.
-# ---------------------------------------------------------------------------
-# --- baseline (Stage 3) ------------------------------------------------------
-from .add_kernel import add_fwd_kernel
+# from .add_kernel import add_fwd_kernel
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .add_kernel.perf_opt.add_fwd_kernel import add_fwd_kernel
-
-# --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .add_kernel.perf_opt.add_fwd_kernel import add_fwd_kernel
+from .add_kernel.perf_opt.AddFwdOp import add_fwd_kernel
 
 __all__ = ["AddFwdKernel"]
 

@@ -18,8 +18,9 @@
 
 - 一句话：把 AddFwdOp 的 Stage-4 winner 结构同构移植到 Sub（满块静态 extent + 单尾块 epilogue +
   `T.Pipelined(num_stages=2)` + grid-stride 40 核），再叠加 **fp16(alpha==1) 原生 vsub** 快路径，
-  **15 个 tune case 中 14 个 ≥70% SOL**。
-- **达标数**：全 shape **14/15**、可调 shape **14/15**、豁免 **0**（15 个 tune case 原文均未声明豁免）。
+  **Stage-4 直跑：15 个 tune case 中 14 个 ≥70% SOL**。
+- **达标数（直跑）**：全 shape **14/15**、可调 shape **14/15**、豁免 **0**（15 个 tune case 原文均未声明豁免）。
+- **9.0 端到端 wrapper 复测（2026-10-18，run `20261018_145645_852546_SubFwdOp`）**：正确性 **24/24**、report `passed`；15 个 perf shape **15/15 ≥70%**，最低 `linear-bias bf16` **70.70%**（原直跑唯一未过项，本轮已过线）。
 - 关键收益：
   - 两个此前未过的 case 现在稳过：`linear-bias fp16` **73.97%**（12.96µs，−6.76%）、
     `llama-7b-hidden fp16` **73.29%**（12.99µs，−7.08%）；
@@ -28,8 +29,7 @@
 - 唯一未过 `linear-bias bf16` 66.76%：该 case 的 bf16 代码路径与 baseline 完全相同（A6 只改 fp16），
   5 对交错 A/B 显示 tuned **14.000→13.770µs（快 1.64%，verdict=tie）** ⇒ 官方值是跨轮漂移样本，不是回退。
 - 方法论修正：首轮 baseline 处于慢态，曾把 `llama-7b-hidden` 伪造成 −13.5%；相邻交错复测只剩 −0.6%。
-- **是否建议采纳 wrapper**：原文未记录明确建议；原文记「基准 `sub_fwd_kernel.py` 与 wrapper 未改」
-  （即 wrapper 切换块未翻，仍 import baseline）。
+- **是否建议采纳 wrapper**：**是，且已于 2026-10-18 切换**——`sub.py` 现 import `perf_opt.SubFwdOp`，并完成 9.0 端到端复测（15/15、正确性 24/24）。
 
 ## 2. 优化方法与过程
 
@@ -133,10 +133,10 @@ final 已降级为 `phase=merged` 保留，未删除。
 | 调优记录 | `.../perf_opt/opt_log.md`、`Optimize.md`、`perf_records.jsonl`、`logs/`、`candidates/` |
 | 实验清单 | `perf_opt/experiments_sub_r1.json`、`experiments_sub_final.json` |
 | 迁移期基线报告 | `reports/tileops/20261013_170400_275674_SubFwdOp/` |
-| 端到端 report | 原文未记录（原文未给出 perf_opt 版本的单算子 report 路径/状态） |
+| 端到端 report | **`reports/tileops/20261018_145645_852546_SubFwdOp/`（status=passed，正确性 24/24，15/15 ≥70%）**；原文未记录 |
 | gate 4 | `pass` |
 | 算子状态 | `phase=DONE`（原文记；`perf_iteration.count=2`、`last_improvement=3.06`） |
-| wrapper 切换 | 未切换（原文记「基准 `sub_fwd_kernel.py` 与 wrapper 未改」，wrapper 仍 import baseline） |
+| wrapper 切换 | **已切换 `perf_opt`（2026-10-18 统一 9.0 口径时启用）**；原文记未切 |
 | pattern-library 回写 | PL-1.22 增补「同构算子迁移不复现首轮大收益」的边界（原文 Skill Retrospective） |
 
 ## 7. 天花板 / 豁免 / 缺口
@@ -154,8 +154,7 @@ final 已降级为 `phase=merged` 保留，未删除。
 
 ## 8. 建议
 
-1. **wrapper 采纳建议：原文未记录**（原文未给出采纳/不采纳建议；实际 wrapper 未切换）。若采纳，
-   需先把 `sub.py` 的双 import 切换块翻到 `perf_opt` 并重跑 smoke 与 15 个 tune case。
+1. **wrapper 采纳：已采纳**（2026-10-18 将 `sub.py` 切换块翻到 `perf_opt.SubFwdOp`，并完成 9.0 端到端复测：正确性 24/24、15/15 ≥70%）。
 2. 后续任何 <5% 的结论必须用相邻交错或 A/B 支撑（原文方法论：首轮 baseline 慢态会把机器双态
    误读为优化收益，本案 `llama-hidden` 假 −13.5%）。
 3. 贴线项复核顺序：`linear-bias bf16` / `linear-bias fp16` / `llama-7b-hidden fp16` 需多对 A/B 后再改判。

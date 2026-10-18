@@ -22,6 +22,7 @@
 - 未达标分布：16m/256m fp16 55–65%，bf16 55–62%（原文结论节）。
 - 结构：满块静态 extent + 尾块 epilogue + `T.Pipelined(2)` + grid-stride 40 核 + 3-pass vselect 链 @8192。
 - **是否建议采纳 wrapper**：**否**。相对基线整体收益仅 0~−6.2%，且根因是硬件带宽地板（非实现可解）；perf_opt 版本与 baseline 在 fp16/256m 上打平甚至 +0.55%。是否采纳由 conductor 在回归通过后按「收益是否值得维护双版本」权衡（原文『二次深挖』采纳建议）。
+- **9.0 端到端复测（2026-10-18，基线 wrapper，run `20261018_152024_774098_IsnanFwdOp`）**：正确性 **9/9**、report `passed`；5 个 perf shape **1/5 ≥70%**（16m fp32 79.33%），ratio 范围 **52.91–79.33%**，与 Stage-4 直跑结论一致；维持不采纳 perf_opt。
 
 ## 2. 优化方法与过程
 
@@ -122,7 +123,7 @@ smoke：3 个 `smoke-1m`（label 含 smoke）仅做精度回归 PASS，不参与
 | gate 4 | `pass` |
 | 算子状态 | `phase=DONE` |
 | wrapper | 未翻转（原文『二次深挖』采纳建议：不建议采纳） |
-| 端到端 report | 原文未记录 |
+| 端到端 report | **`reports/tileops/20261018_152024_774098_IsnanFwdOp/`（status=passed，9/9，1/5 ≥70%）**；原文未记录 |
 | pattern-library 回写 | PL-1.23（CG-2026-0027 性能影响评估修正为「MTE2 地板钉死 SOL，3-pass 已隐藏」） |
 
 ## 7. 天花板 / 豁免 / 缺口

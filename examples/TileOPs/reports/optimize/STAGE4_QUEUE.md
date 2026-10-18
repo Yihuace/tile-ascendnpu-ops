@@ -101,3 +101,4 @@
 - 2026-10-18 02:5x **蒸馏批（#1/#2/#3）完成**：`EVOLVE_COMPLETED`，git `db02f01`；Tier0 合入 PL-1.24（hoist 循环不变量，2/2）+ CASE-gelu；入队 VP-2026-0148（dtype 分化 erf 阶数 −43.6%，最高价值）/0149（GM SOL 判据失配，3 算子互证）/0150（erf 饱和硬约束）；Tier2 待批 0147、0151–0154。
 - 2026-10-18 01:45 **#2 GeluTanhAndMul DONE**：prefill −8.2%/−8.1%、swiglu −5.0%、decode 豁免；精度全绿；report passed；`complete 4`（gate pass）。
 - 2026-10-18 00:5x **#2 GeluTanhAndMul 派发**（optimizer，mode=full；预注入 CG-2026-0023 Vtanh 不可用 / CG-2026-0022 设备侧 gelu 非精确 / CONST-capacity-910B2C）。
+- 2026-10-18 16:0x **9.0 口径统一完成**：Add / Sub / Isnan / ClampMin 四个 8.5 残留完成端到端重测；Add / Sub 切 `perf_opt`。结果：Add **10/11**（69.37–83.48%）、Sub **15/15**（70.70–84.00%）、Isnan **1/5**（52.91–79.33%）、ClampMin **0/7**（61.77–68.84%）。全 shape 严格达标收敛为 **Sub 1 个**；ClampScalar/ClampMin 的 9.0 回退单列待定性。

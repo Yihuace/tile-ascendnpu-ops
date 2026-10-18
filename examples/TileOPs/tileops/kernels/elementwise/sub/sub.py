@@ -54,9 +54,9 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .sub_kernel import sub_fwd_kernel
+# from .sub_kernel import sub_fwd_kernel
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .sub_kernel.perf_opt.sub_fwd_kernel import sub_fwd_kernel
+from .sub_kernel.perf_opt.SubFwdOp import sub_fwd_kernel
 
 __all__ = ["SubFwdKernel"]
 

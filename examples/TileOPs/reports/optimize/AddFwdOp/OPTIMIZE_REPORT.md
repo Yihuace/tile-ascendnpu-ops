@@ -16,7 +16,8 @@
 
 ## 1. 结论
 
-- **11 个 tune case 全部 ≥70% SOL**：全 shape **11/11**、可调 shape **11/11**，无豁免项。
+- **Stage-4 直跑 kernel：11 个 tune case 全部 ≥70% SOL**：全 shape **11/11**、可调 shape **11/11**，无豁免项。
+- **9.0 端到端 wrapper 复测（2026-10-18，run `20261018_143726_708597_AddFwdOp`）**：正确性 **24/24**、report `passed`；11 个 perf shape **10/11 ≥70%**，唯一 `linear-bias bf16` **69.37%**（贴线，与直跑 70.80% 差 1.4pp，判为测量噪声带）。
 - 最贴线的是 `linear-bias` fp16 **72.30%** / bf16 **70.80%**（此前两轮分别为 66.9% / 68.7%，均在线下）。
 - 结构：**满块静态 extent + 单尾块 epilogue + `T.Pipelined(num_stages=2)` + grid-stride 40 核 +
   fp16(`alpha==1`) 原生 vadd**。
@@ -115,7 +116,7 @@ A6 后 fp16 连续两次 ≥71%；`cnn bf16 +2.06%` 为噪声（同 case round 6
 | 迁移期基线报告 | `reports/tileops/20261013_162043_457669_AddFwdOp/` |
 | gate 4 | `pass` |
 | 算子状态 | `phase=DONE` |
-| wrapper | 已切 `perf_opt`（双 import 切换块） |
+| wrapper | 已切 `perf_opt`（2026-10-18 统一 9.0 口径时启用；双 import 切换块） |
 | 端到端验收 | `reports/tileops/20261017_095652_466213_AddFwdOp/`（status=passed） |
 | pattern-library 回写 | PL-1.22（小 shape 固定截距/负载不均）、PL-1.17 证伪更正（bf16 原生可用但不可靠）、TRAP-tvm-parser-rules 追加 |
 

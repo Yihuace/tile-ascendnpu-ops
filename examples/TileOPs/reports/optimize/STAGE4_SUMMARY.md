@@ -1,71 +1,74 @@
-# Stage-4 批量优化总报告（2026-10-17 22:52 → 2026-10-18 13:30）
+# Stage-4 批量优化总报告（2026-10-17 22:52 → 2026-10-18 15:54）
 
-> **口径**：`msprof op` Task Duration + Roofline GM Read+Write SOL；达标线按 AI 分类（访存 ≥70% / 算力 ≥60% / Mix ≥40%）；微型 shape（≤5µs）豁免；硬底线 = kernel 时间必须变短，不达标不得硬凑。
-> **版本纪律**：表中「口径」列标注该行数据的工具链版本（**9.0.0** 或 **8.5.2**）。**跨版本数字不可横比**——8.5.2 的行未在 9.0 重测。
+> **口径（2026-10-18 统一）**：全部性能数据为 **CANN 9.0.0** `msprof op` Task Duration + Roofline GM Read+Write SOL；达标线按 AI 分类（访存 ≥70% / 算力 ≥60% / Mix ≥40%）；微型 shape（≤5µs）豁免；硬底线 = kernel 时间必须变短，不达标不得硬凑。
+> **版本纪律**：不再混用 8.5.2。8.5.x 数据仅保留在 `MIGRATION_INDEX.md` 表 B 历史存档（不在本批 19 接口范围）；本报告所有行均为 9.0.0。
 > **统计纪律**：达标数一律**两个分母**（全 shape / 可调 shape），豁免项单列，不计入分母。
-> 明细：`STAGE4_QUEUE.md`（逐算子结论）、`STAGE4_RUNBOOK.md`（执行手册）、`REPORT_TEMPLATE.md`（报告模板）、`optimize/{Op}/OPTIMIZE_REPORT.md`（单算子报告）。
+> **明细**：`STAGE4_QUEUE.md`（逐算子结论）、`STAGE4_RUNBOOK.md`（执行手册）、`REPORT_TEMPLATE.md`（报告模板）、`optimize/{Op}/OPTIMIZE_REPORT.md`（单算子报告）。
 >
-> **口径策略（用户口径 2026-10-18）**：**能衔接 8.5 的一律衔接**——ClampScalar / Hardswish / Lerp / ClampMin 四行沿用 **8.5.2 报告原值**，不因 9.0 重定基线而重测或重写。仅当差异**特别大**（时延 >10% 或 ratio 跨达标线）时，在行内加「9.0 抽测」备注，**不改变 8.5 结论、不触发重优化**。
+> **口径策略（用户口径 2026-10-18）**：**全部统一 9.0.0**。Add / Sub 已切 `perf_opt`；ClampScalar / ClampMin 在 9.0 下的回退如实记录，不沿用 8.5 结论。
 
 ## 1. 本轮 11 个算子的结果（全部 9.0.0 口径）
 
 | 算子 | 关键时延收益 | 采纳 | SOL（可调 shape 达标） | 结论 |
 |---|---|---:|---|---|
-| GLADecodeOp | −21.6~28.3%（k_tile 16→32） | ✅ | 3.2–18.3%（0/5） | latency-bound（单 token decode），SOL 物理不可达 |
-| HardsigmoidFwdOp | 0（wash） | ✅（tie） | 53.6–63.2%（0/2） | 实测 compute-bound，GM SOL 判据失配 |
-| GeluTanhAndMulFwdOp | prefill −8.2/−8.1% | ✅ | 22.0–47.7%（0/4） | Vtanh 不可用；sigmoid 恒等折叠已到最小链 |
-| GeluAndMulFwdOp | **prefill −43.6/−43.1%** | ✅ | 32.7–47.7%（0/4） | **dtype 分化 erf 阶数**（deg-20 → deg-10 for fp16/bf16） |
-| IsnanFwdOp | 0（plateau） | ❌ | 55.3–78.5%（1/7） | **MTE2 混合读写带宽地板**，非 pass 数受限 |
-| IsinfFwdOp | **bf16 −19.4~−19.9%** | ✅ | 41.4–74.7%（1/7） | `vand(x,0x7FFF)` 求 \|x\|，bf16 6→4 pass |
-| IsfiniteFwdOp | **bf16 −21.2/−16.4%** | ✅ | 41.7–78.0%（1/7） | 同 `vand` 路径（第二独立证据） |
-| FusedAddLayerNormFwdOp | **8b prefill −23.2%**、70b −14.2% | ✅ | 29.2–45.2%（0/5） | loads-first 装载前置；单遍方差 tie 弃用 |
-| BatchNormBwdOp | **−33~−46%**（几何 −40.3%） | ✅ | ratio 不可比（见 §4） | subid 分片从 MixCV 迁到 Vector 归约族 |
-| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep **3.6×** | ✅ | 0.25–1.8%（0/8） | 形状路由修正后绕开 9.0 编译器缺陷；Bias report passed / Conv1d partial |
-| Conv3dBiasFwdOp | **r3d-stem 1.99×** | ✅ | 0.25→0.51%（0/3） | tap 打包 + 权重 L1 常驻；其余 shape 编译期回退 baseline |
+| GLADecodeOp | −21.6~28.3%（k_tile 16→32） | ✅ | 3.16–18.24%（0/5） | latency-bound（单 token decode），SOL 物理不可达 |
+| HardsigmoidFwdOp | 0（wash） | ✅（tie） | 0.37–61.52%（0/2；4 微型豁免） | 实测 compute-bound，GM SOL 判据失配 |
+| GeluTanhAndMulFwdOp | prefill −8.2/−8.1% | ✅ | 2.22–47.63%（0/4） | Vtanh 不可用；sigmoid 恒等折叠已到最小链 |
+| GeluAndMulFwdOp | **prefill −43.6/−43.1%** | ✅ | 4.05–47.71%（0/4） | **dtype 分化 erf 阶数**（deg-20 → deg-10 for fp16/bf16） |
+| IsnanFwdOp | 0（plateau） | ❌ | 52.91–79.33%（1/5） | **MTE2 混合读写带宽地板**，非 pass 数受限 |
+| IsinfFwdOp | **bf16 −19.4~−19.9%** | ✅ | 41.45–78.13%（1/5） | `vand(x,0x7FFF)` 求 \|x\|，bf16 6→4 pass |
+| IsfiniteFwdOp | **bf16 −21.2/−16.4%** | ✅ | 42.29–78.29%（1/5） | 同 `vand` 路径（第二独立证据） |
+| FusedAddLayerNormFwdOp | **8b prefill −23.2%**、70b −14.2% | ✅ | 0.54–43.89%（0/5；2 微型豁免） | loads-first 装载前置；单遍方差 tie 弃用 |
+| BatchNormBwdOp | **−33~−46%**（几何 −40.3%） | ✅ | 11.91–24.44%（0/6，subid 不可比） | subid 分片从 MixCV 迁到 Vector 归约族 |
+| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep **3.6×** | ✅ | 0.24–1.77%（Conv1d 0/15、Bias 0/8） | 形状路由修正后绕开 9.0 编译器缺陷；Bias report passed / Conv1d partial |
+| Conv3dBiasFwdOp | **r3d-stem 1.99×** | ✅ | 0.76–6.29%（0/3） | tap 打包 + 权重 L1 常驻；其余 shape 编译期回退 baseline |
 
-## 2. 18 个接口：迁移态 vs 优化态 ratio（全可调 shape 范围）
+## 2. 18 个接口：CANN 9.0.0 端到端现状（全可调 shape 范围）
 
-| 算子 | 可调 shape | 迁移态 ratio | 优化态 ratio | 达标线 | 达标数 | 口径 | 采纳 |
-|---|---|---:|---:|---:|:--:|:--:|---|
-| Add | 11 | 69.5–82.3% | **70.8–82.6%** | 70 | **11/11** ✅ | 9.0 | ✅ |
-| Sub | 15 | 68.1–83.4% | 66.8–84.7% | 70 | **14/15** ✅ | 9.0 | ✅ |
-| ClampScalar | 6\* | 45.5–62.8% | **71.9–82.8%** | 70 | **6/6** ✅ | **8.5** | ✅ |
-| Lerp | 1（单点） | 80.8% | 80.8% | 70 | 1/1（未按全 shape 验证） | **8.5** | 未优化 |
-| ClampMin | 1（单点） | 73.2% | 73.2% | 70 | 1/1（未按全 shape 验证） | **8.5** | 未优化 |
-| Hardswish | 6 | 49.9–60.6% | 50.3–61.6% | 60 | **2/6** ⚠️ | **8.5** | 未切 |
-| Hardsigmoid | 2 | 55.6–59.7% | 53.6–63.2% | 70 | 0/2 ❌ | 9.0 | ✅(tie) |
-| Isnan | 7 | 51.1–77.3% | 55.3–78.5% | 70 | 1/7 ❌ | 9.0 | ❌ |
-| Isinf | 7 | 41.7–71.9% | 41.4–74.7% | 70 | 1/7 ❌ | 9.0 | ✅ |
-| Isfinite | 7 | 41.3–73.0% | 41.7–78.0% | 70 | 1/7 ❌ | 9.0 | ✅ |
-| GeluTanhAndMul | 4 | 23.3–49.7% | 22.0–47.7% | 60 | 0/4 ❌ | 9.0 | ✅ |
-| GeluAndMul | 4 | 34.4–44.0% | 32.7–47.7% | 60 | 0/4 ❌ | 9.0 | ✅ |
-| FusedAddLayerNorm | 5 | 27.1–45.1% | 29.2–45.2% | 60 | 0/5 ❌ | 9.0 | ✅ |
-| BatchNormBwd | 6 | 15.3–28.2% | 13.0–25.5%（**不可比**） | 60 | 0/6 ❌ | 9.0 | ✅ |
-| GLADecode | 5 | 2.5–13.4% | 3.2–18.3% | 60 | 0/5 ❌ | 9.0 | ✅ |
-| Conv1d | 8 | 0.07–0.46% | 0.25–1.8% | 60 | 0/8 ❌ | 9.0 | ✅ |
-| Conv1dBias | 8 | 0.11–0.46% | 0.25–1.8% | 60 | 0/8 ❌ | 9.0 | ✅ |
-| Conv3dBias | 3 | 0.25% | 0.51% | 60 | 0/3 ❌ | 9.0 | ✅ |
+> 数据源：`reports/tileops/<run_id>/run.json`；`ratio` 为 `roofline_utilization_percent`。达标线按 AI 分类：访存 ≥70% / 算力 ≥60%。
 
-> \* ClampScalar 的 6 为 8.5 报告中的行数（16M×3、256M×2、min-only/max-only 各 1 行含 3 个 dtype，共 11 个 shape）。
-> **9.0 抽测备注（差异特别大，仅记录、不重做）**：同一优化版在 9.0 CLI 下 11 个 shape 的 ratio 为 **58.2–70.2%（1/11 过线）**，时延相对 8.5 **+4~33%**。说明 9.0 codegen 对该链有回退；因测量链路也不同（自建脚本 → 官方 CLI），暂不归因、不重优化，留作风险项。
+| 算子 | perf shape | 9.0 ratio | 达标线 | 达标数 | 生效内核 | 采纳 |
+|---|---:|---:|---:|:--:|---|---|
+| Add | 11 | 69.37–83.48% | 70 | **10/11**（min 69.37 贴线） | `perf_opt` | ✅ |
+| Sub | 15 | 70.70–84.00% | 70 | **15/15** ✅ | `perf_opt` | ✅ |
+| ClampScalar | 11 | 58.21–70.16% | 70 | **1/11** ❌ | `perf_opt` | ✅（9.0 回退） |
+| ClampMin | 7 | 61.77–68.84% | 70 | **0/7** ❌ | 复用 ClampScalar `perf_opt` | ✅（继承） |
+| Lerp | 11 | 60.22–82.03% | 70 | **9/11** ⚠️ | baseline | 未优化 |
+| Hardswish | 6 | 50.20–60.95% | 60 | **2/6** ⚠️ | baseline | 未切 |
+| Hardsigmoid | 6（4 微型豁免） | 0.37–61.52% | 70 | **0/2** ❌ | `perf_opt` | ✅(tie) |
+| Isnan | 5 | 52.91–79.33% | 70 | **1/5** ❌ | baseline | ❌ |
+| Isinf | 5 | 41.45–78.13% | 70 | **1/5** ❌ | `perf_opt` | ✅ |
+| Isfinite | 5 | 42.29–78.29% | 70 | **1/5** ❌ | `perf_opt` | ✅ |
+| GeluTanhAndMul | 5（1 微型豁免） | 2.22–47.63% | 60 | **0/4** ❌ | `perf_opt` | ✅ |
+| GeluAndMul | 5（1 微型豁免） | 4.05–47.71% | 60 | **0/4** ❌ | `perf_opt` | ✅ |
+| FusedAddLayerNorm | 7（2 微型豁免） | 0.54–43.89% | 60 | **0/5** ❌ | `perf_opt` | ✅ |
+| BatchNormBwd | 6 | 11.91–24.44%（subid 去双计） | 60 | **0/6** ❌ | `perf_opt` | ✅ |
+| GLADecode | 5 | 3.16–18.24% | 60 | **0/5** ❌ | `perf_opt` | ✅ |
+| Conv1d | 15 | 0.24–1.77% | 60 | **0/15** ❌ | `perf_opt` | ✅ |
+| Conv1dBias | 8 | 0.24–1.73% | 60 | **0/8** ❌ | `perf_opt` | ✅ |
+| Conv3dBias | 3 | 0.76–6.29% | 60 | **0/3** ❌ | `perf_opt` | ✅ |
 
-### 达标统计（严格口径）
+> 备注：
+> - Add 的 `linear-bias bf16` 为 **69.37%**（贴线，与 Stage-4 直跑 70.80% 差 1.4pp）；Sub 原直跑唯一未过的 `linear-bias bf16` 在 9.0 端到端为 **70.70%**，已过线。
+> - ClampScalar / ClampMin 在 9.0 下相对 8.5 明显回退（8.5：71.9–82.8% / 69.8–77.2%）；本表按 9.0 实测记录，不沿用 8.5 结论。
+
+### 达标统计（严格口径，全部 9.0.0）
 
 | 判定 | 数量 | 算子 |
 |---|---|---|
-| **全 shape 严格达标** | **3** | Add（11/11）、Sub（14/15）、ClampScalar（6/6，8.5 口径） |
-| 单点达标但**未按全 shape 验证** | 2 | Lerp、ClampMin（8.5 口径，仅最大 shape） |
-| 边界 | 1 | Hardswish（2/6，compute-bound，向量利用率 0.94） |
-| 未达标但**已采纳真实时延收益** | 10 | Hardsigmoid、Isinf、Isfinite、GeluTanh、GeluAndMul、FALN、BatchNormBwd、GLA、Conv1d、Conv1dBias、Conv3dBias |
+| **全 shape 严格达标** | **1** | Sub（15/15） |
+| 贴线 / 部分达标 | 4 | Add（10/11）、Lerp（9/11）、Hardswish（2/6）、ClampScalar（1/11） |
+| 未达标但**已采纳真实时延收益** | 12 | Hardsigmoid、ClampMin、Isinf、Isfinite、GeluTanh、GeluAndMul、FALN、BatchNormBwd、GLA、Conv1d、Conv1dBias、Conv3dBias |
 | 未达标且未采纳 | 1 | Isnan（无收益） |
+| 未交付 | 1 | GDN（2/6 kernel，CG-2026-0003） |
 
-> 早前汇总曾把「最大 shape 达标」当作「算子达标」写成 6 个；**严格按全 shape 只有 3 个**，本表为准。
+> 上一版把 Add（11/11）、Sub（14/15）、ClampScalar（8.5 的 6/6）写成“3 个严格达标”；按 9.0 端到端**严格只有 Sub 1 个**，本表为准。
 
 ## 3. 三个口径陷阱（必须随报告一起读）
 
 1. **ratio 与收益脱钩**：compute-bound 算子删指令时 `total_fops` 同步下降，ratio 几乎不动（GeluAndMul −43.6% 时延，ratio 仅 43.2%→46.0%）。这类算子应以 Task Duration 判定。
 2. **subid 分片使 ratio 减半**：BatchNormBwd 的 `counted_flops` 去双计 → ratio 从 15.3–28.2% 降到 13.0–25.5%，但时延 −33~−46%。ratio 不可比（`VP-2026-0158`）。
-3. **跨版本不可横比**：ClampScalar / Hardswish / Lerp / ClampMin 仍是 8.5.2 数据，按用户口径**直接衔接**，不重测；仅 ClampScalar 因抽测差异大在行内加备注。
+3. **9.0 clamp 链回退**：ClampScalar 9.0 端到端 58.21–70.16%（1/11）、ClampMin 61.77–68.84%（0/7），相对 8.5 的 71.9–82.8% / 69.8–77.2% 明显下降。当前只记录、不重优化；定性需再做一次 baseline/tuned 同链路 A/B。
 
 ## 4. 天花板与豁免（已举证）
 
