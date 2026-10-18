@@ -24,12 +24,12 @@
 | IsfiniteFwdOp | bf16 **−21.2%** | ✅ | DONE |
 | FusedAddLayerNormFwdOp | 8b prefill **−23.2%** | ✅ | DONE |
 | BatchNormBwdOp | **−33~−46%** | ✅ | DONE |
-| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×** | ❌ | DONE（被 CANN 9.0 回归阻塞） |
+| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep 3.6× | ✅ | DONE（形状路由绕开 9.0 缺陷） |
 | Conv3dBiasFwdOp | r3d-stem **1.99×** | ✅ | DONE |
 
 ## 必须记住的三件事
 
-1. **CANN 9.0 回归（CG-2026-0003, recurring, occurrences=4）**：Conv1d/Conv1dBias 的 bias/MixCV 路径编译 SIGSEGV，**baseline 同崩**（A/B 已证）→ 该族在 9.0 下端到端不可用，不是优化问题。perf_opt 的 15× 成果保留待编译器修复。
+1. **CANN 9.0 编译器缺陷（CG-2026-0003, recurring, occurrences=4）**：`ConvertHFusionToHIVM` 对 buffer 形态 `mmadL1` 调 `getResult(0)` 越界；8.5.2 无此问题。已用两处形状路由在官方 9.0 上绕开：`dilation≠1` 走通用 kernel、unit-stride 仅 `c_in>=64` 用调优版；残留 1 个 bench 形状（wav2vec2-layer1）仍崩且与 Stage-3 逐字节相同 ⇒ pre-existing。
 2. **GM SOL 对 compute-bound 算子判据失配**：Hardsigmoid / GeluTanh / GeluAndMul 实测 `aiv_vec_ratio ≥0.85`，达标判定改按向量利用率 + Task Duration。
 3. **predicate 族（Isnan/Isinf/Isfinite）的 fp16/fp32 已达 MTE2 带宽地板**，bf16 通过 `vand` 位运算从 6-pass 降到 4-pass（−19~−21%）后也到地板。
 

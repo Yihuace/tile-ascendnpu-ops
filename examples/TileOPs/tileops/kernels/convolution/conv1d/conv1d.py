@@ -72,19 +72,27 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .conv1d_kernel import (
-    _conv1d_direct_kernel,
-    _conv1d_group_kernel,
-    _conv1d_kernel,
-    _conv1d_pointwise_kernel,
-    _conv1d_unit_stride_kernel,
-)
+# from .conv1d_kernel import (
+#     _conv1d_direct_kernel,
+#     _conv1d_group_kernel,
+#     _conv1d_kernel,
+#     _conv1d_pointwise_kernel,
+#     _conv1d_unit_stride_kernel,
+# )
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .conv1d_kernel.perf_opt._conv1d_direct_kernel import _conv1d_direct_kernel
-# from .conv1d_kernel.perf_opt._conv1d_group_kernel import _conv1d_group_kernel
-# from .conv1d_kernel.perf_opt._conv1d_kernel import _conv1d_kernel
-# from .conv1d_kernel.perf_opt._conv1d_pointwise_kernel import _conv1d_pointwise_kernel
-# from .conv1d_kernel.perf_opt._conv1d_unit_stride_kernel import _conv1d_unit_stride_kernel
+from .conv1d_kernel.perf_opt._conv1d_direct_kernel import _conv1d_direct_kernel
+from .conv1d_kernel.perf_opt._conv1d_group_kernel import _conv1d_group_kernel
+from .conv1d_kernel.perf_opt._conv1d_kernel import _conv1d_kernel
+from .conv1d_kernel.perf_opt._conv1d_pointwise_kernel import _conv1d_pointwise_kernel
+# unit-stride: the tuned kernel is only validated for large channel counts;
+# c_in < 64 hits a CANN 9.0 bishengir SIGSEGV (CG-2026-0003 family), so those
+# shapes keep the Stage-3 implementation.
+from .conv1d_kernel.perf_opt._conv1d_unit_stride_kernel import (
+    _conv1d_unit_stride_kernel as _unit_stride_tuned,
+)
+from .conv1d_kernel._conv1d_unit_stride_kernel import (
+    _conv1d_unit_stride_kernel as _unit_stride_base,
+)
 
 __all__ = [
     "Conv1dKernel",
@@ -343,7 +351,8 @@ class Conv1dUnitStrideKernel(Conv1dKernel):
             has_bias,
             config=None,
         )
-        self.kernel = _conv1d_unit_stride_kernel(
+        unit_stride_fn = _unit_stride_tuned if c_in >= 64 else _unit_stride_base
+        self.kernel = unit_stride_fn(
             n,
             c_in,
             l_in,

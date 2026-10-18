@@ -1,5 +1,7 @@
 {
-  "artifact_hashes": {},
+  "artifact_hashes": {
+    "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/Conv1dBiasFwdOp.py": "da6d6b0dbfe203850da69ae7c45dade8f76009cacecd7e2c5df1d3c47eab555f"
+  },
   "budget": {
     "max_stage4_experiments": null,
     "max_subagent_dispatches": null,
@@ -9,14 +11,14 @@
   "design_md_path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/DESIGN.md",
   "env_check_passed": false,
   "failure_reason": null,
-  "final_artifact": null,
-  "kernel_opt_py_path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/Conv1dFwdOp.py",
-  "kernel_py_path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d.py",
+  "final_artifact": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/Conv1dBiasFwdOp.py",
+  "kernel_opt_py_path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/Conv1dBiasFwdOp.py",
+  "kernel_py_path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
   "last_failure_reason": null,
-  "last_updated": "2026-10-17T07:28:13Z",
+  "last_updated": "2026-10-18T00:07:09Z",
   "max_retry": 3,
   "migration_mode": null,
-  "operator_name": "Conv1dFwdOp",
+  "operator_name": "Conv1dBiasFwdOp",
   "perf_feedback": null,
   "perf_iteration": {
     "consecutive_no_improvement": 0,
@@ -24,8 +26,8 @@
     "last_improvement": 0.0
   },
   "perf_tuning_requested": null,
-  "phase": "TUNING",
-  "project_name": "conv1d",
+  "phase": "DONE",
+  "project_name": "conv1d_bias",
   "retry_count": 0,
   "review_md_path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/REVIEW.md",
   "scenario": "optimize",
@@ -45,8 +47,8 @@
     "5": 0
   },
   "stage_status": {
-    "4": "in_progress"
+    "4": "completed"
   },
-  "task_id": "conv1d-Conv1dFwdOp-20261017T072809Z",
-  "user_requirement": null
+  "task_id": "conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z",
+  "user_requirement": "Stage 4：Conv1d/Conv1dBias 共用 kernel 一次优化；msprof Task Duration + SOL；物理不可达 shape 豁免，不伪达标"
 }

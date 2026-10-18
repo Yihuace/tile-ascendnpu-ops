@@ -152,7 +152,10 @@ class Conv1dFwdOp(Op):
             and dilation == 1
         ):
             return "conv1d_pointwise"
-        if stride == 1 and kernel_l > 1 and c_in >= 16:
+        # NOTE(2026-10-18): dilation != 1 routed to the general kernel.
+        # The unit-stride Cube path triggers a CANN 9.0 bishengir SIGSEGV
+        # (CG-2026-0003) for the dilation shape; the general kernel compiles.
+        if stride == 1 and kernel_l > 1 and c_in >= 16 and dilation == 1:
             return "conv1d_unit_stride"
         return "conv1d"
 
