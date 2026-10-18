@@ -13,7 +13,7 @@
 | 贴线 / 部分达标 | 4 | Add（10/11；`linear-bias bf16` 复测 63.7–69.4%，确认贴线未过）、Lerp（9/11）、Hardswish（2/6）、ClampScalar（1/11） |
 | 未达标但**已采纳真实时延收益** | 12 | Hardsigmoid、ClampMin、Isinf、Isfinite、GeluTanh、GeluAndMul、FALN、BatchNormBwd、Conv1d、Conv1dBias、Conv3dBias、GLA |
 | 未达标且未采纳 | 1 | Isnan（无收益，MTE2 带宽地板） |
-| 未交付 | 1 | GDN（2/6 kernel，CG-2026-0003） |
+| 未交付 | 1 | GDN（2/6 kernel，CG-2026-0003；2026-10-18 拆分探针：大 shape 3 级可拆、小 shape H=2 独立触发） |
 
 > 全 shape 达标从上一版“3 个”修正为“1 个”：Add 在 9.0 端到端下 10/11（`linear-bias bf16` 69.37%，复测 63.7–69.4%，确认未过线），ClampScalar 在 9.0 下仅 1/11（8.5 的 71.9–82.8% 不再引用）。
 > 所有数字来自 `reports/tileops/<run_id>/run.json`；8.5.2 数据仅保留在 `MIGRATION_INDEX.md` 表 B 历史存档（不在本批范围）。
@@ -66,7 +66,7 @@
 
 1. **CANN 9.0 编译器缺陷（CG-2026-0003, recurring, occurrences=4）**：`ConvertHFusionToHIVM` 对 buffer 形态 `mmadL1` 取 `getResult(0)` 越界；**9.0.0 与 9.2.0 官方包均有**，8.5.2 无（405/405）。
    - Conv1d/Conv1dBias 已用**形状路由**绕开（`dilation==1` 才走 unit-stride；unit-stride 仅 `c_in>=64` 用调优版）；通用 kernel 的 wav2vec2 由 taps-in-K 新 IR 形态绕开
-   - GDN blocksolve 仍阻塞（触发点在算法本体的 L0C→GM→L1 回喂）
+   - GDN blocksolve 仍阻塞（触发点在算法本体的 L0C→GM→L1 回喂；2026-10-18 拆分探针：3 级解锁 `S=1024,H=4`，但 `S=64,H=2` 在 1/3/6 级、group、核数下均失败）
 2. **ratio 与收益脱钩**：compute-bound 算子删指令时 `total_fops` 同步下降（GeluAndMul −43.6% 时延，ratio 43.2%→46.0%）。这类算子看 Task Duration，不看 ratio。
 3. **BatchNormBwd 的 ratio 因 subid 去双计而下降**（15.3–28.2% → 13.0–25.5%），不可比，时延 −40%。
 4. **口径策略：全部统一 CANN 9.0.0**（2026-10-18 用户口径）。8.5.2 数据仅在表 B 历史存档中保留，不再用于本批 19 接口的结论；跨版本数字不横比。
@@ -91,5 +91,5 @@
 ## 后续可选（按收益排序）
 
 1. **FALN 设计层**：两次 row-reduce 改 Cube GEMV 卸载，20–40%
-2. **GDN prefill**：先做判定性探针（换算法形态能否编译），再决定是否投入 1–2 天
+2. **GDN prefill**：判定性探针已完成（2026-10-18，`examples/gdn_prefill/probe/experiments/18_level_split/PROBE_20261018.md`）；结论是拆 kernel 只能解锁大 shape，小 shape 需设计级替代（纯 Vector 前处理 / 换 tile 布局）
 3. Tier 2 进化提案（`VP-2026-0147`~`0162`）待人工审批

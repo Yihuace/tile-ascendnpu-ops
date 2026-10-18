@@ -883,6 +883,10 @@ evidence:
     记录属 CANN 8.5.2 时代（对照 CG-2026-0025 引用的 `20261014_174100_695290_Conv1dFwdOp`
     run.json）。A/B 报告目录（provenance，允许失效）：`examples/TileOPs/reports/tileops/20261018_080316_363991_Conv1dBiasFwdOp/`
     （failed 7）+ `20261018_080550_611212_Conv1dBiasFwdOp/`（baseline failed 3）。
+  - GDN 拆分/分组/核数判定性探针（2026-10-18，`examples/gdn_prefill/probe/experiments/18_level_split/PROBE_20261018.md`）：
+    3 级变体使 `S=1024,H=4,dk=128` 编译并运行成功（原版 6 级必崩）；但 `S=64,H=2,dk=64`
+    在 6/3/1 级、`group=1/2`、`cores=1/默认` 下均失败（SIGSEGV 或挂死）⇒ 小 shape 存在
+    **独立于链长/分组/核数的 codegen 触发点**，拆 kernel 只能解锁大 shape，不能收口 GDN。
 workaround: >-
   当前无 kernel 级绕法（IR 改名/删属性/补 result 均失败，见 blocked_algo）。可行途径：
   ① 取得与 Oct 树同代的 hivmc（原 8.5.2 内那份，本容器不可得）；② 自建 v1.2.0 发布分支
@@ -909,7 +913,7 @@ proposal: >-
   issue 草稿（[npuir] 前缀，**须用户批准后建**）：[npuir] ConvertHFusionToHIVM 对 buffer
   形态 op 取 getResult(0) 越界（mmadL1 形态 SIGSEGV / 挂死；主线已修未回合发布分支）。
 created_by: FA 3-impl perf comparison 2026-09-07
-last_seen: conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z Stage4 optimize（2026-10-18：端到端 A/B 对照——7 个 bias case 编译 SIGSEGV、baseline 同崩 3 case，历史 10-14/10-15 passed 属 CANN 8.5 时代，确认 CANN 9.0 回归）
+last_seen: GDN 拆分/分组/核数判定性探针（2026-10-18：3 级解锁 S=1024,H=4,dk=128；S=64,H=2,dk=64 在 1/3/6 级、group=1/2、cores=1 下均失败）
 ```
 
 > **升级依据**：task FA 三实现性能对比（2026-09-07，Expert fixpipe `dma_mode` 触发）+ CANN 9.0.0 重定基线-工作流②（2026-10-17，Cube `mmadL1` buffer 形态触发，含新坏法挂死）——两个不同任务、双触发形态、跨工具链（CANN 8.5.0 → 9.0.0）独立识别同一缺口（`ConvertHFusionToHIVM` 的 `getResult(0)` 越界），达 ≥2 任务阈值。proposal 字段已产出（result 数守卫 / 删 walk + 回合发布分支），待向用户显式列出并推动（外部 issue 须用户批准后建）。
