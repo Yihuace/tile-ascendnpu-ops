@@ -1,0 +1,54 @@
+{
+  "artifact_hashes": {
+    "examples/TileOPs/tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/perf_opt/GLADecodeOp.py": "143bac2d159bb9d505cefee2e196ba45151d39a472291c1cb61e54897194b8b2"
+  },
+  "budget": {
+    "max_stage4_experiments": null,
+    "max_subagent_dispatches": null,
+    "max_wallclock_s": null
+  },
+  "current_stage": 4,
+  "design_md_path": "examples/TileOPs/tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/DESIGN.md",
+  "env_check_passed": false,
+  "failure_reason": null,
+  "final_artifact": "examples/TileOPs/tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/perf_opt/GLADecodeOp.py",
+  "kernel_opt_py_path": "examples/TileOPs/tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/perf_opt/GLADecodeOp.py",
+  "kernel_py_path": "examples/TileOPs/tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+  "last_failure_reason": null,
+  "last_updated": "2026-10-18T22:05:00Z",
+  "max_retry": 3,
+  "migration_mode": null,
+  "operator_name": "GLADecodeOp",
+  "perf_feedback": null,
+  "perf_iteration": {
+    "count": 1,
+    "last_improvement": 0.143,
+    "consecutive_no_improvement": 0
+  },
+  "perf_tuning_requested": null,
+  "phase": "DONE",
+  "project_name": "gla_decode",
+  "retry_count": 0,
+  "review_md_path": "examples/TileOPs/tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/REVIEW.md",
+  "scenario": "optimize",
+  "stage3_failure_breakdown": {
+    "precision_fail": 0,
+    "runtime_fail": 0
+  },
+  "stage_plan": [
+    4
+  ],
+  "stage_retry_count": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+  },
+  "stage_status": {
+    "4": "completed"
+  },
+  "task_id": "gla_decode-GLADecodeOp-20261017T161529Z",
+  "user_requirement": "Stage 4 续优化（round 2，接续已完成任务 gla_decode-GLADecodeOp-20261017T145257Z 的 k_tile=32 最优版本）：msprof op Task Duration + GM Read+Write SOL；按 AI 分类判据（访存>=70%/算力>=60%/Mix>=40%）判定目标，不伪达标。上轮实测 GM SOL 仅 3.18%~18.25%、advice 全为 latency bound:pipeline caused；本轮须以实测探索结构性并行（DV 切分/多核/persistent/shape 分派）而不是只做参数微调。"
+}

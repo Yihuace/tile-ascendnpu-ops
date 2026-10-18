@@ -36,7 +36,7 @@
 
 > 手法：taps-in-K 单次 gemm + A 直读原生 weight + 恒等 x_pad 跳过 + 单通道 polyphase + N tile 512。
 > **wav2vec2 的 CG-2026-0003 编译崩溃已被新 IR 形态绕开**；残余 bench 失败为 unit_stride 的 flaky SIGSEGV，单点重跑 2 passed。
-> 新缺口：**CG-2026-0028**（Vector prelude「1D GM 切片 → 带列偏移 GM 子区域」写必崩），bias-in-K 折叠被迫放弃。
+> 新缺口：**CG-2026-0028**（Vector prelude「1D GM 切片 → 带列偏移 GM 子区域」写必崩），bias-in-K 折叠被迫放弃；**CG-2026-0029**（bias MixCV 的 ws 宽度必须 128，放大 N tile 触发 dual-entry）。bias 路径 240µs 的差距暂无法用 N tile 解决，已回退 128。
 
 ## P1：Conv3d unet 路径（9.0，2026-10-18）
 
@@ -46,11 +46,26 @@
 
 > **归因更正**：`c_in_pad=32` 的权重 L1 常驻**早已生效**（IR 中 27 次 `nd2nz` 在 task 循环外），旧结论“编译器仍逐 task 重载”不成立。真正病根是 **im2col 输入 copy 的 DMA 段数**（每 copy = `c_in_pad` 个 128B 小段、跨 359KB 平面；`aic_mte2_instructions=91774`、`GM_to_L1` 仅 5.63% 带宽）；两轮结构改造把段数降到 **973 条（−94×）** → 301.6µs。常驻反而把 L1 顶到 220KB、丢失多缓冲，是负杠杆。
 
+## P1：GLA persistent 分核（9.0，2026-10-18）
+
+| workload | k16 baseline | k32 current best | final（k32+persistent） | vs current best | vs 基线 |
+|---|---:|---:|---:|---:|---:|
+| serving-b1-h8 | 9.01 | 6.87 | 6.83 | −0.6%（tie） | −24.2% |
+| serving-b1-h32 | 11.03 | 8.35 | 8.21 | −1.7%（tie） | −25.6% |
+| serving-b1-h64 | 18.77 | 14.80 | **12.69** | **−14.3%** | −32.4% |
+| serving-b8-h32 | 57.59 | 41.73 | **38.39** | **−8.0%** | −33.3% |
+| serving-b8-h64 | 106.31 | 77.04 | **68.66** | **−10.9%** | −35.4% |
+
+> run `20261018_215742_239583`，correctness **11/11**、report passed，ratio 3.10–20.16%。
+> 分派规则：`B*H ≤ 40` 走原 flat 体（源码逐字节相同，零回退）；`B*H > 40` 才用 `T.Kernel(min(BH,40))` + grid-stride 核内 serial。
+> 过程中修复真 bug：persistent 包裹 fp32 直拷路径会静默算错（max|Δo|=5.12）→ persistent 只在 transit 路径启用，fp32 恒走 flat。
+> `T.Pipelined` 全落在噪声内 → advice 的 `latency bound:pipeline caused` 指 wave/依赖链，不是 copy-compute 未重叠；不再投入。
+
 ## 上一轮 11 个算子的结果（9.0.0 口径，仍有效）
 
 | 算子 | 关键时延收益 | 采纳 | 状态 |
 |---|---|---:|---|
-| GLADecodeOp | −21.6~28.3% | ✅ | DONE（latency-bound） |
+| GLADecodeOp | persistent 后相对 k16 **−24.2~35.4%** | ✅ | DONE（latency-bound） |
 | HardsigmoidFwdOp | 0（wash，判据失配） | ✅ | DONE |
 | GeluTanhAndMulFwdOp | prefill −8.2% | ✅ | DONE |
 | GeluAndMulFwdOp | prefill **−43.6%** | ✅ | DONE |

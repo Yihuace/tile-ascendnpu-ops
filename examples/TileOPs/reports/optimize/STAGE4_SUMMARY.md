@@ -11,7 +11,7 @@
 
 | 算子 | 关键时延收益 | 采纳 | SOL（可调 shape 达标） | 结论 |
 |---|---|---:|---|---|
-| GLADecodeOp | −21.6~28.3%（k_tile 16→32） | ✅ | 3.16–18.24%（0/5） | latency-bound（单 token decode），SOL 物理不可达 |
+| GLADecodeOp | **−24.2~35.4%**（k16→k32+persistent；超发 −8.0~14.3%） | ✅ | 3.10–20.16%（0/5） | latency-bound；persistent 仅 B*H>40；pipelining 无收益 |
 | HardsigmoidFwdOp | 0（wash） | ✅（tie） | 0.37–61.52%（0/2；4 微型豁免） | 实测 compute-bound，GM SOL 判据失配 |
 | GeluTanhAndMulFwdOp | prefill −8.2/−8.1% | ✅ | 2.22–47.63%（0/4） | Vtanh 不可用；sigmoid 恒等折叠已到最小链 |
 | GeluAndMulFwdOp | **prefill −43.6/−43.1%** | ✅ | 4.05–47.71%（0/4） | **dtype 分化 erf 阶数**（deg-20 → deg-10 for fp16/bf16） |
@@ -43,7 +43,7 @@
 | GeluAndMul | 5（1 微型豁免） | 4.05–47.71% | 60 | **0/4** ❌ | `perf_opt` | ✅ |
 | FusedAddLayerNorm | 7（2 微型豁免） | 0.54–43.89% | 60 | **0/5** ❌ | `perf_opt` | ✅ |
 | BatchNormBwd | 6 | 11.91–24.44%（subid 去双计） | 60 | **0/6** ❌ | `perf_opt` | ✅ |
-| GLADecode | 5 | 3.16–18.24% | 60 | **0/5** ❌ | `perf_opt` | ✅ |
+| GLADecode | 5 | 3.10–20.16% | 60 | **0/5** ❌（persistent −8~14.3%） | `perf_opt` | ✅ |
 | Conv1d | 15 | 0.04–1.79% | 60 | **0/15** ❌（Task Duration 17.7×） | `perf_opt` | ✅ |
 | Conv1dBias | 8 | 0.03–1.73% | 60 | **0/8** ❌（Task Duration 8.3–8.9×） | `perf_opt` | ✅ |
 | Conv3dBias | 3 | 1.68–20.43% | 60 | **0/3** ❌（Task Duration 21.3×） | `perf_opt` | ✅ |
@@ -99,6 +99,7 @@
 - L1 超配 → bishengir SIGSEGV（`n_max` 绕法）
 - predicate 缺 `i1→i8` 直转 / bool `vnot`（CG-2026-0027）
 - **CG-2026-0028**：Vector prelude「1D GM 切片 → 带列偏移 GM 子区域」写必崩（`Unknown core type: llvm.func @malloc`）；bias-in-K 折叠被迫放弃，bias 路径保留中继
+- **CG-2026-0029**：Conv1d bias MixCV 的 ws 宽度只能等于 `block_n=128`；放大到 160/192/256 触发 `multiple entry functions`（AIV/AIC 双 hacc.entry），bias N tile 无法放大
 - `statectl` 无法重开 optimize 场景 DONE 任务
 - 多 kernel 包的 `S4-PERF-RECORDS-RECON` 单文件契约已由 `kernel_opt_py_paths` 扩展支持（2026-10-18）
 

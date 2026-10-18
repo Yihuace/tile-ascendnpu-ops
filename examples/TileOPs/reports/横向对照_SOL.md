@@ -16,7 +16,7 @@
 | IsinfFwdOp | 1.74 | memory | 56.86 | 56.86 | — | ❌ |
 | IsfiniteFwdOp | 1.74 | memory | 57.01 | 57.01 | — | ❌ |
 | HardswishFwdOp | 3.51 | compute | 60.95 | 46.1 | 60.95 | ✅ |
-| GLADecodeOp | 3.64 | compute | 18.24 | 9.5 | 18.24 | ❌ |
+| GLADecodeOp | 3.64 | compute | 20.16 | 9.5 | 20.16 | ❌ |
 | FusedAddLayerNormFwdOp | 3.29 | compute | 33.42 | 22.8 | 33.42 | ❌ |
 | GeluTanhAndMulFwdOp | 3.77 | compute | 47.63 | 32.8 | 47.63 | ❌ |
 | BatchNormBwdOp | 2.34 | compute | 24.44 | 14.1 | 24.44 | ❌ |

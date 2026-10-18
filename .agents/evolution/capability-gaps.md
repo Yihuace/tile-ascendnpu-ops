@@ -85,6 +85,38 @@ created_by: conv1d-Conv1dFwdOp-20261018-stage4 (2026-10-18)
 last_seen: conv1d-Conv1dFwdOp-20261018-stage4 (2026-10-18)
 ```
 
+### CG-2026-0029
+
+```yaml
+gap_id: CG-2026-0029
+layer: BishengIR（MixCV entry 合并 / hacc.entry）
+capability: >-
+  Conv1d bias MixCV kernel 中，把 Cube→Vector 中继的 ws 宽度从 `block_n=128`
+  放大到 160/192/256（bias epilogue 的 N tile 随之放大）时，bishengir 报
+  `multiple entry functions detected (previous: '_conv1d_bias_main_mix_aiv',
+  this: '_conv1d_bias_main_mix_aic'). Only one function may be marked with hacc.entry`
+  ——AIV/AIC 两个 entry 同时被标记，MixCV 合并失败；128 宽可编译。
+blocked_algo: >-
+  Conv1d bias 路径的 N tile 只能保持 128（输出行 256B，fixpipe 3.64 GB/s），
+  无法用 nobias 的 512（1KB 行，15.4 GB/s）；`encodec-init-bias` 240µs vs
+  nobias 66µs（3.7×）的差距无法用「放大 ws/N tile」消除。
+evidence:
+  - 2026-10-18 实跑：`_conv1d_kernel.py --level L0`，TAPK_BLOCK_N_BIAS=160/192/256
+    均报上述错误；回退 128 后 L0 恢复通过（历史 `aff2403`）。
+  - 先尝试 128 列分块 epilogue（`T.serial` / Python `range` 两种）分别触发
+    dual-entry 与 TVM parser 拒绝；最终确认 128 是当前编译器下唯一可编译宽度。
+workaround: >-
+  保留 `TAPK_BLOCK_N_BIAS=128` + ws 128 宽（现状），bias 路径性能不变。
+  若要突破：① 拆成独立 bias-add kernel（多一次 GM 读写，但可避开 MixCV 合并）；
+  ② 等 BishengIR 修 MixCV entry 合并；③ 用 nobias 输出 + 单独 bias pass。
+occurrences: 1
+tasks: [conv1d-Conv1dFwdOp-20261018-stage4-bias-n]
+toolchain_stamp: tilelang 0.1.2 dev root / CANN 9.0.0 (bishengir 1.1.0 + hivmc 0.2.0) / Ascend910B3 / 2026-10-18
+status: open
+created_by: conv1d-Conv1dFwdOp Stage-4 bias attempt (2026-10-18)
+last_seen: conv1d-Conv1dFwdOp Stage-4 bias attempt (2026-10-18)
+```
+
 ### CG-2026-0004
 
 ```yaml

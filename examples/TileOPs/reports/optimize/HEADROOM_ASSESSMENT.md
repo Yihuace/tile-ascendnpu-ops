@@ -8,11 +8,11 @@
 
 | # | 算子 | 当前 ratio | 瓶颈归因（证据） | 剩余空间 | 杠杆 | 类型 | 工作量 | 优先级 |
 |---|---|---|---:|---|---|---|---|---|
-| 1 | **Conv1d / Conv1dBias** | 0.03–1.79% | 通用 kernel 已完成 taps-in-K（wav2vec2 **17.7×**、encodec-init **4.2×**）；bias 路径受 CG-2026-0028 阻塞，仍走 Cube→ws→Vector 中继（encodec-init-bias 240µs vs nobias 66µs，差 3.7×） | **1.5–3×（仅 bias）** | 绕过 CG-2026-0028 的 bias epilogue / 换中继形态 | 准设计级 | 4–6h | P1 |
+| 1 | **Conv1d / Conv1dBias** | 0.03–1.79% | 通用 kernel 已完成 taps-in-K（wav2vec2 **17.7×**、encodec-init **4.2×**）；bias 路径受 **CG-2026-0028 + CG-2026-0029** 双重阻塞（bias-in-K 不可表达；ws 宽度必须 128，N tile 放大会 dual-entry） | **blocked** | 独立 bias-add kernel / 等编译器修 MixCV entry 合并 | 准设计级 | 4–6h | P3 |
 | 2 | **Conv3dBias** | 1.68–20.43% | unet 已完成 **21.3×**（im2col DMA 段数 91774→973）；L1 常驻早已生效但不是杠杆 | ~0（已到 L0C 上界） | 无 | — | — | P3 |
 | 3 | **FusedAddLayerNorm** | 0.5–43.9%（微型豁免后 29.2–43.9%） | 15+ 向量 pass + 2 次 row-reduce 全在 Vector（`advice=pipeline caused`） | **20–40%** | 两次 reduce 改 Cube GEMV 卸载（BatchNormBwd 有先例） | **设计级** | 1–2 天 | **P1** |
 | 4 | **BatchNormBwd** | 11.9–24.4%（subid 不可比） | fp32 中转 + Vec_MISC；时延已 −40% | 10–20% | epilogue 融合 / 减 fp32 中转 | 参数级偏设计 | 4–6h | P1 |
-| 5 | **GLADecode** | 3.16–18.24% | latency-bound：每 (b,h) 一核、并行度 = B×H | 10–20% | persistent 分核 `grid=min(B*H,40)`（上轮因欠订 workload 反噬未做） | 参数级 | 2–3h | P1 |
+| 5 | **GLADecode** | 3.10–20.16% | latency-bound；persistent 已完成（B*H>40 才启用，超发 −8.0~14.3%；欠订 flat 零回退） | ~0 | 无（Pipelined 实测无收益） | — | — | P3 |
 | 6 | **Lerp** | 60.2–82.0%（9/11） | 访存受限；`linear-bias` 两档 66.5/60.2 掉线 | 5–10pp | 同族 A4 结构（静态尾块 + 流水） | 参数级 | 1–2h | P2 |
 | 7 | **Sub** | 70.7–84.0%（15/15） | 访存受限；9.0 端到端已全 shape 过线 | ~0 | 无新杠杆 | — | — | P3 |
 | 8 | **ClampScalar** | 58.2–70.2%（1/11；baseline 45.4–64.4%） | 访存受限；9.0 整体下移，但 tuned 仍比 baseline 快 7.6–40% | ~0（保留 perf_opt） | 不改；8.5 绝对值不可跨版本引用 | — | — | P3 |

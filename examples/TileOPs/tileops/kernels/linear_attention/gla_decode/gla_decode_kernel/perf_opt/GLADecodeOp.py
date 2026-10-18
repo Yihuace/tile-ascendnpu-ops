@@ -1,31 +1,31 @@
 # Copyright (c) Huawei Technologies Co., Ltd. 2026.
 """GLA single-token decode kernel for npuir (Vector, Developer mode).
 
-Migrated from the GPU TileLang factory ``GLADecodeKernel``
-(``TileOPs/src/tileops/kernels/linear_attention/gla/recurrent.py``) to
-``target="npuir"``, per the verified feasibility probe
-(``examples/gla_decode/probe/``).
+Stage-4 round-3 winner: **persistent core partitioning with compile-time
+shape dispatch**.
 
-Source semantics (kept verbatim):
+Same semantics and tiling as the previous winner (k_tile=32; bf16/fp16 ->
+fp32 transit path unchanged, fp32 accumulation is the GPU contract):
 
     state_new[dk, dv] = exp(gk[dk]) * state[dk, dv] + k[dk] * v[dv]
     o[dv]             = scale * sum_dk q[dk] * state_new[dk, dv]
-    scale             = DK ** -0.5   (non-positive -> default)
 
-Layout BHD: q,k,gk: ``[B,H,DK]``; v: ``[B,H,DV]``; state: ``[B,H,DK,DV]``;
-outputs o: ``[B,H,DV]``, new_state: ``[B,H,DK,DV]``.  One NPU core per ``(b,h)``.
+Change vs the flat kernel (``T.Kernel(B * H)``, one block per (b,h)): the
+launch grid is capped at ``_plan_cores(B*H)`` physical AIV cores and each core
+walks the remaining heads in a compile-time static grid-stride loop
 
-Structure (all Vector-unit work; no Cube):
-  - the state is streamed in ``[k_tile, DV]`` K-tiles (the GPU kernel's
-    ``dim_k // k_tile`` loop) so the working set fits UB at ``DK=DV=128``;
-    each tile is decayed (``vexp`` gate + ``vbrc`` + ``vmul``), updated with the
-    rank-1 ``k (x) v`` term (``vbrc`` + ``vmul`` + ``vadd``) and written back
-    while ``o`` accumulates across tiles (``vmul`` + ``reduce`` sum over DK).
-  - ``bf16`` has no Vector arithmetic, so fp16/bf16 inputs run in fp32 with
-    ``vcast`` at the load/store boundary and fp32 accumulation (matching the
-    GPU contract).
+    blk = s * ncore + cid            # s = 0 .. n_iter-1
+    if blk < B*H: bid = blk // H; hid = blk % H
 
-Run: python _gla_decode_kernel.py
+which removes the multi-wave block dispatch of the flat grid (b8-h64 = 512
+blocks = 12.8 waves, b8-h32 = 256 = 6.4 waves).  Under-subscribed shapes
+(``B*H <= ncore``) keep the flat body verbatim: the dispatch is a pure
+compile-time integer choice inside the jitted factory, no runtime branch, no
+Python-level op/factory split.
+
+Exposed for the wrapper switch block: ``TUNED_K_TILE`` / ``TUNED_NCORE``.
+
+Run: python GLADecodeOp_round3_dispatch.py
 """
 
 import os
@@ -40,9 +40,10 @@ _ACCUM = "float32"
 _SUPPORTED_DTYPES = ("float16", "bfloat16", "float32")
 _TOLERANCE = {"float16": 2e-3, "bfloat16": 2e-2, "float32": 1e-4}
 
-# Stage-4 tuned default: k_tile=32 measured fastest on every serving workload
-# (see opt_log.md Final Summary).  Exposed for the wrapper switch block.
+# Stage-4 tuned defaults (see opt_log.md Final Summary).
 TUNED_K_TILE = 32
+# Persistent grid cap: physical AIV cores (NPUUtils.get().get_aicore_num()*2).
+TUNED_NCORE = 40
 
 
 def _ceil_ktile_fit(dk, dv):
@@ -63,12 +64,39 @@ def _ceil_ktile_fit(dk, dv):
     return 1
 
 
-def _gla_decode_kernel(B, H, DK, DV, dtype="float32", scale=None, k_tile=None):
-    """NPU factory mirroring the GPU ``GLADecodeKernel`` builder.
+def _plan_cores(total, ncore=TUNED_NCORE):
+    """Compile-time ``(physical cores, heads per core)`` plan for ``B*H`` heads.
 
-    Returns an inner ``@tilelang.jit(target="npuir")`` factory taking ``k_tile``
-    (the DK sub-tile width) as its only (compile-time) parameter.
+    ``ncore`` is the physical AIV count (Ascend910B3: 20 AIC x 2 = 40).  Each
+    core walks ``n_iter`` heads in grid-stride order (``blk = s * nc + cid``),
+    which replaces the flat grid's ``ceil(B*H / ncore)`` block waves.
+
+    * ``total <= ncore``: one head per core (``n_iter=1``); the caller then
+      emits the *flat* kernel body, byte-identical to the pre-persistent
+      version (no loop, no bounds guard).
+    * ``n_iter == 2`` (``ncore < total <= 2*ncore``): prefer the largest exact
+      divisor of ``total`` in ``[ceil(total/2), ncore]`` so both iterations are
+      full.  Measured on serving-b1-h64 (64 heads): 32 cores x 2 heads =
+      12.51us vs 40 cores x (2,1) heads = 13.90us (-10%), because the tail
+      iteration leaves 16 of 40 cores idle while the first iteration runs 40
+      concurrent per-head DMA streams (higher latency per head).
+    * otherwise: the full core count wins; the idle tail slots are amortised
+      over >=3 iterations (measured b8-h32 256 heads: 40 cores/7 iters
+      38.54us vs 32/8 iters 39.69us; b8-h64 512 heads: 68.87 vs 75.86us).
     """
+    ncore = int(ncore) if ncore else TUNED_NCORE
+    if total <= ncore:
+        return total, 1
+    n_iter = (total + ncore - 1) // ncore
+    if n_iter == 2:
+        for d in range(min(ncore, total // 2), total // 2 - 1, -1):
+            if total % d == 0:
+                return d, 2
+    return ncore, n_iter
+
+
+def _gla_decode_kernel(B, H, DK, DV, dtype="float32", scale=None, k_tile=None):
+    """NPU factory mirroring the GPU ``GLADecodeKernel`` builder."""
     if dtype not in _SUPPORTED_DTYPES:
         raise ValueError(f"unsupported dtype {dtype!r}")
     if scale is None:
@@ -80,10 +108,91 @@ def _gla_decode_kernel(B, H, DK, DV, dtype="float32", scale=None, k_tile=None):
         raise ValueError(f"DK ({DK}) must be divisible by k_tile ({k_tile})")
     acc = _ACCUM
     use_transit = dtype != acc
+    total = B * H
 
     @tilelang.jit(out_idx=[5, 6], target="npuir")
-    def _func(k_tile):
+    def _func(k_tile, ncore=TUNED_NCORE):
+        nc, n_iter = _plan_cores(total, ncore)
+        # Persistent is scoped to the transit (sub-fp32) path on purpose: the
+        # fp32 direct-copy path corrupted results when wrapped in the
+        # grid-stride loop + bounds guard (measured max diff 5.1 / 43.6 on
+        # B8-H32-D128 fp32), while copy->vcast->compute is correct.  All
+        # serving workloads are bf16; fp32 keeps the validated flat body.
+        persistent = bool(use_transit) and n_iter > 1
         if use_transit:
+
+            if not persistent:
+                @T.prim_func
+                def _gla_decode_transit_main(
+                    q: T.Tensor((B, H, DK), dtype),
+                    k: T.Tensor((B, H, DK), dtype),
+                    v: T.Tensor((B, H, DV), dtype),
+                    gk: T.Tensor((B, H, DK), dtype),
+                    state: T.Tensor((B, H, DK, DV), dtype),
+                    o: T.Tensor((B, H, DV), dtype),
+                    new_state: T.Tensor((B, H, DK, DV), dtype),
+                ):
+                    with T.Kernel(B * H, is_npu=True) as (cid, _):
+                        bid = cid // H
+                        hid = cid % H
+                        v_ub = T.alloc_ub((1, DV), acc)
+                        o2 = T.alloc_ub((1, DV), acc)
+                        vb = T.alloc_ub((k_tile, DV), acc)
+                        kb = T.alloc_ub((k_tile, DV), acc)
+                        gb = T.alloc_ub((k_tile, DV), acc)
+                        qb = T.alloc_ub((k_tile, DV), acc)
+                        st_ub = T.alloc_ub((k_tile, DV), acc)
+                        ns_ub = T.alloc_ub((k_tile, DV), acc)
+                        dec_ub = T.alloc_ub((k_tile, DV), acc)
+                        out_ub = T.alloc_ub((k_tile, DV), acc)
+                        prod = T.alloc_ub((k_tile, DV), acc)
+                        q_ub = T.alloc_ub((k_tile, 1), acc)
+                        k_ub = T.alloc_ub((k_tile, 1), acc)
+                        g_ub = T.alloc_ub((k_tile, 1), acc)
+                        o2_t = T.alloc_ub((1, DV), acc)
+                        t_v = T.alloc_ub((1, DV), dtype)
+                        t_q = T.alloc_ub((k_tile, 1), dtype)
+                        t_k = T.alloc_ub((k_tile, 1), dtype)
+                        t_g = T.alloc_ub((k_tile, 1), dtype)
+                        t_st = T.alloc_ub((k_tile, DV), dtype)
+                        t_ns = T.alloc_ub((k_tile, DV), dtype)
+                        t_o = T.alloc_ub((1, DV), dtype)
+
+                        T.copy(v[bid, hid, 0:DV], t_v)
+                        T.vcast(t_v, v_ub, round_mode="rint")
+                        T.clear(o2)
+
+                        for kt in T.serial(DK // k_tile):
+                            off = kt * k_tile
+                            T.copy(q[bid, hid, off:off + k_tile], t_q)
+                            T.vcast(t_q, q_ub, round_mode="rint")
+                            T.copy(k[bid, hid, off:off + k_tile], t_k)
+                            T.vcast(t_k, k_ub, round_mode="rint")
+                            T.copy(gk[bid, hid, off:off + k_tile], t_g)
+                            T.vcast(t_g, g_ub, round_mode="rint")
+                            T.copy(state[bid, hid, off:off + k_tile, 0:DV], t_st)
+                            T.vcast(t_st, st_ub, round_mode="rint")
+
+                            T.vexp(g_ub, g_ub)
+                            T.vbrc(v_ub, vb)
+                            T.vbrc(k_ub, kb)
+                            T.vmul(vb, kb, out_ub)
+                            T.vbrc(g_ub, gb)
+                            T.vmul(st_ub, gb, dec_ub)
+                            T.vadd(dec_ub, out_ub, ns_ub)
+                            T.vbrc(q_ub, qb)
+                            T.vmul(ns_ub, qb, prod)
+                            T.reduce(prod, o2_t, dims=[0], reduce_mode="sum", clear=True)
+                            T.vadd(o2, o2_t, o2)
+
+                            T.vcast(ns_ub, t_ns, round_mode="rint")
+                            T.copy(t_ns, new_state[bid, hid, off:off + k_tile, 0:DV])
+
+                        T.vmul(o2, scale, o2)
+                        T.vcast(o2, t_o, round_mode="rint")
+                        T.copy(t_o, o[bid, hid, 0:DV])
+
+                return _gla_decode_transit_main
 
             @T.prim_func
             def _gla_decode_transit_main(
@@ -95,9 +204,7 @@ def _gla_decode_kernel(B, H, DK, DV, dtype="float32", scale=None, k_tile=None):
                 o: T.Tensor((B, H, DV), dtype),
                 new_state: T.Tensor((B, H, DK, DV), dtype),
             ):
-                with T.Kernel(B * H, is_npu=True) as (cid, _):
-                    bid = cid // H
-                    hid = cid % H
+                with T.Kernel(nc, is_npu=True) as (cid, _):
                     v_ub = T.alloc_ub((1, DV), acc)
                     o2 = T.alloc_ub((1, DV), acc)
                     vb = T.alloc_ub((k_tile, DV), acc)
@@ -121,39 +228,44 @@ def _gla_decode_kernel(B, H, DK, DV, dtype="float32", scale=None, k_tile=None):
                     t_ns = T.alloc_ub((k_tile, DV), dtype)
                     t_o = T.alloc_ub((1, DV), dtype)
 
-                    T.copy(v[bid, hid, 0:DV], t_v)
-                    T.vcast(t_v, v_ub, round_mode="rint")
-                    T.clear(o2)
+                    for s in T.serial(n_iter):
+                        blk = s * nc + cid
+                        if blk < total:
+                            bid = blk // H
+                            hid = blk % H
+                            T.copy(v[bid, hid, 0:DV], t_v)
+                            T.vcast(t_v, v_ub, round_mode="rint")
+                            T.clear(o2)
 
-                    for kt in T.serial(DK // k_tile):
-                        off = kt * k_tile
-                        T.copy(q[bid, hid, off:off + k_tile], t_q)
-                        T.vcast(t_q, q_ub, round_mode="rint")
-                        T.copy(k[bid, hid, off:off + k_tile], t_k)
-                        T.vcast(t_k, k_ub, round_mode="rint")
-                        T.copy(gk[bid, hid, off:off + k_tile], t_g)
-                        T.vcast(t_g, g_ub, round_mode="rint")
-                        T.copy(state[bid, hid, off:off + k_tile, 0:DV], t_st)
-                        T.vcast(t_st, st_ub, round_mode="rint")
+                            for kt in T.serial(DK // k_tile):
+                                off = kt * k_tile
+                                T.copy(q[bid, hid, off:off + k_tile], t_q)
+                                T.vcast(t_q, q_ub, round_mode="rint")
+                                T.copy(k[bid, hid, off:off + k_tile], t_k)
+                                T.vcast(t_k, k_ub, round_mode="rint")
+                                T.copy(gk[bid, hid, off:off + k_tile], t_g)
+                                T.vcast(t_g, g_ub, round_mode="rint")
+                                T.copy(state[bid, hid, off:off + k_tile, 0:DV], t_st)
+                                T.vcast(t_st, st_ub, round_mode="rint")
 
-                        T.vexp(g_ub, g_ub)
-                        T.vbrc(v_ub, vb)
-                        T.vbrc(k_ub, kb)
-                        T.vmul(vb, kb, out_ub)
-                        T.vbrc(g_ub, gb)
-                        T.vmul(st_ub, gb, dec_ub)
-                        T.vadd(dec_ub, out_ub, ns_ub)
-                        T.vbrc(q_ub, qb)
-                        T.vmul(ns_ub, qb, prod)
-                        T.reduce(prod, o2_t, dims=[0], reduce_mode="sum", clear=True)
-                        T.vadd(o2, o2_t, o2)
+                                T.vexp(g_ub, g_ub)
+                                T.vbrc(v_ub, vb)
+                                T.vbrc(k_ub, kb)
+                                T.vmul(vb, kb, out_ub)
+                                T.vbrc(g_ub, gb)
+                                T.vmul(st_ub, gb, dec_ub)
+                                T.vadd(dec_ub, out_ub, ns_ub)
+                                T.vbrc(q_ub, qb)
+                                T.vmul(ns_ub, qb, prod)
+                                T.reduce(prod, o2_t, dims=[0], reduce_mode="sum", clear=True)
+                                T.vadd(o2, o2_t, o2)
 
-                        T.vcast(ns_ub, t_ns, round_mode="rint")
-                        T.copy(t_ns, new_state[bid, hid, off:off + k_tile, 0:DV])
+                                T.vcast(ns_ub, t_ns, round_mode="rint")
+                                T.copy(t_ns, new_state[bid, hid, off:off + k_tile, 0:DV])
 
-                    T.vmul(o2, scale, o2)
-                    T.vcast(o2, t_o, round_mode="rint")
-                    T.copy(t_o, o[bid, hid, 0:DV])
+                            T.vmul(o2, scale, o2)
+                            T.vcast(o2, t_o, round_mode="rint")
+                            T.copy(t_o, o[bid, hid, 0:DV])
 
             return _gla_decode_transit_main
 
@@ -215,6 +327,67 @@ def _gla_decode_kernel(B, H, DK, DV, dtype="float32", scale=None, k_tile=None):
 
         return _gla_decode_main
 
+        @T.prim_func
+        def _gla_decode_main(
+            q: T.Tensor((B, H, DK), dtype),
+            k: T.Tensor((B, H, DK), dtype),
+            v: T.Tensor((B, H, DV), dtype),
+            gk: T.Tensor((B, H, DK), dtype),
+            state: T.Tensor((B, H, DK, DV), dtype),
+            o: T.Tensor((B, H, DV), dtype),
+            new_state: T.Tensor((B, H, DK, DV), dtype),
+        ):
+            with T.Kernel(nc, is_npu=True) as (cid, _):
+                v_ub = T.alloc_ub((1, DV), acc)
+                o2 = T.alloc_ub((1, DV), acc)
+                vb = T.alloc_ub((k_tile, DV), acc)
+                kb = T.alloc_ub((k_tile, DV), acc)
+                gb = T.alloc_ub((k_tile, DV), acc)
+                qb = T.alloc_ub((k_tile, DV), acc)
+                st_ub = T.alloc_ub((k_tile, DV), acc)
+                ns_ub = T.alloc_ub((k_tile, DV), acc)
+                dec_ub = T.alloc_ub((k_tile, DV), acc)
+                out_ub = T.alloc_ub((k_tile, DV), acc)
+                prod = T.alloc_ub((k_tile, DV), acc)
+                q_ub = T.alloc_ub((k_tile, 1), acc)
+                k_ub = T.alloc_ub((k_tile, 1), acc)
+                g_ub = T.alloc_ub((k_tile, 1), acc)
+                o2_t = T.alloc_ub((1, DV), acc)
+
+                for s in T.serial(n_iter):
+                    blk = s * nc + cid
+                    if blk < total:
+                        bid = blk // H
+                        hid = blk % H
+                        T.copy(v[bid, hid, 0:DV], v_ub)
+                        T.clear(o2)
+
+                        for kt in T.serial(DK // k_tile):
+                            off = kt * k_tile
+                            T.copy(q[bid, hid, off:off + k_tile], q_ub)
+                            T.copy(k[bid, hid, off:off + k_tile], k_ub)
+                            T.copy(gk[bid, hid, off:off + k_tile], g_ub)
+                            T.copy(state[bid, hid, off:off + k_tile, 0:DV], st_ub)
+
+                            T.vexp(g_ub, g_ub)
+                            T.vbrc(v_ub, vb)
+                            T.vbrc(k_ub, kb)
+                            T.vmul(vb, kb, out_ub)
+                            T.vbrc(g_ub, gb)
+                            T.vmul(st_ub, gb, dec_ub)
+                            T.vadd(dec_ub, out_ub, ns_ub)
+                            T.vbrc(q_ub, qb)
+                            T.vmul(ns_ub, qb, prod)
+                            T.reduce(prod, o2_t, dims=[0], reduce_mode="sum", clear=True)
+                            T.vadd(o2, o2_t, o2)
+
+                            T.copy(ns_ub, new_state[bid, hid, off:off + k_tile, 0:DV])
+
+                        T.vmul(o2, scale, o2)
+                        T.copy(o2, o[bid, hid, 0:DV])
+
+        return _gla_decode_main
+
     return _func
 
 
@@ -233,15 +406,12 @@ golden = golden_gla_decode
 
 # ---------------------------------------------------------------------------
 # Embedded layered correctness tests (kernel + golden + main, `--level all`).
-# The reference is the pure-torch fp32 golden above (independent of the
-# K-tiled NPU recurrence); the K-tiled kernel is compared per-case.
 # ---------------------------------------------------------------------------
 
 import torch_npu  # noqa: E402,F401  (registers the "npu" device)
 
 _DTYPE_MAP = {"float16": torch.float16, "bfloat16": torch.bfloat16, "float32": torch.float32}
 
-# (B, H, DK, DV, dtype, scale) -- mirror tests/ops/test_gla_decode.py.
 _CASE_SMOKE = [
     (2, 4, 64, 64, "float16", -1.0),
     (2, 4, 64, 64, "bfloat16", -1.0),
