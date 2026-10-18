@@ -310,3 +310,49 @@ repro: repro-missing
 - ⇒ Cube 侧的**环路携带数值流**（累加/回喂）在本工具链不可靠；Neumann 求逆类算法受此阻塞（GDN prefill）。
 - **CANN 9.0** 另注：`hivm.hir.sync_block_set/wait` 的 `syn_instr_mode` 属性为旧 AscendNPU-IR 所加、9.0 不认；
   删该属性可解多数（398/405），但 sync op 定义改版导致 7 个 kernel 在 9.0 后端 SEGV（需匹配版 AscendNPU-IR）。
+
+---
+id: TRAP-cube-gemm-sliced-operand
+kind: trap
+family: [cube, convolution, gemm]
+apis: [T.gemm]
+dtype: [fp16]
+device: [910B3]
+status: verified
+origin_task: conv3d_bias-Conv3dBiasFwdOp-20261017T220345Z
+toolchain: tilelang 0.1.2 dev root / CANN 9.0.0 (bishengir 1.1.0) / Ascend910B3 / 2026-10-18
+repro: repro/TRAP-gemm-sliced-operand.py
+---
+
+### TRAP: `T.gemm` 忽略 L1 操作数的切片偏移（N/K 偏移静默丢弃）
+
+`T.gemm(l1_a, l1_b[0:K, off:off+N], l0_c, size=[M,K,N])`（src2 为 L1 切片）**编译通过但读数错位**：
+gemm 按 `l1_b[0:K, 0:N]` 的 buffer 起点读，忽略 `off` 偏移（实测 origin 切片 err<1e-1、shifted 切片
+err≈64）。`size=[a,b,c]` 只约束 K/N 扩展，切片下标不参与 mmadL1 lowering。
+
+- 影响：conv 类「宽 B 块 + 平移 gemm」（把 kw 维 3 个相邻 tap 合并成 1 次宽读 + 3 次平移 gemm 削减
+  im2col 输入重复读）在本工具链不可用；im2col 输入重复读只能靠 L1→L1 拷贝（与 MTE2 共享 L1 端口，无收益）
+  或 pre-materialized im2col（同 bytes，byte-bound 无收益）。
+- 绕法：无。若需平移窗口，须在 host 预物化或换算法结构。
+
+---
+id: TRAP-l1-resident-weight-shape
+kind: trap
+family: [cube, convolution, gemm]
+apis: [T.alloc_L1, T.gemm]
+dtype: [fp16, bf16]
+device: [910B3]
+status: verified
+origin_task: conv3d_bias-Conv3dBiasFwdOp-20261017T220345Z
+toolchain: tilelang 0.1.2 dev root / CANN 9.0.0 (bishengir 1.1.0) / Ascend910B3 / 2026-10-18
+repro: repro-missing
+---
+
+### TRAP: 权重 L1 常驻的 shape 依赖（c_in_pad=16 生效 / =32 不生效）
+
+implicit-GEMM 把 `w_flat[:, by*block_m:..., :]` 在 task 循环前载入 L1 一次、期望复用：c_in_pad=16
+（r3d-stem，权重 55KB）实测 `aic_mte2_time` 6050→3042µs（2×，常驻生效）；c_in_pad=32（unet，权重 110KB）
+`read_main_memory_datas` 32136→21120 KB（HBM 重载已除）但 `aic_scalar_mte2_stall_time` 6289→6227µs
+几乎不变 —— 编译器对该 110KB 常驻权重仍逐 task 从 L2 重载。`block_m=32`（l1_a 缩到 55KB）实测更差
+（12756µs，gy=2 使每核 task 翻倍 + gemm M=32 效率降），故与 l1_a 大小无简单正相关，属编译器对该 shape
+的 L1 生命周期行为。引用需标注 origin_task 并在工具链变更后重验。

@@ -833,13 +833,23 @@ evidence:
     另记一条**易混淆的独立触发**（不属于本缺口）：非方形的 `[64,128]` fp16 L1 tile 同时作
     `b_transpose=True` gemm 的 A 与 B 也会 SIGSEGV，方形 `[64,64]` 共享同一 buffer 正常
     （2-op 微探针两种都通过 ⇒ 也是"交互触发"，实现上改为 A/B 各一块 L1）。
+  - 第四证（2026-10-18，conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z Stage 4 optimize）——
+    **端到端 A/B 对照确认「CANN 9.0 回归」**：`tileops report`（correctness target
+    `tests/ops/test_conv1d_bias.py`）17/28，7 个 bias case 编译 SIGSEGV（全 `bishengir-compile`
+    NPU IR opt failed，Cube/MixCV 路径 `--disable-hivm-tensor-compile=true`）；**baseline
+    （未改动的 kernel）跑同一 pytest 同样 failed（24/28，3 failed：`full-dilation-k3-d2-fp16`、
+    `test_conv1d_bias_dispatches_kernel[unit-stride]`、`smoke-padding-wider-than-row-fp16`）——
+    同崩为证，非本轮改动引入**。历史 10-14/10-15 的 `Conv1dFwdOp`/`Conv1dBiasFwdOp` "passed"
+    记录属 CANN 8.5.2 时代（对照 CG-2026-0025 引用的 `20261014_174100_695290_Conv1dFwdOp`
+    run.json）。A/B 报告目录（provenance，允许失效）：`examples/TileOPs/reports/tileops/20261018_080316_363991_Conv1dBiasFwdOp/`
+    （failed 7）+ `20261018_080550_611212_Conv1dBiasFwdOp/`（baseline failed 3）。
 workaround: >-
   当前无 kernel 级绕法（IR 改名/删属性/补 result 均失败，见 blocked_algo）。可行途径：
   ① 取得与 Oct 树同代的 hivmc（原 8.5.2 内那份，本容器不可得）；② 自建 v1.2.0 发布分支
   AscendNPU-IR 并回合主线修复（去掉/保护该 walk）后重编 tilelang；③ 等 CANN 修版工具链。
   过渡期（CANN 9.0）：**接受卷积族 6 用例失败并记录**，Vector 族完全可用。
-occurrences: 3
-tasks: [FA 三实现性能对比 baseline/npuir/gqa 2026-09-07, CANN 9.0.0 重定基线-工作流② 2026-10-17, GDN-prefill 函数2/6 prefill_blocksolve_A_bthd Stage3 2026-10-17]
+occurrences: 4
+tasks: [FA 三实现性能对比 baseline/npuir/gqa 2026-09-07, CANN 9.0.0 重定基线-工作流② 2026-10-17, GDN-prefill 函数2/6 prefill_blocksolve_A_bthd Stage3 2026-10-17, conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z Stage4 optimize 2026-10-18]
 toolchain_stamp: >-
   首证 tilelang 默认激活构建 j00919838 checkout（jit_npu.py dacebc3d 2026-08-05，3rdparty
   bishengir 1.1.0 2026-09-02）+ CANN 8.5.0 bishengir-compile 0.1.0（2026-01-16）+
@@ -859,7 +869,7 @@ proposal: >-
   issue 草稿（[npuir] 前缀，**须用户批准后建**）：[npuir] ConvertHFusionToHIVM 对 buffer
   形态 op 取 getResult(0) 越界（mmadL1 形态 SIGSEGV / 挂死；主线已修未回合发布分支）。
 created_by: FA 3-impl perf comparison 2026-09-07
-last_seen: GDN-prefill prefill_blocksolve_A_bthd Stage3（2026-10-17：同一 Expert MixCV 源码按 (S,head) 分档——部分形状编译+精度通过、部分必崩；IR 规模/形态决定，非"有 mmadL1 必崩"）
+last_seen: conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z Stage4 optimize（2026-10-18：端到端 A/B 对照——7 个 bias case 编译 SIGSEGV、baseline 同崩 3 case，历史 10-14/10-15 passed 属 CANN 8.5 时代，确认 CANN 9.0 回归）
 ```
 
 > **升级依据**：task FA 三实现性能对比（2026-09-07，Expert fixpipe `dma_mode` 触发）+ CANN 9.0.0 重定基线-工作流②（2026-10-17，Cube `mmadL1` buffer 形态触发，含新坏法挂死）——两个不同任务、双触发形态、跨工具链（CANN 8.5.0 → 9.0.0）独立识别同一缺口（`ConvertHFusionToHIVM` 的 `getResult(0)` 越界），达 ≥2 任务阈值。proposal 字段已产出（result 数守卫 / 删 walk + 回合发布分支），待向用户显式列出并推动（外部 issue 须用户批准后建）。
@@ -1006,12 +1016,18 @@ evidence:
   - msprof roofline advice = "latency bound:pipeline caused"（非 bandwidth 饱和）
 workaround: 3-pass 链 vcmp(le) -> vselect(mask, 0.0, 1.0, f16) -> vcast(f16->i8)；
   相对 4-pass 链（vcast->vsub->vcast）-1~-3%。block_size 8192 是 UB 上限（16384 编译/采集失败）。
+refinement: 〔2026-10-18 二次深挖更正，isnan 二次复核〕「性能上限因 3-pass」归因不精确——真瓶颈是
+  MTE2 混合 R/W 带宽地板，不是 pass 数。msprof PipeUtilization：fp16/fp32 aiv_mte2_ratio 0.81–0.90
+  ≫ aiv_vec_ratio 0.25–0.39（3-pass 已隐藏于搬运窗口）；4→3-pass 只降 vec_time 22% 但 Task Duration
+  仅 −3.4%（bf16 例外：baseline 向量受限故 3-pass −5.6~−6.2%，3-pass 后翻转回 MTE2-bound）。
+  有效带宽 fp32(4:1) 1.70 / fp16(2:1) 1.63→1.24(256m) / bf16 1.45→1.18 TB/s。⇒ 即使补齐 i1→i8 直出，
+  fp16/fp32 SOL 也几乎不动（vec 已非瓶颈）；本 gap 的性能影响须降级为「pass 数非绑定约束」。
 occurrences: 1
 tasks: [isnan-IsnanFwdOp-20261017T114928Z]
 toolchain_stamp: tilelang 0.1.2 dev-root (AscendNPU-IR 31f6903) + CANN 9.0.0 (bishengir 1.1.0) / Ascend910B3 / 2026-10-17
 status: open
 created_by: isnan-IsnanFwdOp-20261017T114928Z 2026-10-17
-last_seen: isnan-IsnanFwdOp-20261017T114928Z Stage 4 (2026-10-17)
+last_seen: isnan-IsnanFwdOp-20261017T114928Z Stage 4 二次深挖 (2026-10-18)
 ```
 
 ---

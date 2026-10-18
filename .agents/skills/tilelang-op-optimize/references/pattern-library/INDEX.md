@@ -89,6 +89,8 @@
 | TRAP-parallel2d-bm-ge2-scalarize | 2D T.Parallel(bm,N) 融合 ite 在 bm≥2 标量化（与操作数形态无关；链式/per-row 绕法） | verified |
 | TRAP-vbrc-same-shape-empty-broadcast | vbrc 同形 src/dst → 空广播维数组 MLIR verify fail | verified |
 | TRAP-vselect-inplace-carried-state | 原位 vselect(cond,A,B,B) 多迭代 T.serial 丢 loop-carried 状态（tile-0 局部值）；绕法 = noalias select + T.copy 回写 | verified |
+| TRAP-cube-gemm-sliced-operand | T.gemm 忽略 L1 操作数切片偏移（N/K 偏移静默丢弃）→「宽 B 块 + 平移 gemm」im2col 削减不可用 | verified |
+| TRAP-l1-resident-weight-shape | 权重 L1 常驻 shape 依赖：c_in_pad=16 生效（2×）/ =32 不生效（编译器仍逐 task 从 L2 重载） | verified |
 
 ### traps-runtime.md — 运行时/数值/语义陷阱
 

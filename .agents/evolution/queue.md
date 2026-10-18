@@ -35,6 +35,69 @@ decided_by: evolver / human / -   # 裁决者
 
 ### Tier 1（P 类，2 次独立证据后合入）
 
+## VP-2026-0160
+- type: P
+- title: BP_implicit_gemm_weight_redundancy_shard——persistent implicit-GEMM 的重复权重搬运病根 → 固定 co 块分核（`by = kernel_id % gy`）+ 权重 L1 常驻 + tap 打包；Conv1d「prelude 逐核冗余权重重排」与 Conv3d「Cube 循环逐 task 权重重载」同源，r3d-stem 2× / whisper 15×
+- evidence:
+  - task conv3d_bias-Conv3dBiasFwdOp-20261017T220345Z（2026-10-18 Stage 4）：opt_log §1 根因（Cube 循环内逐 task 权重重载 48384 次 + 27-tap im2col 输入重复读；`aic_mte2_ratio=0.99`/`aic_cube_ratio=0.016`）+ §2 R1（tap 打包折进 K 轴 + 权重 task 循环前载入 L1 一次 + `by=kernel_id%gy` 固定 co 块分核 → r3d-stem-bias fp16 6161.50→3085.74µs = 2.00×）+ Final Performance Test Data
+  - task conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z（2026-10-18 Stage 4，同源「prelude 逐核冗余」形态）：opt_log §1 根因（`_prelude` 权重重排 + x_pad 拷贝在 20 核逐核重复，`aiv_mte2_ratio=97.1%`、有效带宽 2.39GB/s）+ §2 R1（权重重排按 co 块切分 `by=kernel_id%gy`/`sub=kernel_id//gy` → whisper 族 −93.3~−93.5%（~15×）+ 恒等 x_pad 跳过 encodec-deep 族 −71~−72.8%（~3.6×））
+  - 同族先例 pattern-library attention/ssd persistent kernel 已确认「persistent 内核 prelude 逐核重复是首要病根，切分/单核化是标准解法」（conv1d opt_log 参考实现对照段）
+- repro: repro-missing（最小形态 = baseline →「co 块分核 + 权重 L1 常驻 + tap 打包」的 delta 骨架；效应只在完整 persistent kernel 规模显现，ED-B 待同族任务回填；任务内复现命令见 evidence provenance 项——conv1d `_conv1d_unit_stride_kernel.py` R2 / conv3d `Conv3dBiasFwdOp.py` R1）
+- toolchain_stamp: tilelang 0.1.2 dev root / CANN 9.0.0 (bishengir 1.1.0) / Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/bottleneck-patterns.md
+- delta: |
+    add 新 BP 条目 BP_implicit_gemm_weight_redundancy_shard（目录行与正文置于 BP_redundant_work_or_roundtrip 之后，交叉引用之）：
+    触发信号：persistent implicit-GEMM / 卷积族（Cube + Vector MixCV）profile 显示搬运独占而 MAC 近空闲（`aic_mte2_ratio≈0.99`/`aic_cube_ratio≈0.016`，或 `aiv_mte2_ratio≈0.97`/有效带宽 ≪ 平台带宽）；`GM_to_L1_datas`/`GM_to_UB_datas` 每核重复；时长因子分解显示真实 GEMM 只占极小份额（conv3d r3d-stem 真实 GEMM ~几十 µs vs 总 6.1ms）。
+    两种病根形态（同源，解法同构）：① **prelude 逐核冗余**（Vector Scope 权重重排/x_pad 拷贝在每个 core 重复执行——conv1d whisper 20× 冗余）；② **Cube 循环逐 task 权重重载**（implicit GEMM 把 KV 个 tap 拆成 KV 次独立 gemm，每次从 GM 重载 A（权重）/B（im2col 输入）——conv3d 1792 task × 27 = 48384 次）。
+    推荐动作（按病根形态）：① prelude 冗余 → 权重重排按 co 块切分 `by = kernel_id % gy`、`sub = kernel_id // gy`，每 core 只重排自己读取的 co 块（无跨核同步——core 只读自己写的块）；② 循环内重载 → tap 打包（`for tap in serial(KV)` 折进 gemm K 轴，`K = KV*c_in_pad`）+ 权重 task 循环前载入 L1 一次（固定 co 块分核 `by=kernel_id%gy` 使该块权重被该核所有空间 task 复用）。
+    常见反证/边界：权重 L1 常驻有 **shape 依赖**（c_in_pad=16 权重 55KB 生效 2× / =32 权重 110KB 不生效——编译器仍逐 task 从 L2 重载，见 TRAP-l1-resident-weight-shape）；恒等 x_pad 跳过仅 nobias 路径安全（bias MixCV 路径 Cube 直读 x 触发确定性 SIGSEGV，见 VP-2026-0162）。
+    验证指标：Task Duration 下降（r3d-stem 2× / whisper 15×）+ `aic_mte2_time`/`aiv_mte2_ratio` 下降 + GM 重载次数骤降（48384→540）。
+- status: pending
+- confirmations: 1/2
+- created_by: task conv3d_bias-Conv3dBiasFwdOp-20261017T220345Z + conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z 2026-10-18
+- decided_by: -
+- decided_note: 两任务同批同族（conv 族 optimize，同工具链 CANN 9.0.0）——按 VP-2026-0149 同批同族先例计 1/2（非同族独立第二证）；另一非 conv 的 persistent implicit-GEMM 算子（如 conv2d/其他 Cube 循环重载族）独立第二证可确认。合入时与 TRAP-l1-resident-weight-shape / TRAP-cube-gemm-sliced-operand 互链。
+
+## VP-2026-0161
+- type: D
+- title: L1 超配 → bishengir SIGSEGV（非 overflow 报错）——`l1_a+l1_b > 512KB` 时编译器不报容量错而是 SIGSEGV；绕法 = B 块 N 维按 `n_max = ceil16(min(block_n, out_w))` 分配（fractal 钳位输出宽）
+- evidence:
+  - task conv3d_bias-Conv3dBiasFwdOp-20261017T220345Z（2026-10-18 Stage 4）：opt_log §2 R1 编译陷阱表（首版 `block_n=128` 分配 B 块，video-down `l1_a(221KB)+l1_b(442KB)=663KB > 512KB` → bishengir SIGSEGV，非溢出报错）+ §2 改动 3（`n_max = ceil16(min(block_n, out_w))` 否则 video-down `k_full=1728` 超出 512KB L1）+ OPTIMIZE_REPORT §2.3
+  - CG-2026-0003 家族同族（opt_log Skill Retrospective item 4 标注——L1 超配/规模形态触发 SIGSEGV，与该缺口「IR 规模/形态决定」一致）；与 traps-compiler.md TRAP-cube-gemm-sliced-operand（切片 gemm 读数错位）同任务产出
+- repro: repro-missing（最小形态 = 最小 L1 超配 gemm 探针——`l1_a+l1_b > 512KB` 两 buffer + 单条 T.gemm；任务内探针 `perf_opt/probe_sliced_gemm.py` 为切片偏移 probe 非容量 probe；待同族任务回填）
+- toolchain_stamp: tilelang 0.1.2 dev root / CANN 9.0.0 (bishengir 1.1.0) / Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/pattern-library/traps-compiler.md
+- delta: |
+    add 条目 TRAP-l1-overalloc-sigsegv（置于 TRAP-l1-resident-weight-shape 之后）：
+    **L1 超配 → bishengir SIGSEGV（非 overflow 报错）**：Cube 侧 `T.alloc_L1` A/B 块总容量超 512KB（如 video-down `l1_a(221KB)+l1_b(442KB)=663KB`）时，bishengir-compile 不报容量溢出错误而是直接 SIGSEGV（`NPU IR opt failed` / LLVM stack dump）——容量超配的诊断缺口，与 CG-2026-0003（`ConvertHFusionToHIVM` getResult(0) 越界）同族（规模/形态触发）。**绕法**：B 块 N 维按 `n_max = ceil16(min(block_n, out_w))` 分配（fractal 16 对齐钳位到输出宽，避免按 `block_n` 全宽分配导致 `k_full=1728` 时 B 块 442KB 超配）；设计期 L1 预算按 `l1_a + l1_b ≤ 512KB` 逐 buffer 核算（constants.md CONST-capacity-910B2C），video-down 类大 `k_full` 小 `out_w` 的 workload 尤须以 `n_max` 而非 `block_n` 计 B 块。
+- status: pending
+- confirmations: 1/2
+- created_by: task conv3d_bias-Conv3dBiasFwdOp-20261017T220345Z 2026-10-18
+- decided_by: -
+- decided_note: repro-missing（最小 L1 超配 gemm 探针待同族任务回填）；合入时与 TRAP-l1-resident-weight-shape（权重常驻 shape 依赖）同文件互链、CG-2026-0003 互注。
+
+## VP-2026-0162
+- type: D
+- title: bishengir 对 scope 级 loop-invariant 标量 hoist / bias(MixCV) 路径恒等直读 x 的确定性 SIGSEGV——`by=kernel_id%gy` 类标量 hoist 出 T.serial 循环即崩、放回循环内即 PASS；bias 路径 `skip_x_pad` 直读 x 使 encodec-deep-bias 确定性 SIGSEGV（whisper-bias 却 PASS）
+- evidence:
+  - task conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z（2026-10-18 Stage 4）：opt_log §2 R1 编译陷阱表（① Cube/Vector scope 级 hoist `by = kernel_id % gy`、`sub = kernel_id // gy` 出 T.serial 循环 → whisper-bias/encodec-bias 确定性 SIGSEGV，放回循环内即 PASS——bishengir 对 scope 级 loop-invariant 标量退化；② `skip_x_pad`（恒等 x_pad 跳过）应用到 bias(MixCV) 路径时 encodec-deep-bias 确定性 SIGSEGV、whisper-bias 却 PASS——仅 nobias 路径启用）+ 同文件 Skill Retrospective item 2（D：bishengir SIGSEGV 三陷阱）
+  - 第三陷阱（bf16+bias 编译 flaky SIGSEGV）属 CG-2026-0003 家族既有（基线同崩），不计入本条
+- repro: repro-missing（最小形态 = ① scope 级 hoist `kernel_id%gy` 标量出/入 T.serial 循环双变体对照；② bias MixCV 路径恒等 x_pad 跳过变体；任务内复现命令见 evidence provenance 项——`perf_opt/logs/` one_case/quick_l0 多次复测）
+- toolchain_stamp: tilelang 0.1.2 dev root / CANN 9.0.0 (bishengir 1.1.0) / Ascend910B3 / 2026-10-18
+- target_doc: .agents/skills/tilelang-op-optimize/references/pattern-library/traps-compiler.md
+- delta: |
+    add 条目 TRAP-scope-hoist-kernelid-sigsegv（置于 TRAP-l1-overalloc-sigsegv 之后）：
+    **bishengir 对 scope 级 loop-invariant 标量退化 + bias(MixCV) 恒等直读的确定性 SIGSEGV**（conv1d 2026-10-18 实证，三处陷阱）：
+    ① **scope 级 hoist kernel_id 标量**——把 `by = kernel_id % gy`、`sub = kernel_id // gy` 这类 loop-invariant 标量 hoist 出 `T.serial` 任务循环（Cube/Vector scope 级）→ whisper-bias/encodec-bias 确定性 SIGSEGV；放回循环内即 PASS。loop-invariant 标量提升在本工具链 Cube/MixCV scope 边界不可靠。
+    ② **bias(MixCV) 路径恒等 x_pad 跳过**——`skip_x_pad = (pad==0 and c_in==c_in_pad) and not has_bias` 的「Cube 直读 x」形态应用到 bias 路径时 encodec-deep-bias 确定性 SIGSEGV（whisper-bias 却 PASS，shape 依赖）——恒等 x_pad 跳过仅 nobias 路径安全。
+    ③（另记）bf16+bias 编译 flaky SIGSEGV 属 CG-2026-0003 家族既有（基线同崩、逐 case 复测 3/3 一致，非本轮改动引入）。
+    诊断纪律：Conv 族 bias(MixCV) 路径在 CANN 9.0 下的 SIGSEGV 须先做「基线同崩 A/B」判定（改动引入 vs 工具链回归），再下钻 trigger 形态（hoist / 恒等直读 / bf16+bias），与 TRAP-l1-overalloc-sigsegv（L1 超配）并列排查。
+- status: pending
+- confirmations: 1/2
+- created_by: task conv1d_bias-Conv1dBiasFwdOp-20261017T214901Z 2026-10-18
+- decided_by: -
+- decided_note: 单任务首证（确定性 SIGSEGV 两形态 + bf16+bias flaky 第三形态归 CG-2026-0003）；另一 Conv 族 bias(MixCV) 算子（如 conv2d/transpose conv）独立第二证可确认。与 TRAP-l1-overalloc-sigsegv 同族互链。
+
 ## VP-2026-0157
 - type: P
 - title: PL-1.13 subid 分片适用范围扩展到纯 Vector-only 逐通道归约族——判据「两 AIV 子块指标相同 + Mix Block Dim=2×Block Dim」在无 Cube/无 ws/无 flag 的 persistent 分核同样成立；迁移形态从 lt-tile 蛇形简化为「通道索引 + subid 线性偏移」
