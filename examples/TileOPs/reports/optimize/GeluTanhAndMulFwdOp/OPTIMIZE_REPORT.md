@@ -78,15 +78,15 @@
 
 | workload | dtype | base µs | final µs | Δ | base SOL% | final SOL% | 是否达标 |
 |---|---|---:|---:|---:|---:|---:|---|
-| llama-8b-ffn-prefill | fp16 | 215.154 | **197.444** | **−8.2%** | 原文未记录 | 45.57 | ✅ |
-| llama-8b-ffn-prefill | bf16 | 220.114 | **202.274** | **−8.1%** | 原文未记录 | 47.71 | ✅ |
-| qwen3-8b-swiglu-b32 | fp16 | 5.980 | 5.680 | −5.0% | 原文未记录 | 22.04 | ✅ |
-| qwen3-8b-swiglu-b32 | bf16 | 6.060 | 5.760 | −5.0% | 原文未记录 | 22.99 | ✅ |
-| llama-8b-ffn-decode | bf16 | 2.160 | 2.140 | 微型豁免 | 原文未记录 | 2.43 | 豁免 |
+| llama-8b-ffn-prefill | fp16 | 215.154 | **197.444** | **−8.2%** | 47.91 | 45.57 | ❌ |
+| llama-8b-ffn-prefill | bf16 | 220.114 | **202.274** | **−8.1%** | 49.72 | 47.71 | ❌ |
+| qwen3-8b-swiglu-b32 | fp16 | 5.980 | 5.680 | −5.0% | 23.27 | 22.04 | ❌ |
+| qwen3-8b-swiglu-b32 | bf16 | 6.060 | 5.760 | −5.0% | 24.06 | 22.99 | ❌ |
+| llama-8b-ffn-decode | bf16 | 2.160 | 2.140 | 微型豁免 | 2.56 | 2.43 | 豁免 |
 
 smoke（16×128，fp32/fp16/bf16）：仅精度回归，不做性能采集。
 
-**测量口径与噪声**：每点独立 `msprof op --kernel-name=main` 进程；原表只列单一 SOL%（即 final SOL%），base SOL% 原文未记录。decode 2.14µs ≤ 5µs → 微型 shape 豁免；swiglu-b32（5.68/5.76µs）为 small-shape（<20µs），差异 <5% 按交错 A/B 纪律处理（op2 在两 workload 上方向一致 −2.2% / −2.3%）。
+**测量口径与噪声**：每点独立 `msprof op --kernel-name=main` 进程；base SOL% 由 `perf_records.jsonl` baseline 行回填；表中「是否达标」按 SOL≥60% 判定，时延改善见 Δ 列。decode 2.14µs ≤ 5µs → 微型 shape 豁免；swiglu-b32（5.68/5.76µs）为 small-shape（<20µs），差异 <5% 按交错 A/B 纪律处理（op2 在两 workload 上方向一致 −2.2% / −2.3%）。
 
 ## 4. 精度
 
