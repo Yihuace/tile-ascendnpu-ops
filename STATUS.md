@@ -42,7 +42,7 @@
    - GDN blocksolve 仍阻塞（触发点在算法本体的 L0C→GM→L1 回喂）
 2. **ratio 与收益脱钩**：compute-bound 算子删指令时 `total_fops` 同步下降（GeluAndMul −43.6% 时延，ratio 43.2%→46.0%）。这类算子看 Task Duration，不看 ratio。
 3. **BatchNormBwd 的 ratio 因 subid 去双计而下降**（15.3–28.2% → 13.0–25.5%），不可比，时延 −40%。
-4. **跨版本不可横比**：ClampScalar / Hardswish / Lerp / ClampMin 仍是 8.5.2 数据，未在 9.0 重测。
+4. **口径策略：能衔接 8.5 就衔接**。ClampScalar / Hardswish / Lerp / ClampMin 直接沿用 8.5.2 报告，不重测；仅 ClampScalar 抽测差异大（9.0 下 58.2–70.2%、时延 +4~33%）在汇总表加备注，不改结论、不重优化。
 
 ## 报告规范
 
@@ -63,5 +63,4 @@
 2. **Conv3d unet 路径**：权重 L1 常驻在 `c_in_pad=32` 未生效，可能 2×
 3. **FALN 设计层**：两次 row-reduce 改 Cube GEMV 卸载，20–40%
 4. **GDN prefill**：先做判定性探针（换算法形态能否编译），再决定是否投入 1–2 天
-5. ClampScalar / Hardswish 在 9.0 下补测，统一口径
 6. Tier 2 进化提案（`VP-2026-0147`~`0162`）待人工审批
