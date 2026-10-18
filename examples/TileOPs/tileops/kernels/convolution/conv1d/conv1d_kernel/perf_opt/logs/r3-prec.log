@@ -1,0 +1,45 @@
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+2026-10-18 17:17:19  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-18 17:17:19  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-18 17:17:19  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+AscendNPU IR compile success: loc("/tmp/tmp4at2418g/kernel.npuir":84:16): loc("/tmp/tmp4at2418g/kernel.npuir":84:16): 
+Workspace size: /tmp/tmp4at2418g/libkernel.so not found, kernel gets no workspace
+Traceback (most recent call last):
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/prec_case.py", line 56, in <module>
+    main()
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/prec_case.py", line 48, in main
+    ok, mx = mod._run_case(n, c_in, l_in, c_out, k, s, p, p, d, bias,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/candidates/r3_biasink.py", line 770, in _run_case
+    kernel = fn(BLOCK_M, BLOCK_N, BLOCK_K, 1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py", line 151, in wrapper
+    kernel_result = compile(
+                    ^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py", line 66, in compile
+    return cached_npu(
+           ^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/cache/__init__.py", line 29, in cached_npu
+    return _kernel_cache_instance.cached_npu(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/cache/kernel_cache.py", line 186, in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py", line 1585, in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py", line 1961, in _npuir_to_bin_enable_npu_compile
+    raise RuntimeError("\n".join(err_lines))
+RuntimeError: AscendNPU IR compile reported success but output object was not generated.
+Expected output: /tmp/tmp4at2418g/kernel.o
+cmd: /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmp4at2418g/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true --disable-hivm-tensor-compile=true -o /tmp/tmp4at2418g/kernel
+stdout:
+loc("/tmp/tmp4at2418g/kernel.npuir":84:16): loc("/tmp/tmp4at2418g/kernel.npuir":84:16): 
+stderr:
+[ERROR] Unknown core type: llvm.func @malloc(i64) -> !llvm.ptr
+loc("/tmp/bishengir-compile-150699/module.hivm.opt.mlir":5:1): error: Failed to compile BiShengLIR for device
+Failed to compile HIVM IR
+[ERROR] Executing: /home/developer/Ascend/cann-9.0.0/bin/hivmc /tmp/bishengir-compile-150699/module.hivm.opt.mlir --enable-debug-info=false --enable-static-bare-ptr=true --enable-bin-relocation=true --enable-hivm-inject-barrier-all-sync=false --enable-sanitizer=false -o /tmp/tmp4at2418g/kernel
+
+[ERROR] 2026-10-18-17:17:22 (PID:1650597, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception

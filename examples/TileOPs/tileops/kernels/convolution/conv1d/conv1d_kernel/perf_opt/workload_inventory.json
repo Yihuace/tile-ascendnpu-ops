@@ -1,24 +1,680 @@
 {
-  "workloads": [
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "smoke-k3-s1-float16", "label": "smoke-k3-s1", "marks": ["smoke"], "shape": {"input": [1, 8, 128], "weight": [16, 8, 3]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "smoke", "precision_pass": true, "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "smoke-k3-s1-bfloat16", "label": "smoke-k3-s1", "marks": ["full"], "shape": {"input": [1, 8, 128], "weight": [16, 8, 3]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "smoke", "precision_pass": true, "reason": "smoke 标记由 benchmark _mark(idx=0, fp16) 给出；bf16 同 label 仍属 smoke（含 smoke 标识符）"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "smoke-k3-s1-bias-float16", "label": "smoke-k3-s1-bias", "marks": ["smoke"], "shape": {"input": [1, 8, 128], "weight": [16, 8, 3]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "smoke", "precision_pass": true, "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "smoke-k3-s1-bias-bfloat16", "label": "smoke-k3-s1-bias", "marks": ["full"], "shape": {"input": [1, 8, 128], "weight": [16, 8, 3]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "smoke", "precision_pass": true, "reason": "smoke 标记由 benchmark _mark(idx=0, fp16) 给出；bf16 同 label 仍属 smoke（含 smoke 标识符）"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "whisper-conv1-float16", "label": "whisper-conv1", "marks": ["full"], "shape": {"input": [1, 80, 3000], "weight": [1280, 80, 3]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "whisper-conv1-bfloat16", "label": "whisper-conv1", "marks": ["full"], "shape": {"input": [1, 80, 3000], "weight": [1280, 80, 3]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "wav2vec2-layer1-float16", "label": "wav2vec2-layer1", "marks": ["full"], "shape": {"input": [1, 1, 16000], "weight": [512, 1, 10]}, "dtype": "float16", "params": {"stride": 5, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：wav2vec2 gy=8 权重分块收益 ~2.5x 且 polyphase xdec 仍 20x 冗余；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "wav2vec2-layer1-bfloat16", "label": "wav2vec2-layer1", "marks": ["full"], "shape": {"input": [1, 1, 16000], "weight": [512, 1, 10]}, "dtype": "bfloat16", "params": {"stride": 5, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：wav2vec2 gy=8 权重分块收益 ~2.5x 且 polyphase xdec 仍 20x 冗余；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "encodec-init-float16", "label": "encodec-init", "marks": ["full"], "shape": {"input": [1, 1, 24000], "weight": [32, 1, 7]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：encodec-init gy=1 权重分块无收益（单 co 块全核共享）；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "encodec-init-bfloat16", "label": "encodec-init", "marks": ["full"], "shape": {"input": [1, 1, 24000], "weight": [32, 1, 7]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：encodec-init gy=1 权重分块无收益（单 co 块全核共享）；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "encodec-deep-float16", "label": "encodec-deep", "marks": ["full"], "shape": {"input": [1, 128, 600], "weight": [256, 128, 10]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "encodec-deep-bfloat16", "label": "encodec-deep", "marks": ["full"], "shape": {"input": [1, 128, 600], "weight": [256, 128, 10]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": false}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "whisper-conv1-bias-float16", "label": "whisper-conv1-bias", "marks": ["full"], "shape": {"input": [1, 80, 3000], "weight": [1280, 80, 3]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "whisper-conv1-bias-bfloat16", "label": "whisper-conv1-bias", "marks": ["full"], "shape": {"input": [1, 80, 3000], "weight": [1280, 80, 3]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "wav2vec2-layer1-bias-float16", "label": "wav2vec2-layer1-bias", "marks": ["full"], "shape": {"input": [1, 1, 16000], "weight": [512, 1, 10]}, "dtype": "float16", "params": {"stride": 5, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：wav2vec2 gy=8 权重分块收益 ~2.5x 且 polyphase xdec 仍 20x 冗余；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "wav2vec2-layer1-bias-bfloat16", "label": "wav2vec2-layer1-bias", "marks": ["full"], "shape": {"input": [1, 1, 16000], "weight": [512, 1, 10]}, "dtype": "bfloat16", "params": {"stride": 5, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：wav2vec2 gy=8 权重分块收益 ~2.5x 且 polyphase xdec 仍 20x 冗余；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "encodec-init-bias-float16", "label": "encodec-init-bias", "marks": ["full"], "shape": {"input": [1, 1, 24000], "weight": [32, 1, 7]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：encodec-init gy=1 权重分块无收益（单 co 块全核共享）；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py", "workload_id": "encodec-init-bias-bfloat16", "label": "encodec-init-bias", "marks": ["full"], "shape": {"input": [1, 1, 24000], "weight": [32, 1, 7]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "no_gain", "reason": "未触及变体（仅调优 unit_stride）：encodec-init gy=1 权重分块无收益（单 co 块全核共享）；见 opt_log 复盘"},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "encodec-deep-bias-float16", "label": "encodec-deep-bias", "marks": ["full"], "shape": {"input": [1, 128, 600], "weight": [256, 128, 10]}, "dtype": "float16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""},
-    {"benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench", "kernel_id": "conv1d_unit_stride", "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py", "workload_id": "encodec-deep-bias-bfloat16", "label": "encodec-deep-bias", "marks": ["full"], "shape": {"input": [1, 128, 600], "weight": [256, 128, 10]}, "dtype": "bfloat16", "params": {"stride": 1, "padding": 0, "dilation": 1, "groups": 1, "use_bias": true}, "kind": "tune", "tuning_status": "winner_merged", "reason": ""}
-  ]
+ "workloads": [
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "smoke-k3-s1-float16",
+   "label": "smoke-k3-s1",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "input": [
+     1,
+     8,
+     128
+    ],
+    "weight": [
+     16,
+     8,
+     3
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "smoke",
+   "precision_pass": true,
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "smoke-k3-s1-bfloat16",
+   "label": "smoke-k3-s1",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     8,
+     128
+    ],
+    "weight": [
+     16,
+     8,
+     3
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "smoke",
+   "precision_pass": true,
+   "reason": "smoke 标记由 benchmark _mark(idx=0, fp16) 给出；bf16 同 label 仍属 smoke（含 smoke 标识符）"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "smoke-k3-s1-bias-float16",
+   "label": "smoke-k3-s1-bias",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "input": [
+     1,
+     8,
+     128
+    ],
+    "weight": [
+     16,
+     8,
+     3
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "smoke",
+   "precision_pass": true,
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "smoke-k3-s1-bias-bfloat16",
+   "label": "smoke-k3-s1-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     8,
+     128
+    ],
+    "weight": [
+     16,
+     8,
+     3
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "smoke",
+   "precision_pass": true,
+   "reason": "smoke 标记由 benchmark _mark(idx=0, fp16) 给出；bf16 同 label 仍属 smoke（含 smoke 标识符）"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "whisper-conv1-float16",
+   "label": "whisper-conv1",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     80,
+     3000
+    ],
+    "weight": [
+     1280,
+     80,
+     3
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "whisper-conv1-bfloat16",
+   "label": "whisper-conv1",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     80,
+     3000
+    ],
+    "weight": [
+     1280,
+     80,
+     3
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "wav2vec2-layer1-float16",
+   "label": "wav2vec2-layer1",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     16000
+    ],
+    "weight": [
+     512,
+     1,
+     10
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 5,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "r2_tile_geom: 610.31→34.72µs (17.58x)",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "wav2vec2-layer1-bfloat16",
+   "label": "wav2vec2-layer1",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     16000
+    ],
+    "weight": [
+     512,
+     1,
+     10
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 5,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "r2_tile_geom: 607.35→35.78µs (16.97x)",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "encodec-init-float16",
+   "label": "encodec-init",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     24000
+    ],
+    "weight": [
+     32,
+     1,
+     7
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "r2_tile_geom: 274.17→65.64µs (4.18x)",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "encodec-init-bfloat16",
+   "label": "encodec-init",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     24000
+    ],
+    "weight": [
+     32,
+     1,
+     7
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "r2_tile_geom: 253.51→73.96µs (3.43x)",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "encodec-deep-float16",
+   "label": "encodec-deep",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     128,
+     600
+    ],
+    "weight": [
+     256,
+     128,
+     10
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "encodec-deep-bfloat16",
+   "label": "encodec-deep",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     128,
+     600
+    ],
+    "weight": [
+     256,
+     128,
+     10
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": false
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "whisper-conv1-bias-float16",
+   "label": "whisper-conv1-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     80,
+     3000
+    ],
+    "weight": [
+     1280,
+     80,
+     3
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "whisper-conv1-bias-bfloat16",
+   "label": "whisper-conv1-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     80,
+     3000
+    ],
+    "weight": [
+     1280,
+     80,
+     3
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "wav2vec2-layer1-bias-float16",
+   "label": "wav2vec2-layer1-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     16000
+    ],
+    "weight": [
+     512,
+     1,
+     10
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 5,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "r2_tile_geom: 621.49→74.84µs (8.30x)",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "wav2vec2-layer1-bias-bfloat16",
+   "label": "wav2vec2-layer1-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     16000
+    ],
+    "weight": [
+     512,
+     1,
+     10
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 5,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "r2_tile_geom: 603.91→68.92µs (8.76x)",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "encodec-init-bias-float16",
+   "label": "encodec-init-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     24000
+    ],
+    "weight": [
+     32,
+     1,
+     7
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "no_gain",
+   "reason": "r2_tile_geom: 276.55→240.22µs (1.15x)；bias 中继宽度受 wrapper block_n=128 钳制，bias-in-K 被 CG-2026-0028 阻塞",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+   "workload_id": "encodec-init-bias-bfloat16",
+   "label": "encodec-init-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     1,
+     24000
+    ],
+    "weight": [
+     32,
+     1,
+     7
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "no_gain",
+   "reason": "r2_tile_geom: 255.65→255.49µs (噪声内)；同 CG-2026-0028 归因",
+   "tuned_kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/_conv1d_kernel.py",
+   "final_candidate": "r2_tile_geom"
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "encodec-deep-bias-float16",
+   "label": "encodec-deep-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     128,
+     600
+    ],
+    "weight": [
+     256,
+     128,
+     10
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  },
+  {
+   "benchmark_source": "benchmarks/ops/bench_conv1d_bias.py::test_conv1d_bias_manifest_bench",
+   "kernel_id": "conv1d_unit_stride",
+   "kernel_file": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+   "workload_id": "encodec-deep-bias-bfloat16",
+   "label": "encodec-deep-bias",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input": [
+     1,
+     128,
+     600
+    ],
+    "weight": [
+     256,
+     128,
+     10
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "stride": 1,
+    "padding": 0,
+    "dilation": 1,
+    "groups": 1,
+    "use_bias": true
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": ""
+  }
+ ]
 }

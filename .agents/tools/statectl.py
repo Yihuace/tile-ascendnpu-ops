@@ -367,6 +367,10 @@ def run_gate(stage: int, ctx: Ctx, meta_path: str | None, migration_dir: str | N
         )
         failures, warnings = failures + f, warnings + w
     elif stage == 4:
+        extra_final_artifacts = [
+            path if os.path.isabs(path) else os.path.join(ctx.repo_root, path)
+            for path in (state.get("kernel_opt_py_paths") or [])
+        ]
         f, w = gate_lint.perf_lint(
             paths["kernel_opt"][1],
             paths["opt_log"][1],
@@ -374,6 +378,7 @@ def run_gate(stage: int, ctx: Ctx, meta_path: str | None, migration_dir: str | N
             paths["perf_records"][1],
             state.get("operator_name") or "op",
             ctx.repo_root,
+            extra_final_artifacts=extra_final_artifacts,
         )
         failures, warnings = failures + f, warnings + w
     elif stage == 5:

@@ -27,6 +27,17 @@
 | IsnanFwdOp | baseline（不采纳） | 9/9 | 52.91–79.33% | 1/5 | `20261018_152024_774098` |
 | ClampMinFwdOp | 复用 ClampScalar `perf_opt` | 14/14 | 61.77–68.84% | 0/7 | `20261018_153708_107121` |
 
+## P1：Conv1d 通用 kernel 优化（9.0，2026-10-18）
+
+| 算子 | 生效内核 | 正确性 | bench | 关键收益 | run_id |
+|---|---|---|---:|---|---|
+| Conv1dFwdOp | `perf_opt`（通用 `conv1d`） | **27 passed + 1 skipped**（CG-2026-0003），0 failed | 15/17（2 例 flaky） | wav2vec2 **17.7×/17.2×**、encodec-init **4.2×/3.4×** | `20261018_180016_718940` |
+| Conv1dBiasFwdOp | 同上（has_bias 路径） | **27 passed + 1 skipped**，0 failed | 8/9（1 例 flaky） | wav2vec2-bias **8.3×/8.9×**、encodec-init-bias 1.15×/1.20× | `20261018_180716_376489` |
+
+> 手法：taps-in-K 单次 gemm + A 直读原生 weight + 恒等 x_pad 跳过 + 单通道 polyphase + N tile 512。
+> **wav2vec2 的 CG-2026-0003 编译崩溃已被新 IR 形态绕开**；残余 bench 失败为 unit_stride 的 flaky SIGSEGV，单点重跑 2 passed。
+> 新缺口：**CG-2026-0028**（Vector prelude「1D GM 切片 → 带列偏移 GM 子区域」写必崩），bias-in-K 折叠被迫放弃。
+
 ## 上一轮 11 个算子的结果（9.0.0 口径，仍有效）
 
 | 算子 | 关键时延收益 | 采纳 | 状态 |
@@ -40,25 +51,26 @@
 | IsfiniteFwdOp | bf16 **−21.2%** | ✅ | DONE |
 | FusedAddLayerNormFwdOp | 8b prefill **−23.2%** | ✅ | DONE |
 | BatchNormBwdOp | **−33~−46%** | ✅ | DONE |
-| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep 3.6× | ✅ | DONE（形状路由解封） |
+| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep 3.6×；通用 kernel wav2vec2 **17.7×**、encodec-init **4.2×** | ✅ | DONE（形状路由 + taps-in-K） |
 | Conv3dBiasFwdOp | r3d-stem **1.99×** | ✅ | DONE |
 
-## 必须记住的五件事
+## 必须记住的六件事
 
 1. **CANN 9.0 编译器缺陷（CG-2026-0003, recurring, occurrences=4）**：`ConvertHFusionToHIVM` 对 buffer 形态 `mmadL1` 取 `getResult(0)` 越界；**9.0.0 与 9.2.0 官方包均有**，8.5.2 无（405/405）。
-   - Conv1d/Conv1dBias 已用**形状路由**绕开（`dilation==1` 才走 unit-stride；unit-stride 仅 `c_in>=64` 用调优版）
+   - Conv1d/Conv1dBias 已用**形状路由**绕开（`dilation==1` 才走 unit-stride；unit-stride 仅 `c_in>=64` 用调优版）；通用 kernel 的 wav2vec2 由 taps-in-K 新 IR 形态绕开
    - GDN blocksolve 仍阻塞（触发点在算法本体的 L0C→GM→L1 回喂）
 2. **ratio 与收益脱钩**：compute-bound 算子删指令时 `total_fops` 同步下降（GeluAndMul −43.6% 时延，ratio 43.2%→46.0%）。这类算子看 Task Duration，不看 ratio。
 3. **BatchNormBwd 的 ratio 因 subid 去双计而下降**（15.3–28.2% → 13.0–25.5%），不可比，时延 −40%。
 4. **口径策略：全部统一 CANN 9.0.0**（2026-10-18 用户口径）。8.5.2 数据仅在表 B 历史存档中保留，不再用于本批 19 接口的结论；跨版本数字不横比。
-5. **Clamp 族 9.0 回退已定性：工具链/环境整体下移，不是调优失效**。同链路 baseline vs tuned（`20261018_160303` vs `20261018_131331`）：tuned 仍快 **7.6–40%**（16M 30.7–32.9µs vs 38.3–43.1µs；256M 803–810µs vs 864–874µs）。9.0 baseline 自身只有 **45.35–64.37%**，所以 8.5 的 71.9–82.8% 不能跨版本引用；**保留 perf_opt**，不再重优化。
+5. **CG-2026-0028（新）**：Vector prelude 里「1D GM 切片 → 带列偏移 GM 子区域」写必崩（`Unknown core type: llvm.func @malloc`），bias-in-K 折叠不可表达；bias 路径保留 Cube→ws→Vector 中继（`encodec-init-bias` 240µs vs nobias 66µs，差 3.7×）。
+6. **Clamp 族 9.0 回退已定性：工具链/环境整体下移，不是调优失效**。同链路 baseline vs tuned（`20261018_160303` vs `20261018_131331`）：tuned 仍快 **7.6–40%**（16M 30.7–32.9µs vs 38.3–43.1µs；256M 803–810µs vs 864–874µs）。9.0 baseline 自身只有 **45.35–64.37%**，所以 8.5 的 71.9–82.8% 不能跨版本引用；**保留 perf_opt**，不再重优化。
 
 ## 报告规范
 
 - 模板：`examples/TileOPs/reports/optimize/REPORT_TEMPLATE.md`
-- 14 份单算子报告已按 8 节统一（0 身份 / 1 结论 / 2 优化方法与过程〔2.1 诊断 + 2.2 方法 + 2.3 逐轮〕/ 3 结果 / 4 精度 / 5 时间成本 / 6 产物 / 7 天花板豁免缺口 / 8 建议）
+- 16 份单算子报告已按 8 节统一（0 身份 / 1 结论 / 2 优化方法与过程〔2.1 诊断 + 2.2 方法 + 2.3 逐轮〕/ 3 结果 / 4 精度 / 5 时间成本 / 6 产物 / 7 天花板豁免缺口 / 8 建议）
 - 旧版报告存各目录 `history_version/OPTIMIZE_REPORT_v0.md`
-- 缺失报告：Conv1dFwdOp、GLADecodeOp（待补），ClampMin/Lerp 无独立报告（分别由 ClampScalar / 未优化覆盖）
+- 缺失报告：GDN（未交付）；ClampMin/Lerp 无独立报告（分别由 ClampScalar / 未优化覆盖）
 
 ## 环境纪律
 
@@ -69,8 +81,7 @@
 
 ## 后续可选（按收益排序）
 
-1. **Conv1d 通用 kernel**（wav2vec2 0.33% / encodec-init 0.41%）：仍是逐核冗余搬运，可能 2–5×
-2. **Conv3d unet 路径**：权重 L1 常驻在 `c_in_pad=32` 未生效，可能 2×
-3. **FALN 设计层**：两次 row-reduce 改 Cube GEMV 卸载，20–40%
-4. **GDN prefill**：先做判定性探针（换算法形态能否编译），再决定是否投入 1–2 天
-5. Tier 2 进化提案（`VP-2026-0147`~`0162`）待人工审批
+1. **Conv3d unet 路径**：权重 L1 常驻在 `c_in_pad=32` 未生效，可能 2×
+2. **FALN 设计层**：两次 row-reduce 改 Cube GEMV 卸载，20–40%
+3. **GDN prefill**：先做判定性探针（换算法形态能否编译），再决定是否投入 1–2 天
+4. Tier 2 进化提案（`VP-2026-0147`~`0162`）待人工审批

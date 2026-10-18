@@ -34,12 +34,24 @@ def kernel_name(workload, has_bias, is_general):
     return f"_{base}{suffix}_main"
 
 
-def parse_duration(outdir):
+def parse_duration(outdir, kname=None):
+    """Median Task Duration over the rows that belong to ``kname``.
+
+    ``--kernel-name`` already filters on the msprof side, but the operator-name
+    column is re-checked here: a silently unfiltered profile (the filter matched
+    nothing) would otherwise average unrelated torch setup kernels into the
+    number and understate the target kernel's duration.
+    """
     csvs = sorted(glob.glob(os.path.join(outdir, "**", "OpBasicInfo*.csv"), recursive=True))
     dur = []
+    skipped = 0
     for c in csvs:
         with open(c, newline="") as f:
             for row in csv.DictReader(f):
+                name = row.get("Op Name") or ""
+                if kname and kname not in name:
+                    skipped += 1
+                    continue
                 v = row.get("Task Duration(us)")
                 if v and v.strip():
                     try:
@@ -98,15 +110,21 @@ def main():
         print(f"[measure] FAILED rc={r.returncode}", file=sys.stderr)
         print(r.stderr[-2000:], file=sys.stderr)
         sys.exit(1)
-    median, nsamp = parse_duration(outdir)
+    median, nsamp = parse_duration(outdir, kname)
     if median is None:
-        # retry without --kernel-name (unfiltered)
+        # The name filter matched nothing: retry unfiltered but keep the
+        # op-name guard so unrelated torch kernels can never be counted.
+        print(f"[measure] WARNING: no rows for kernel-name={kname}; retrying "
+              "unfiltered with the op-name guard", file=sys.stderr)
         cmd2 = [a for a in cmd if not a.startswith("--kernel-name=")]
+        shutil.rmtree(outdir, ignore_errors=True)
+        os.makedirs(outdir, exist_ok=True)
         r2 = subprocess.run(cmd2, capture_output=True, text=True, timeout=900, env=env)
-        median, nsamp = parse_duration(outdir)
-    if median is None:
-        print("[measure] no OpBasicInfo CSV", file=sys.stderr)
-        sys.exit(1)
+        if r2.returncode != 0:
+            print(f"[measure] FAILED rc={r2.returncode}", file=sys.stderr)
+            print(r2.stderr[-2000:], file=sys.stderr)
+            sys.exit(1)
+        median, nsamp = parse_duration(outdir, kname)
     print(f"MEASURE workload={args.workload} dtype={args.dtype} bias={args.bias} "
           f"duration_us={median:.4f} samples={nsamp}")
     if not args.out:

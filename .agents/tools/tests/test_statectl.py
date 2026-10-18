@@ -1891,6 +1891,35 @@ def test_gate4_rejects_missing_case_and_mixed_final_candidate(tmp_path):
     assert "S4-PERF-RECORDS-RECON" in {f["rule_id"] for f in out["failures"]}
 
 
+def test_gate4_accepts_multiple_final_artifacts(tmp_path):
+    repo = make_repo(tmp_path)
+    d = op_dir(repo)
+    assert init_new_op(d)[0] == 0
+    _, rows = _stage4_workload_artifacts(d)
+    second = d / "perf_opt" / "u.py"
+    second.write_text(KERNEL_PY + "\n# second kernel\n", encoding="utf-8")
+    for row in rows:
+        if row["workload_id"] == "yolo-p4-f16" and row["phase"] == "final":
+            row["artifact_path"] = "u.py"
+            row["artifact_sha256"] = hashlib.sha256(second.read_bytes()).hexdigest()
+    write_perf_records(d, "".join(json.dumps(row) + "\n" for row in rows))
+    # Without declaring the second artifact, the primary path must not match.
+    rc, out = sc("gate", "4", "--dir", str(d))
+    assert rc == 1
+    assert "S4-PERF-RECORDS-RECON" in {f["rule_id"] for f in out["failures"]}
+    # Declaring it in kernel_opt_py_paths must pass and still hash-check the file.
+    state_path = d / ".stage_state.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    state["kernel_opt_py_paths"] = [os.path.relpath(second, repo).replace(os.sep, "/")]
+    state_path.write_text(json.dumps(state), encoding="utf-8")
+    rc, out = sc("gate", "4", "--dir", str(d))
+    assert rc == 0
+    second.write_text(KERNEL_PY + "\n# tampered\n", encoding="utf-8")
+    rc, out = sc("gate", "4", "--dir", str(d))
+    assert rc == 1
+    assert "S4-PERF-RECORDS-RECON" in {f["rule_id"] for f in out["failures"]}
+
+
 def test_gate4_smoke_excluded_and_precision_checked(tmp_path):
     repo = make_repo(tmp_path)
     d = op_dir(repo)

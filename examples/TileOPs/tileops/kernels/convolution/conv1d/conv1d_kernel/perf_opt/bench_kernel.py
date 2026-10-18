@@ -9,9 +9,20 @@ process launches the target kernel ``--launches`` times so that
 
 can collect a stable ``Task Duration(us)``.
 
+Two dispatch families are supported (mirroring ``Conv1dFwdOp._select_kernel_key``):
+
+  * ``unit_stride`` -- ``c_in >= 16``, ``k > 1``, ``stride == 1``, ``dilation == 1``
+    -> ``_conv1d_unit_stride_kernel`` (workspaces ``w_flat``, ``x_pad`` [, ``ws``])
+  * ``general``     -- everything else (``c_in < 16`` or ``stride > 1``)
+    -> ``_conv1d_kernel`` (workspaces ``w_flat``, ``x_pad``, ``xdec``, ``poly_idx``
+    [, ``ws``])
+
+The family is derived from the workload shape, exactly like the op layer, so a
+candidate file only has to expose the matching factory + shape planner.
+
 Usage:
   python perf_opt/bench_kernel.py --module <path-to-kernel .py> \
-      --workload whisper-conv1 --dtype float16 --bias 0 --launches 25
+      --workload encodec-init --dtype float16 --launches 25
 
 The msprof command is printed to stderr so the log records the actual file and
 workload (workflow requirement: the command must identify the candidate).
@@ -54,6 +65,11 @@ def load_module(path):
     return mod
 
 
+def kernel_family(c_in, k, stride):
+    """Mirror ``Conv1dFwdOp._select_kernel_key`` reduced to the two Cube paths."""
+    return "unit_stride" if (stride == 1 and k > 1 and c_in >= 16) else "general"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--module", required=True, help="kernel .py file to measure")
@@ -66,41 +82,56 @@ def main():
     n, c_in, l_in, c_out, k, stride, pad, dil, wl_bias = WORKLOADS[args.workload]
     has_bias = wl_bias if args.bias < 0 else bool(args.bias)
     dtype = DTYPES[args.dtype]
-
-    if stride != 1 or k <= 1 or c_in < 16:
-        sys.exit(
-            f"workload {args.workload} dispatches to the general conv1d kernel; "
-            "this driver currently measures the unit_stride kernel only"
-        )
+    fam = kernel_family(c_in, k, stride)
 
     mod = load_module(args.module)
-    factory = mod._conv1d_unit_stride_kernel
-    plan = mod._plan
-    fn = factory(n, c_in, l_in, c_out, k, stride, pad, pad, dil, has_bias,
-                 args.dtype)
-    kernel = fn(*BLOCK, TAPS, 1)
-
     torch.manual_seed(0)
     x = torch.randn(n, c_in, l_in, dtype=dtype, device="npu")
     w = torch.randn(c_out, c_in, k, dtype=dtype, device="npu")
     bias = torch.randn(c_out, dtype=dtype, device="npu") if has_bias else None
-
-    l_pad, c_in_pad, _ = plan(l_in, c_in, pad, pad)
-    w_flat = torch.zeros((k, c_out, c_in_pad), dtype=dtype, device="npu")
-    x_pad = torch.zeros((n, c_in_pad, l_pad), dtype=dtype, device="npu")
     nk = __import__("tilelang.utils", fromlist=["NPUUtils"]).NPUUtils.get().get_aicore_num()
 
-    ws = torch.empty((nk, SLOTS) + BLOCK, dtype=torch.float32, device="npu") if has_bias else None
+    if fam == "unit_stride":
+        factory = mod._conv1d_unit_stride_kernel
+        plan = mod._plan
+        fn = factory(n, c_in, l_in, c_out, k, stride, pad, pad, dil, has_bias,
+                     args.dtype)
+        kernel = fn(*BLOCK, TAPS, 1)
+        l_pad, c_in_pad, _ = plan(l_in, c_in, pad, pad)
+        w_flat = torch.zeros((k, c_out, c_in_pad), dtype=dtype, device="npu")
+        x_pad = torch.zeros((n, c_in_pad, l_pad), dtype=dtype, device="npu")
+        ws = torch.empty((nk, SLOTS) + BLOCK, dtype=torch.float32, device="npu") \
+            if has_bias else None
+        args_common = [x, w]
+        args_tail = [w_flat, x_pad]
+    else:
+        factory = mod._conv1d_kernel
+        fn = factory(n, c_in, l_in, c_out, k, stride, pad, pad, dil, has_bias,
+                     args.dtype)
+        kernel = fn(*BLOCK, 1)
+        need_poly, l_pad, mdec, c_in_pad, _ch, cg = mod._ws_dims(
+            l_in, c_in, pad, pad, k, dil, stride)
+        w_flat = torch.empty((k, c_out, c_in_pad), dtype=dtype, device="npu")
+        x_pad = torch.zeros((n, c_in_pad, l_pad), dtype=dtype, device="npu")
+        xdec = torch.empty((n, c_in_pad, l_pad), dtype=dtype, device="npu")
+        if need_poly:
+            poly_idx = mod._build_poly_idx(mdec, stride, cg, l_pad).to("npu")
+        else:
+            poly_idx = torch.zeros((cg, l_pad), dtype=torch.int32, device="npu")
+        ws = torch.empty((nk, SLOTS) + BLOCK, dtype=torch.float32, device="npu") \
+            if has_bias else None
+        args_common = [x, w]
+        args_tail = [w_flat, x_pad, xdec, poly_idx]
 
     print(f"[driver] module={os.path.abspath(args.module)} workload={args.workload} "
-          f"dtype={args.dtype} bias={has_bias} launches={args.launches}",
+          f"family={fam} dtype={args.dtype} bias={has_bias} launches={args.launches}",
           file=sys.stderr)
     with torch.no_grad():
         for _ in range(args.launches):
             if has_bias:
-                kernel(x, w, bias, w_flat, x_pad, ws)
+                kernel(*args_common, bias, *args_tail, ws)
             else:
-                kernel(x, w, w_flat, x_pad)
+                kernel(*args_common, *args_tail)
         torch.npu.synchronize()
     print("[driver] done", file=sys.stderr)
 

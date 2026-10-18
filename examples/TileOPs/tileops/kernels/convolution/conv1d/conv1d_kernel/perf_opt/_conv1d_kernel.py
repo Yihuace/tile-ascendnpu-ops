@@ -55,6 +55,27 @@ Structure (DESIGN Sec 0.6 / 3.3 / 6):
     (a same-core producer self set->wait does not retire: it deadlocks; see
     ``repro/TRAP-sync-self-set-wait.py``).
 
+R1 (Stage-4 perf tuning, 2026-10-18) -- "taps-in-K" single-channel path:
+  when the shape has exactly one real input channel, no padding and a window
+  that fits one K fractal (``c_in == 1``, ``kernel_l <= 16``,
+  ``pad_left == pad_right == 0``, ``l_pad == l_in``):
+    * the GEMM K axis becomes the **tap window** itself (``K = kernel_l``,
+      measured to be accepted by ``T.gemm`` -- no 16-padding, so neither
+      operand needs a zero fill);
+    * the A operand is read **directly from the native weight**
+      (``weight[c_o, 0, k_w]``: row = c_o, col = k_w, contiguous), so the whole
+      Vector weight-repack prelude (GM->UB->2x transpose->GM) disappears;
+    * the B operand rows are fetched one tap each straight from ``x`` (stride-1)
+      or from the polyphase ``xdec`` (stride>1) into the resident L1 K rows --
+      the 20x-redundant ``x_pad`` copy is gone entirely;
+    * one gemm covers the whole window (was ``kernel_l`` gemms of K=16), the A
+      tile is reloaded only when the co block changes (not per tap), each core
+      owns a **contiguous** bx range (its own column slice, so no cross-core
+      dependency), and the N tile grows to the L0C budget
+      (``TAPK_BLOCK_N_MAX``), so per-core instruction count collapses.
+  Everything else (bias MixCV relay, polyphase prelude, tail clamping) keeps
+  the Stage-3 shape; shapes outside the predicate take the exact Stage-3 path.
+
 Run: python _conv1d_kernel.py --level {L0,all}
 """
 
@@ -81,6 +102,11 @@ BLOCK_N = 128
 BLOCK_K = 128
 BM_W = 16        # weight-layout prelude co blocking (UB budget)
 SLOTS = 2        # WS depth-2 double buffer
+
+# R1 "taps-in-K" path tuning (exposed for the wrapper's paired switch block).
+TAPK_K_MAX = 16          # tap window must fit one K fractal
+TAPK_BLOCK_N_MAX = 512  # nobias L0C budget (probe: 1024 SIGSEGVs)
+TAPK_BLOCK_N_BIAS = 128  # bias epilogue lives in UB: 64x128x(4+2+4) B = 80 KB
 
 _ACCUM = "float32"
 _UB_CAP = 32768  # per-buffer UB chunk bound (bytes), keeps prelude within 192KB
@@ -109,6 +135,43 @@ def _ws_dims(l_in, c_in, pad_left, pad_right, kernel_l, dilation_l, stride_l):
     ch_xp = _pick_chunk(l_pad, 2)
     cg = _pick_chunk(l_pad, 4)
     return need_poly, l_pad, mdec, c_in_pad, ch_xp, cg
+
+
+def _tapk_bn2(out_l, bm, c_out, num_kernels, bn_hint, has_bias):
+    """Largest N tile the L0C budget allows while keeping every core fed.
+
+    ``tapk_bm`` is the real co extent (rounded to a 16-multiple), so the N tile
+    can grow well past ``block_n``: longer rows mean fewer fixpipe descriptors
+    and fewer per-tile B fetches, which is what bounds these latency-dominated
+    shapes.
+    """
+    cap = (131072 // (bm * 4)) // 16 * 16
+    top = min(TAPK_BLOCK_N_MAX, cap)
+    if has_bias:
+        top = min(top, TAPK_BLOCK_N_BIAS)
+    gy = (c_out + bm - 1) // bm
+    bn = max(top, bn_hint)
+    while bn > bn_hint and gy * ((out_l + bn - 1) // bn) < num_kernels:
+        bn //= 2
+    return max(bn, bn_hint)
+
+
+def _tapk_bn(out_l, block_m, num_kernels, bn_hint, has_bias):
+    """Largest N tile that still spreads ``out_l`` over every AI core along bx.
+
+    Bounded by the L0C budget (``block_m * bn * 4B <= 128 KB``), by the bias
+    epilogue's UB budget (``TAPK_BLOCK_N_BIAS``) and by the requirement that the
+    bx axis alone yields at least one tile per core (the taps-in-K path
+    partitions cores by contiguous bx ranges only).
+    """
+    cap = (131072 // (block_m * 4)) // 16 * 16
+    top = min(TAPK_BLOCK_N_MAX, cap)
+    if has_bias:
+        top = min(top, TAPK_BLOCK_N_BIAS)
+    bn = top
+    while bn > bn_hint and (out_l + bn - 1) // bn < num_kernels:
+        bn //= 2
+    return max(bn, bn_hint)
 
 
 # ---------- Golden (PyTorch CPU reference implementation) ----------
@@ -166,6 +229,17 @@ def _conv1d_kernel(
     )
     num_kernels = NPUUtils.get().get_aicore_num()
 
+    # R1 taps-in-K predicate (compile-time): one real input channel, no padding,
+    # length already a multiple of the polyphase grain, window inside one K
+    # fractal.  Outside it the Stage-3 implicit-GEMM path is kept byte-for-byte.
+    tapk = (
+        c_in == 1
+        and 1 <= kernel_l <= TAPK_K_MAX
+        and pad_left == 0
+        and pad_right == 0
+        and l_pad == l_in
+    )
+
     @tilelang.jit(out_idx=[2], target="npuir")
     def _conv1d_func(block_m, block_n, block_k, num_stages):
         gx = (out_l + block_n - 1) // block_n
@@ -175,6 +249,14 @@ def _conv1d_kernel(
         n_co = (c_out + BM_W - 1) // BM_W
         n_xp = (c_in_pad + ch_xp - 1) // ch_xp
         n_cg = (c_in_pad + cg - 1) // cg
+        # R2 taps-in-K geometry: the M tile shrinks to the real co extent so the
+        # N tile can grow to the whole L0C budget (fewer, longer fixpipe bursts).
+        tapk_bm = min(block_m, _ceil16(c_out)) if tapk else block_m
+        tapk_bn = _tapk_bn2(out_l, tapk_bm, c_out, num_kernels, block_n, has_bias) if tapk else block_n
+        gx = (out_l + tapk_bn - 1) // tapk_bn if tapk else gx
+        gy = (c_out + tapk_bm - 1) // tapk_bm if tapk else gy
+        num_logical = gy * gx * n
+        tkc = kernel_l if tapk else 0
 
         @T.macro
         def _prelude(x, weight, w_flat, x_pad, xdec, poly_idx):
@@ -362,6 +444,196 @@ def _conv1d_kernel(
                             ],
                         )
                         T.sync_block_set(2 * slot + 1)  # slot free
+
+        # ---------------- R1 taps-in-K macros (c_in == 1, pad == 0) -----------
+        @T.macro
+        def _tapk_prelude(x, xdec, poly_idx):
+            """Only the single real channel is materialised.
+
+            stride == 1  -> nothing to do: the Cube reads ``x`` directly.
+            stride >  1  -> one polyphase row (``c_in == 1``), replacing the
+                            Stage-3 loop over ``c_in_pad`` (15 of 16 chunks were
+                            zero channels and dominated aiv_mte3).
+            """
+            with T.Scope("Vector"):
+                if need_poly:
+                    ubx = T.alloc_ub([c_in, l_pad], dtype)
+                    ubi = T.alloc_ub([c_in, l_pad], "int32")
+                    ubd = T.alloc_ub([c_in, l_pad], dtype)
+                    for bn_i in T.serial(n):
+                        T.copy(x[bn_i, 0:c_in, 0:l_pad], ubx[0:c_in, 0:l_pad])
+                        T.copy(poly_idx[0:c_in, 0:l_pad], ubi[0:c_in, 0:l_pad])
+                        T.gather(ubx, ubd, ubi, [c_in, l_pad])
+                        T.copy(ubd[0:c_in, 0:l_pad], xdec[bn_i, 0:c_in, 0:l_pad])
+                with T.rs("PIPE_MTE3"):
+                    T.sync_block_set(4)  # prelude ready (Vector -> Cube)
+
+        @T.macro
+        def _tapk_cube(out, weight, bsrc, ws, kernel_id):
+            """One gemm per output tile: K = the tap window, A = native weight.
+
+            Each core owns the contiguous flat tile range ``[cid_lo, cid_hi)``,
+            so the split stays balanced for any (gy, gx) - including
+            ``gx < num_kernels`` - and the B rows a core reads always come from
+            columns/rows it materialised itself (no cross-core dependency).
+            """
+            with T.Scope("Cube"):
+                l1_a = T.alloc_L1([tapk_bm, tkc], dtype)
+                l1_b = T.alloc_L1([tkc, tapk_bn], dtype)
+                l0_c = T.alloc_L0C([tapk_bm, tapk_bn], accum_dtype)
+                with T.rs("PIPE_MTE2"):
+                    T.sync_block_wait(4)  # wait prelude ready
+                cid_lo = (num_logical * kernel_id) // num_kernels
+                cid_hi = (num_logical * (kernel_id + 1)) // num_kernels
+                for ti in T.serial(T.max(0, cid_hi - cid_lo)):
+                    cid = cid_lo + ti
+                    bz = cid // (gy * gx)
+                    by = (cid // gx) % gy
+                    bx = cid % gx
+                    tm = T.min(tapk_bm, c_out - by * tapk_bm)
+                    tn = T.min(tapk_bn, out_l - bx * tapk_bn)
+                    tmc = T.max(16, T.ceildiv(tm, 16) * 16)
+                    tnc = T.max(16, T.ceildiv(tn, 16) * 16)
+                    with T.rs("PIPE_MTE2"):
+                        # B: one tap per K row, straight from x / xdec.
+                        for kw in T.serial(tkc):
+                            if need_poly:
+                                base = (
+                                    ((kw * dilation_l) % stride_l) * mdec
+                                    + bx * tapk_bn
+                                    + (kw * dilation_l) // stride_l
+                                )
+                                T.copy(
+                                    bsrc[bz, 0:c_in, base:base + tn],
+                                    l1_b[kw:kw + 1, 0:tn],
+                                )
+                            else:
+                                off = bx * tapk_bn + kw * dilation_l
+                                T.copy(
+                                    bsrc[bz, 0:c_in, off:off + tn],
+                                    l1_b[kw:kw + 1, 0:tn],
+                                )
+                        # A: native [c_out, c_in, kernel_l] weight, tap-major.
+                        T.copy(
+                            weight[by * tapk_bm:by * tapk_bm + tm, 0, 0:tkc],
+                            l1_a[0:tm, 0:tkc],
+                        )
+                    with T.rs("PIPE_C"):
+                        T.gemm(
+                            l1_a,
+                            l1_b,
+                            l0_c,
+                            initC=True,
+                            b_transpose=False,
+                            size=[tmc, tkc, tnc],
+                        )
+                    if has_bias:
+                        slot = ti % SLOTS
+                        with T.rs("PIPE_FIX"):
+                            T.sync_block_wait(2 * slot + 1)  # slot free (WAR)
+                            T.copy(
+                                l0_c[0:tm, 0:tn],
+                                ws[kernel_id, slot, 0:tm, 0:tn],
+                            )
+                            T.sync_block_set(2 * slot)  # ws ready
+                    else:
+                        with T.rs("PIPE_FIX"):
+                            T.copy(
+                                l0_c[0:tm, 0:tn],
+                                out[
+                                    bz,
+                                    by * tapk_bm:by * tapk_bm + tm,
+                                    bx * tapk_bn:bx * tapk_bn + tn,
+                                ],
+                            )
+
+        @T.macro
+        def _tapk_bias_epilogue(out, bias, ws, kernel_id):
+            with T.Scope("Vector"):
+                ub_f32 = T.alloc_ub([tapk_bm, tapk_bn], accum_dtype)
+                ub_f16 = T.alloc_ub([tapk_bm, tapk_bn], dtype)
+                bias_16 = T.alloc_ub([tapk_bm, 1], dtype)
+                bias_col = T.alloc_ub([tapk_bm, 1], accum_dtype)
+                bias_brc = T.alloc_ub([tapk_bm, tapk_bn], accum_dtype)
+                with T.rs("PIPE_MTE2"):
+                    T.sync_block_set(1)
+                    T.sync_block_set(3)
+                cid_lo = (num_logical * kernel_id) // num_kernels
+                cid_hi = (num_logical * (kernel_id + 1)) // num_kernels
+                for ti in T.serial(T.max(0, cid_hi - cid_lo)):
+                    cid = cid_lo + ti
+                    bz = cid // (gy * gx)
+                    by = (cid // gx) % gy
+                    bx = cid % gx
+                    tm = T.min(tapk_bm, c_out - by * tapk_bm)
+                    tn = T.min(tapk_bn, out_l - bx * tapk_bn)
+                    slot = ti % SLOTS
+                    with T.rs("PIPE_MTE2"):
+                        T.sync_block_wait(2 * slot)  # ws ready
+                        T.copy(
+                            ws[kernel_id, slot, 0:tm, 0:tn],
+                            ub_f32[0:tm, 0:tn],
+                        )
+                        T.copy(
+                            bias[by * tapk_bm:by * tapk_bm + tm],
+                            bias_16[0:tm, 0:1],
+                        )
+                    T.vcast(bias_16, bias_col, round_mode="rint")
+                    T.vbrc(bias_col, bias_brc)
+                    T.vadd(bias_brc, ub_f32, ub_f32)
+                    T.vcast(ub_f32, ub_f16, round_mode="rint")
+                    with T.rs("PIPE_MTE3"):
+                        T.copy(
+                            ub_f16[0:tm, 0:tn],
+                            out[
+                                bz,
+                                by * tapk_bm:by * tapk_bm + tm,
+                                bx * tapk_bn:bx * tapk_bn + tn,
+                            ],
+                        )
+                        T.sync_block_set(2 * slot + 1)  # slot free
+
+
+        if tapk and has_bias:
+
+            @T.prim_func
+            def _conv1d_bias_main(
+                x: T.Tensor((n, c_in, l_in), dtype),
+                weight: T.Tensor((c_out, c_in, kernel_l), dtype),
+                out: T.Tensor((n, c_out, out_l), dtype),
+                bias: T.Tensor((c_out,), dtype),
+                w_flat: T.Tensor((kernel_l, c_out, c_in_pad), dtype),
+                x_pad: T.Tensor((n, c_in_pad, l_pad), dtype),
+                xdec: T.Tensor((n, c_in_pad, l_pad), dtype),
+                poly_idx: T.Tensor((cg, l_pad), "int32"),
+                ws: T.Tensor((num_kernels, SLOTS, block_m, block_n), accum_dtype),
+            ):
+                with T.Kernel(num_kernels, is_npu=True) as (kernel_id, _):
+                    bsrc = xdec if need_poly else x
+                    _tapk_prelude(x, xdec, poly_idx)
+                    _tapk_cube(out, weight, bsrc, ws, kernel_id)
+                    _tapk_bias_epilogue(out, bias, ws, kernel_id)
+
+            return _conv1d_bias_main
+
+        if tapk:
+
+            @T.prim_func
+            def _conv1d_main(
+                x: T.Tensor((n, c_in, l_in), dtype),
+                weight: T.Tensor((c_out, c_in, kernel_l), dtype),
+                out: T.Tensor((n, c_out, out_l), dtype),
+                w_flat: T.Tensor((kernel_l, c_out, c_in_pad), dtype),
+                x_pad: T.Tensor((n, c_in_pad, l_pad), dtype),
+                xdec: T.Tensor((n, c_in_pad, l_pad), dtype),
+                poly_idx: T.Tensor((cg, l_pad), "int32"),
+            ):
+                with T.Kernel(num_kernels, is_npu=True) as (kernel_id, _):
+                    bsrc = xdec if need_poly else x
+                    _tapk_prelude(x, xdec, poly_idx)
+                    _tapk_cube(out, weight, bsrc, None, kernel_id)
+
+            return _conv1d_main
 
         if has_bias:
 

@@ -20,7 +20,7 @@
 | IsfiniteFwdOp | **bf16 −21.2/−16.4%** | ✅ | 42.29–78.29%（1/5） | 同 `vand` 路径（第二独立证据） |
 | FusedAddLayerNormFwdOp | **8b prefill −23.2%**、70b −14.2% | ✅ | 0.54–43.89%（0/5；2 微型豁免） | loads-first 装载前置；单遍方差 tie 弃用 |
 | BatchNormBwdOp | **−33~−46%**（几何 −40.3%） | ✅ | 11.91–24.44%（0/6，subid 不可比） | subid 分片从 MixCV 迁到 Vector 归约族 |
-| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep **3.6×** | ✅ | 0.24–1.77%（Conv1d 0/15、Bias 0/8） | 形状路由修正后绕开 9.0 编译器缺陷；Bias report passed / Conv1d partial |
+| Conv1dBiasFwdOp / Conv1dFwdOp | whisper **15×**、encodec-deep **3.6×**；通用 kernel wav2vec2 **17.7×**、encodec-init **4.2×** | ✅ | 0.03–1.79%（Conv1d 0/15、Bias 0/8；按 Task Duration 判据） | 形状路由 + taps-in-K；wav2vec2 的 CG-2026-0003 已被新 IR 绕开；Conv1d report partial |
 | Conv3dBiasFwdOp | **r3d-stem 1.99×** | ✅ | 0.76–6.29%（0/3） | tap 打包 + 权重 L1 常驻；其余 shape 编译期回退 baseline |
 
 ## 2. 18 个接口：CANN 9.0.0 端到端现状（全可调 shape 范围）
@@ -44,8 +44,8 @@
 | FusedAddLayerNorm | 7（2 微型豁免） | 0.54–43.89% | 60 | **0/5** ❌ | `perf_opt` | ✅ |
 | BatchNormBwd | 6 | 11.91–24.44%（subid 去双计） | 60 | **0/6** ❌ | `perf_opt` | ✅ |
 | GLADecode | 5 | 3.16–18.24% | 60 | **0/5** ❌ | `perf_opt` | ✅ |
-| Conv1d | 15 | 0.24–1.77% | 60 | **0/15** ❌ | `perf_opt` | ✅ |
-| Conv1dBias | 8 | 0.24–1.73% | 60 | **0/8** ❌ | `perf_opt` | ✅ |
+| Conv1d | 15 | 0.04–1.79% | 60 | **0/15** ❌（Task Duration 17.7×） | `perf_opt` | ✅ |
+| Conv1dBias | 8 | 0.03–1.73% | 60 | **0/8** ❌（Task Duration 8.3–8.9×） | `perf_opt` | ✅ |
 | Conv3dBias | 3 | 0.76–6.29% | 60 | **0/3** ❌ | `perf_opt` | ✅ |
 
 > 备注：
@@ -97,7 +97,9 @@
 - 权重 L1 常驻存在 `c_in_pad` 依赖（16 生效 / 32 不生效）
 - L1 超配 → bishengir SIGSEGV（`n_max` 绕法）
 - predicate 缺 `i1→i8` 直转 / bool `vnot`（CG-2026-0027）
+- **CG-2026-0028**：Vector prelude「1D GM 切片 → 带列偏移 GM 子区域」写必崩（`Unknown core type: llvm.func @malloc`）；bias-in-K 折叠被迫放弃，bias 路径保留中继
 - `statectl` 无法重开 optimize 场景 DONE 任务
+- 多 kernel 包的 `S4-PERF-RECORDS-RECON` 单文件契约已由 `kernel_opt_py_paths` 扩展支持（2026-10-18）
 
 ## 6. 过程质量
 

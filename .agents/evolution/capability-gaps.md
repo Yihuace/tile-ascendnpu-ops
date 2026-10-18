@@ -45,6 +45,46 @@ open ──(≥2 独立任务识别)──> recurring ──(提案产出)──
 
 ## Open
 
+### CG-2026-0028
+
+```yaml
+gap_id: CG-2026-0028
+layer: codegen（Vector scope → BishengIR：带列偏移的 GM 子区域写）
+capability: >-
+  Expert MixCV kernel 的 Vector scope 里，把 **1D GM 张量切片**（如 `bias[c_o]`）搬到 UB
+  再写进**带列偏移的 GM 子区域**（如 `w_flat[0, co0:co0+cw, k:k+1]`，行跨步 c_in_pad、列偏移 k）
+  时，bishengir-compile 产出
+  `[ERROR] Unknown core type: llvm.func @malloc(i64) -> !llvm.ptr` 并失败（不是 SIGSEGV，
+  是 codegen 里混入无 core type 的 host malloc 函数）。extent 静态化、UB 内拼整块后单次落 GM、
+  改列偏移为 0 均无效；**同形态拷贝在 Stage-3 的 bias epilogue 位置合法、在独立 Vector kernel 里
+  也合法** —— 触发取决于所在 scope/区域形态。故「把 bias 折进 GEMM K 轴」这类等价改写在
+  本工具链下不可表达。
+blocked_algo: >-
+  bias-in-K 折叠（`A[:, k] = bias`、`B[k, :] = 1.0`，一次 gemm 完成 `W·x + bias`，消除
+  Cube→ws→Vector 中继）被迫放弃；bias 路径保留中继形态，代价 = 输出多走一遍 Vector
+  （实测 `encodec-init-bias` 240µs vs 同 shape nobias 65µs，差 3.7×；
+  `wav2vec2-layer1-bias` 74.8µs vs nobias 34.7µs，差 2.2×）。
+evidence:
+  - 逐项 bisect（2026-10-18，`perf_opt/logs/r3-prec.log` 与 /tmp 变体 w2/w5/w6/w7/w8/w9）：
+    只去掉 bias 列（w5）→ 编译 PASS；只保留 bias 列（w6）→ 编译 FAIL；bias 列改静态
+    extent（w7）/UB 内拼整块单次落 GM（w8）/全静态（w9）→ 均 FAIL；同进程内 A 读原生
+    weight 的对照（w2）→ PASS，证明与 K+1、ones 行无关。
+  - 复现命令：`python3 perf_opt/prec_case.py perf_opt/candidates/r3_biasink.py encodec-init-bias`
+    （tools: `.agents/tools/npu_lock.sh`）。
+  - 反证：同样的 `T.copy(bias[slice], ub[:, 0:1])` 在 `_conv1d_kernel.py` 的
+    `_bias_epilogue`（Stage-3 原样）编译通过并跑过 L0，说明不是 1D→2D copy 本身。
+workaround: >-
+  保留 Cube→ws（fp32, block_n 宽）→Vector 中继 + fp32 域 bias add；N tile 受 ws 宽度
+  （wrapper 传的 block_n=128）钳制，bias 路径 tile 数比 nobias 多 4×。
+occurrences: 1
+tasks: [conv1d-Conv1dFwdOp-20261018-stage4]
+toolchain_stamp: tilelang 0.1.2 dev root / CANN 9.0.0 (bishengir 1.1.0 + hivmc 0.2.0) / Ascend910B3 / 2026-10-18
+status: open
+proposal: "-"
+created_by: conv1d-Conv1dFwdOp-20261018-stage4 (2026-10-18)
+last_seen: conv1d-Conv1dFwdOp-20261018-stage4 (2026-10-18)
+```
+
 ### CG-2026-0004
 
 ```yaml

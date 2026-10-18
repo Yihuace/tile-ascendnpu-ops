@@ -785,12 +785,18 @@ def _perf_records_workload_lint(
     opt_log_path: str,
     inventory_path: str,
     final_artifact_path: str | None,
+    extra_final_artifacts: list[str] | None = None,
 ):
     """Check benchmark-derived workload coverage and one final version per kernel."""
     failures, warnings = [], []
 
     def fail(rule: str, path: str, message: str) -> None:
         failures.append(_fail(rule, path, message))
+
+    allowed_final_paths = []
+    for path in [final_artifact_path, *(extra_final_artifacts or [])]:
+        if path:
+            allowed_final_paths.append(os.path.normcase(os.path.abspath(path)))
 
     try:
         with open(inventory_path, encoding="utf-8") as handle:
@@ -989,22 +995,25 @@ def _perf_records_workload_lint(
         measurements.setdefault(key, {}).setdefault(rec["phase"], []).append(rec)
         if rec["phase"] == "final":
             final_versions.setdefault(rec["kernel_id"], set()).add(rec["candidate_id"])
-            if final_artifact_path:
+            if allowed_final_paths:
                 recorded_path = rec["artifact_path"]
                 if not os.path.isabs(recorded_path):
                     recorded_path = os.path.join(
                         os.path.dirname(records_path), recorded_path
                     )
-                if os.path.normcase(os.path.abspath(recorded_path)) != os.path.normcase(
-                    os.path.abspath(final_artifact_path)
-                ):
+                recorded_abs = os.path.normcase(os.path.abspath(recorded_path))
+                matched_path = next(
+                    (path for path in allowed_final_paths if path == recorded_abs),
+                    None,
+                )
+                if matched_path is None:
                     fail(
                         "S4-PERF-RECORDS-RECON",
                         records_path,
                         f"{key} final 未测最终 perf_opt 文件",
                     )
-                elif os.path.isfile(final_artifact_path):
-                    with open(final_artifact_path, "rb") as handle:
+                elif os.path.isfile(matched_path):
+                    with open(matched_path, "rb") as handle:
                         actual_hash = hashlib.sha256(handle.read()).hexdigest()
                     if rec["artifact_sha256"] != actual_hash:
                         fail(
@@ -1240,6 +1249,7 @@ def perf_records_lint(
     records_path: str,
     opt_log_path: str,
     final_artifact_path: str,
+    extra_final_artifacts: list[str] | None = None,
 ):
     """Check inventory coverage, measured workloads, and the final kernel."""
     inventory_path = os.path.join(
@@ -1254,7 +1264,11 @@ def perf_records_lint(
             )
         ], []
     return _perf_records_workload_lint(
-        records_path, opt_log_path, inventory_path, final_artifact_path
+        records_path,
+        opt_log_path,
+        inventory_path,
+        final_artifact_path,
+        extra_final_artifacts,
     )
 
 
@@ -1265,6 +1279,7 @@ def perf_lint(
     records_path: str,
     op_name: str,
     repo_root: str,
+    extra_final_artifacts: list[str] | None = None,
 ):
     failures, warnings = [], []
     f, w = kernel_lint(perf_py_path, op_name, rule_prefix="S4")
@@ -1289,7 +1304,9 @@ def perf_lint(
         failures += f
         warnings += w
     # Stage 4 requires a workload inventory and measured results for every tune workload.
-    f, w = perf_records_lint(records_path, opt_log_path, perf_py_path)
+    f, w = perf_records_lint(
+        records_path, opt_log_path, perf_py_path, extra_final_artifacts
+    )
     failures += f
     warnings += w
     return failures, warnings
@@ -1807,6 +1824,7 @@ DEFAULT_STATE = {
     "failure_reason": None,
     # optional fields (backfilled, not required by SCHEMA)
     "perf_feedback": None,
+    "kernel_opt_py_paths": [],
     "budget": {
         "max_wallclock_s": None,
         "max_subagent_dispatches": None,
