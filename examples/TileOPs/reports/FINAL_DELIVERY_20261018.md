@@ -7,8 +7,8 @@
 
 | 维度 | 结果 |
 |---|---|
-| 接口交付 | **18 / 19（94.7%）** |
-| 正确性 | **18 / 18 已交付**（Conv1d/Conv1dBias 为 27 passed + 1 skipped，0 failed） |
+| 接口交付 | **19 / 19 接口可用（GDN 为 correctness-first fallback；六 kernel 端口待续）** |
+| 正确性 | **19 / 19 接口**（GDN `test_gdn.py` 6/6；Conv1d/Conv1dBias 为 27 passed + 1 skipped，0 failed） |
 | 端到端报告 | **17 passed + 1 partial**（Conv1d：correctness 通过，bench 有 flaky unit_stride 用例） |
 | 有生效调优 kernel | **15 / 18 已交付（83.3%）** |
 | 单算子优化报告 | **16 份** |
@@ -39,7 +39,7 @@
 | 16 | Conv1dBiasFwdOp | ✅ | 27+1 skip | 0.03–1.73% | 0/8 | perf_opt |
 | 17 | Conv3dBiasFwdOp | ✅ | 17/17 | 1.68–20.43% | 0/3 | perf_opt |
 | 18 | GLADecodeOp | ✅ | 11/11 | 3.10–20.16% | 0/5 | perf_opt |
-| 19 | GatedDeltaNetPrefillFwdOp | ⛔ | — | — | — | 未交付 |
+| 19 | GatedDeltaNetPrefillFwdOp | ✅（fallback） | 6/6 | —（benchmark skip） | — | reference 路径；六 kernel 端口待续 |
 
 ## 3. 主要性能收益
 
@@ -98,6 +98,6 @@ python3 ../../.agents/tools/statectl.py gate 4 --dir tileops/kernels/<family>/<o
 
 ## 7. 结论
 
-- **迁移侧收口**：18/19 交付，正确性 18/18（已交付），证据链（设计/检视/kernel/test/bench/report）齐全。
+- **迁移侧收口**：19/19 接口可用；GDN 为 correctness-first fallback（6/6 tests），六 kernel 的 TileLang 端口仍未完成（2/6 done，function 2 卡编译器，4–6 为 reference 路径）。
 - **优化侧收口**：15/18 有生效调优 kernel；两个最大杠杆（Conv1d 17.7×、Conv3d 21.3×）与 GLA persistent 已落地。
-- **未收口的三项均有明确证据**：GDN 编译器级阻塞、Conv1d bias 两个编译器缺口、FALN 属高不确定设计项；不建议在无新工具链/新证据前继续投入。
+- **未收口项均有明确证据**：GDN 六 kernel 端口（编译器 + 复杂 Cube/Vector 重写）、Conv1d bias（CG-2026-0028/0029）、FALN（高不确定设计项）；不建议在无新工具链/新证据前继续投入。
