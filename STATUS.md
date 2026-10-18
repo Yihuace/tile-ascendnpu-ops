@@ -2,6 +2,7 @@
 
 > 本窗口：**19 算子统一 CANN 9.0.0 口径**。四个 8.5 残留（Add / Sub / Isnan / ClampMin）已完成端到端重测；Add / Sub 同时切到 `perf_opt`。
 > 更新：2026-10-18 16:00 (+08:00) · 会话：9.0 口径统一
+> **收口（2026-10-18 22:2x）**：最终交付报告 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md`；18/19 交付，剩余 GDN / Conv1d bias / FALN 均为阻塞或高不确定项，暂停投入。
 
 ## 总览（严格口径，全部 CANN 9.0.0）
 
