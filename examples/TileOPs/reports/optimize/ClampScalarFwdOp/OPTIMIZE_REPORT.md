@@ -1,61 +1,103 @@
 # 优化报告：ClampScalarFwdOp（Stage-4 optimize）
 
-> 本报告记录**优化方法、优化过程、优化结果与产物**。目标算子族中的微型 shape 按用户决定**豁免**并标注「物理不可达」（见 §6）。
-
-## 0. 身份与范围
+## 0. 身份
 
 | 项 | 值 |
 |---|---|
-| 算子 | `ClampScalarFwdOp`（复用同 kernel：`ClampMinFwdOp`） |
-| family | elementwise |
-| 算子类型 | **单 kernel / 单 func / 纯 Vector（AIV）**，非 Mixed |
-| kernel 目录 | `examples/TileOPs/tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/` |
-| 性能口径 | `msprof op Task Duration(us)`（唯一） |
-| 工具链 | tilelang `0.1.2+417dae99` / **CANN 8.5.2** / Ascend910B3 / torch_npu 2.7.1.post4 |
+| 算子 | `ClampScalarFwdOp`（复用同 kernel 者：`ClampMinFwdOp`）；family elementwise；**单 kernel / 单 func / 纯 Vector（AIV）**，非 Mixed；语义为标量上下界 clamp（原文以 `vclamp`/`vmax`/`vmin` 链表述，公式形式原文未记录） |
+| kernel（基准，只读） | `examples/TileOPs/tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py` |
+| 调优产物 | `.../clamp_scalar_kernel/perf_opt/clamp_scalar_fwd_kernel.py` |
+| 口径 | `msprof op Task Duration(us)`（唯一） |
+| **工具链版本戳** | tilelang `0.1.2+417dae99`（dev root）/ **CANN 8.5.2** / Ascend910B3 / torch_npu 2.7.1.post4 / 日期 `2026-10-15`（取自 `.start_utc`） |
+| 达标线 | 原文按 **≥60%** 判定（原文「全部 ≥60% 目标」）；AI 与归类依据原文未记录 |
+| benchmark | 原文未记录 benchmark 文件::函数与 tune/smoke 计数（原文仅记 `tileops.reporting.cli run --op ClampScalarFwdOp`） |
+| 过程日志 | `.../clamp_scalar_kernel/perf_opt/opt_log.md`、`perf_records.jsonl` |
+| 前置报告 | 本文件 v0 归档 `history_version/OPTIMIZE_REPORT_v0.md`（内容相同，仅结构未归一） |
 
-## 1. 优化方法
+## 1. 结论
 
-**方法：去除被实测证伪为冗余的 NaN 恢复。**
+- 一句话：**去除被实测证伪为冗余的 NaN 恢复**（向量链 5→3 op），所有测量项带宽利用率由
+  45–63% 提升至 **71.9%–82.8%**，延迟降 **12%–39%**。
+- **达标数**：全 shape **11/11**、可调 shape **11/11**、豁免 **0**
+  （原文明确「本算子（ClampScalar/ClampMin）**无微型 shape**」）。
+- 关键收益（代表值）：
+  - `16M` fp16 **42.1 → 26.1 µs（−38.0%）**，ratio **45.5% → 73.5%**；
+  - `16M` bf16 **42.3 → 25.9 µs（−38.7%）**，ratio **51.7% → 74.0%**；
+  - `16M` fp32 **68.5 → 46.3 µs（−32.4%）**，ratio **56.0% → 82.8%**；
+  - 最大 shape `256M` fp16 **891.4 → 751.4 µs（−15.7%）**，ratio **62.4% → 73.9%**。
+- **是否建议采纳 wrapper**：✅ 建议采纳（原文记录：wrapper 切换块已翻至 perf_opt；接入后
+  `tileops.reporting.cli run --op ClampScalarFwdOp` 正确性 **11/11**、`status=passed`）。
+  收益来自纯 op 数削减、无 shape 回退，判据余量充足（最低 71.9% vs 60% 线）。
 
-1. **瓶颈定位**（baseline `msprof` + `PipeUtilization.csv`，16M fp16）：
-   `aiv_vec_ratio = 0.72`（最高）、`mte2_ratio = 0.56`、`mte3_ratio = 0.28`
-   → **向量单元是瓶颈，不是 DMA**（`mte2_ratio ≪ 0.95`，计算链未隐藏，符合 pattern-library PL-1.6 判据）。
-2. **根因**：fp32 计算链为
-   `vcast→vclamp/vmax/vmin→vcmp(NaN)→vselect(NaN)→vcast`（5 条向量 op）。
-   其中 NaN 恢复（`vcmp`+`vselect`）占 2/5，是设计 R2 因「vmax 未文档化 NaN 传播」而加的。
-3. **证伪实验**：实测本工具链上 `vmax`/`vmin`/`vclamp`（fp32 域）**已传播 NaN**——
-   3 种边界形态 × fp16 × 586 个 NaN 点全部 `nan_ok=True`；`vclamp` 有限值 `max_diff=0`；`inf/-inf` 与 torch 一致。
-4. **改动**：删除 `vcmp`+`vselect`（向量链 5→3），`nan-bound` 分支 `vdiv` 改原地写。
-   改动**只落在 `perf_opt/`，基线文件未动**；产物仅 `perf_opt/clamp_scalar_fwd_kernel.py`。
+## 2. 优化方法与过程
 
-## 2. 优化过程（阶段记录）
+### 2.1 诊断（决定用什么杠杆）
 
-| 阶段 | 动作 | 结果 |
+| 观测 | 数值 | 结论 |
 |---|---|---|
-| 预检 | 读 `conductor-scenarios/optimize.md`、`tilelang-op-optimize` skill、pattern-library INDEX/hardware-context/elementwise.md | 确定口径与手法 |
-| Baseline | `tileops-report run --op ClampScalarFwdOp` + 单例 `PipeUtilization.csv` | 16M fp16 = 42.1µs / 45.5%；向量瓶颈 |
-| 微基准 | block_size∈{2048,4096,8192} × num_cores∈{auto,20,40} 扫描 | 默认已最优，config 调参无收益 |
-| NaN 证伪 | 3 形态 NaN/inf 传播实测 | NaN 已原生传播 → 恢复冗余 |
-| 变体 | 写 `perf_opt/`（去恢复） | — |
-| 回归 | `perf_opt/...py --level all` | 全绿（含 Boundary NaN/inf） |
-| 采纳 | 翻 wrapper 切换块注释 → perf_opt | — |
-| 验收 | `tileops-report run --op ClampScalarFwdOp` | 正确性 11/11，`status=passed` |
+| 瓶颈 pipe（16M fp16，40 vector core） | `aiv_vec_ratio = 0.72`（最高）、`aiv_mte2_ratio = 0.56`、`aiv_mte3_ratio = 0.28`、`aiv_scalar_ratio = 0.08` | **向量单元是瓶颈，不是 DMA**（`mte2_ratio ≪ 0.95`，计算链未隐藏；符合 pattern-library PL-1.6 判据） |
+| 单核有效带宽 | `aiv_mte2_active_bw ≈ 39 GB/s/core` | 搬运不是限制 → 杠杆是「减向量 op」，不是调 block/core |
+| 配置扫描 | block_size ∈ {2048, 4096, 8192} × num_cores ∈ {auto, 20, 40} | 默认已最优，**config 调参无收益** |
+| 计算链构成 | `vcast(f16→f32) → vclamp/vmax/vmin → vcmp(NaN) → vselect(NaN) → vcast(f32→f16)`（5 条向量 op） | NaN 恢复（`vcmp`+`vselect`）占 2/5；若冗余即为纯开销 |
+| 设计侧来源 | NaN 恢复是设计 R2 因「Ascend `vmax`/`vmin` 未文档化 NaN 传播」而加 | 该假设可被实测证伪，是首选优化点 |
+| 噪声底 | 原文未记录独立噪声测量 | 以「全 11 项一致大幅下降 + Boundary 全绿」作为判定支撑 |
+
+### 2.2 方法（做了什么、为什么这样做）
+
+1. **删除 `vcmp` + `vselect`（NaN 恢复两点）**，向量链
+   `vcast → vclamp/vmax/vmin → vcast`（**5 → 3 条向量 op**）。
+   - 为什么有效：瓶颈 pipe 是 AIV VEC（0.72），直接削掉 40% 的向量 op，等于按比例抬升带宽利用率；
+     实测 ratio 45–63% → 71.9–82.8% 与「op 数削减」一致。
+   - 正确性依据（证伪实验，本工具链实测）：
+     - `vmax`/`vmin`/`vclamp` 在 **fp32 域已传播 NaN**——3 种边界形态（min-only / max-only / both）
+       × fp16 × **586 个 NaN 点**，全部 `nan_ok=True`；
+     - `vclamp` 有限值 `max_diff = 0.00e+00`；`inf/-inf` 与 torch 一致。
+2. **`nan-bound` 分支的 `vdiv` 改原地写 `buf1`**：`buf2` 不再使用，少一次中间 buffer 占用/搬运。
+3. 改动**只落在 `perf_opt/`**，基线文件未动；产物仅 `perf_opt/clamp_scalar_fwd_kernel.py`。
+
+### 2.3 逐轮记录
+
+| 轮次 | 候选 | 改动 | 结果 | 处置 |
+|---|---|---|---|---|
+| 预检 | — | 读 `conductor-scenarios/optimize.md`、`tilelang-op-optimize` skill、pattern-library INDEX/hardware-context/elementwise.md | 确定口径与手法 | — |
+| R0 baseline | baseline | `tileops-report run --op ClampScalarFwdOp` + 单例 `PipeUtilization.csv` | 16M fp16 **42.1µs / 45.5%**；向量瓶颈（vec 0.72 ≫ mte2 0.56） | 定为杠杆点 |
+| R1 | config 扫描 | block_size ∈ {2048,4096,8192} × num_cores ∈ {auto,20,40} | 默认已最优，无收益 | ❌ 否决：config 调参方向 |
+| R2 | NaN 证伪实验 | 3 形态 NaN/inf 传播实测 + 有限值 max_diff | NaN 已原生传播 → 恢复冗余，`vclamp` 有限值 max_diff=0 | ✅ 判定恢复两点可删 |
+| R3 | `perf_opt` 变体 | 去 NaN 恢复（5→3 op）+ `vdiv` 原地写 | 全 11 项延迟 −12%~−39%、ratio 71.9–82.8% | ✅ 采纳为 current best |
+| R4 | 回归 | `perf_opt/...py --level all` | **All check passed**（L0/L1/L2/Boundary 全绿，含 NaN→NaN 512 点、NaN-bound→全 NaN、inf/−inf、min>max） | ✅ 通过精度门禁 |
+| R5 | 采纳 + 验收 | 翻 wrapper 切换块 → perf_opt；`tileops-report run` | 正确性 **11/11**、`status=passed` | ✅ 收束 |
 
 ## 3. 优化结果（msprof op，baseline → perf_opt）
 
-| label | dtype | base µs | opt µs | Δlat | base ratio | opt ratio |
-|---|---|---:|---:|---:|---:|---:|
-| 16M | float16 | 42.1 | 26.1 | **−38.0%** | 45.5% | **73.5%** |
-| 16M | bfloat16 | 42.3 | 25.9 | **−38.7%** | 51.7% | **74.0%** |
-| 16M | float32 | 68.5 | 46.3 | **−32.4%** | 56.0% | **82.8%** |
-| 256M | float16 | 891.4 | 751.4 | −15.7% | 62.4% | **73.9%** |
-| 256M | bfloat16 | 884.6 | 773.3 | −12.6% | 62.8% | **71.9%** |
-| 16M-min-only | fp16/bf16/fp32 | 39.3 / 38.7 / 64.0 | 26.2 / 24.7 / 49.4 | −33.5% / −36.1% / −22.7% | 48.7 / 49.5 / 60.0 | **73.3 / 77.5 / 77.6** |
-| 16M-max-only | fp16/bf16/fp32 | 38.6 / 37.5 / 63.3 | 26.2 / 25.6 / 47.6 | −32.2% / −31.8% / −24.8% | 49.7 / 51.1 / 60.6 | **73.3 / 75.0 / 81.0** |
+| workload | base µs | final µs | Δ | base SOL% | final SOL% | ≥60% |
+|---|---:|---:|---:|---:|---:|:--:|
+| 16M / float16 | 42.1 | 26.1 | −38.0% | 45.5 | 73.5 | ✅ |
+| 16M / bfloat16 | 42.3 | 25.9 | −38.7% | 51.7 | 74.0 | ✅ |
+| 16M / float32 | 68.5 | 46.3 | −32.4% | 56.0 | 82.8 | ✅ |
+| 256M / float16 | 891.4 | 751.4 | −15.7% | 62.4 | 73.9 | ✅ |
+| 256M / bfloat16 | 884.6 | 773.3 | −12.6% | 62.8 | 71.9 | ✅ |
+| 16M-min-only / float16 | 39.3 | 26.2 | −33.5% | 48.7 | 73.3 | ✅ |
+| 16M-min-only / bfloat16 | 38.7 | 24.7 | −36.1% | 49.5 | 77.5 | ✅ |
+| 16M-min-only / float32 | 64.0 | 49.4 | −22.7% | 60.0 | 77.6 | ✅ |
+| 16M-max-only / float16 | 38.6 | 26.2 | −32.2% | 49.7 | 73.3 | ✅ |
+| 16M-max-only / bfloat16 | 37.5 | 25.6 | −31.8% | 51.1 | 75.0 | ✅ |
+| 16M-max-only / float32 | 63.3 | 47.6 | −24.8% | 60.6 | 81.0 | ✅ |
 
-**结论：所有 shape 的带宽利用率由 45–63% 提升至 71.9%–82.8%，全部 ≥60% 目标；延迟降 12%–39%。**
+**结论（原文）**：所有 shape 的带宽利用率由 45–63% 提升至 71.9%–82.8%，全部 ≥60% 目标；延迟降 12%–39%。
 
-## 4. 时间与 token 消耗（本次优化过程）
+**测量口径**：`msprof op` 单次进程，`Task Duration(us)` 为唯一时延口径；原文未记录同一 workload 的
+交错复测次数与噪声带。收益最小两项为 `256M bf16`（−12.6%）与 `256M fp16`（−15.7%）。
+
+## 4. 精度
+
+- `python perf_opt/clamp_scalar_fwd_kernel.py --level all` → **All check passed**
+  （L0 / L1 / L2 / Boundary 全绿）。
+- 关键边界用例：**NaN→NaN 512 点**、**NaN-bound → 全 NaN**、**inf / −inf**、**min > max**（原文列出的形态）；
+  subnormal / −0 的逐项结果原文未记录。
+- 数值依据：`vclamp` 有限值 `max_diff = 0.00e+00`；NaN 传播 `nan_ok=True`（586 点 ×3 形态）。
+- 端到端：接入 wrapper 后 `tileops.reporting.cli run --op ClampScalarFwdOp` 正确性 **11/11**、`status=passed`。
+
+## 5. 时间与成本
 
 | 项 | 值 | 来源 |
 |---|---|---|
@@ -68,32 +110,45 @@
 | token 合计 | **51,096** | input+output+reasoning |
 | cost | $0.0510 | 同上 |
 
-> 取数窗口 = 开始时刻→结束时刻；`time_created` 为 epoch ms。token 数为该窗口内 `message` 表求和，受 db 记录粒度影响，供量级参考。
+> 取数窗口 = 开始时刻→结束时刻；`time_created` 为 epoch ms。token 数为该窗口内 `message` 表求和，
+> 受 db 记录粒度影响，供量级参考。
 
-## 5. 优化产物
+## 6. 产物
 
-| 产物 | 路径 |
+| 类别 | 路径 / 状态 |
 |---|---|
-| 优化 kernel | `tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/clamp_scalar_fwd_kernel.py` |
-| 过程日志 | `tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/opt_log.md` |
+| final kernel | `tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/clamp_scalar_fwd_kernel.py` |
+| 调优记录 | `tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/opt_log.md` |
 | 结构化记录 | `tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/perf_records.jsonl` |
 | baseline 报告 | `reports/tileops/20261015_195138_601192_ClampScalarFwdOp/` |
 | perf_opt 报告 | `reports/tileops/20261015_202825_275014_ClampScalarFwdOp/`（status=passed） |
-| wrapper 切换 | `clamp_scalar.py` 的 baseline/perf_opt import 块已翻至 perf_opt |
+| gate 4 | 原文未记录 gate 编号/结论（原文仅记录 `status=passed` 与正确性 11/11） |
+| 算子状态 | 原文未记录（`clamp_scalar_kernel/` 无 `.stage_state.json`） |
+| wrapper 切换 | 已切：`clamp_scalar.py` 的 baseline/perf_opt import 块已翻至 perf_opt |
+| pattern-library 回写 | 原文建议作为候选回写（kind: pattern，family: elementwise，token 待 distill）；实际写入状态原文未记录 |
 
-## 6. 微型 shape 豁免说明（物理不可达）
+## 7. 天花板 / 豁免 / 缺口
 
-用户已同意：**微型 shape 豁免 60% 目标，标注「物理不可达」**。
+- **豁免项：无**。原文明记「本算子（ClampScalar/ClampMin）无微型 shape，故本报告不涉及豁免项」。
+- **族内微型 shape 豁免政策（记录项，不适用于本算子）**：用户已同意微型 shape 豁免 60% 目标并标注
+  「物理不可达」。判据（以 Hardsigmoid `mbv3-se-gate`、shape `[32,240,1,1]` fp16 为例）：
+    - 数据量 ≈ 30 KB；按设备地板 1.26 TB/s 理论搬运 ≈ **24 ns**；实测 kernel ≈ **2.86 µs**；
+    - kernel 有与数据量无关的固定成本（派发/调度 + 流水填充排空 + 收尾同步）≈ 2 µs 级；
+    - 即便搬运瞬间完成，利用率上限 ≈ `30KB/(2µs×1.75TB/s) ≈ 0.86%`。
+  ⇒ 此类 shape **60% 在数学上不可达**，正确指标是绝对延迟（2–4 µs），不是带宽利用率。
+- **贴线风险**：原文按 60% 口径判定无贴线项（最低 71.9%）。若按族内 70% 访存线复核，
+  `256M bf16` 71.9% 为最近的一项（距 70% 线 1.9pp）——该复核口径原文未记录。
+- **ceiling 证据**：原文未记录 roofline advice / pipe ratio 上限分析；本算子未声明结构上限。
+- **能力缺口**：原文未记录 CG 编号；NaN 传播结论依赖本工具链（CANN 8.5.2）实测，跨版本需复验。
 
-判据（以 Hardsigmoid `mbv3-se-gate`、shape `[32,240,1,1]` fp16 为例）：
-- 数据量 ≈ 30 KB；按设备地板 1.26 TB/s 理论搬运 ≈ **24 ns**；实测 kernel ≈ **2.86 µs**；
-- 一个 kernel 有与数据量无关的**固定成本**（派发/调度 + 流水填充排空 + 收尾同步）≈ 2 µs 级；
-- 即便数据搬运瞬间完成，利用率上限 ≈ `30KB/(2µs×1.75TB/s) ≈ 0.86%`。
-⇒ 此类 shape **60% 在数学上不可达**；其正确指标是**绝对延迟（2–4 µs）**，不是带宽利用率。
+## 8. 建议
 
-本算子（ClampScalar/ClampMin）**无微型 shape**，故本报告不涉及豁免项；此节为族内通用政策记录。
-
-## 7. 复核入口
+1. **采纳** `perf_opt/clamp_scalar_fwd_kernel.py`（wrapper 已切换，端到端 report `passed`、正确性 11/11）。
+2. `ClampMinFwdOp` 复用同 kernel，**同步受益**（原文）——两算子应一起复核。
+3. 该优化点（去除被证伪的冗余 NaN 恢复）机制清晰，原文建议作为 pattern-library 候选回写：
+   纯 Vector 逐元素算子若 NaN 已由 `vmax`/`vmin`/`vclamp` 原生传播，则 `vcmp + vselect` 恢复是纯开销。
+4. 跨 CANN 版本复核：本报告为 CANN 8.5.2 口径，升级后需先复验 NaN 传播再沿用结论。
+5. **复核入口**（原文）：
 
 ```bash
 cd examples/TileOPs
