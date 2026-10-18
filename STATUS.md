@@ -97,6 +97,12 @@
 - 旧版报告存各目录 `history_version/OPTIMIZE_REPORT_v0.md`
 - 缺失报告：GDN（fallback 交付，benchmark 暂 skip）；ClampMin/Lerp 无独立报告（分别由 ClampScalar / 未优化覆盖）
 
+## 环境纪律（2026-10-18 更新）
+
+- **当前生效栈**：tilelang Apr v1.2.0 前端（`build`；Oct 在 `build.oct-bak`）+ CANN **9.2.0**（`bishengir-compile 1.2.0 8796a8ac + mmadL1 补丁` + `hivmc 0.3.0`）。
+- **已验证**：conv1d_bias 23 passed/1 xfailed/4 xpassed；conv1d + conv3d 通过；MHA/SSD/GDN blocksolve 仍卡 `hivmc` external run（v1.2.0 tag 与 hivmc 0.3.0 不同代）。
+- **回退**：`cd /home/developer/tilelang-mlir-ascend && bash switch_stack.sh oct && cp ~/.bashrc.oct-current ~/.bashrc`。
+
 ## 环境纪律
 
 - 上机命令经 `.agents/tools/npu_lock.sh`；非交互 shell 先 `source perf_opt/env.sh`

@@ -464,3 +464,29 @@ T6 复核动作：
    - µs 级小用例：**只作量级参考**（±10%）。
 5. **用 8.5 报告前必须先定"层"**：按 §13.2 的优先级取基线，否则会得到 ±40% 的假偏差。
 
+
+## 14. 2026-10-18：v1.2.0 补丁编译器 + CANN 9.2.0 hivmc 0.3.0（MixCV 部分解锁）
+
+### 14.1 做了什么
+- 发现 `3rdparty/AscendNPU-IR-apr` 源码已是 **v1.2.0 + `mmadL1` getResult(0) 补丁**，但 `bishengir-compile` 二进制是补丁前编的；`.bashrc.apr-active` 指向 `build/install`（实际是 `install.apr`），且 PATH 未加 Apr bin → 之前的“Apr 栈”实际没生效。
+- 用 `/tmp/opencode/bt-bin`（cmake 3.31.6 + ninja 1.13.2）增量重编 `bishengir-compile`（107 目标），`install.apr/bin` 更新为新二进制；`build/install -> install.apr` 软链。
+- 切到 Apr tilelang 前端（`switch_stack.sh apr`，Oct 保留在 `build.oct-bak`），`ASCEND_HOME_PATH=/home/developer/Ascend/cann-9.2.0`，`hivmc 0.3.0`，`TILELANG_CANN9_SYNC_SHIM=0`。
+
+### 14.2 实测
+| 用例 | 结果 |
+|---|---|
+| `test_conv1d_bias.py` | **23 passed / 1 xfailed / 4 xpassed**（之前 5 个 SIGSEGV 消失） |
+| `test_conv1d.py` + `test_conv3d_bias.py` | **通过**（与 MHA 合计 46 passed, 1 xpassed） |
+| `test_multi_head_attention.py` | 4 failed（`hivmc` external run fails） |
+| `test_mamba.py -k ssd` | 1 failed（`hivmc` external run fails） |
+| GDN blocksolve L0 | 仍 `hivmc` external run fails（不是 SIGSEGV） |
+
+### 14.3 结论
+- **19 批的 MixCV（conv1d / conv1d_bias / conv3d）已解锁**；之前 CG-2026-0003 的 SIGSEGV 不再出现。
+- 剩余 MHA/SSD/GDN blocksolve 的失败变成 **v1.2.0 tag（6 月）与 hivmc 0.3.0（8 月）不同代**：`hivmc` 无法 lower 该 IR。
+- 要彻底对齐，需要 **`7b16f3c124ac`（CANN 9.2.0 同代编译器 commit，8 月）+ 同一 `mmadL1` 补丁**重建（当前本地只有 v1.2.0 tag `8796a8ac`）。
+- 回退：`cd /home/developer/tilelang-mlir-ascend && bash switch_stack.sh oct && cp ~/.bashrc.oct-current ~/.bashrc`。
+
+### 14.4 版本戳
+- 当前生效：tilelang Apr v1.2.0 前端（`build`，Oct 在 `build.oct-bak`）/ **CANN 9.2.0**（`bishengir-compile 1.2.0 8796a8ac + 补丁`、`hivmc 0.3.0`）/ 910B3 / torch 2.7.1 / torch_npu 2.7.1.post4。
+- 既有 9.0.0 性能报告仍按 9.0.0 存档；本轮 MixCV 正确性验证属于 9.2.0 + Apr 栈。
