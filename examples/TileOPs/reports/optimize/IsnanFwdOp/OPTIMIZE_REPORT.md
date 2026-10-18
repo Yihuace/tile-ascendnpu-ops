@@ -14,12 +14,15 @@
 
 ## 1. 结论
 
-- **7 个 tune case 中 1 个 ≥70%**：16m fp32 78.45%；16m/256m fp16 55–65%，bf16 55–62%。
+- **达标数**：可调 shape（7 tune）**1/7 ≥70%**（16m fp32 78.45%）；全 shape（含 3 个 `smoke-1m`，
+  仅精度不参与性能判定）性能判定口径同为 **1/7**。16m/256m fp16 55–65%，bf16 55–62%。
 - 结构：**满块静态 extent + 尾块 epilogue + `T.Pipelined(2)` + grid-stride 40 核 + 3-pass vselect 链**。
 - 收益：16m-half bf16 **−6.16%**、16m bf16 −5.62%、16m-half fp16 −4.08%、256m bf16 −1.01%。
-- **未达 70% 属结构上限**：predicate 至少 3 条向量 pass（vcmp → vselect → vcast），
-  受 CG-2026-0027 约束（无 `i1→i8` 直接 cast、无 bool/int1 `vnot`、`T.vselect` Out 不支持 int8）；
-  roofline `advice` = `latency bound:pipeline caused`，不是带宽饱和。block 16384 已 UB 超限。
+- **未达 70% 属结构上限（Round 6 二次深挖更精确归因）**：predicate 至少 3 条向量 pass
+  （vcmp → vselect → vcast，受 CG-2026-0027 约束），但**真瓶颈不是 pass 数，而是 MTE2 混合 R/W 带宽地板**——
+  fp16/fp32 `aiv_mte2_ratio` 0.81–0.90 ≫ `aiv_vec_ratio` 0.25–0.39，3-pass 链已隐藏于搬运窗口下；
+  4→3-pass 只降 vec_time 22% 但 Task Duration 仅 −3.4%。有效带宽 fp32(4:1) 1.70 TB/s、fp16(2:1)
+  1.63→1.24 TB/s(256m)、bf16 1.45→1.18 TB/s，贴近设备混合 R/W 地板。block 16384 已 UB 超限。
 
 ## 2. 所做改动
 
@@ -62,3 +65,33 @@
 - `perf_opt/opt_log.md`、`Optimize.md`、`perf_records.jsonl`、`logs/`、`candidates/`
 - 能力缺口：`.agents/evolution/capability-gaps.md` **CG-2026-0027**
 - gate 4：`pass`；state `phase=DONE`
+
+## 6. 二次深挖（Round 6，2026-10-18，一次性复核）
+
+> 目标「确认天花板 or 找到新杠杆」。结论：**无新杠杆；天花板确认并更精确归因（MTE2 带宽地板）**。
+
+### 6.1 核数扫描（`msprof op`，16m fp16，相邻交错）
+
+| num_cores | Task Duration(us) | SOL ratio(%) | 判定 |
+|---:|---:|---:|---|
+| 40（current best） | **29.811** | 63.997 | 已最优 |
+| 20 | 49.231 | 38.829 | 回退 +65% |
+
+40 核已最优：减半搬运并行（40→20 核）≈ 减半有效带宽，与 MTE2-bound 归因完全一致。
+
+### 6.2 ceiling 证据（判据复核）
+
+- fp16/fp32 `aiv_mte2_ratio` 0.81–0.90 ≫ `aiv_vec_ratio` 0.25–0.39 ⇒ **MTE2 数据搬运是瓶颈**，
+  3-pass 向量链已隐藏；「3-pass × 向量吞吐」下限不适用。
+- 有效带宽随 R:W 比与 N 退化（fp32 4:1 1.70 / fp16 2:1 1.63→1.24 / bf16 1.45→1.18 TB/s），
+  贴近设备混合 R/W 地板；输入全读 + 输出 int8 1B 已是不可约流量下限。
+- 16m fp16 下限 `≈ mte2_time + 启动 ≈ 21.2 + 5.2 = 26.4µs`，当前 30.46µs，理论余量 ≤14%
+  （需 MTE2 利用率 0.81→1.0，更深流水 UB 超限不可达）。
+- 不触发 `[DESIGN_LIMIT]`（无 >2× 结构加速、无设计假设矛盾），不产出 `perf_feedback.md`；
+  CG-2026-0027 性能影响评估已修正（回写 pattern-library PL-1.23）。
+
+### 6.3 采纳建议
+
+**不建议翻转 wrapper 采纳 perf_opt 版本**：相对基线整体收益仅 0~−6.2%，且根因是硬件带宽地板
+（非实现可解）；perf_opt 版本与 baseline 在 fp16/256m 上打平甚至 +0.55%。是否采纳由 conductor 在
+回归通过后按「收益是否值得维护双版本」权衡，本阶段不自行翻转 wrapper。

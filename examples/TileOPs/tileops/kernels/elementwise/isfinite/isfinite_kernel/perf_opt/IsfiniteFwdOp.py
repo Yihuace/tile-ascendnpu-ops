@@ -17,31 +17,26 @@ NPU redesign (DESIGN.md sections 0.6 / 3.1-3.3):
     R1: one-dim ``T.Kernel(num_kernels, is_npu=True)`` with ``T.alloc_ub``
         tiles and explicit-slice ``T.copy``; the CUDA ``threads x npt``
         two-level parallel folds into a single ``block_size``.
-    R2: finiteness predicate via native-dtype ORDERED comparisons:
-        ``isfinite(x) = (x > -inf) AND (x < +inf)``, which is algebraically
-        identical to the canonical ``|x| < +inf`` but needs no ``T.vabs``
-        (T.vabs is bf16-unsupported).  Ordered ``gt`` / ``lt`` are false for
-        NaN, so NaN correctly answers "not finite"; ``+inf`` fails ``lt`` and
-        ``-inf`` fails ``gt``.  This replaces ``T.isfinite(T.cast(x,
-        "float32"))`` (no fp32 widening, no special function).  NOTE: this
-        toolchain's ``vcmp "ne"`` is lowered as an ORDERED not-equal
-        (``ne == lt | gt``) with no unordered mode, so it does NOT detect
-        special values and must not be used (see repro/CONST-vcmp-ne-ordered.py
-        in the isnan kernel; CG-2026-0024).
-    R3: bool output representation: the on-chip bool masks cannot load/store GM
-        and ``vcast`` has no ``i1->i8`` direct edge, so each mask is turned
-        into an fp16 0.0/1.0 via ``vcast(bool->f16)``, the two masks are merged
-        with ``vmul`` in the fp16 domain (0.0/1.0 product == logical AND,
-        exact), and the product is cast ``vcast(f16->i8)`` to a one-byte 0/1.
-        The host views the result back to ``torch.bool`` (metadata view only).
-        bool-domain ``vand``/``vnot`` and int8 ``vselect`` are not supported.
+    R2: finiteness predicate via ``isfinite(x) = (|x| < +inf)``.  Ordered
+        ``lt`` is false for NaN, so NaN correctly answers "not finite"; ``+inf``
+        fails ``lt`` and ``-inf`` (sign cleared) also fails ``lt``.  ``|x|`` is
+        produced by native ``T.vabs`` (fp16/fp32) or, for bf16 (no ``vabs``
+        edge), by a bit-level sign clear ``T.vand(x, 0x7FFF)`` — see Stage-4
+        round-6 (2026-10-18), the sibling Isinf deep-dive proven 6->4 pass.
+        The 0x7FFF mask is built ONCE outside the tile loop
+        (``T.fill(-0.0) -> T.vnot``, i.e. ``~0x8000 = 0x7FFF``).
+    R3: bool output representation: the on-chip bool mask cannot load/store GM
+        and ``vcast`` has no ``i1->i8`` direct edge, so the mask is turned into
+        an fp16 0.0/1.0 via ``vcast(bool->f16)`` and cast ``vcast(f16->i8)`` to
+        a one-byte 0/1.  The host views the result back to ``torch.bool``
+        (metadata view only).
     Persistent core split: ``num_kernels = min(num_logical, vector_cores)``
-        with an in-core ``T.serial`` grid-stride loop and an if-guard for
+        with an in-core ``T.Pipelined`` grid-stride loop and an if-guard for
         out-of-range tiles (static bounds).
 
 Run the embedded hierarchical tests:
-    python isfinite_fwd_kernel.py --level L0
-    python isfinite_fwd_kernel.py --level all
+    python IsfiniteFwdOp.py --level L0
+    python IsfiniteFwdOp.py --level all
 """
 
 import os
@@ -108,6 +103,13 @@ def isfinite_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE
             ``TUNED_BLOCK_SIZE`` = 8192 (Stage-4 winner, opt_log.md).
         num_cores: optional explicit kernel-count override (else section 5.5).
 
+    Round-6 (secondary deep-dive): unified 4-pass chain for all dtypes —
+    ``isfinite(x) = (|x| < +inf)``, where |x| = ``vabs(x)`` (fp16/fp32) or
+    ``vand(x, 0x7FFF)`` bit-level sign clear (bf16).  This drops bf16 from the
+    round-2 baseline 6-pass chain (2x vcmp + 2x vcast + vmul + vcast) to the
+    same 4-pass shape as fp16/fp32, mirroring the sibling Isinf deep-dive
+    (2026-10-18) which measured bf16 16m -19.4~-19.9% / 256m -15.4%.
+
     The returned ``main(x, y, shape)`` is invoked as ``kernel(x, N)``; ``y`` is
     auto-allocated (``out_idx=[1]``).  The caller passes the input directly and
     views the returned ``int8`` byte tensor back to ``torch.bool`` (bool i1
@@ -132,20 +134,18 @@ def isfinite_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE
         num_kernels = num_cores
     num_local_tasks = T.ceildiv(num_full, num_kernels)  # static bound
     # Trace-time pure-name flags (expression conditions do not fold).
-    use_abs = dtype != "bfloat16"          # T.vabs has no bf16 dtype edge
-    use_two = not use_abs
+    use_vand = dtype == "bfloat16"        # bf16: no vabs edge -> bitwise sign clear
+    # |x| producer: bf16 = vand(x, 0x7FFF); fp16/fp32 = vabs(x).
 
-    # +-inf constants in the input dtype.  T.infinity supports fp16/fp32 but NOT
+    # +inf constant in the input dtype.  T.infinity supports fp16/fp32 but NOT
     # bf16 (docs/Tilelang.language/创建操作/T.infinity.md 2.2.1: bf16 = x), so
     # bf16 builds the constant by casting an fp32 infinity (exact narrowing: bf16
     # keeps the fp32 exponent field).  This scalar-cast constant path does not
     # introduce any elementwise fp32 widening (DESIGN.md sections 3.3 / 9.1).
     if dtype == "bfloat16":
         pos_inf = T.cast(T.infinity("float32"), "bfloat16")
-        neg_inf = T.cast(-T.infinity("float32"), "bfloat16")
     else:
         pos_inf = T.infinity(dtype)
-        neg_inf = -T.infinity(dtype)
 
     @T.prim_func
     def main(
@@ -158,18 +158,20 @@ def isfinite_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE
             # residency.  All buffers are allocated unconditionally (a
             # conditional alloc is rejected by the TVM script parser).
             x_ub = T.alloc_ub((block_size,), dtype)
-            abs_ub = T.alloc_ub((block_size,), dtype)      # |x| (fp16/fp32 path)
+            abs_ub = T.alloc_ub((block_size,), dtype)      # |x|
             posinf_ub = T.alloc_ub((block_size,), dtype)   # constant +inf tile
-            neginf_ub = T.alloc_ub((block_size,), dtype)   # constant -inf tile
-            m_lo = T.alloc_ub((block_size,), "bool")       # vcmp("gt",-inf) mask
+            sign_ub = T.alloc_ub((block_size,), dtype)     # -0.0 (0x8000) src for vnot
+            mask_ub = T.alloc_ub((block_size,), dtype)     # 0x7FFF sign-clear mask
             m_hi = T.alloc_ub((block_size,), "bool")       # vcmp("lt",+inf) mask
-            f_lo = T.alloc_ub((block_size,), "float16")    # mask -> f16 (0.0/1.0)
             f_hi = T.alloc_ub((block_size,), "float16")    # mask -> f16 (0.0/1.0)
             y_ub = T.alloc_ub((block_size,), out_dtype)    # int8 output byte tile
 
-            # Pre-fill the +-inf constant tiles once, outside the tile loop.
+            # Pre-fill constants once, outside the tile loop.
             T.fill(posinf_ub, pos_inf)
-            T.fill(neginf_ub, neg_inf)
+            if use_vand:
+                # 0x7FFF sign-clear mask: ~(-0.0) = ~0x8000 = 0x7FFF.
+                T.fill(sign_ub, T.cast(-0.0, "bfloat16"))
+                T.vnot(sign_ub, mask_ub)
 
             # Stage-4 T1+T2: static full-tile loop, software-pipelined.
             if num_full > 0:
@@ -178,21 +180,14 @@ def isfinite_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE
                     if block_id < num_full:
                         offset = block_id * block_size
                         T.copy(x[offset : offset + block_size], x_ub)
-                        if use_abs:
-                            # A9: isfinite(x) = (|x| < +inf): 4 passes vs 6.
+                        if use_vand:
+                            # bf16 |x| = x & 0x7FFF (sign-bit clear, 1 op)
+                            T.vand(x_ub, mask_ub, abs_ub)
+                        else:
                             T.vabs(x_ub, abs_ub)
-                            T.vcmp(abs_ub, posinf_ub, m_hi, "lt")
-                            T.vcast(m_hi, f_hi, round_mode="rint")
-                            T.vcast(f_hi, y_ub, round_mode="rint")
-                        if use_two:
-                            # bf16: no vabs edge; keep the baseline two-sided
-                            # chain (2 vcmp + 2 vcast + vmul + vcast).
-                            T.vcmp(x_ub, neginf_ub, m_lo, "gt")
-                            T.vcmp(x_ub, posinf_ub, m_hi, "lt")
-                            T.vcast(m_lo, f_lo, round_mode="rint")
-                            T.vcast(m_hi, f_hi, round_mode="rint")
-                            T.vmul(f_lo, f_hi, f_lo)
-                            T.vcast(f_lo, y_ub, round_mode="rint")
+                        T.vcmp(abs_ub, posinf_ub, m_hi, "lt")
+                        T.vcast(m_hi, f_hi, round_mode="rint")
+                        T.vcast(f_hi, y_ub, round_mode="rint")
                         T.copy(y_ub, y[offset : offset + block_size])
 
             # Tail epilogue: at most one partial tile, owned by core 0.
@@ -200,18 +195,13 @@ def isfinite_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE
                 if cid == 0:
                     offset = num_full * block_size
                     T.copy(x[offset : offset + tail], x_ub[0:tail])
-                    if use_abs:
+                    if use_vand:
+                        T.vand(x_ub, mask_ub, abs_ub)
+                    else:
                         T.vabs(x_ub, abs_ub)
-                        T.vcmp(abs_ub, posinf_ub, m_hi, "lt")
-                        T.vcast(m_hi, f_hi, round_mode="rint")
-                        T.vcast(f_hi, y_ub, round_mode="rint")
-                    if use_two:
-                        T.vcmp(x_ub, neginf_ub, m_lo, "gt")
-                        T.vcmp(x_ub, posinf_ub, m_hi, "lt")
-                        T.vcast(m_lo, f_lo, round_mode="rint")
-                        T.vcast(m_hi, f_hi, round_mode="rint")
-                        T.vmul(f_lo, f_hi, f_lo)
-                        T.vcast(f_lo, y_ub, round_mode="rint")
+                    T.vcmp(abs_ub, posinf_ub, m_hi, "lt")
+                    T.vcast(m_hi, f_hi, round_mode="rint")
+                    T.vcast(f_hi, y_ub, round_mode="rint")
                     T.copy(y_ub[0:tail], y[offset : offset + tail])
 
     return main
@@ -342,17 +332,24 @@ def run_boundary():
     non-blocking; exact equality required when they run).
 
     The critical probes are all-NaN -> all-False and all-+-inf -> all-False,
-    plus all-finite -> all-True, verifying the two ORDERED masks
-    (``isfinite = (x>-inf)&(x<+inf)``, DESIGN.md section 0.6 R2 / 9.1) against
-    the independent ``torch.isfinite`` golden.  These are the discriminating
-    probes that a (wrong) ``vcmp "ne"`` or ``(x*x) < +inf`` implementation would
-    fail.
+    plus all-finite -> all-True, verifying the ``isfinite = (|x| < +inf)``
+    predicate (DESIGN.md section 0.6 R2 / 9.1) against the independent
+    ``torch.isfinite`` golden.  These are the discriminating probes that a
+    (wrong) ``vcmp "ne"`` or ``(x*x) < +inf`` implementation would fail; they
+    also verify the bf16 ``vand(x, 0x7FFF)`` sign clear maps -inf -> +inf
+    (still fails ``lt``) and -0 -> +0 (still passes ``lt``).
     """
     N = 4096
     try:
         _run_case(N, "float32", "Boundary-special", special=True)
     except Exception as e:  # noqa: BLE001
         print(f"[Boundary] WARN (Record without blocking): special err={e}")
+
+    # bf16 special-value probe: the vand sign clear must preserve the predicate.
+    try:
+        _run_case(N, "bfloat16", "Boundary-special-bf16", special=True)
+    except Exception as e:  # noqa: BLE001
+        print(f"[Boundary] WARN (Record without blocking): bf16 special err={e}")
 
     # Pure finite: every element must be True.
     try:

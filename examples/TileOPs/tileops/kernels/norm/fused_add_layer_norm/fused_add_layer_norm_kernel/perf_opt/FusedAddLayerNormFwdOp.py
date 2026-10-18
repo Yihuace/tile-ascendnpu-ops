@@ -200,118 +200,237 @@ def _fused_add_layer_norm_kernel(M, N, eps, dtype, block_m=None):
         # pattern-library C11; ada/lerp same form).
         if use_fp32_transit:
 
-            @T.prim_func
-            def main(
-                x: T.Tensor[(M, N), dtype],
-                residual: T.Tensor[(M, N), dtype],
-                weight: T.Tensor[(N,), dtype],
-                bias: T.Tensor[(N,), dtype],
-                output: T.Tensor[(M, N), dtype],       # out_idx=4
-                residual_out: T.Tensor[(M, N), dtype],  # out_idx=5
-            ):
-                with T.Kernel(num_kernels, is_npu=True) as (cid, _):
-                    # UB buffers (DESIGN.md section 4.3), allocated once per
-                    # core and reused across serial tasks:
-                    #   stage : x -> residual -> rounded sum -> rounded y
-                    #           (4 roles; lifetimes disjoint)
-                    #   x_f32 : x32 -> s -> s32 -> d (kept, O3) -> t result
-                    #   sq_f32: r32 -> d^2 -> weight brc -> bias brc
-                    #   wstage: (1, N) weight/bias load staging (its own row,
-                    #           not a sub-row slice of stage -- a row slice of
-                    #           a (block_m, N) buffer lowers to a transposing
-                    #           vcast on this toolchain)
-                    stage = T.alloc_shared((block_m, N), dtype)
-                    x_f32 = T.alloc_shared((block_m, N), "float32")
-                    sq_f32 = T.alloc_shared((block_m, N), "float32")
-                    wstage = T.alloc_shared((1, N), dtype)
-                    w1 = T.alloc_shared((1, N), "float32")
-                    b1 = T.alloc_shared((1, N), "float32")
-                    s1 = T.alloc_shared((block_m, 1), "float32")
-                    mean = T.alloc_shared((block_m, 1), "float32")
-                    s2 = T.alloc_shared((block_m, 1), "float32")
-                    var = T.alloc_shared((block_m, 1), "float32")
-                    rstd = T.alloc_shared((block_m, 1), "float32")
+            if block_m == 1:
+                # block_m == 1 (N=8192, llama-70b-prefill): single
+                # staging. loads-first adds a per-input buffer that
+                # tips UB over (ub overflow by 256 bits) -- keep the
+                # original vcast single-staging chain here.
+                @T.prim_func
+                def main(
+                    x: T.Tensor[(M, N), dtype],
+                    residual: T.Tensor[(M, N), dtype],
+                    weight: T.Tensor[(N,), dtype],
+                    bias: T.Tensor[(N,), dtype],
+                    output: T.Tensor[(M, N), dtype],       # out_idx=4
+                    residual_out: T.Tensor[(M, N), dtype],  # out_idx=5
+                ):
+                    with T.Kernel(num_kernels, is_npu=True) as (cid, _):
+                        # UB buffers (DESIGN.md section 4.3), allocated once per
+                        # core and reused across serial tasks:
+                        #   stage : x -> residual -> rounded sum -> rounded y
+                        #           (4 roles; lifetimes disjoint)
+                        #   x_f32 : x32 -> s -> s32 -> d (kept, O3) -> t result
+                        #   sq_f32: r32 -> d^2 -> weight brc -> bias brc
+                        #   wstage: (1, N) weight/bias load staging (its own row,
+                        #           not a sub-row slice of stage -- a row slice of
+                        #           a (block_m, N) buffer lowers to a transposing
+                        #           vcast on this toolchain)
+                        stage = T.alloc_shared((block_m, N), dtype)
+                        x_f32 = T.alloc_shared((block_m, N), "float32")
+                        sq_f32 = T.alloc_shared((block_m, N), "float32")
+                        wstage = T.alloc_shared((1, N), dtype)
+                        w1 = T.alloc_shared((1, N), "float32")
+                        b1 = T.alloc_shared((1, N), "float32")
+                        s1 = T.alloc_shared((block_m, 1), "float32")
+                        mean = T.alloc_shared((block_m, 1), "float32")
+                        s2 = T.alloc_shared((block_m, 1), "float32")
+                        var = T.alloc_shared((block_m, 1), "float32")
+                        rstd = T.alloc_shared((block_m, 1), "float32")
 
-                    # A10: weight/bias are loop-invariant -- load + upcast once
-                    # per core instead of once per tile (saves 2 GM copies + 2
-                    # vcasts per iteration).
-                    T.copy(weight[0:N], wstage[0:1, 0:N])
-                    T.vcast(wstage, w1, round_mode="rint")
-                    T.copy(bias[0:N], wstage[0:1, 0:N])
-                    T.vcast(wstage, b1, round_mode="rint")
+                        # A10: weight/bias are loop-invariant -- load + upcast once
+                        # per core instead of once per tile (saves 2 GM copies + 2
+                        # vcasts per iteration).
+                        T.copy(weight[0:N], wstage[0:1, 0:N])
+                        T.vcast(wstage, w1, round_mode="rint")
+                        T.copy(bias[0:N], wstage[0:1, 0:N])
+                        T.vcast(wstage, b1, round_mode="rint")
 
-                    # Persistent in-core serial task loop (static bound,
-                    # grid-stride mapping, if-guard masks out-of-range row
-                    # blocks).
-                    for i in T.serial(num_local_tasks):
-                        block_id = i * num_kernels + cid
-                        if block_id < num_logical:
-                            off_m = block_id * block_m
-                            # Tail row count. The v-ops below run on the full
-                            # (block_m, N) buffers; garbage tail rows are
-                            # row-isolated (reduce dim=1 / row broadcast) and
-                            # never copied out.
-                            real_m = T.min(block_m, M - off_m)
+                        # Persistent in-core serial task loop (static bound,
+                        # grid-stride mapping, if-guard masks out-of-range row
+                        # blocks).
+                        for i in T.serial(num_local_tasks):
+                            block_id = i * num_kernels + cid
+                            if block_id < num_logical:
+                                off_m = block_id * block_m
+                                # Tail row count. The v-ops below run on the full
+                                # (block_m, N) buffers; garbage tail rows are
+                                # row-isolated (reduce dim=1 / row broadcast) and
+                                # never copied out.
+                                real_m = T.min(block_m, M - off_m)
 
-                            # --- 1. Load + upcast + residual add (R4) ---
-                            # Dual explicit slices, dst zero-origin
-                            # (TRAP-T-copy-region-semantics /
-                            # TRAP-UB-dst-align recommended form).
-                            T.copy(
-                                x[off_m : off_m + real_m, 0:N],
-                                stage[0:real_m, 0:N],
-                            )
-                            T.vcast(stage, x_f32, round_mode="rint")
-                            T.copy(
-                                residual[off_m : off_m + real_m, 0:N],
-                                stage[0:real_m, 0:N],
-                            )
-                            T.vcast(stage, sq_f32, round_mode="rint")
-                            T.vadd(x_f32, sq_f32, x_f32)  # s = x + residual
+                                # --- 1. Load + upcast + residual add (R4) ---
+                                # Dual explicit slices, dst zero-origin
+                                # (TRAP-T-copy-region-semantics /
+                                # TRAP-UB-dst-align recommended form).
+                                T.copy(
+                                    x[off_m : off_m + real_m, 0:N],
+                                    stage[0:real_m, 0:N],
+                                )
+                                T.vcast(stage, x_f32, round_mode="rint")
+                                T.copy(
+                                    residual[off_m : off_m + real_m, 0:N],
+                                    stage[0:real_m, 0:N],
+                                )
+                                T.vcast(stage, sq_f32, round_mode="rint")
+                                T.vadd(x_f32, sq_f32, x_f32)  # s = x + residual
 
-                            # --- 2. Rounded sum (residual_out) + re-enter fp32 (O4) ---
-                            T.vcast(x_f32, stage, round_mode="rint")  # round_dtype(s)
-                            T.copy(
-                                stage[0:real_m, 0:N],
-                                residual_out[off_m : off_m + real_m, 0:N],
-                            )
-                            T.vcast(stage, x_f32, round_mode="rint")  # s32
+                                # --- 2. Rounded sum (residual_out) + re-enter fp32 (O4) ---
+                                T.vcast(x_f32, stage, round_mode="rint")  # round_dtype(s)
+                                T.copy(
+                                    stage[0:real_m, 0:N],
+                                    residual_out[off_m : off_m + real_m, 0:N],
+                                )
+                                T.vcast(stage, x_f32, round_mode="rint")  # s32
 
-                            # --- 3. Mean (O1: S1 * fl(1/N)) ---
-                            T.reduce_sum(x_f32, s1, dim=1)
-                            T.vmul(s1, N_inv, mean)
+                                # --- 3. Mean (O1: S1 * fl(1/N)) ---
+                                T.reduce_sum(x_f32, s1, dim=1)
+                                T.vmul(s1, N_inv, mean)
 
-                            # --- 4. Centered two-pass variance (d kept, O3) ---
-                            T.vsub(x_f32, mean, x_f32)     # d = s - mean
-                            T.vmul(x_f32, x_f32, sq_f32)   # sq = d^2
-                            T.reduce_sum(sq_f32, s2, dim=1)
-                            T.vmul(s2, N_inv, var)
-                            T.vadd(var, eps, var)
-                            # rstd = 1/sqrt(var): vsqrt+vdiv composition (the
-                            # raw T.vrsqrt instruction is approximate on this
-                            # toolchain; see module Implementation Notes).
-                            T.vsqrt(var, s2)              # s2 reused: sqrt(var)
-                            T.vdiv(s2, var, rstd)         # rstd = sqrt(var)/var
+                                # --- 4. Centered two-pass variance (d kept, O3) ---
+                                T.vsub(x_f32, mean, x_f32)     # d = s - mean
+                                T.vmul(x_f32, x_f32, sq_f32)   # sq = d^2
+                                T.reduce_sum(sq_f32, s2, dim=1)
+                                T.vmul(s2, N_inv, var)
+                                T.vadd(var, eps, var)
+                                # rstd = 1/sqrt(var): vsqrt+vdiv composition (the
+                                # raw T.vrsqrt instruction is approximate on this
+                                # toolchain; see module Implementation Notes).
+                                T.vsqrt(var, s2)              # s2 reused: sqrt(var)
+                                T.vdiv(s2, var, rstd)         # rstd = sqrt(var)/var
 
-                            # --- 5. Normalize + affine (column factors, R5) ---
-                            T.vmul(x_f32, rstd, x_f32)     # d * rstd
-                            if block_m == 1:
-                                T.vmul(x_f32, w1, x_f32)
-                            else:
-                                T.vbrc(w1, sq_f32)
-                                T.vmul(x_f32, sq_f32, x_f32)
-                            if block_m == 1:
-                                T.vadd(x_f32, b1, x_f32)
-                            else:
-                                T.vbrc(b1, sq_f32)
-                                T.vadd(x_f32, sq_f32, x_f32)
+                                # --- 5. Normalize + affine (column factors, R5) ---
+                                T.vmul(x_f32, rstd, x_f32)     # d * rstd
+                                if block_m == 1:
+                                    T.vmul(x_f32, w1, x_f32)
+                                else:
+                                    T.vbrc(w1, sq_f32)
+                                    T.vmul(x_f32, sq_f32, x_f32)
+                                if block_m == 1:
+                                    T.vadd(x_f32, b1, x_f32)
+                                else:
+                                    T.vbrc(b1, sq_f32)
+                                    T.vadd(x_f32, sq_f32, x_f32)
 
-                            # --- 6. Single round-back + store (valid rows only) ---
-                            T.vcast(x_f32, stage, round_mode="rint")
-                            T.copy(
-                                stage[0:real_m, 0:N],
-                                output[off_m : off_m + real_m, 0:N],
-                            )
+                                # --- 6. Single round-back + store (valid rows only) ---
+                                T.vcast(x_f32, stage, round_mode="rint")
+                                T.copy(
+                                    stage[0:real_m, 0:N],
+                                    output[off_m : off_m + real_m, 0:N],
+                                )
+
+            else:
+                # block_m >= 2 (N=4096, llama-8b-prefill): loads-first
+                # copy-cast (PL-1.10 decoupling; -18% measured).
+                @T.prim_func
+                def main(
+                    x: T.Tensor[(M, N), dtype],
+                    residual: T.Tensor[(M, N), dtype],
+                    weight: T.Tensor[(N,), dtype],
+                    bias: T.Tensor[(N,), dtype],
+                    output: T.Tensor[(M, N), dtype],       # out_idx=4
+                    residual_out: T.Tensor[(M, N), dtype],  # out_idx=5
+                ):
+                    with T.Kernel(num_kernels, is_npu=True) as (cid, _):
+                        # UB buffers (DESIGN.md section 4.3), allocated once per
+                        # core and reused across serial tasks:
+                        #   stage : rounded sum -> rounded y (2 roles, lifetimes
+                        #           disjoint; round-trip + output staging only)
+                        #   x_f32 : x (copy-cast load) -> s -> s32 -> d -> t
+                        #   sq_f32: residual (copy-cast load) -> d^2 -> w/b brc
+                        #   w1/b1 : (1, N) fp32 weight/bias (direct copy-cast load,
+                        #           no (1,N) dtype staging -- upcast is exact)
+                        stage = T.alloc_shared((block_m, N), dtype)
+                        x_f32 = T.alloc_shared((block_m, N), "float32")
+                        sq_f32 = T.alloc_shared((block_m, N), "float32")
+                        w1 = T.alloc_shared((1, N), "float32")
+                        b1 = T.alloc_shared((1, N), "float32")
+                        s1 = T.alloc_shared((block_m, 1), "float32")
+                        mean = T.alloc_shared((block_m, 1), "float32")
+                        s2 = T.alloc_shared((block_m, 1), "float32")
+                        var = T.alloc_shared((block_m, 1), "float32")
+                        rstd = T.alloc_shared((block_m, 1), "float32")
+
+                        # A10: weight/bias are loop-invariant -- load + upcast once
+                        # per core instead of once per tile. The (N,)->(1,N) copy is
+                        # a direct fp16->fp32 upcast (exact; no rounding), so the
+                        # dtype staging buffer is dropped entirely.
+                        T.copy(weight[0:N], w1[0:1, 0:N])
+                        T.copy(bias[0:N], b1[0:1, 0:N])
+
+                        # Persistent in-core serial task loop (static bound,
+                        # grid-stride mapping, if-guard masks out-of-range row
+                        # blocks).
+                        for i in T.serial(num_local_tasks):
+                            block_id = i * num_kernels + cid
+                            if block_id < num_logical:
+                                off_m = block_id * block_m
+                                # Tail row count. The v-ops below run on the full
+                                # (block_m, N) buffers; garbage tail rows are
+                                # row-isolated (reduce dim=1 / row broadcast) and
+                                # never copied out.
+                                real_m = T.min(block_m, M - off_m)
+
+                                # --- 1. Load + residual add (R4) ---
+                                # PL-1.10 loads-first: both inputs front-loaded
+                                # directly into their fp32 buffers via a copy-cast
+                                # (fp16->fp32 upcast is exact; no rounding), so the
+                                # single-staging reuse chain (MTE2(x)->VEC(vcast)->
+                                # MTE2(residual)->VEC) is removed entirely -- the
+                                # two loads form a pure MTE2 phase, then the vector
+                                # chain runs uninterrupted.
+                                T.copy(
+                                    x[off_m : off_m + real_m, 0:N],
+                                    x_f32[0:real_m, 0:N],
+                                )
+                                T.copy(
+                                    residual[off_m : off_m + real_m, 0:N],
+                                    sq_f32[0:real_m, 0:N],
+                                )
+                                T.vadd(x_f32, sq_f32, x_f32)  # s = x + residual
+
+                                # --- 2. Rounded sum (residual_out) + re-enter fp32 (O4) ---
+                                T.vcast(x_f32, stage, round_mode="rint")  # round_dtype(s)
+                                T.copy(
+                                    stage[0:real_m, 0:N],
+                                    residual_out[off_m : off_m + real_m, 0:N],
+                                )
+                                T.vcast(stage, x_f32, round_mode="rint")  # s32
+
+                                # --- 3. Mean (O1: S1 * fl(1/N)) ---
+                                T.reduce_sum(x_f32, s1, dim=1)
+                                T.vmul(s1, N_inv, mean)
+
+                                # --- 4. Centered two-pass variance (d kept, O3) ---
+                                T.vsub(x_f32, mean, x_f32)     # d = s - mean
+                                T.vmul(x_f32, x_f32, sq_f32)   # sq = d^2
+                                T.reduce_sum(sq_f32, s2, dim=1)
+                                T.vmul(s2, N_inv, var)
+                                T.vadd(var, eps, var)
+                                # rstd = 1/sqrt(var): vsqrt+vdiv composition (the
+                                # raw T.vrsqrt instruction is approximate on this
+                                # toolchain; see module Implementation Notes).
+                                T.vsqrt(var, s2)              # s2 reused: sqrt(var)
+                                T.vdiv(s2, var, rstd)         # rstd = sqrt(var)/var
+
+                                # --- 5. Normalize + affine (column factors, R5) ---
+                                T.vmul(x_f32, rstd, x_f32)     # d * rstd
+                                if block_m == 1:
+                                    T.vmul(x_f32, w1, x_f32)
+                                else:
+                                    T.vbrc(w1, sq_f32)
+                                    T.vmul(x_f32, sq_f32, x_f32)
+                                if block_m == 1:
+                                    T.vadd(x_f32, b1, x_f32)
+                                else:
+                                    T.vbrc(b1, sq_f32)
+                                    T.vadd(x_f32, sq_f32, x_f32)
+
+                                # --- 6. Single round-back + store (valid rows only) ---
+                                T.vcast(x_f32, stage, round_mode="rint")
+                                T.copy(
+                                    stage[0:real_m, 0:N],
+                                    output[off_m : off_m + real_m, 0:N],
+                                )
 
         else:
 

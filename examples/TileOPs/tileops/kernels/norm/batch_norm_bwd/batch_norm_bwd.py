@@ -66,15 +66,17 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .batch_norm_bwd_kernel import (
+# from .batch_norm_bwd_kernel import (
+#     _batch_norm_bwd_kernel,
+#     _batch_norm_bwd_split_kernel,
+#     _batch_norm_bwd_wide_kernel,
+# )
+# --- perf_opt (Stage 4 tuned) ------------------------------------------------
+from .batch_norm_bwd_kernel.perf_opt.BatchNormBwdOp import (
     _batch_norm_bwd_kernel,
     _batch_norm_bwd_split_kernel,
     _batch_norm_bwd_wide_kernel,
 )
-# --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .batch_norm_bwd_kernel.perf_opt._batch_norm_bwd_kernel import _batch_norm_bwd_kernel
-# from .batch_norm_bwd_kernel.perf_opt._batch_norm_bwd_split_kernel import _batch_norm_bwd_split_kernel
-# from .batch_norm_bwd_kernel.perf_opt._batch_norm_bwd_wide_kernel import _batch_norm_bwd_wide_kernel
 
 __all__ = [
     "BatchNormBwdKernel",

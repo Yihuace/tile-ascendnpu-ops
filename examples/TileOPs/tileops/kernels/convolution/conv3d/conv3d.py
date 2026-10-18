@@ -34,7 +34,11 @@ from tilelang.utils import NPUUtils
 
 from tileops.kernels.kernel_base import Kernel
 
-from .conv3d_kernel._conv3d_kernel import _conv3d_kernel, _host_prep, _ws_dims
+# Kernel source selection: baseline vs perf_opt (Stage 4 tuned)
+# --- baseline (Stage 3) ------------------------------------------------------
+# from .conv3d_kernel._conv3d_kernel import _conv3d_kernel, _host_prep, _ws_dims
+# --- perf_opt (Stage 4 tuned) ------------------------------------------------
+from .conv3d_kernel.perf_opt.Conv3dBiasFwdOp import _conv3d_kernel, _host_prep, _ws_dims
 
 __all__ = ["Conv3dKernel"]
 

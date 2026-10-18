@@ -73,9 +73,9 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .isinf_kernel import isinf_fwd_kernel
+# from .isinf_kernel import isinf_fwd_kernel
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .isinf_kernel.perf_opt.isinf_fwd_kernel import isinf_fwd_kernel
+from .isinf_kernel.perf_opt.IsinfFwdOp import isinf_fwd_kernel
 
 __all__ = ["IsinfFwdKernel"]
 

@@ -72,9 +72,9 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .isfinite_kernel import isfinite_fwd_kernel
+# from .isfinite_kernel import isfinite_fwd_kernel
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .isfinite_kernel.perf_opt.isfinite_fwd_kernel import isfinite_fwd_kernel
+from .isfinite_kernel.perf_opt.IsfiniteFwdOp import isfinite_fwd_kernel
 
 __all__ = ["IsfiniteFwdKernel"]
 

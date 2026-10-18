@@ -42,6 +42,15 @@ Boundary semantics (DESIGN.md section 0.1 / 8.3 / 9.3):
     gelu_tanh(+inf) = +inf, gelu_tanh(-inf) = NaN (source expression
     ``(-inf) * 0``), gelu_tanh(NaN) = NaN, gelu_tanh(-0.0) = -0.0.
 
+Stage-4 tuning (this file is the tuned drop-in; see ``perf_opt/opt_log.md``):
+    T1: fold ``sqrt(2/pi)`` scaling and ``*(-2)`` into one constant multiply
+        (``-2u = (g + c*g^3) * (-2*sqrt(2/pi))``) -- removes one vector vmul.
+    T2: hoist the loop-invariant constant-ones buffer fill (``T.vbrc(1.0)``)
+        out of the persistent tile loop -- the numerator is filled once per
+        core instead of once per tile (~-3.2% prefill Task Duration).
+    The kernel is compute-bound (``Vec_FP32`` ~99% roofline util); GM SOL
+    (~46-50%) is not the operative metric.
+
 Run the embedded hierarchical tests:
     python gelu_tanh_and_mul_fwd_kernel.py --level L0
     python gelu_tanh_and_mul_fwd_kernel.py --level all
@@ -175,6 +184,10 @@ def gelu_tanh_and_mul_fwd_kernel(M, N, dtype, output_dtype=None, block_N=2048, n
             s32 = T.alloc_ub((block_N,), compute_dtype)  # sigmoid / gelu / result
             out_ub = T.alloc_ub((block_N,), out_dtype)
 
+            # OP2: the constant-ones numerator buffer is loop-invariant; fill it
+            # once per core (not once per tile) and reuse across all tiles.
+            T.vbrc(T.cast(1.0, "float32"), one32)
+
             # Persistent in-core serial task loop (static bound, row-major
             # grid-stride mapping, if-guard masks out-of-range tiles).
             for i in T.serial(tiles_per_core):
@@ -210,10 +223,7 @@ def gelu_tanh_and_mul_fwd_kernel(M, N, dtype, output_dtype=None, block_N=2048, n
                     #    sigma(2u) = 1 / (1 + exp(-2u)).
                     T.vexp(vi32, ex32)                   # exp(-2u)
                     T.vadd(ex32, 1.0, den32)             # 1 + exp(-2u)
-                    # vdiv requires src1 to be a tensor (only src2 may be a
-                    # scalar), so the numerator is a ones buffer.
-                    T.vbrc(T.cast(1.0, "float32"), one32)
-                    T.vdiv(one32, den32, s32)            # sigma(2u)
+                    T.vdiv(one32, den32, s32)            # sigma(2u) = 1/den (ones hoisted)
                     T.vmul(g32, s32, s32)                # gelu_tanh(g) = g * sigma(2u)
 
                     # 5. Gated multiply: y = gelu_tanh(gate) * value.

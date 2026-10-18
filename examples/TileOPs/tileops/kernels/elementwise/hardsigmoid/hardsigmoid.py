@@ -50,7 +50,7 @@ from tileops.kernels.kernel_base import Kernel
 # from .hardsigmoid_kernel import hardsigmoid_fwd_kernel
 
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-from .hardsigmoid_kernel.perf_opt.hardsigmoid_fwd_kernel import hardsigmoid_fwd_kernel
+from .hardsigmoid_kernel.perf_opt.HardsigmoidFwdOp import hardsigmoid_fwd_kernel
 
 __all__ = ["HardsigmoidFwdKernel"]
 

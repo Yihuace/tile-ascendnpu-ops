@@ -39,6 +39,7 @@ def main():
     ap.add_argument("--workload", required=True, choices=sorted(WORKLOADS))
     ap.add_argument("--dtype", default="float32", choices=sorted(DTYPES))
     ap.add_argument("--block-size", type=int, default=8192)
+    ap.add_argument("--num-cores", type=int, default=None)
     ap.add_argument("--launches", type=int, default=25)
     args = ap.parse_args()
 
@@ -49,7 +50,7 @@ def main():
     dtype = DTYPES[args.dtype]
 
     mod = load_module(args.module)
-    prog = mod.isfinite_fwd_kernel(N, args.dtype, block_size=args.block_size)
+    prog = mod.isfinite_fwd_kernel(N, args.dtype, block_size=args.block_size, num_cores=args.num_cores)
     # Inject a few NaNs so the predicate path is exercised (not a perf factor).
     x = torch.randn(shape, dtype=dtype, device="npu").view(-1)
     x[::4096] = float("nan")

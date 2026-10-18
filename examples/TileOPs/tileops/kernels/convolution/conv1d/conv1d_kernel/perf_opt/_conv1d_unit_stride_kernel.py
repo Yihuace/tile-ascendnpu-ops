@@ -168,6 +168,15 @@ def _conv1d_unit_stride_kernel(
     accum_dtype = _ACCUM
     out_l = l_in + pad_left + pad_right - dilation_l * (kernel_l - 1)
     l_pad, c_in_pad, ch_xp = _plan(l_in, c_in, pad_left, pad_right)
+    # R2: when the input needs no padding and the channel dim is already a
+    # 16-multiple, ``x_pad`` is byte-identical to ``x`` -- the B tiles can read
+    # ``x`` directly and the whole 20x-redundant ``x_pad`` prelude copy is gone.
+    # The identity shortcut is applied to the NOBIAS path only: on the bias
+    # (MixCV) path, reading ``x`` directly in the Cube scope next to the ws
+    # relay trips a bishengir SIGSEGV for encodec-deep-bias (CG-2026-0003 family),
+    # so the bias path keeps the x_pad prelude copy.
+    identity_x = (pad_left == 0 and pad_right == 0 and c_in == c_in_pad)
+    skip_x_pad = identity_x and (not has_bias)
     num_kernels = NPUUtils.get().get_aicore_num()
 
     @tilelang.jit(out_idx=[2], target="npuir")
@@ -180,52 +189,71 @@ def _conv1d_unit_stride_kernel(
         gx = (out_l + block_n - 1) // block_n
         gy = (c_out + block_m - 1) // block_m
         num_logical = gy * gx * n
+        # R2: partition output-channel blocks across cores so the weight-repack
+        # prelude collapses from num_kernels x full-repack to 1 x per-core slice.
+        # A core only reads the co block(s) it repacks itself, so no cross-core
+        # barrier is needed.  All Conv1d unit-stride workloads have gy <= 20
+        # (c_out <= 1280, block_m = 64) on this 20-AIC part; assert rather than
+        # silently fall back to the 20x full repack.
+        assert gy <= num_kernels, (
+            f"R2 weight partition requires gy <= num_kernels (got {gy} > {num_kernels})"
+        )
+        share = num_kernels // gy
+        # number of BM_W-wide sub-blocks inside one block_m co block
+        n_sub_w = (block_m + BM_W - 1) // BM_W
 
         @T.macro
-        def _prelude(x, weight, w_flat, x_pad):
+        def _prelude(x, weight, w_flat, x_pad, by, fill_x):
             with T.Scope("Vector"):
                 wsrc = T.alloc_ub([BM_W, c_in, kernel_l], dtype)
                 wt = T.alloc_ub([BM_W, kernel_l, c_in], dtype)
                 wdst = T.alloc_ub([kernel_l, BM_W, c_in], dtype)
                 ub2 = T.alloc_ub([ch_xp, l_in], dtype)
-                # weight [C_out,C_in,K_W] -> w_flat [K_W,C_out,C_in] (K order (k_w,c_i))
-                for co0 in T.serial(n_co):
-                    cw = T.min(BM_W, c_out - co0 * BM_W)
-                    T.copy(
-                        weight[co0 * BM_W:co0 * BM_W + cw, 0:c_in, 0:kernel_l],
-                        wsrc[0:cw, 0:c_in, 0:kernel_l],
-                    )
-                    T.transpose(wsrc, wt, permutation=[0, 2, 1])
-                    T.transpose(wt, wdst, permutation=[1, 0, 2])
-                    for kw in T.serial(kernel_l):
+                # weight [C_out,C_in,K_W] -> w_flat [K_W,C_out,C_in] (K order (k_w,c_i)).
+                # R2: repack only this core's co block ``by`` (in block_m units),
+                # i.e. co in [by*block_m, by*block_m+block_m); loop the BM_W-wide
+                # sub-blocks so the UB chunk stays within budget.
+                for j in T.serial(n_sub_w):
+                    co0 = by * block_m + j * BM_W
+                    cw = T.min(BM_W, T.max(0, c_out - co0))
+                    if cw > 0:
                         T.copy(
-                            wdst[kw, 0:cw, 0:c_in],
-                            w_flat[kw, co0 * BM_W:co0 * BM_W + cw, 0:c_in],
+                            weight[co0:co0 + cw, 0:c_in, 0:kernel_l],
+                            wsrc[0:cw, 0:c_in, 0:kernel_l],
                         )
+                        T.transpose(wsrc, wt, permutation=[0, 2, 1])
+                        T.transpose(wt, wdst, permutation=[1, 0, 2])
+                        for kw in T.serial(kernel_l):
+                            T.copy(
+                                wdst[kw, 0:cw, 0:c_in],
+                                w_flat[kw, co0:co0 + cw, 0:c_in],
+                            )
                 # x_pad[bn, ci, p_L + i] = x[bn, ci, i]; x_pad is host pre-zeroed so
                 # the pads and the channel-pad rows stay 0.  GM-offset destinations
                 # are used (UB-offset GM->UB copies mis-handle the row stride).
-                for bn in T.serial(n):
-                    for cc0 in T.serial(n_xp):
-                        cr = T.min(ch_xp, T.max(0, c_in - cc0 * ch_xp))
-                        if cr > 0:
-                            T.copy(
-                                x[bn, cc0 * ch_xp:cc0 * ch_xp + cr, 0:l_in],
-                                ub2[0:cr, 0:l_in],
-                            )
-                            T.copy(
-                                ub2[0:cr, 0:l_in],
-                                x_pad[
-                                    bn,
-                                    cc0 * ch_xp:cc0 * ch_xp + cr,
-                                    pad_left:pad_left + l_in,
-                                ],
-                            )
+                # R2: skipped when x_pad == x and the caller reads x directly.
+                if fill_x:
+                    for bn in T.serial(n):
+                        for cc0 in T.serial(n_xp):
+                            cr = T.min(ch_xp, T.max(0, c_in - cc0 * ch_xp))
+                            if cr > 0:
+                                T.copy(
+                                    x[bn, cc0 * ch_xp:cc0 * ch_xp + cr, 0:l_in],
+                                    ub2[0:cr, 0:l_in],
+                                )
+                                T.copy(
+                                    ub2[0:cr, 0:l_in],
+                                    x_pad[
+                                        bn,
+                                        cc0 * ch_xp:cc0 * ch_xp + cr,
+                                        pad_left:pad_left + l_in,
+                                    ],
+                                )
                 with T.rs("PIPE_MTE3"):
                     T.sync_block_set(4)  # prelude ready (Vector -> Cube)
 
         @T.macro
-        def _cube(out, w_flat, x_pad, ws, kernel_id, num_local_tasks):
+        def _cube(out, w_flat, b_src, ws, kernel_id, num_local_tasks):
             with T.Scope("Cube"):
                 l1_a = T.alloc_L1([block_m, taps * block_k], dtype)
                 l1_b = T.alloc_L1([taps * block_k, block_n], dtype)
@@ -233,10 +261,11 @@ def _conv1d_unit_stride_kernel(
                 with T.rs("PIPE_MTE2"):
                     T.sync_block_wait(4)  # wait prelude ready
                 for task_id in T.serial(num_local_tasks):
-                    cid = T.min(task_id * num_kernels + kernel_id, num_logical - 1)
-                    bz = cid // (gy * gx)
-                    by = (cid // gx) % gy
-                    bx = cid % gx
+                    # R2: fixed co block per core (matches the sharded prelude repack).
+                    by = kernel_id % gy
+                    idx = task_id * share + kernel_id // gy
+                    bx = idx % gx
+                    bz = idx // gx
                     tm = T.min(block_m, c_out - by * block_m)
                     tn = T.min(block_n, out_l - bx * block_n)
                     tmc = T.max(16, T.ceildiv(tm, 16) * 16)
@@ -261,7 +290,7 @@ def _conv1d_unit_stride_kernel(
                                 # contiguously along the L1 K axis at t*kcl.
                                 off = bx * block_n + kw * dilation_l
                                 T.copy(
-                                    x_pad[
+                                    b_src[
                                         bz,
                                         kc * block_k:kc * block_k + kcl,
                                         off:off + tn,
@@ -314,10 +343,11 @@ def _conv1d_unit_stride_kernel(
                     T.sync_block_set(1)
                     T.sync_block_set(3)
                 for task_id in T.serial(num_local_tasks):
-                    cid = T.min(task_id * num_kernels + kernel_id, num_logical - 1)
-                    bz = cid // (gy * gx)
-                    by = (cid // gx) % gy
-                    bx = cid % gx
+                    # R2: fixed co block per core (matches the sharded prelude repack).
+                    by = kernel_id % gy
+                    idx = task_id * share + kernel_id // gy
+                    bx = idx % gx
+                    bz = idx // gx
                     tm = T.min(block_m, c_out - by * block_m)
                     tn = T.min(block_n, out_l - bx * block_n)
                     slot = task_id % SLOTS
@@ -356,8 +386,8 @@ def _conv1d_unit_stride_kernel(
                 ws: T.Tensor((num_kernels, SLOTS, block_m, block_n), accum_dtype),
             ):
                 with T.Kernel(num_kernels, is_npu=True) as (kernel_id, _):
-                    num_local_tasks = T.ceildiv(num_logical - kernel_id, num_kernels)
-                    _prelude(x, weight, w_flat, x_pad)
+                    num_local_tasks = T.ceildiv(T.max(gx * n - kernel_id // gy, 0), share)
+                    _prelude(x, weight, w_flat, x_pad, kernel_id % gy, not skip_x_pad)
                     _cube(out, w_flat, x_pad, ws, kernel_id, num_local_tasks)
                     _bias_epilogue(out, bias, ws, kernel_id, num_local_tasks)
 
@@ -372,9 +402,12 @@ def _conv1d_unit_stride_kernel(
             x_pad: T.Tensor((n, c_in_pad, l_pad), dtype),
         ):
             with T.Kernel(num_kernels, is_npu=True) as (kernel_id, _):
-                num_local_tasks = T.ceildiv(num_logical - kernel_id, num_kernels)
-                _prelude(x, weight, w_flat, x_pad)
-                _cube(out, w_flat, x_pad, None, kernel_id, num_local_tasks)
+                num_local_tasks = T.ceildiv(T.max(gx * n - kernel_id // gy, 0), share)
+                _prelude(x, weight, w_flat, x_pad, kernel_id % gy, not skip_x_pad)
+                if skip_x_pad:
+                    _cube(out, w_flat, x, None, kernel_id, num_local_tasks)
+                else:
+                    _cube(out, w_flat, x_pad, None, kernel_id, num_local_tasks)
 
         return _conv1d_unit_stride_main
 

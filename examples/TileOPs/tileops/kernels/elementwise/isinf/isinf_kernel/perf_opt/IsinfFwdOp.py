@@ -1,52 +1,39 @@
 # Copyright (c) Huawei Technologies Co., Ltd. 2026.
-"""Isinf forward kernel (NPU, Developer mode).
+"""Isinf forward kernel (NPU, Developer mode) -- round-5 deep-dive candidate.
 
-Migrated from the GPU repo's ``IsinfFwdKernel`` (TileOPs,
-``FloatPredicateKernel`` / ``register_copy`` strategy, OUTPUT_DTYPE=bool) to
-TileLang ``target="npuir"``.
+Round-5 hypothesis (secondary deep-dive): bf16 is the ONLY non-floor item.
+Sibling Isnan deep-dive (2026-10-18) proved predicate-family fp16/fp32 are
+MTE2 mixed-R/W bandwidth-bound (aiv_mte2_ratio 0.81-0.90 >> aiv_vec_ratio
+0.25-0.39) but **bf16 is the vector-bound exception** (baseline vec_t >
+mte2_t).  Isinf bf16 is 6-pass (2x vcmp + 2x vcast + vadd + vcast) because
+``T.vabs`` has no bf16 edge.  This candidate drops bf16 to the same 4-pass
+shape as fp16/fp32 by computing |x| via a bitwise sign-bit clear:
+
+    isinf(x) = (x & 0x7FFF) == +inf     (bf16 bit-level; sign bit masked)
+
+    vand(x, 0x7FFF_mask) -> vcmp(eq +inf) -> vcast(bool->f16) -> vcast(f16->i8)
+
+Correctness (bit-level, no fp arithmetic, NaN-safe):
+  - +inf (0x7F80) & 0x7FFF = 0x7F80 == +inf -> True
+  - -inf (0xFF80) & 0x7FFF = 0x7F80 == +inf -> True
+  - NaN (0x7FCx) & 0x7FFF = 0x7FCx != +inf  -> False (ordered eq)
+  - finite / +-0 / subnormal: cleared sign still != +inf -> False
+
+The 0x7FFF mask is built ONCE outside the tile loop (no per-tile cost):
+  T.fill(sign_ub, -0.0)          # -0.0 -> bit pattern 0x8000
+  T.vnot(sign_ub, mask_ub)       # ~0x8000 = 0x7FFF
+
+Docs (bit-level reinterpret on bf16 is supported):
+  docs/Tilelang.language/逻辑操作/T.vand.md  2.2.1 (bf16 = √)
+  docs/Tilelang.language/逻辑操作/T.vor.md   2.2.1 (fp16/fp32/bf16 bit-reinterpret)
+  docs/Tilelang.language/逻辑操作/T.vnot.md  2.2.1 (bf16 = √)
 
 Semantics (frozen by DESIGN.md section 0.1):
     y = isinf(x)   (elementwise float predicate, bool output, exact)
-
-on a flattened contiguous ``(N,)`` tensor of dtype float16 | bfloat16 |
-float32; output ``(N,)`` bool.  +-inf -> True; NaN / finite / +-0 / subnormal
--> False.  The predicate is exact boolean logic (no fp arithmetic), so the
-comparison tolerance is atol = rtol = 0.
-
-NPU redesign (DESIGN.md sections 0.6 / 3.1-3.3):
-    R1: one-dim ``T.Kernel(num_kernels, is_npu=True)`` with ``T.alloc_ub``
-        tiles and explicit-slice ``T.copy``; the CUDA ``threads x npt``
-        two-level parallel folds into a single ``block_size``.
-    R2: infinity predicate via the native-dtype ORDERED ``eq`` against the two
-        infinities: ``isinf(x) = (x == +inf) | (x == -inf)``.  Ordered ``eq``
-        is true only for the matching infinity and false for NaN, so NaN
-        correctly answers "not infinite".  This replaces
-        ``T.isinf(T.cast(x, "float32"))`` (no fp32 widening, no special
-        function).  NOTE: ``vcmp "ne"`` is lowered as an ORDERED not-equal
-        (``ne == lt | gt``) on this toolchain, so an ``x != x`` self-compare is
-        false for NaN and does NOT detect special values -- it must not be used
-        (see repro/CONST-vcmp-ne-ordered.py).
-    R3: bool output representation: the on-chip bool masks cannot load/store GM
-        and ``vcast`` has no ``i1->i8`` direct edge, so each mask is turned into
-        an fp16 0.0/1.0 via ``vcast(bool->f16)``, the two masks are merged with
-        ``vadd`` in the fp16 domain (mutually exclusive -> sum in {0.0, 1.0},
-        exact; bool-domain ``vor``/``vmax`` and int8 ``vselect`` are not
-        supported), and the sum is cast ``vcast(f16->i8)`` to a one-byte 0/1.
-        The host views the result back to ``torch.bool`` (metadata view only).
-    Persistent core split: ``num_kernels = min(num_logical, vector_cores)``
-        with an in-core ``T.serial`` grid-stride loop and an if-guard for
-        out-of-range tiles (static bounds).
-
-Run the embedded hierarchical tests:
-    python isinf_fwd_kernel.py --level L0
-    python isinf_fwd_kernel.py --level all
 """
 
 import os
 
-# Developer mode: single-stage copy -> compute -> copy per tile, no manual sync
-# points (DESIGN.md section 7).  This literal mirrors the wrapper's
-# ``ascend_mode = "Developer"`` and is read by Stage 5 integration.
 os.environ.setdefault("TILELANG_ASCEND_MODE", "Developer")
 ASCEND_MODE = "Developer"
 
@@ -60,56 +47,25 @@ from tilelang.utils.npu_utils import NPUUtils
 
 __all__ = ["golden_isinf", "isinf_fwd_kernel"]
 
-# Float predicate dtype set (FloatPredicateKernel FLOAT_DTYPES); integer / bool
-# inputs are rejected (ValueError, DESIGN.md sections 9.3 / 11.3).
 SUPPORTED_DTYPES = ("float16", "bfloat16", "float32")
-
-# bool byte storage dtype (DESIGN.md section 3.3 / 11.4): bool i1 cannot
-# load/store GM, so the predicate result lands as an int8 0/1 byte.
 _BOOL_STORAGE_DTYPE = "int8"
 
 
-# ---------------------------------------------------------------------------
-# Golden (PyTorch CPU reference implementation)
-# ---------------------------------------------------------------------------
 def golden_isinf(x):
-    """Infinity predicate reference: y = torch.isinf(x)  (bool output, exact).
-
-    Matches the source-repo test benchmark (examples/TileOPs/tests/ops/
-    test_isinf.py: ``ref_program = torch.isinf(x.detach().cpu().float())``,
-    atol = rtol = 0).  Independent of the NPU algorithm (no vcmp eq against
-    +-inf / vadd mask merge / vcast byte chain / int8 byte storage / persistent
-    structure).  Runs on CPU and does not require an NPU device.
-    """
+    """Infinity predicate reference: y = torch.isinf(x)  (bool output, exact)."""
     return torch.isinf(x.detach().cpu().float()).to(torch.bool)
 
 
-# Stage-4 tuned default (perf_opt/opt_log.md).  Exposed at module level for the
-# Stage-5 wrapper switch block.
 TUNED_BLOCK_SIZE = 8192
 
 
-# ---------------------------------------------------------------------------
-# Kernel
-# ---------------------------------------------------------------------------
 @tilelang.jit(out_idx=[1], target="npuir")
 def isinf_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
     """Isinf forward kernel: ``y = isinf(x)`` (bool via int8 byte storage).
 
-    Compile-time params:
-        N: flattened element count (input is a contiguous ``(N,)`` vector).
-        dtype: input dtype, "float16" | "bfloat16" | "float32"; other dtypes
-            raise ``ValueError``.
-        output_dtype: optional output (storage) dtype; defaults to ``"int8"``
-            (the bool byte storage).
-        block_size: UB tile width (folds GPU threads*npt); default
-            ``TUNED_BLOCK_SIZE`` = 8192 (Stage-4 winner, opt_log.md).
-        num_cores: optional explicit kernel-count override (else section 5.5).
-
-    The returned ``main(x, y, shape)`` is invoked as ``kernel(x, N)``; ``y`` is
-    auto-allocated (``out_idx=[1]``).  The caller passes the input directly and
-    views the returned ``int8`` byte tensor back to ``torch.bool`` (bool i1
-    cannot load/store GM -- see the module docstring).
+    Round-5: bf16 |x| via ``vand(x, 0x7FFF)`` bit-level sign clear (4-pass),
+    fp16/fp32 via native ``vabs`` (4-pass).  Unified 4-pass abs chain for all
+    dtypes; the only dtype branch is the |x| producer (vand vs vabs).
     """
     if dtype not in SUPPORTED_DTYPES:
         raise ValueError(
@@ -119,7 +75,6 @@ def isinf_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE, n
 
     out_dtype = output_dtype or _BOOL_STORAGE_DTYPE
 
-    # Stage-4 T1: static full tiles + one dynamic tail.
     num_full = N // block_size
     tail = N - num_full * block_size
     num_logical = num_full + (1 if tail else 0)
@@ -128,22 +83,16 @@ def isinf_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE, n
         num_kernels = min(num_logical, vector_cores)
     else:
         num_kernels = num_cores
-    num_local_tasks = T.ceildiv(num_full, num_kernels)  # static bound
-    # Trace-time pure-name flags (expression conditions do not fold).
-    use_abs = dtype != "bfloat16"          # vabs has no bf16 dtype edge
-    use_select = not use_abs
+    num_local_tasks = T.ceildiv(num_full, num_kernels)
 
-    # +-inf constants in the input dtype.  T.infinity supports fp16/fp32 but NOT
-    # bf16 (docs/Tilelang.language/创建操作/T.infinity.md 2.2.1: bf16 = x), so
-    # bf16 builds the constant by casting an fp32 infinity (exact narrowing: bf16
-    # keeps the fp32 exponent field).  This scalar-cast constant path does not
-    # introduce any elementwise fp32 widening (DESIGN.md sections 3.3 / 9.1).
+    use_vand = dtype == "bfloat16"   # bf16: no vabs edge -> bitwise sign clear
+    # |x| producer: bf16 = vand(x, 0x7FFF); fp16/fp32 = vabs(x)
+
+    # +inf constant in the input dtype (bf16 built by casting fp32 infinity).
     if dtype == "bfloat16":
         pos_inf = T.cast(T.infinity("float32"), "bfloat16")
-        neg_inf = T.cast(-T.infinity("float32"), "bfloat16")
     else:
         pos_inf = T.infinity(dtype)
-        neg_inf = -T.infinity(dtype)
 
     @T.prim_func
     def main(
@@ -152,77 +101,54 @@ def isinf_fwd_kernel(N, dtype, output_dtype=None, block_size=TUNED_BLOCK_SIZE, n
         shape: T.int32,
     ):
         with T.Kernel(num_kernels, is_npu=True) as (cid, _):
-            # UB buffers (DESIGN.md section 4.3): v-prefix APIs require UB
-            # residency.  All buffers are allocated unconditionally (a
-            # conditional alloc is rejected by the TVM script parser).
             x_ub = T.alloc_ub((block_size,), dtype)
-            abs_ub = T.alloc_ub((block_size,), dtype)      # |x| (fp16/fp32 path)
+            abs_ub = T.alloc_ub((block_size,), dtype)      # |x|
             posinf_ub = T.alloc_ub((block_size,), dtype)   # constant +inf tile
-            neginf_ub = T.alloc_ub((block_size,), dtype)   # constant -inf tile
+            sign_ub = T.alloc_ub((block_size,), dtype)     # -0.0 (0x8000) src for vnot
+            mask_ub = T.alloc_ub((block_size,), dtype)     # 0x7FFF sign-clear mask
             m_pos = T.alloc_ub((block_size,), "bool")      # eq(+inf) mask
-            m_neg = T.alloc_ub((block_size,), "bool")      # eq(-inf) mask
-            f_a = T.alloc_ub((block_size,), "float16")
-            f_b = T.alloc_ub((block_size,), "float16")
-            one_ub = T.alloc_ub((block_size,), "float16")
-            zero_ub = T.alloc_ub((block_size,), "float16")
+            f_a = T.alloc_ub((block_size,), "float16")     # bool -> f16 (0.0/1.0)
             y_ub = T.alloc_ub((block_size,), out_dtype)    # int8 output byte tile
 
-            # Pre-fill the constants once, outside the tile loop.
+            # Pre-fill constants once, outside the tile loop.
             T.fill(posinf_ub, pos_inf)
-            T.fill(neginf_ub, neg_inf)
-            T.fill(one_ub, T.cast(1.0, "float16"))
-            T.fill(zero_ub, T.cast(0.0, "float16"))
+            if use_vand:
+                # 0x7FFF sign-clear mask: ~(-0.0) = ~0x8000 = 0x7FFF.
+                T.fill(sign_ub, T.cast(-0.0, "bfloat16"))
+                T.vnot(sign_ub, mask_ub)
 
-            # Stage-4 T1+T2: static full-tile loop, software-pipelined.
             if num_full > 0:
                 for i in T.Pipelined(num_local_tasks, num_stages=2):
                     block_id = i * num_kernels + cid
                     if block_id < num_full:
                         offset = block_id * block_size
                         T.copy(x[offset : offset + block_size], x_ub)
-                        if use_abs:
-                            # A8: isinf(x) = (|x| == +inf): 4 passes instead of 6.
+                        if use_vand:
+                            # bf16 |x| = x & 0x7FFF (sign-bit clear, 1 op)
+                            T.vand(x_ub, mask_ub, abs_ub)
+                        else:
                             T.vabs(x_ub, abs_ub)
-                            T.vcmp(abs_ub, posinf_ub, m_pos, "eq")
-                            T.vcast(m_pos, f_a, round_mode="rint")
-                            T.vcast(f_a, y_ub, round_mode="rint")
-                        if use_select:
-                            # bf16: no vabs edge.  Keep the baseline mask merge
-                            # (2 vcmp + 2 vcast + vadd + vcast); vselect was
-                            # measured 6-9% SLOWER for bf16.
-                            T.vcmp(x_ub, posinf_ub, m_pos, "eq")
-                            T.vcmp(x_ub, neginf_ub, m_neg, "eq")
-                            T.vcast(m_pos, f_a, round_mode="rint")
-                            T.vcast(m_neg, f_b, round_mode="rint")
-                            T.vadd(f_a, f_b, f_a)
-                            T.vcast(f_a, y_ub, round_mode="rint")
+                        T.vcmp(abs_ub, posinf_ub, m_pos, "eq")
+                        T.vcast(m_pos, f_a, round_mode="rint")
+                        T.vcast(f_a, y_ub, round_mode="rint")
                         T.copy(y_ub, y[offset : offset + block_size])
 
-            # Tail epilogue: at most one partial tile, owned by core 0.
             if tail > 0:
                 if cid == 0:
                     offset = num_full * block_size
                     T.copy(x[offset : offset + tail], x_ub[0:tail])
-                    if use_abs:
+                    if use_vand:
+                        T.vand(x_ub, mask_ub, abs_ub)
+                    else:
                         T.vabs(x_ub, abs_ub)
-                        T.vcmp(abs_ub, posinf_ub, m_pos, "eq")
-                        T.vcast(m_pos, f_a, round_mode="rint")
-                        T.vcast(f_a, y_ub, round_mode="rint")
-                    if use_select:
-                        T.vcmp(x_ub, posinf_ub, m_pos, "eq")
-                        T.vcmp(x_ub, neginf_ub, m_neg, "eq")
-                        T.vcast(m_pos, f_a, round_mode="rint")
-                        T.vcast(m_neg, f_b, round_mode="rint")
-                        T.vadd(f_a, f_b, f_a)
-                        T.vcast(f_a, y_ub, round_mode="rint")
+                    T.vcmp(abs_ub, posinf_ub, m_pos, "eq")
+                    T.vcast(m_pos, f_a, round_mode="rint")
+                    T.vcast(f_a, y_ub, round_mode="rint")
                     T.copy(y_ub[0:tail], y[offset : offset + tail])
 
     return main
 
 
-# ---------------------------------------------------------------------------
-# Precision comparing func + hierarchical testing
-# ---------------------------------------------------------------------------
 _TORCH_DTYPE = {
     "float16": torch.float16,
     "float32": torch.float32,
@@ -231,7 +157,6 @@ _TORCH_DTYPE = {
 
 
 def _max_diff_metric(out, ref):
-    """Max absolute difference between out and ref (bool, exact)."""
     out = out.detach().cpu().to(torch.uint8)
     ref = ref.detach().cpu().to(torch.uint8)
     eq = out == ref
@@ -243,12 +168,6 @@ def _max_diff_metric(out, ref):
 
 
 def _make_input(N, dtype_str, special=False):
-    """Random float input of shape (N,) (CPU).
-
-    With ``special=True`` a dense mix of NaN / +-inf / +-0 / subnormal / large
-    finite values is injected so the predicate and the NaN / +-inf
-    discrimination are exercised (DESIGN.md section 8.3).
-    """
     torch_dtype = _TORCH_DTYPE[dtype_str]
     x = torch.randn(N, dtype=torch.float32)
     if special:
@@ -264,14 +183,11 @@ def _make_input(N, dtype_str, special=False):
 
 
 def _run_tensor(x, dtype_str, tag):
-    """Run kernel on a pre-made CPU tensor and compare against golden."""
     N = x.shape[0]
     kernel = isinf_fwd_kernel(N, dtype_str)
     y_storage = kernel(x.npu(), N).cpu()
-    # int8 byte storage -> bool (metadata view only).
     y = y_storage.view(torch.bool)
     golden = golden_isinf(x)
-    # Exact: atol = rtol = 0 (DESIGN.md section 8.2).
     torch.testing.assert_close(y, golden, atol=0, rtol=0)
     max_diff = _max_diff_metric(y, golden)
     print(f"[{tag}] PASS: shape=({N},) dtype={dtype_str} max_diff={max_diff:.2e}")
@@ -279,7 +195,6 @@ def _run_tensor(x, dtype_str, tag):
 
 
 def _run_case(N, dtype_str, tag, special=False, block_size=None):
-    """Run kernel on random (optionally special-value) data of shape (N,)."""
     x = _make_input(N, dtype_str, special=special)
     if block_size is not None:
         kernel = isinf_fwd_kernel(N, dtype_str, block_size=block_size)
@@ -296,18 +211,10 @@ def _run_case(N, dtype_str, tag, special=False, block_size=None):
     return _run_tensor(x, dtype_str, tag)
 
 
-# ---------------------------------------------------------------------------
-# hierarchical testing
-# ---------------------------------------------------------------------------
 def run_L0():
-    """L0 gate: 1M-element cases for every float dtype (DESIGN.md 8.3) with
-    injected NaN / +-inf, plus the negative case that non-float dtypes are
-    rejected."""
     N = 1048576
     for dtype_str in SUPPORTED_DTYPES:
         _run_case(N, dtype_str, "L0", special=True)
-
-    # Negative: non-float dtypes must be rejected with ValueError.
     for bad_dtype in ("int32", "bool", "int8"):
         try:
             isinf_fwd_kernel(N, bad_dtype)
@@ -317,21 +224,16 @@ def run_L0():
 
 
 def run_L1():
-    """L1: divisible + non-divisible shapes across all dtypes (tail path)."""
     for dtype_str in SUPPORTED_DTYPES:
         for N in (8192, 100, 4097):
             _run_case(N, dtype_str, "L1", special=True)
-    # Large spot checks.
     _run_case(4194304, "float16", "L1", special=True)
     _run_case(4194304, "float32", "L1", special=True)
     _run_case(1048576, "bfloat16", "L1", special=True)
-
-    # Non-default block_size sanity (UB budget still holds).
     _run_case(1048576, "float32", "L1", special=True, block_size=4096)
 
 
 def run_L2():
-    """L2: edge sizes (warn only, non-blocking)."""
     for dtype_str in SUPPORTED_DTYPES:
         for N in (1, 2, 10):
             try:
@@ -341,22 +243,12 @@ def run_L2():
 
 
 def run_boundary():
-    """Boundary: NaN / +-inf / +-0 / subnormal / extremes (warn only,
-    non-blocking; exact equality required when they run).
-
-    The critical probes are all-NaN -> all-False and all-+-inf -> all-True,
-    verifying the two ORDERED ``eq`` masks against the two infinities
-    (``isinf = (x==+inf)|(x==-inf)``, DESIGN.md section 0.6 R2 / 9.1) against the
-    independent ``torch.isinf`` golden.  These are the discriminating probes
-    that a (wrong) ``vcmp "ne"`` or ``(x-x)!=0`` implementation would fail.
-    """
     N = 4096
     try:
         _run_case(N, "float32", "Boundary-special", special=True)
     except Exception as e:  # noqa: BLE001
         print(f"[Boundary] WARN (Record without blocking): special err={e}")
 
-    # Pure NaN: every element must be False (NaN is NOT infinite).
     try:
         x = torch.full((N,), float("nan"), dtype=torch.float32)
         y = isinf_fwd_kernel(N, "float32")(x.npu(), N).cpu().view(torch.bool)
@@ -365,7 +257,6 @@ def run_boundary():
     except Exception as e:  # noqa: BLE001
         print(f"[Boundary] WARN (Record without blocking): all-NaN err={e}")
 
-    # Pure +-inf: must all be True.
     try:
         x = torch.empty(N, dtype=torch.float32)
         x[0::2] = float("inf")
@@ -376,11 +267,10 @@ def run_boundary():
     except Exception as e:  # noqa: BLE001
         print(f"[Boundary] WARN (Record without blocking): inf err={e}")
 
-    # +-0 / subnormal / finite: must all be False.
     try:
         x = torch.zeros(N, dtype=torch.float32)
         x[0::3] = -0.0
-        x[1::3] = 1e-30  # subnormal probe
+        x[1::3] = 1e-30
         x[2::3] = -3.4e38
         y = isinf_fwd_kernel(N, "float32")(x.npu(), N).cpu().view(torch.bool)
         assert not bool(y.any()), "+-0 / subnormal / finite must be False"

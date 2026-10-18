@@ -1,0 +1,172 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "smoke-float32",
+      "label": "smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "M": 16,
+        "N": 128
+      },
+      "dtype": "float32",
+      "params": {
+        "M": 16,
+        "N": 128
+      },
+      "kind": "smoke",
+      "reason": "manifest label 'smoke' (independent smoke word)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "smoke-float16",
+      "label": "smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "M": 16,
+        "N": 128
+      },
+      "dtype": "float16",
+      "params": {
+        "M": 16,
+        "N": 128
+      },
+      "kind": "smoke",
+      "reason": "manifest label 'smoke' (independent smoke word)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "smoke-bfloat16",
+      "label": "smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "M": 16,
+        "N": 128
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "M": 16,
+        "N": 128
+      },
+      "kind": "smoke",
+      "reason": "manifest label 'smoke' (independent smoke word)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "llama-8b-ffn-prefill-float16",
+      "label": "llama-8b-ffn-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "M": 2048,
+        "N": 14336
+      },
+      "dtype": "float16",
+      "params": {
+        "M": 2048,
+        "N": 14336
+      },
+      "kind": "tune",
+      "reason": "winner = hoist constant-ones vbrc out of tile loop (fold + T2); merged into final candidate",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "llama-8b-ffn-prefill-bfloat16",
+      "label": "llama-8b-ffn-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "M": 2048,
+        "N": 14336
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "M": 2048,
+        "N": 14336
+      },
+      "kind": "tune",
+      "reason": "winner = hoist constant-ones vbrc out of tile loop (fold + T2); merged into final candidate",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "llama-8b-ffn-decode-bfloat16",
+      "label": "llama-8b-ffn-decode",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "M": 1,
+        "N": 14336
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "M": 1,
+        "N": 14336
+      },
+      "kind": "tune",
+      "reason": "winner = hoist constant-ones vbrc out of tile loop (fold + T2); merged into final candidate",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "qwen3-8b-swiglu-b32-float16",
+      "label": "qwen3-8b-swiglu-b32",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "M": 32,
+        "N": 12288
+      },
+      "dtype": "float16",
+      "params": {
+        "M": 32,
+        "N": 12288
+      },
+      "kind": "tune",
+      "reason": "winner = hoist constant-ones vbrc out of tile loop (fold + T2); merged into final candidate",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py::test_gelu_tanh_and_mul_manifest_bench",
+      "kernel_id": "gelu_tanh_and_mul_fwd_kernel",
+      "workload_id": "qwen3-8b-swiglu-b32-bfloat16",
+      "label": "qwen3-8b-swiglu-b32",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "M": 32,
+        "N": 12288
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "M": 32,
+        "N": 12288
+      },
+      "kind": "tune",
+      "reason": "winner = hoist constant-ones vbrc out of tile loop (fold + T2); merged into final candidate",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

@@ -51,9 +51,9 @@ from tileops.kernels.kernel_base import Kernel
 # active here.
 # ---------------------------------------------------------------------------
 # --- baseline (Stage 3) ------------------------------------------------------
-from .fused_add_layer_norm_kernel import _fused_add_layer_norm_kernel
+# from .fused_add_layer_norm_kernel import _fused_add_layer_norm_kernel
 # --- perf_opt (Stage 4 tuned) ------------------------------------------------
-# from .fused_add_layer_norm_kernel.perf_opt._fused_add_layer_norm_kernel import _fused_add_layer_norm_kernel
+from .fused_add_layer_norm_kernel.perf_opt.FusedAddLayerNormFwdOp import _fused_add_layer_norm_kernel
 
 __all__ = ["FusedAddLayerNormKernel"]
 

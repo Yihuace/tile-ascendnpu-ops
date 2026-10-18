@@ -118,7 +118,7 @@ def parse_ratio(raw_dir):
     return None, None, None
 
 
-def measure(tag, module, workload, dtype, block_size, out_dir, log_path):
+def measure(tag, module, workload, dtype, block_size, num_cores, out_dir, log_path):
     if os.path.isdir(out_dir):
         subprocess.run(["rm", "-rf", out_dir], check=False)
     os.makedirs(out_dir, exist_ok=True)
@@ -137,6 +137,8 @@ def measure(tag, module, workload, dtype, block_size, out_dir, log_path):
         "--block-size", str(block_size),
         "--launches", str(LAUNCHES),
     ]
+    if num_cores is not None:
+        cmd += ["--num-cores", str(num_cores)]
     with open(log_path, "w") as log:
         log.write("# " + shlex.join(cmd) + "\n")
         log.flush()
@@ -238,6 +240,7 @@ def main():
     def measure_one(rep, exp, workload_id):
         module = modules[exp["opt_id"]]
         block_size = exp.get("block_size", 8192)
+        num_cores = exp.get("num_cores", None)
         opt_id = exp["opt_id"]
         parent_id = exp.get("parent_id")
         phase = exp.get("phase", args.phase)
@@ -247,7 +250,7 @@ def main():
         tag = f"{phase}-r{args.round}-{opt_id}-bs{block_size}-{workload_id}-rep{rep}"
         out_dir = os.path.join(PERF_OPT_DIR, "profiles", safe(tag))
         log_path = os.path.join(PERF_OPT_DIR, "logs", safe(tag) + ".log")
-        result = measure(tag, module, label, dtype, block_size, out_dir, log_path)
+        result = measure(tag, module, label, dtype, block_size, num_cores, out_dir, log_path)
         if result is None:
             return
         rec = {

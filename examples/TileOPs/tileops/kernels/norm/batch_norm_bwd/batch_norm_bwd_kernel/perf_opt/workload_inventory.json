@@ -1,0 +1,189 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "resnet-stage1-float16",
+      "label": "resnet-stage1",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "N": 8,
+        "C": 64,
+        "S": 1024
+      },
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "reason": "full benchmark case; select_bwd_kernel -> bwd_wide (held)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "resnet-stage1-bfloat16",
+      "label": "resnet-stage1",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "N": 8,
+        "C": 64,
+        "S": 1024
+      },
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "tune",
+      "reason": "full benchmark case; select_bwd_kernel -> bwd_wide (held)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "resnet-stage2-float16",
+      "label": "resnet-stage2",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "N": 4,
+        "C": 128,
+        "S": 1024
+      },
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "reason": "full benchmark case; select_bwd_kernel -> bwd_wide (held)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "resnet-stage3-float16",
+      "label": "resnet-stage3",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "N": 4,
+        "C": 256,
+        "S": 784
+      },
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "reason": "full benchmark case; select_bwd_kernel -> bwd_wide (held)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "resnet-stage3-float32",
+      "label": "resnet-stage3",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "N": 4,
+        "C": 256,
+        "S": 784
+      },
+      "dtype": "float32",
+      "params": {},
+      "kind": "tune",
+      "reason": "full benchmark case; select_bwd_kernel -> bwd_wide (held, fp32 direct)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_split_kernel",
+      "workload_id": "large-spatial-float16",
+      "label": "large-spatial",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "N": 4,
+        "C": 128,
+        "S": 262144
+      },
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "reason": "full benchmark case; select_bwd_kernel -> bwd_split (splits=4)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "smoke-fc-float32",
+      "label": "smoke-fc",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "N": 32,
+        "C": 64,
+        "S": 1
+      },
+      "dtype": "float32",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest.mark.smoke (idx==0); precision regression only",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "smoke-fc-float16",
+      "label": "smoke-fc",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "N": 32,
+        "C": 64,
+        "S": 1
+      },
+      "dtype": "float16",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest.mark.smoke (idx==0); precision regression only",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_wide_kernel",
+      "workload_id": "smoke-fc-bfloat16",
+      "label": "smoke-fc",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "N": 32,
+        "C": 64,
+        "S": 1
+      },
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest.mark.smoke (idx==0); precision regression only",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py::test_batch_norm_bwd_bench",
+      "kernel_id": "_batch_norm_bwd_kernel",
+      "workload_id": "no_tunable_workload",
+      "label": "n/a",
+      "marks": [
+        "skip"
+      ],
+      "shape": {},
+      "dtype": "n/a",
+      "params": {},
+      "kind": "skipped",
+      "reason": "not a benchmark path: no benchmark workload dispatches to the general tiled bwd_kernel (all manifest cases route to bwd_wide or bwd_split via select_bwd_kernel); the general kernel is still produced (subid-split, L0 pass) as a drop-in for the bwd_kernel holder path but has no benchmark-selected workload, hence skipped for perf tuning"
+    }
+  ]
+}

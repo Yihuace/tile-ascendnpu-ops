@@ -14,7 +14,19 @@ import torch_npu  # noqa: F401  (registers the "npu" device)
 
 from tileops.kernels.kernel_base import Kernel
 
-from .gla_decode_kernel._gla_decode_kernel import _ceil_ktile_fit, _gla_decode_kernel
+# ---------------------------------------------------------------------------
+# Kernel source selection: baseline vs perf_opt (Stage 4 tuned)
+#
+# Exactly one source block below is active; toggle by swapping the comment.
+# perf_opt source (perf_opt/GLADecodeOp.py, k_tile default 32) is active after
+# Stage 4 L0/L1 regression passed; the baseline (Stage 3, k_tile default 16)
+# source is commented out.  ``pytest tests/ops/`` and ``benchmarks/ops/``
+# dispatch through whichever source is active here.
+# ---------------------------------------------------------------------------
+# --- baseline (Stage 3, k_tile default 16) -----------------------------------
+# from .gla_decode_kernel._gla_decode_kernel import _ceil_ktile_fit, _gla_decode_kernel
+# --- perf_opt (Stage 4 tuned, k_tile default 32) ------------------------------
+from .gla_decode_kernel.perf_opt.GLADecodeOp import _ceil_ktile_fit, _gla_decode_kernel
 
 __all__ = ["GLADecodeKernel"]
 

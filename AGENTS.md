@@ -2,6 +2,12 @@
 
 This repository uses AGENTS skills for TileLang NPUIR development.
 
+## Model Policy (Mandatory)
+
+- **禁止使用 `deepseek/deepseek-v4-pro`**（用户口径 2026-10-18）。所有 agent / subagent / 子会话一律使用 `deepseek/deepseek-flash`。
+- 新增或修改 `.opencode/agents/*.md` 时，`model:` 必须写 `deepseek/deepseek-flash`；调度 prompt 中也不得指定 pro 变体。
+- 若发现任何会话以 pro 运行（历史日志除外），立即停止并改为 flash 重派。
+
 ## Scope
 
 The skills in .agents/skills are designed for target="npuir" workflows.

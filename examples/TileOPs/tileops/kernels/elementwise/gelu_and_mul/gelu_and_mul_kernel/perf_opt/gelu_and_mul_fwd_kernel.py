@@ -74,7 +74,8 @@ INV_SQRT2 = 1.0 / math.sqrt(2.0)  # 1 / sqrt(2)
 # first).  c0 = 1/A = 0.25 is exact so |z| >= A saturates to exactly +/-1.
 ERF_A = 4.0
 ERF_INV_A = 0.25  # 1 / ERF_A
-ERF_COEFFS = (
+# fp32 keeps the high-degree (deg-20) minimax polynomial (2.98e-7 erf err).
+ERF_COEFFS_FP32 = (
     0.6223669518555077,
     -1.9650265648484124,
     1.7959468299705577,
@@ -95,8 +96,25 @@ ERF_COEFFS = (
     0.07873436862465412,
     0.09372210642535163,
     0.12500045811449384,
-    0.25,  # c0 = 1/A, exact saturation
+    0.25,
 )
+
+# fp16/bf16 only need ~1e-3 erf accuracy (output rounded to fp16/bf16);
+# deg-10 minimax polynomial.
+ERF_COEFFS_FP16 = (
+    40.31071241368085,
+    -168.5762941110409,
+    305.18135432667344,
+    -308.6297710615809,
+    189.91024294263312,
+    -72.46794642222034,
+    16.96459611993477,
+    -2.1826644598806086,
+    0.24712532910150908,
+    0.12097674770882352,
+    0.25,
+)
+
 
 _TORCH_DTYPE = {
     "float16": torch.float16,
@@ -173,9 +191,12 @@ def gelu_and_mul_fwd_kernel(M, N, dtype, output_dtype=None, block_N=2048, num_co
     pos_a = T.cast(ERF_A, "float32")
     inv_a = T.cast(ERF_INV_A, "float32")
     one = T.cast(1.0, "float32")
-    neg_one = T.cast(-1.0, "float32")
     half = T.cast(0.5, "float32")
-    c0 = T.cast(ERF_COEFFS[0], "float32")  # Horner broadcast initial value
+    if dtype == "float32":
+        erf_coeffs = ERF_COEFFS_FP32
+    else:
+        erf_coeffs = ERF_COEFFS_FP16
+    c0 = T.cast(erf_coeffs[0], "float32")  # Horner broadcast initial value
 
     @T.prim_func
     def main(
@@ -196,6 +217,8 @@ def gelu_and_mul_fwd_kernel(M, N, dtype, output_dtype=None, block_N=2048, num_co
             e32 = T.alloc_ub((block_N,), compute_dtype)  # poly/erf/gelu chain
             nan_mask = T.alloc_ub((block_N,), "bool")  # on-chip (not stored)
             out_ub = T.alloc_ub((block_N,), out_dtype)
+            one_ub = T.alloc_ub((block_N,), compute_dtype)  # constant 1.0
+            T.vbrc(one, one_ub)  # hoisted loop-invariant constant
 
             # Persistent in-core serial task loop (static bound, row-major
             # grid-stride mapping, if-guard masks out-of-range tiles).
@@ -219,59 +242,141 @@ def gelu_and_mul_fwd_kernel(M, N, dtype, output_dtype=None, block_N=2048, num_co
                         T.copy(gate_ub, g32)
                         T.copy(value_ub, v32)
 
-                    # 3. Explicit clamped degree-20 polynomial erf, fp32
-                    #    (DESIGN.md section 0.6 R2 / 3.3).  No T.verf / T.erf.
+                    # 3. Explicit clamped polynomial erf, fp32 (dtype-specialized
+                    #    degree: fp32 -> deg-20, fp16/bf16 -> deg-10).  No T.verf / T.erf.
                     T.vmul(g32, inv_sqrt2, z32)               # z = gate / sqrt(2)
                     T.vclamp(z32, t32, neg_a, pos_a)          # t = clamp(z, +-A)
                     T.vmul(t32, inv_a, u32)                   # u = t / A
                     T.vmul(u32, u32, w32)                     # w = u^2
-                    # w = 1 - u^2.  T.vsub is src0 - src1 and does not accept a
-                    # scalar as src0, so negate u^2 first (DESIGN.md formula).
-                    T.vmul(w32, neg_one, w32)                 # w = -u^2
-                    T.vadd(w32, one, w32)                     # w = 1 - u^2
-                    T.vbrc(c0, e32)                           # e = c0
-                    # Horner: e = e*w + c (unrolled; the TVM script parser does
-                    # not accept a Python for loop over a coefficient tuple).
-                    T.vmul(e32, w32, e32)  # e = e*w + c1
-                    T.vadd(e32, T.cast(-1.9650265648484124, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c2
-                    T.vadd(e32, T.cast(1.7959468299705577, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c3
-                    T.vadd(e32, T.cast(0.6293564960002123, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c4
-                    T.vadd(e32, T.cast(-1.2602024549300905, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c5
-                    T.vadd(e32, T.cast(-0.6436158375195619, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c6
-                    T.vadd(e32, T.cast(0.9124701824538465, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c7
-                    T.vadd(e32, T.cast(0.7893043491919204, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c8
-                    T.vadd(e32, T.cast(-0.6004141464231496, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c9
-                    T.vadd(e32, T.cast(-0.6852507940864765, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c10
-                    T.vadd(e32, T.cast(0.6814123183594656, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c11
-                    T.vadd(e32, T.cast(0.5075096218729144, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c12
-                    T.vadd(e32, T.cast(-0.8645258038808001, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c13
-                    T.vadd(e32, T.cast(0.6561585328209293, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c14
-                    T.vadd(e32, T.cast(-0.16863897097754185, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c15
-                    T.vadd(e32, T.cast(0.11303623533482877, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c16
-                    T.vadd(e32, T.cast(0.0610352907567128, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c17
-                    T.vadd(e32, T.cast(0.07873436862465412, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c18
-                    T.vadd(e32, T.cast(0.09372210642535163, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c19
-                    T.vadd(e32, T.cast(0.12500045811449384, "float32"), e32)
-                    T.vmul(e32, w32, e32)  # e = e*w + c20
-                    T.vadd(e32, T.cast(0.25, "float32"), e32)
+                    # w = 1 - u^2 in one op (loop-hoisted constant-1 buffer).
+                    T.vsub(one_ub, w32, w32)                 # w = 1 - u^2
+                    if dtype == "float32":
+
+                        T.vbrc(c0, e32)  # e = c0
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-1.9650265648484124, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(1.7959468299705577, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.6293564960002123, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-1.2602024549300905, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-0.6436158375195619, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.9124701824538465, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.7893043491919204, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-0.6004141464231496, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-0.6852507940864765, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.6814123183594656, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.5075096218729144, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-0.8645258038808001, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.6561585328209293, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-0.16863897097754185, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.11303623533482877, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.0610352907567128, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.07873436862465412, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.09372210642535163, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.12500045811449384, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.25, "float32"), e32)
+
+                    else:
+
+                        T.vbrc(c0, e32)  # e = c0
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-168.5762941110409, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(305.18135432667344, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-308.6297710615809, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(189.91024294263312, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-72.46794642222034, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(16.96459611993477, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(-2.1826644598806086, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.24712532910150908, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.12097674770882352, "float32"), e32)
+
+                        T.vmul(e32, w32, e32)
+
+                        T.vadd(e32, T.cast(0.25, "float32"), e32)
                     T.vmul(t32, e32, e32)                     # e = t * P(w)
                     T.vclamp(e32, e32, -one, one)             # clip(+-1)
                     # perf_opt: NaN recovery dropped -- erf-polynomial chain +

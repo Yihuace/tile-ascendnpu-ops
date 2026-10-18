@@ -1,0 +1,102 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_gla_decode.py::test_gla_decode_manifest_bench",
+      "kernel_id": "gla_decode_kernel",
+      "kernel_file": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+      "workload_id": "smoke-b2-h4-d64-float16",
+      "label": "smoke-b2-h4-d64",
+      "marks": ["smoke"],
+      "shape": {"q": [2, 4, 64], "k": [2, 4, 64], "v": [2, 4, 64], "gk": [2, 4, 64], "state": [2, 4, 64, 64]},
+      "dtype": "float16",
+      "params": {"scale": 0.125},
+      "kind": "smoke",
+      "reason": "manifest smoke case (idx 0, fp16); precision-only per profile-collection.md",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_gla_decode.py::test_gla_decode_manifest_bench",
+      "kernel_id": "gla_decode_kernel",
+      "kernel_file": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+      "workload_id": "smoke-b2-h4-d64-bfloat16",
+      "label": "smoke-b2-h4-d64",
+      "marks": ["smoke"],
+      "shape": {"q": [2, 4, 64], "k": [2, 4, 64], "v": [2, 4, 64], "gk": [2, 4, 64], "state": [2, 4, 64, 64]},
+      "dtype": "bfloat16",
+      "params": {"scale": 0.125},
+      "kind": "smoke",
+      "reason": "manifest smoke case (idx 0, bf16); precision-only per profile-collection.md",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_gla_decode.py::test_gla_decode_manifest_bench",
+      "kernel_id": "gla_decode_kernel",
+      "kernel_file": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+      "workload_id": "serving-b1-h8-bfloat16",
+      "label": "serving-b1-h8",
+      "marks": ["full"],
+      "shape": {"q": [1, 8, 128], "k": [1, 8, 128], "v": [1, 8, 128], "gk": [1, 8, 128], "state": [1, 8, 128, 128]},
+      "dtype": "bfloat16",
+      "params": {"scale": 0.08838834764831845, "grid_blocks": 8},
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_gla_decode.py::test_gla_decode_manifest_bench",
+      "kernel_id": "gla_decode_kernel",
+      "kernel_file": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+      "workload_id": "serving-b1-h32-bfloat16",
+      "label": "serving-b1-h32",
+      "marks": ["full"],
+      "shape": {"q": [1, 32, 128], "k": [1, 32, 128], "v": [1, 32, 128], "gk": [1, 32, 128], "state": [1, 32, 128, 128]},
+      "dtype": "bfloat16",
+      "params": {"scale": 0.08838834764831845, "grid_blocks": 32},
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_gla_decode.py::test_gla_decode_manifest_bench",
+      "kernel_id": "gla_decode_kernel",
+      "kernel_file": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+      "workload_id": "serving-b1-h64-bfloat16",
+      "label": "serving-b1-h64",
+      "marks": ["full"],
+      "shape": {"q": [1, 64, 128], "k": [1, 64, 128], "v": [1, 64, 128], "gk": [1, 64, 128], "state": [1, 64, 128, 128]},
+      "dtype": "bfloat16",
+      "params": {"scale": 0.08838834764831845, "grid_blocks": 64},
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_gla_decode.py::test_gla_decode_manifest_bench",
+      "kernel_id": "gla_decode_kernel",
+      "kernel_file": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+      "workload_id": "serving-b8-h32-bfloat16",
+      "label": "serving-b8-h32",
+      "marks": ["full"],
+      "shape": {"q": [8, 32, 128], "k": [8, 32, 128], "v": [8, 32, 128], "gk": [8, 32, 128], "state": [8, 32, 128, 128]},
+      "dtype": "bfloat16",
+      "params": {"scale": 0.08838834764831845, "grid_blocks": 256},
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_gla_decode.py::test_gla_decode_manifest_bench",
+      "kernel_id": "gla_decode_kernel",
+      "kernel_file": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/_gla_decode_kernel.py",
+      "workload_id": "serving-b8-h64-bfloat16",
+      "label": "serving-b8-h64",
+      "marks": ["full"],
+      "shape": {"q": [8, 64, 128], "k": [8, 64, 128], "v": [8, 64, 128], "gk": [8, 64, 128], "state": [8, 64, 128, 128]},
+      "dtype": "bfloat16",
+      "params": {"scale": 0.08838834764831845, "grid_blocks": 512},
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}
