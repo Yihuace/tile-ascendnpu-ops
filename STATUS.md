@@ -3,9 +3,9 @@
 > 本窗口：**19 算子统一 CANN 9.0.0 口径**。四个 8.5 残留（Add / Sub / Isnan / ClampMin）已完成端到端重测；Add / Sub 同时切到 `perf_opt`。
 > 更新：2026-10-18 16:00 (+08:00) · 会话：9.0 口径统一
 > **收口（2026-10-18 22:2x）**：最终交付报告 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md`；18/19 完整交付 + GDN correctness-first fallback。
-> **环境更新（2026-10-19）**：**9.2 已停用**（`cann-9.2.0` → `.disabled-cann-9.2.0-20261019`）。唯一默认栈为 **CANN 9.0.0 + v1.1 补丁编译器（428ab8fd）+ hivmc 0.2.0**；19 批 conv1d/conv1d_bias/conv3d 与 GDN fallback 已验证通过。**9.0 的 hivmc 0.2.0 不支持 LIR 编译，MHA/SSD/GDN blocksolve 无法在环境层修复**；kernel 级去掉 R3-a `nd2nz` 也仍失败。剩余项见 `docs/cann9_adaptation.md` §15.5。
+> **环境更新（2026-10-19）**：**9.2 已物理删除**（释放 9.6G）。唯一默认栈为 **CANN 9.0.0 + v1.1 补丁编译器（428ab8fd）+ hivmc 0.2.0**；19 批 conv1d/conv1d_bias/conv3d 与 GDN fallback 已验证通过。**9.0 的 hivmc 0.2.0 不支持 LIR 编译，MHA/SSD/GDN blocksolve 无法在环境层修复**；kernel 级去掉 R3-a `nd2nz` 也仍失败。剩余项见 `docs/cann9_adaptation.md` §15.5。
 
-## 总览（严格口径；报告数据为 CANN 9.0.0 存档，当前唯一运行环境为 CANN 9.0.0/v1.1；9.2 已停用）
+## 总览（严格口径；报告数据为 CANN 9.0.0 存档，当前唯一运行环境为 CANN 9.0.0/v1.1；9.2 已删除）
 
 **19 个接口：18 个完整交付；GDN 为 correctness-first fallback（6/6 tests），六 kernel 的 TileLang 端口待续。**
 
@@ -98,13 +98,13 @@
 - 旧版报告存各目录 `history_version/OPTIMIZE_REPORT_v0.md`
 - 缺失报告：GDN（fallback 交付，benchmark 暂 skip）；ClampMin/Lerp 无独立报告（分别由 ClampScalar / 未优化覆盖）
 
-## 环境纪律（2026-10-19 更新；9.2 已停用）
+## 环境纪律（2026-10-19 更新；9.2 已删除）
 
 - **唯一默认栈**：CANN **9.0.0** + `3rdparty/AscendNPU-IR-v11/build-v11`（`bishengir-compile 1.1.0 428ab8fd + mmadL1 buffer-form 补丁`）+ `hivmc 0.2.0`；tilelang `build` 前端由 `env_cann90.sh` 驱动。
 - **已验证**：conv1d_bias **23 passed / 1 xfailed / 4 xpassed**；conv1d + conv3d + GDN fallback **50 passed / 1 xpassed**。
 - **9.0 硬边界**：`hivmc 0.2.0` 不支持 `--enable-lir-compile`；强制 legacy 会传它不认识的 triton 参数，关 LIR、去掉 R3-a `nd2nz` 均无效。MHA/SSD/GDN blocksolve 在 9.0 上只能等 CANN 侧更新 hivmc，或做更深 kernel 拆分。
-- **9.2 已停用**：`/home/developer/Ascend/cann-9.2.0` → `.disabled-cann-9.2.0-20261019`；`~/.bashrc` 已切到 `env_cann90.sh`，`.profile` 会在登录 shell 中加载 `.bashrc`。
-- **回退**：`mv /home/developer/Ascend/.disabled-cann-9.2.0-20261019 /home/developer/Ascend/cann-9.2.0`（仅在明确需要时）。
+- **9.2 已物理删除**：`/home/developer/Ascend/cann-9.2.0` 与临时停用目录均已移除；`~/.bashrc` 已切到 `env_cann90.sh`，`.profile` 会在登录 shell 中加载 `.bashrc`。
+- **回退**：无；9.2 已物理删除。
 
 ## 环境纪律
 

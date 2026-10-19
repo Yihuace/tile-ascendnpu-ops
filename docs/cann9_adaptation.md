@@ -522,7 +522,7 @@ T6 复核动作：
   （`External hivmc run fails`），说明不是单纯“代际差”，还有编译器输出/hivmc 能力问题。
 - 试过把 `mmadL1` 补丁从“删除 walk”改为 buffer-form 取 `op.getC()` 并保留 `tile_mix_cube_num` 传播：
   v1.1 与 Apr 1.2.0 都重编，GDN blocksolve 仍失败；9.2 conv 回归 **67 passed / 1 xfailed / 5 xpassed**，无回退。
-- **9.2 已按用户要求停用**（`cann-9.2.0` → `.disabled-cann-9.2.0-20261019`）；当前唯一默认栈为 9.0/v1.1。
+- **9.2 已按用户要求物理删除**（释放 9.6G）；当前唯一默认栈为 9.0/v1.1。
 - **9.0 的其余尝试也失败**：
   1. 让 `hivmc --version` 不匹配正则，强制编译器走 legacy 分支 → 编译器补上 `--enable-triton-kernel-compile=true`，但 0.2.0 同样不认识该参数；
   2. 给编译器加 `--enable-lir-compile=false` → hivmc 仍报 `Failed to compile BiShengLIR to binary`；
@@ -536,7 +536,7 @@ T6 复核动作：
 3. **若继续 9.0，只能做更深的 kernel 重构**：拆 entry、消除整段 MixCV LIR、把 blocksolve 拆成多个小 kernel；
    这是 kernel 工作，不是环境修复，且不保证成功。
 4. **环境收尾已完成**：`env_cann90.sh`、`build-v11/bin/hivmc` wrapper 已持久化；`~/.bashrc` 已切 9.0；
-   9.2 目录已改名停用。
+   9.2 目录已物理删除。
 5. **不属于环境**：GDN functions 4–6 端口、MHA/SSD kernel 重构、换工具链后的性能重基线。
 
 ### 15.4 复现命令

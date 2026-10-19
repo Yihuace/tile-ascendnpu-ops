@@ -57,7 +57,7 @@
 ## C. 版本戳与状态文件
 
 - 当前工作区版本戳：tilelang `0.1.2`（dev root `/home/developer/tilelang-mlir-ascend`）/ torch `2.7.1+cpu` / torch_npu `2.7.1.post4` / Ascend910B3（可见设备 6）。
-  - **2026-10-19 当前运行环境**：**CANN 9.0.0** + `AscendNPU-IR-v11/build-v11`（`bishengir-compile 1.1.0 428ab8fd + mmadL1 buffer-form 补丁`）+ `hivmc 0.2.0`。**9.2 已停用**（`cann-9.2.0` → `.disabled-cann-9.2.0-20261019`）。19 批 conv1d/conv1d_bias/conv3d 与 GDN fallback 已验证通过；MHA/SSD/GDN blocksolve 受 `hivmc 0.2.0` 缺 LIR 限制。
+  - **2026-10-19 当前运行环境**：**CANN 9.0.0** + `AscendNPU-IR-v11/build-v11`（`bishengir-compile 1.1.0 428ab8fd + mmadL1 buffer-form 补丁`）+ `hivmc 0.2.0`。**9.2 已物理删除**（释放 9.6G）。19 批 conv1d/conv1d_bias/conv3d 与 GDN fallback 已验证通过；MHA/SSD/GDN blocksolve 受 `hivmc 0.2.0` 缺 LIR 限制。
   - **报告数据口径**：18 个已交付算子的性能/正确性报告仍为 **CANN 9.0.0** 存档；9.0/v1.1 目前只覆盖 conv + GDN fallback 重验，尚未全量重测性能。
   - **2026-10-16 重定基线**：工作区自 8.5.2 升级至 CANN 9.0.0。工作流① 知识库结论重验已完（19/19 repro 探针存活，见 `docs/cann9_adaptation.md` §10）。
   - **2026-10-18 口径统一**：表 A 的 18 个已交付接口全部完成 **9.0.0 端到端重测**（Add / Sub / Isnan / ClampMin 为最后 4 个 8.5 残留）；表 B 仍为 8.5.0 历史存档，不参与本批对照。
