@@ -111,29 +111,23 @@ def vec_o(C: int, V: int, scale: float = 1.0):
     return main
 
 
-@tilelang.jit(out_idx=[3], target="npuir")
+@tilelang.jit(out_idx=[2], target="npuir")
 def vec_state(K: int, V: int):
     @T.prim_func
     def main(
-        S_in: T.Tensor((K, V), "float32"),
+        S_scale: T.Tensor((K, V), "float32"),
         S_delta: T.Tensor((K, V), "float32"),
-        g_last: T.Tensor((K, V), "float32"),
         S_out: T.Tensor((K, V), "float32"),
     ):
         with T.Kernel(1, is_npu=True) as (_, __):
             s_ub = T.alloc_ub((K, V), "float32")
             d_ub = T.alloc_ub((K, V), "float32")
-            g_ub = T.alloc_ub((K, V), "float32")
-            out_ub = T.alloc_ub((K, V), "float32")
-            T.copy(S_in, s_ub)
+            T.copy(S_scale, s_ub)
             T.copy(S_delta, d_ub)
-            T.copy(g_last, g_ub)
-            for i, j in T.Parallel(K, V):
-                out_ub[i, j] = T.exp(g_ub[i, j]) * s_ub[i, j] + d_ub[i, j]
-            T.copy(out_ub, S_out)
+            T.vadd(s_ub, d_ub, s_ub)
+            T.copy(s_ub, S_out)
 
     return main
-
 
 def chunk_vec(q, k, v, A, gc, beta, S_in, scale):
     C, K = q.shape
@@ -151,8 +145,9 @@ def chunk_vec(q, k, v, A, gc, beta, S_in, scale):
     P = vec_p(C, scale)(QK, gc).clone()
     O2 = mm(C, V, C)(P, W).clone()
     o = vec_o(C, V, scale)(QS, O2, gc).clone()
-    S_delta = mm(K, V, C, True, False)(k, Vp).clone()
-    S_out = vec_state(K, V)(S_in, S_delta, gc[-1].expand(K, V).contiguous()).clone()
+    S_delta = mm(K, V, C)(k.T.contiguous(), Vp).clone()
+    S_scale = torch.exp(gc[-1]) * S_in
+    S_out = vec_state(K, V)(S_scale, S_delta).clone()
     return o, S_out
 
 
@@ -210,32 +205,43 @@ def main():
 
 
 def k6_forward(q, k, v, g_raw, beta, S_in, scale, C=64, A_all=None):
-    """Full sequence, full chunks (S % C == 0), state carried across chunks.
+    """Full sequence with tail chunk, state carried across chunks.
 
-    A_all: optional [S, H, C] blocksolve output for B=1 (H=1 in this prototype);
-    when omitted, A is recomputed with torch for standalone validation.
+    A_all: optional padded blocksolve output [s_pad, H, C] for B=1
+    (H=1 in this prototype); when omitted, A is recomputed with torch.
     """
     S, K = q.shape
     V = v.shape[1]
-    o = torch.empty(S, V, dtype=torch.float32, device=q.device)
+    o = torch.zeros(S, V, dtype=torch.float32, device=q.device)
     S_cur = S_in
-    for c in range(S // C):
-        lo, hi = c * C, (c + 1) * C
-        gc = torch.cumsum(g_raw[lo:hi], 0)
+    for c in range((S + C - 1) // C):
+        lo = c * C
+        valid = min(C, S - lo)
+        qc = torch.zeros(C, K, device=q.device); qc[:valid] = q[lo:lo + valid]
+        kc = torch.zeros(C, K, device=q.device); kc[:valid] = k[lo:lo + valid]
+        vc = torch.zeros(C, V, device=q.device); vc[:valid] = v[lo:lo + valid]
+        bc = torch.zeros(C, device=q.device); bc[:valid] = beta[lo:lo + valid]
+        gc = torch.zeros(C, device=q.device)
+        if valid > 0:
+            gc[:valid] = torch.cumsum(g_raw[lo:lo + valid], 0)
+            gc[valid:] = gc[valid - 1]
+        gprev = torch.zeros(C, device=q.device)
+        if valid > 1:
+            gprev[1:valid] = gc[:valid - 1]
         if A_all is None:
-            gprev = torch.cat([torch.zeros(1, device=q.device), gc[:-1]])
             Gp = torch.exp(gprev[:, None] - gc[None, :]) * torch.tril(
                 torch.ones(C, C, device=q.device), -1
             )
             A = torch.linalg.solve(
-                torch.eye(C, device=q.device) + beta[lo:hi, None] * Gp * (k[lo:hi] @ k[lo:hi].T),
+                torch.eye(C, device=q.device) + bc[:, None] * Gp * (kc @ kc.T),
                 torch.eye(C, device=q.device),
             ).contiguous()
+            torch.npu.synchronize()
         else:
-            A = A_all[lo:hi, 0, 0:C].contiguous()
-        o_c, S_cur = chunk_vec(q[lo:hi], k[lo:hi], v[lo:hi], A, gc, beta[lo:hi], S_cur, scale)
+            A = A_all[lo:lo + C, 0, 0:C].contiguous()
+        o_c, S_cur = chunk_vec(qc, kc, vc, A, gc, bc, S_cur, scale)
         S_cur = S_cur.contiguous()
-        o[lo:hi] = o_c
+        o[lo:lo + valid] = o_c[:valid]
     return o, S_cur
 
 

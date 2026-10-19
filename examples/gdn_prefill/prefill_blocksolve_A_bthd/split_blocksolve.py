@@ -166,7 +166,7 @@ def main():
 def prefill_blocksolve_A_bthd_split(
     k, g, beta, cu_seqlens=None, chunk_size=64,
     use_gate=False, l2norm=False, beta_sigmoid=False, allow_neg_eigval=False,
-    uniform_seq_len=0, a_pad=None,
+    uniform_seq_len=0, a_pad=None, return_padded=False,
 ):
     """Drop-in signature for the in-scope B=1 equal-length path.
 
@@ -179,7 +179,7 @@ def prefill_blocksolve_A_bthd_split(
     A = split_blocksolve(k, g, beta, C, str(k.dtype).split(".")[-1])
     s_pad = ((S + C - 1) // C) * C
     if a_pad is None:
-        a_pad = torch.zeros((s_pad, H, C), dtype=k.dtype, device=k.device)
+        a_pad = torch.zeros((s_pad, H, C), dtype=torch.float32, device=k.device)
     for c in range((S + C - 1) // C):
         base = c * C
         valid = min(C, S - base)
@@ -187,6 +187,8 @@ def prefill_blocksolve_A_bthd_split(
             a_pad[base:base + valid, h, 0:valid] = A[c * H + h, 0:valid, 0:valid].to(k.dtype)
             a_pad[base:base + valid, h, valid:C] = 0
     k_rnorm = torch.zeros((1, 1, k.shape[2]), dtype=torch.float32, device=k.device)
+    if return_padded:
+        return a_pad, k_rnorm
     return a_pad[:S].view(1, S, H, C), k_rnorm
 
 

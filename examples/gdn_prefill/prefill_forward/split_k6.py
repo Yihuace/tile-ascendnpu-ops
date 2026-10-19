@@ -40,7 +40,7 @@ def mm(M: int, N: int, K: int, ta: bool = False, tb: bool = False, dtype: str = 
             c_l0 = T.alloc_L0C([M, N], "float32")
             T.copy(A, a_l1)
             T.copy(B, b_l1)
-            T.gemm(a_l1, b_l1, c_l0, size=[M, N, K],
+            T.gemm(a_l1, b_l1, c_l0, size=[M, K, N],
                    a_transpose=ta, b_transpose=tb, initC=True)
             with T.rs("PIPE_FIX"):
                 T.copy(c_l0, C)
