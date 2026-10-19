@@ -27,7 +27,7 @@
 | `Conv1dBiasFwdOp` | convolution | 3 | ✅ **已完成**（薄接口；复用 Conv1d 5 kernel 的 has_bias 路径；perf_opt 已生效） | **27 passed + 1 skipped**（CG-2026-0003），0 failed | 0.03%–1.73%（Task Duration wav2vec2-bias **8.3×/8.9×**、encodec-init-bias 1.15×/1.20×） | `examples/TileOPs/reports/tileops/20261018_180716_376489_Conv1dBiasFwdOp/` |
 | `Conv3dBiasFwdOp` | convolution | 3 | ✅ **已完成**（dense NCDHW implicit-GEMM + MixCV bias；本轮加 tap 打包 + padded-N 分块 + NDHWC 暂存） | **17/17**，0 failed | **1.68%–20.43%**（msprof，3 shapes；unet **21.3×**、r3d-stem 对 Stage-3 **2.36×**） | `examples/TileOPs/reports/tileops/20261018_185919_687302_Conv3dBiasFwdOp/` |
 | `GLADecodeOp` | linear_attention | 4 | ✅ **已完成**（Vector kernel；K-tile 32 + 超发 shape persistent 分核；bf16 fp32 中转） | **11/11**，0 failed | **3.10%–20.16%**（msprof，5 shapes；相对 k16 **−24.2~35.4%**） | `examples/TileOPs/reports/tileops/20261018_215742_239583_GLADecodeOp/` |
-| `GatedDeltaNetPrefillFwdOp` | linear_attention | 4 | ✅ **正确性交付（correctness-first fallback）**；六 kernel 的 TileLang 端口仍未完成（function 1/3 done，2 卡编译器，4–6 为 reference 路径） | **6/6**（`tests/ops/test_gdn.py`） | 未测（benchmark 暂 skip，reference 路径非性能目标） | `tests/ops/test_gdn.py`；`tileops/kernels/linear_attention/gdn_prefill/gdn_prefill.py`；`examples/gdn_prefill/probe/experiments/18_level_split/PROBE_20261018.md` |
+| `GatedDeltaNetPrefillFwdOp` | linear_attention | 4 | ✅ **in-scope 主路径已交付**：K1 cumsum + K2 split blocksolve + K6 split forward（K=V∈{64,128}，含尾 chunk）；K5/CP 仍 pending，fallback 保留 | **10/10**（`tests/ops/test_gdn.py`，含 in-scope + tail） | 未测（benchmark 仍 skip） | `tests/ops/test_gdn.py`；`tileops/kernels/linear_attention/gdn_prefill/{gdn_prefill.py,gdn_split_*.py}`；`examples/gdn_prefill/PROBE_20261019.md` |
 
 > 基线名映射（**交付名 = 任务书原名**；基线 commit `1238a9f` 注册名为映射参考，非交付名）：`ClampMinFwdOp`→`ClampScalarFwdOp`(max=None)；`LerpFwdOp`→`LerpScalar`/`LerpTensor`；`Conv1dBiasFwdOp`/`Conv3dBiasFwdOp`→基线 conv1d/conv3d（bias 可选）；`GLADecodeOp`→`GLARecurrentFwdOp`；`GatedDeltaNetPrefillFwdOp`→`GDNFwdOp`。裸 `Conv3dFwdOp` **不在 19 内**（任务书 §5）。
 
@@ -57,8 +57,8 @@
 ## C. 版本戳与状态文件
 
 - 当前工作区版本戳：tilelang `0.1.2`（dev root `/home/developer/tilelang-mlir-ascend`）/ torch `2.7.1+cpu` / torch_npu `2.7.1.post4` / Ascend910B3（可见设备 6）。
-  - **2026-10-19 当前运行环境**：**CANN 9.0.0** + `AscendNPU-IR-v11/build-v11`（`bishengir-compile 1.1.0 428ab8fd + mmadL1 buffer-form 补丁`）+ `hivmc 0.2.0`。**9.2 已物理删除**（释放 9.6G）。19 批 conv1d/conv1d_bias/conv3d 与 GDN fallback 已验证通过；MHA/SSD/GDN blocksolve 受 `hivmc 0.2.0` 缺 LIR 限制。
-  - **报告数据口径**：18 个已交付算子的性能/正确性报告仍为 **CANN 9.0.0** 存档；9.0/v1.1 目前只覆盖 conv + GDN fallback 重验，尚未全量重测性能。
+  - **2026-10-19 当前运行环境**：**CANN 9.0.0 系统 `bishengir-compile`（1.1.0 / 428ab8fd）+ `hivmc 0.2.0`**。**9.2 已物理删除**。空 cache 已验证 K1/K4/conv1d_bias/conv3d；GDN in-scope 主路径已通过；blocksolve 仍受 CG-2026-0003 限制，走 K2 拆分。
+  - **报告数据口径**：18 个已交付算子的性能/正确性报告仍为 **CANN 9.0.0** 存档；当前系统 9.0 编译器已重验 conv 与 GDN in-scope 主路径，尚未全量重测性能。
   - **2026-10-16 重定基线**：工作区自 8.5.2 升级至 CANN 9.0.0。工作流① 知识库结论重验已完（19/19 repro 探针存活，见 `docs/cann9_adaptation.md` §10）。
   - **2026-10-18 口径统一**：表 A 的 18 个已交付接口全部完成 **9.0.0 端到端重测**（Add / Sub / Isnan / ClampMin 为最后 4 个 8.5 残留）；表 B 仍为 8.5.0 历史存档，不参与本批对照。
 - 状态机：`python3 .agents/tools/statectl.py show --dir examples/<op_slug>`；op 级 `migration show --dir examples/<op_slug>`。

@@ -60,6 +60,9 @@ CASES = [
     ("L0-single-chunk", 1, 8, 1, 1, 8, 8, False),
     ("L0b-with-state", 1, 8, 1, 1, 8, 8, True),
     ("L1-multi-chunk", 1, 64, 1, 1, 16, 16, True),
+    # Split main path (K=V in {64,128}); 100 rows exercises the tail chunk.
+    ("L1b-in-scope", 1, 64, 1, 1, 64, 64, True),
+    ("L1c-tail", 1, 100, 1, 1, 64, 64, True),
 ]
 
 

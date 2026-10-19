@@ -25,6 +25,7 @@ import tilelang
 import tilelang.language as T
 
 from tileops.kernels.kernel_base import Kernel
+from .gdn_split_pipeline import gdn_prefill_split
 
 __all__ = ["GDNPrefillKernel", "gdn_chunk_cumsum_kernel", "golden_gdn_chunk_cumsum"]
 
@@ -258,6 +259,11 @@ class GDNPrefillKernel(Kernel):
         """
         B, S, H, K = q.shape
         HV, V = v.shape[2], v.shape[3]
+        if (
+            B == 1 and S >= 64 and H == HV and K == V and K in (64, 128)
+            and q.dtype in (torch.float16, torch.bfloat16)
+        ):
+            return gdn_prefill_split(q, k, v, g, beta, state, self.scale, self.chunk)
         group = HV // H
         if group < 1 or H * group != HV:
             raise ValueError(f"H={H}, HV={HV}: HV must be a multiple of H")
