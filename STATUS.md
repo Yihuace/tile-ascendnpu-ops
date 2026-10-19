@@ -103,7 +103,7 @@
 - **唯一默认栈**：CANN **9.0.0 系统 `bishengir-compile`**（`1.1.0 / 428ab8fd / 2026-04-30`）+ `hivmc 0.2.0`；tilelang `build` 前端由 `env_cann90.sh` 驱动。
 - **空 cache 已验证**：最小 Cube GEMM、K4 探针、纯 Vector K1 均 `COMPILE_OK`；`conv1d_bias` **23 passed / 4 xfailed / 1 xpassed**；`conv3d video-down` **1 passed**（50s，真编译）。
 - **`build-v11` 不是默认**：自编 `build-v11` 能过 HIR，但生成的 HIVM IR 与 `hivmc 0.2.0` 不兼容，所有新 kernel 在此编译器下失败；仅保留作 CG-2026-0003 实验。
-- **GDN 边界**：K4 已可进入 Stage 3；K2 blocksolve 在系统编译器下仍 SIGSEGV（CG-2026-0003），继续按三段拆分设计做小 kernel 编译探针。
+- **GDN 进展（2026-10-19）**：K2 拆分原型已端到端通过：`split_inverse`（6 级 Cube+Vector）与 `split_blocksolve`（Gram + build_N + 6 级）在 `S=64/100/128,K=64`、`S=1024,H=4,K=128` fp16/bf16 上对拍通过，drop-in `prefill_blocksolve_A_bthd_split` 返回 `A[1,S,H,64]`/`k_rnorm`；下一步接 wrapper，K4 改为 Cube+Vector 拆分（双 GEMM 串行仍触发 HIR store）。
 - **9.2 已物理删除**：`/home/developer/Ascend/cann-9.2.0` 与临时停用目录均已移除；`~/.bashrc` 已切到 `env_cann90.sh`，`.profile` 会在登录 shell 中加载 `.bashrc`。
 - **回退**：无；9.2 已物理删除。
 
