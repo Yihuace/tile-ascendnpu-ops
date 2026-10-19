@@ -183,6 +183,11 @@ repro 用 `os.environ.setdefault("TILELANG_ASCEND_MODE", ...)` 声明目标模�
 - ③ 性能比全部失效，需 `tileops-report run --all` 重测（含 `NPUUtils.get().get_aicore_num()` 实查）。
 - ④ `MIGRATION_INDEX.md §C` / `versions.txt` 版本戳收尾；复核「删 NaN 恢复」优化在 9.0 下是否仍有效。
 
+> **状态更新（2026-10-19）**：② 已完成（§11）；③ 已完成，并按「细粒度快扫」替代全量 `run --all`（§12–§13）；
+> ④ 的**版本戳部分已完成**——`MIGRATION_INDEX.md §C` 重写为 9.0 口径、新增根级 `versions.txt`；
+> ④ 的**第二半「复核删 NaN 恢复」（T6）亦已完成**——见 §12.5 下方的「T6 关闭」注记。
+> （2026-10-18 状态：②③ 完成；④ 版本戳完成、T6 未完成。）
+
 ## 11. 2026-10-17：工作流② 正确性重跑（表 A 全量）+ 表 B 退出重定基线范围
 
 跑法：`pytest tests/ops/<file>.py` **逐文件串行**（每个文件独立进程 + 独立 summary，抗中断），
@@ -341,6 +346,19 @@ T6 复核动作：
 1. A/B（msprof，9.0）：baseline（带 `vcmp`/`vselect`）vs perf_opt（当前生效），确认 −9% 量级增益仍在；
 2. **新增显式 nan/inf 边界用例**，验证 NaN 传播假设在 9.0 成立；
 3. 结论回写 `perf_opt/opt_log.md` 并**打上 9.0 工具链戳**（现文档只戳 8.5.2）。
+
+> **T6 关闭（2026-10-19，本容器复验）**
+>
+> - **① 增益仍在（已有 9.0 证据，未重测）**：`opt_log.md §1` 本身就是 9.0.0 上的同源 A/B ——
+>   baseline（deg-20 **+ NaN 恢复**）877.198 → `nan_drop`（deg-20）800.076 µs，即 **−8.8%**（bf16 −8.2%），
+>   与 8.5.2 的 −9% 量级一致。
+> - **② 假设成立（本轮实测）**：直跑 `perf_opt/GeluAndMulFwdOp.py --level all` → `[Boundary] PASS: inf/nan`
+>   （fp16/bf16/fp32）+ `erf-saturation` / `signedzero` / `large-negative` 全 PASS，`All check passed!`。
+>   「多项式链 + `vclamp` 已传播 NaN」在 9.0 上成立。
+> - **③ 永久守卫（本轮新增，此前仓库测试零覆盖）**：`tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_special_values`
+>   （fp32/fp16/bf16，smoke，走生产 wrapper）。**已做反向对照证明守卫可失败**：将 `gelu(-inf)` 人为替换为 `-inf`（即
+>   §3 Round 2 `fold` 反例记录的失效形态）后，`assert_close(equal_nan=True)` 与显式 `isnan` 断言**两层均触发**。
+> - 结论回写：`perf_opt/opt_log.md` §1「T6 复核结论」。
 
 ### 12.6 事故记录：残留进程污染 + 重跑（2026-10-17 10:12）
 

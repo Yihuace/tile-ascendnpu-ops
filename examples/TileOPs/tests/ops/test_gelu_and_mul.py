@@ -108,6 +108,59 @@ def test_gelu_and_mul_op(M: int, N: int, dtype: torch.dtype) -> None:
 
 
 @pytest.mark.smoke
+@pytest.mark.parametrize("dtype", [torch.float32, torch.float16, torch.bfloat16])
+def test_gelu_and_mul_special_values(dtype: torch.dtype) -> None:
+    """Frozen NaN/Inf semantics, exercised through the production wrapper.
+
+    ``gelu(-inf) = -inf * 0 = NaN``; ``gelu(+inf) = +inf``; NaN propagates from
+    either operand.  This is a **regression guard** for the Stage-4 optimization
+    that dropped the explicit NaN recovery (``vcmp`` + ``vselect``) from the erf
+    chain, on the assumption that the clamped polynomial + ``vclamp`` already
+    propagate NaN.  That assumption is a compiler/IR-level behaviour and is
+    therefore pinned to the toolchain -- see ``docs/cann9_adaptation.md`` section
+    12.5 (T6) and ``perf_opt/opt_log.md`` section 1.  Without a case like this,
+    a toolchain change that stops propagating NaN would leave the whole suite
+    green while the results are silently wrong.
+
+    Mirrors the kernel-level ``[Boundary]`` probe (frozen boundary semantics),
+    but goes through ``GeluAndMulFwdOp`` so the shipped call path is covered.
+    """
+    M, N = 8, 4096
+    x = torch.randn(M, 2 * N, dtype=torch.float32)
+    x[:, N] = 1.0                # default value operand for the gate probes
+    x[0, 0] = float("inf")       # gate +inf, value +1 -> +inf
+    x[1, 0] = float("-inf")      # gate -inf -> -inf * 0 = NaN
+    x[2, 0] = float("nan")       # gate NaN -> NaN
+    x[3, 0] = 1.0                # gate 1, value +inf -> +inf
+    x[3, N] = float("inf")
+    x[4, 0] = 1.0                # gate 1, value -inf -> -inf
+    x[4, N] = float("-inf")
+    x[5, 0] = 1.0                # gate 1, value NaN -> NaN
+    x[5, N] = float("nan")
+    x[6, 0] = 0.0                # gate 0 -> signed zero
+    x[7, 0] = 1e4                # large gate -> erf saturation to 1
+
+    device = _device()
+    xt = x.to(dtype).to(device)
+    op = GeluAndMulFwdOp(M=M, N=N, dtype=dtype)
+    with torch.no_grad():
+        y = op(xt)
+    assert y.dtype == dtype, f"output dtype {y.dtype} != {dtype}"
+
+    y_cpu = y.float().cpu()
+    golden = GeluAndMulTest(M, N, dtype).ref_program(xt).float().cpu()
+    atol, rtol = _get_tolerances(dtype)
+    torch.testing.assert_close(y_cpu, golden, atol=atol, rtol=rtol, equal_nan=True)
+
+    # Explicit frozen-semantics probes.
+    assert bool(torch.isnan(y_cpu[1, 0])), "gelu(-inf) must be NaN"
+    assert bool(torch.isinf(y_cpu[0, 0]) and y_cpu[0, 0] > 0), "gelu(+inf) must be +inf"
+    assert bool(torch.isnan(y_cpu[2, 0])), "gelu(NaN) must be NaN"
+    assert bool(torch.isinf(y_cpu[4, 0]) and y_cpu[4, 0] < 0), "value -inf must propagate"
+    assert bool(torch.isnan(y_cpu[5, 0])), "value NaN must propagate to NaN"
+
+
+@pytest.mark.smoke
 def test_gelu_and_mul_rejects_non_float_dtype() -> None:
     """GeluAndMulFwdOp is restricted to the float subset of the manifest."""
     with pytest.raises(ValueError, match="does not support dtype"):

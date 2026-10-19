@@ -1,0 +1,38 @@
+# 工具链版本戳 —— TileOPs GPU→NPU 迁移
+#
+# 用途：记录「产出数据所用工具链」的版本。跨 CANN 版本的数字不可横比
+#       （参见 docs/cann9_adaptation.md §10.2 方法学结论、§13.6 报告可用性判定）。
+# 纪律：工具链升级后，必须重跑对应工作流并在本文件更新版本戳；
+#       知识库结论的失效检测见 .agents/tools/kb_stale_check.py。
+# 收尾：2026-10-18（工作流①②③ 完成，MIGRATION_INDEX §C 同步）。
+
+[cann]
+version               = 9.0.0
+root                  = /home/developer/Ascend/cann-9.0.0
+bishengir-compile     = 1.1.0 (428ab8fdab46, 2026-04-30)
+hivmc                 = 0.2.0 (3af4c111df44, 2026-04-30)
+
+[tilelang]
+version               = 0.1.2
+dev_root              = /mnt/workspace/tilelang-mlir-ascend          # 旧容器为 /home/developer/tilelang-mlir-ascend
+commit                = 9309edb0aa69901c41bb5d079dff4db49c32f547   # 2026-10-15 "fix partial+merge error (#202)"
+ascendnpu_ir_submodule = 31f690369d1247fbd5529a3f88b758f7d470ae4f  # legacy-interface-342-g31f690369, 2026-01-14
+local_patch           = tilelang/jit/jit_npu.py                    # CANN9 syn_instr_mode strip shim（见 docs/cann9_adaptation.md §3）
+note                  = dev root 为自建；`tilelang.__version__` 的 `+<sha>` 后缀取自 cwd 的 git，
+                        非 tilelang 自身 commit —— 取戳请以本文件的 commit 字段为准。
+
+[python]
+version               = 3.11.4
+torch                 = 2.7.1+cpu
+torch_npu             = 2.7.1.post4
+
+[device]
+soc                   = Ascend910B3
+ascend_visible_devices = 6
+ai_core_num           = 20   # NPUUtils.get().get_aicore_num() 实查；纯 Vector 场景 ×2 = 40
+ub_size               = 192KB
+
+[data_caliber]
+correctness           = 9.0.0   # 工作流②，表 A 276/282（6 例 CG-2026-0003 已工具链绑定 xfail）
+performance           = mixed   # 工作流③ 细粒度快扫（18 算子 / 77 用例，迁移态，中位偏差 1.64%）；
+                                # 正式 9.0.0 报告 3 份，其余按「能衔接 8.5 的一律衔接」沿用 8.5.2 ratio

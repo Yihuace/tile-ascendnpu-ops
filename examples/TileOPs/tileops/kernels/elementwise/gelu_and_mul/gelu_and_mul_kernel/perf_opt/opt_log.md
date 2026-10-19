@@ -38,6 +38,26 @@
   workload；再处理 swiglu-b32（近微型，<20µs，差异按交错 A/B 纪律）；decode bf16（微型豁免）最后；三个
   dtype 的 smoke 只做精度回归。排序只影响先后，不跳过任何 tune workload。
 
+### T6 复核结论（§12.5 点名的「删 NaN 恢复」正确性前提）
+
+`docs/cann9_adaptation.md` §12.5 T6 要求复核的三件事，逐条结论如下（**本文件工具链戳即 CANN 9.0.0**，见页眉）：
+
+1. **A/B 增益（9.0，已有证据，无需重测）**：上表即 9.0.0 上的同源 A/B——
+   `baseline`（deg-20 **+ NaN 恢复**）877.198 / 877.188 µs → `nan_drop`（deg-20）800.076 / 804.756 µs，
+   即 **−8.8% / −8.2%**，与 8.5.2 记录的 −9% 量级一致。**增益在 9.0 上仍在。**
+2. **NaN 传播假设（9.0 复验，2026-10-19 本容器）**：直跑 `GeluAndMulFwdOp.py --level all`
+   → `[Boundary] PASS: inf/nan`（fp16/bf16/fp32）、`erf-saturation`、`signedzero`、`large-negative` 全 PASS，
+   `All check passed!`。**「多项式链 + `vclamp` 已传播 NaN」的假设在 9.0 成立**；`gelu(-inf)=NaN`、`gelu(+inf)=+inf`、
+   gate/value 任一侧 NaN 均传播。依据三件套：`perf_opt/GeluAndMulFwdOp.py::run_boundary`（repro）/
+   本文件 §1（证据）/ CANN 9.0.0 + tilelang `9309edb0`（工具链）。
+3. **持久化守卫（本轮新增，此前仓库测试零覆盖）**：`tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_special_values`
+   （fp32/fp16/bf16 三参数，`@pytest.mark.smoke`）——走**生产 wrapper** `GeluAndMulFwdOp`，断言上述冻结语义。
+   反向对照已验证守卫**可失败**：把 `gelu(-inf)` 人为替换为 `-inf` 后，
+   `assert_close(equal_nan=True)` 与显式 `isnan` 断言**两层均触发**（即 §3 Round 2 `fold` 反例所记录的失效形态会被抓住）。
+   → 从此该正确性前提由 CI/套件兜底，不再只依赖 kernel 级自检。
+
+**结论：T6 关闭。** 优化保留；正确性前提在 9.0 上经验证成立，且已由仓库测试永久守卫。
+
 ### 设计估算 vs 实测偏差（D-2 回填）
 
 DESIGN §1.6.0 定量 roofline 估算 prefill fp16 下界 ≈ 226µs（带宽受限口径，780 GB/s 流量项）。
