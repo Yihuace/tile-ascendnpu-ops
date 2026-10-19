@@ -64,7 +64,7 @@ def main():
 
     perhead = os.environ.get("GDN_PERHEAD") == "1"
     names = PERHEAD_NAMES if perhead else BATCHED_NAMES
-    launch_count = 5000 if perhead else 500
+    launch_count = int(os.environ.get("GDN_MSPROF_LAUNCH", "5000" if perhead else "500"))
     total_us = 0.0
     for name in names:
         try:
