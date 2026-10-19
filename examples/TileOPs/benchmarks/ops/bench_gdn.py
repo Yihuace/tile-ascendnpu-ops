@@ -15,6 +15,14 @@ from tileops.workloads.linear_attention import GDNWorkload
 
 _GDN_OP = "GatedDeltaNetPrefillFwdOp"
 
+# Current msprof op wrapper profiles a single kernel (or a single same-name
+# group); GDN launches many kernels per forward, and all TileLang kernels are
+# reported as `main`, so whole-op SOL cannot be derived yet.  Keep the
+# manifest/workload groundwork, but do not publish a single-kernel ratio.
+pytestmark = pytest.mark.skip(
+    reason="GDN is multi-kernel; msprof whole-op SOL aggregation is not supported yet"
+)
+
 
 def _mark(idx: int, dtype: torch.dtype):
     return pytest.mark.smoke if idx == 0 and dtype is torch.float16 else pytest.mark.full
