@@ -59,3 +59,48 @@ GLADecodeOp:
     test: tests/ops/test_gla_decode.py
     bench: benchmarks/ops/bench_gla_decode.py
     bench_manifest_driven: false
+
+GatedDeltaNetPrefillFwdOp:
+  # In-scope GDN prefill: B=1 equal-length, key-major state, chunk=64.
+  family: linear_attention
+  status: implemented
+  ref_api: flashinfer.gdn_prefill.chunk_gated_delta_rule
+
+  signature:
+    inputs:
+      q: {dtype: "float16 | bfloat16", shape: "[B, S, H, K]"}
+      k: {dtype: "same_as(q)", shape: "[B, S, H, K]"}
+      v: {dtype: "same_as(q)", shape: "[B, S, HV, V]"}
+      g: {dtype: float32, shape: "[B, S, HV]"}
+      beta: {dtype: float32, shape: "[B, S, HV]"}
+      state: {dtype: float32, shape: "[B, HV, K, V]", optional: true}
+    outputs:
+      o: {dtype: "same_as(q)", shape: "[B, S, HV, V]"}
+      final_state: {dtype: float32, shape: "[B, HV, K, V]"}
+    params:
+      scale: {type: float, default: -1.0}
+
+  workloads:
+  - {B: 1, S: 64, H: 1, HV: 1, K: 64, V: 64, has_state: true, dtypes: [float16, bfloat16], label: "smoke-s64-h1-k64"}
+  - {B: 1, S: 3000, H: 16, HV: 16, K: 128, V: 128, has_state: true, dtypes: [bfloat16], label: "prefill-3000"}
+  - {B: 1, S: 4096, H: 16, HV: 16, K: 128, V: 128, has_state: false, dtypes: [float16, bfloat16], label: "prefill-4k"}
+
+  roofline:
+    vars:
+      B: "B"
+      S: "S"
+      H: "H"
+      HV: "HV"
+      K: "K"
+      V: "V"
+    flops: "B * S * HV * (4 * K * V + 4 * K + 3 * V)"
+    bytes: "B * S * (2 * H * K + HV * V + 2 * HV) + 2 * B * HV * K * V"
+
+  source:
+    kernel: tileops/kernels/linear_attention/gdn_prefill/gdn_prefill.py
+    kernel_map:
+      gdn_prefill: GDNPrefillKernel
+    op: tileops/ops/linear_attention/gdn_prefill.py
+    test: tests/ops/test_gdn.py
+    bench: benchmarks/ops/bench_gdn.py
+    bench_manifest_driven: true
