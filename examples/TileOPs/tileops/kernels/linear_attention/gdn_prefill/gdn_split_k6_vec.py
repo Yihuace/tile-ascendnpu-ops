@@ -17,7 +17,7 @@ from .gdn_split_k6 import mm
 @tilelang.jit(out_idx=[4], target="npuir")
 def vec_rhs(C: int, V: int):
     @T.prim_func
-    def main(
+    def vec_rhs_single_main(
         KS: T.Tensor((C, V), "float32"),
         v: T.Tensor((C, V), "float32"),
         gprev: T.Tensor((C,), "float32"),
@@ -38,13 +38,13 @@ def vec_rhs(C: int, V: int):
                 out_ub[i, j] = b_ub[i] * (v_ub[i, j] - T.exp(gp_ub[i]) * ks_ub[i, j])
             T.copy(out_ub, rhs)
 
-    return main
+    return vec_rhs_single_main
 
 
 @tilelang.jit(out_idx=[2], target="npuir")
 def vec_p(C: int, scale: float = 1.0):
     @T.prim_func
-    def main(
+    def vec_p_single_main(
         QK: T.Tensor((C, C), "float32"),
         gc: T.Tensor((C,), "float32"),
         P: T.Tensor((C, C), "float32"),
@@ -63,13 +63,13 @@ def vec_p(C: int, scale: float = 1.0):
                 )
             T.copy(out_ub, P)
 
-    return main
+    return vec_p_single_main
 
 
 @tilelang.jit(out_idx=[2], target="npuir")
 def vec_vp(C: int, V: int):
     @T.prim_func
-    def main(
+    def vec_vp_single_main(
         W: T.Tensor((C, V), "float32"),
         gc: T.Tensor((C,), "float32"),
         Vp: T.Tensor((C, V), "float32"),
@@ -84,13 +84,13 @@ def vec_vp(C: int, V: int):
                 out_ub[i, j] = T.exp(g_ub[C - 1] - g_ub[i]) * w_ub[i, j]
             T.copy(out_ub, Vp)
 
-    return main
+    return vec_vp_single_main
 
 
 @tilelang.jit(out_idx=[3], target="npuir")
 def vec_o(C: int, V: int, scale: float = 1.0):
     @T.prim_func
-    def main(
+    def vec_o_single_main(
         QS: T.Tensor((C, V), "float32"),
         O2: T.Tensor((C, V), "float32"),
         gc: T.Tensor((C,), "float32"),
@@ -108,13 +108,13 @@ def vec_o(C: int, V: int, scale: float = 1.0):
                 out_ub[i, j] = scale * T.exp(g_ub[i]) * qs_ub[i, j] + o2_ub[i, j]
             T.copy(out_ub, o)
 
-    return main
+    return vec_o_single_main
 
 
 @tilelang.jit(out_idx=[2], target="npuir")
 def vec_state(K: int, V: int):
     @T.prim_func
-    def main(
+    def vec_state_single_main(
         S_scale: T.Tensor((K, V), "float32"),
         S_delta: T.Tensor((K, V), "float32"),
         S_out: T.Tensor((K, V), "float32"),
@@ -127,7 +127,7 @@ def vec_state(K: int, V: int):
             T.vadd(s_ub, d_ub, s_ub)
             T.copy(s_ub, S_out)
 
-    return main
+    return vec_state_single_main
 
 def chunk_vec(q, k, v, A, gc, beta, S_in, scale):
     C, K = q.shape

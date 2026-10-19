@@ -12,6 +12,7 @@ Run:
   TILELANG_ASCEND_MODE=Developer python3 bench_gdn_perkernel.py 4096
 """
 
+import os
 import sys
 
 import torch
@@ -20,7 +21,7 @@ import torch_npu  # noqa: F401
 from tileops.benchmark.msprof import bench_kernel_msprof, _parse_op_basic_info
 from tileops.ops.linear_attention.gdn_prefill import GatedDeltaNetPrefillFwdOp
 
-NAMES = [
+BATCHED_NAMES = [
     "k1_cumsum_main",
     "gram_main",
     "build_n_main",
@@ -32,6 +33,19 @@ NAMES = [
     "vec_vp_main",
     "vec_o_main",
     "vec_state_main",
+]
+PERHEAD_NAMES = [
+    "k1_cumsum_main",
+    "gram_main",
+    "build_n_main",
+    "seg_cube_main",
+    "seg_add_main",
+    "mm_single_main",
+    "vec_rhs_single_main",
+    "vec_p_single_main",
+    "vec_vp_single_main",
+    "vec_o_single_main",
+    "vec_state_single_main",
 ]
 
 
@@ -48,12 +62,15 @@ def main():
     state = torch.randn(B, HV, K, V, device="npu") * 0.1
     op = GatedDeltaNetPrefillFwdOp(B=B, S=S, H=H, HV=HV, K=K, V=V, dtype=dt)
 
+    perhead = os.environ.get("GDN_PERHEAD") == "1"
+    names = PERHEAD_NAMES if perhead else BATCHED_NAMES
+    launch_count = 5000 if perhead else 500
     total_us = 0.0
-    for name in NAMES:
+    for name in names:
         try:
             _, out = bench_kernel_msprof(
                 op, (q, k, v, g, beta, state),
-                kernel_name=name, launch_count=500, warm_up=0, keep_output=False,
+                kernel_name=name, launch_count=launch_count, warm_up=0, keep_output=False,
             )
             durs, _, _ = _parse_op_basic_info(out)
             s = sum(durs)

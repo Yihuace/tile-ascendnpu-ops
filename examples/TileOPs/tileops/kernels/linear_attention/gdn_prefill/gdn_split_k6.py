@@ -29,7 +29,7 @@ def mm(M: int, N: int, K: int, ta: bool = False, tb: bool = False, dtype: str = 
     b_shape = (N, K) if tb else (K, N)
 
     @T.prim_func
-    def main(
+    def mm_single_main(
         A: T.Tensor(a_shape, dtype),
         B: T.Tensor(b_shape, dtype),
         C: T.Tensor((M, N), "float32"),
@@ -45,7 +45,7 @@ def mm(M: int, N: int, K: int, ta: bool = False, tb: bool = False, dtype: str = 
             with T.rs("PIPE_FIX"):
                 T.copy(c_l0, C)
 
-    return main
+    return mm_single_main
 
 
 def chunk_golden(q, k, v, g_raw, beta, S_in, scale):

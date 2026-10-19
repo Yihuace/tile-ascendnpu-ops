@@ -5,10 +5,13 @@ The CP partition path (K4/K5) is intentionally disabled; K6 walks chunks
 sequentially and carries the state.
 """
 
+import os
+
 import torch
 
 from .gdn_split_blocksolve import prefill_blocksolve_A_bthd_split
 from .gdn_split_k6_batched import k6_forward_batched
+from .gdn_split_k6_vec import k6_forward
 
 
 def gdn_prefill_split(q, k, v, g, beta, state, scale, chunk=64):
@@ -40,6 +43,20 @@ def gdn_prefill_split(q, k, v, g, beta, state, scale, chunk=64):
         if state is None
         else state.float().clone()
     )
+    if os.environ.get("GDN_PERHEAD") == "1":
+        # Migration-state path: the first split port, before head batching.
+        o = torch.empty((1, S, H, V), dtype=v.dtype, device=v.device)
+        for h in range(H):
+            o_h, st_h = k6_forward(
+                q[0, :, h, :].float(), k[0, :, h, :].float(),
+                v[0, :, h, :].float(), g[0, :, h].float(),
+                beta[0, :, h].float(), st[0, h].contiguous(), scale, C,
+                A_all=A_pad[:, h:h + 1, :],
+            )
+            o[0, :, h, :] = o_h.to(v.dtype)
+            st[0, h] = st_h
+        return o, st
+
     o_h, st_h = k6_forward_batched(
         q[0].float(), k[0].float(), v[0].float(), g[0].float(), beta[0].float(),
         st[0].contiguous(), scale, C, A_all=A_pad,
