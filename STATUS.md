@@ -103,7 +103,7 @@
 - **唯一默认栈**：CANN **9.0.0 系统 `bishengir-compile`**（`1.1.0 / 428ab8fd / 2026-04-30`）+ `hivmc 0.2.0`；tilelang `build` 前端由 `env_cann90.sh` 驱动。
 - **空 cache 已验证**：最小 Cube GEMM、K4 探针、纯 Vector K1 均 `COMPILE_OK`；`conv1d_bias` **23 passed / 4 xfailed / 1 xpassed**；`conv3d video-down` **1 passed**（50s，真编译）。
 - **`build-v11` 不是默认**：自编 `build-v11` 能过 HIR，但生成的 HIVM IR 与 `hivmc 0.2.0` 不兼容，所有新 kernel 在此编译器下失败；仅保留作 CG-2026-0003 实验。
-- **GDN 进展（2026-10-19）**：K2、K4、K6 单 chunk 均已跑通。K2：`split_inverse` + `split_blocksolve` 在 `S=64/100/128,K=64`、`S=1024,H=4,K=128` fp16/bf16 对拍通过，drop-in 返回 `A[1,S,H,64]`/`k_rnorm`。K4：`split_k4.py` 在 `CP=4,H=2,DK=DV=64` 有/无 raw_h0 误差 `6.0e-8/4.5e-8`。K6：`split_k6.py` 单 chunk `o_err=1.9e-5/2.7e-4`、`S_err=5.6e-5/4.7e-4`；确认 exclusive gprev、inclusive gc、A 必须 contiguous。下一步：K6 elementwise 换 Vector + chunk 循环，再接 K5/wrapper。
+- **GDN 进展（2026-10-19）**：K2、K4、K6（含 Vector 版）均已跑通。K2：`split_inverse` + `split_blocksolve` 在 `S=64/100/128,K=64`、`S=1024,H=4,K=128` fp16/bf16 对拍通过，drop-in 返回 `A[1,S,H,64]`/`k_rnorm`。K4：`split_k4.py` 在 `CP=4,H=2,DK=DV=64` 有/无 raw_h0 误差 `6.0e-8/4.5e-8`。K6：`split_k6_vec.py` 的 Vector 版单 chunk `o_err=1.9e-5/2.7e-4`、`S_err=5.6e-5/4.7e-4`；多 chunk `S=128` 对 fp32 顺序参考 `5.8e-2/1.0e-1`（fp32 长序列累积）。下一步：K5、wrapper 集成。
 - **9.2 已物理删除**：`/home/developer/Ascend/cann-9.2.0` 与临时停用目录均已移除；`~/.bashrc` 已切到 `env_cann90.sh`，`.profile` 会在登录 shell 中加载 `.bashrc`。
 - **回退**：无；9.2 已物理删除。
 
