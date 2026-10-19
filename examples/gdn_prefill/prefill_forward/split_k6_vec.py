@@ -209,8 +209,12 @@ def main():
 
 
 
-def k6_forward(q, k, v, g_raw, beta, S_in, scale, C=64):
-    """Full sequence, full chunks (S % C == 0), state carried across chunks."""
+def k6_forward(q, k, v, g_raw, beta, S_in, scale, C=64, A_all=None):
+    """Full sequence, full chunks (S % C == 0), state carried across chunks.
+
+    A_all: optional [S, H, C] blocksolve output for B=1 (H=1 in this prototype);
+    when omitted, A is recomputed with torch for standalone validation.
+    """
     S, K = q.shape
     V = v.shape[1]
     o = torch.empty(S, V, dtype=torch.float32, device=q.device)
@@ -218,14 +222,17 @@ def k6_forward(q, k, v, g_raw, beta, S_in, scale, C=64):
     for c in range(S // C):
         lo, hi = c * C, (c + 1) * C
         gc = torch.cumsum(g_raw[lo:hi], 0)
-        gprev = torch.cat([torch.zeros(1, device=q.device), gc[:-1]])
-        Gp = torch.exp(gprev[:, None] - gc[None, :]) * torch.tril(
-            torch.ones(C, C, device=q.device), -1
-        )
-        A = torch.linalg.solve(
-            torch.eye(C, device=q.device) + beta[lo:hi, None] * Gp * (k[lo:hi] @ k[lo:hi].T),
-            torch.eye(C, device=q.device),
-        ).contiguous()
+        if A_all is None:
+            gprev = torch.cat([torch.zeros(1, device=q.device), gc[:-1]])
+            Gp = torch.exp(gprev[:, None] - gc[None, :]) * torch.tril(
+                torch.ones(C, C, device=q.device), -1
+            )
+            A = torch.linalg.solve(
+                torch.eye(C, device=q.device) + beta[lo:hi, None] * Gp * (k[lo:hi] @ k[lo:hi].T),
+                torch.eye(C, device=q.device),
+            ).contiguous()
+        else:
+            A = A_all[lo:hi, 0, 0:C].contiguous()
         o_c, S_cur = chunk_vec(q[lo:hi], k[lo:hi], v[lo:hi], A, gc, beta[lo:hi], S_cur, scale)
         S_cur = S_cur.contiguous()
         o[lo:hi] = o_c

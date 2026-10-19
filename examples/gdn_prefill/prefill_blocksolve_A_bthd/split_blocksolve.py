@@ -35,11 +35,12 @@ def gram_kernel(tasks: int, C: int = 64, K: int = 64, dtype: str = "float16"):
     return main
 
 
-@tilelang.jit(out_idx=[4], target="npuir")
+@tilelang.jit(out_idx=[5], target="npuir")
 def build_n_kernel(tasks: int, C: int = 64):
     @T.prim_func
     def main(
         G: T.Tensor((tasks, C, C), "float32"),
+        gprev: T.Tensor((tasks, 1, C), "float32"),
         gc: T.Tensor((tasks, 1, C), "float32"),
         beta: T.Tensor((tasks, 1, C), "float32"),
         mask: T.Tensor((tasks, C, C), "float32"),
@@ -49,14 +50,16 @@ def build_n_kernel(tasks: int, C: int = 64):
             g_ub = T.alloc_ub((C, C), "float32")
             m_ub = T.alloc_ub((C, C), "float32")
             n_ub = T.alloc_ub((C, C), "float32")
+            gp_ub = T.alloc_ub((1, C), "float32")
             gc_ub = T.alloc_ub((1, C), "float32")
             b_ub = T.alloc_ub((1, C), "float32")
             T.copy(G[t, 0:C, 0:C], g_ub)
             T.copy(mask[t, 0:C, 0:C], m_ub)
+            T.copy(gprev[t, 0:1, 0:C], gp_ub)
             T.copy(gc[t, 0:1, 0:C], gc_ub)
             T.copy(beta[t, 0:1, 0:C], b_ub)
             for i, j in T.Parallel(C, C):
-                n_ub[i, j] = -b_ub[0, i] * T.exp(gc_ub[0, i] - gc_ub[0, j]) * g_ub[i, j] * m_ub[i, j]
+                n_ub[i, j] = -b_ub[0, i] * T.exp(gp_ub[0, i] - gc_ub[0, j]) * g_ub[i, j] * m_ub[i, j]
             T.copy(n_ub, N[t, 0:C, 0:C])
 
     return main
@@ -68,6 +71,7 @@ def split_blocksolve(k: torch.Tensor, g: torch.Tensor, beta: torch.Tensor, C: in
     tasks = ((S + C - 1) // C) * H
     k_tasks = torch.zeros(tasks, C, K, dtype=k.dtype, device=k.device)
     gc = torch.zeros(tasks, C, dtype=torch.float32, device=k.device)
+    gprev = torch.zeros(tasks, C, dtype=torch.float32, device=k.device)
     bt = torch.zeros(tasks, C, dtype=torch.float32, device=k.device)
     mask = torch.zeros(tasks, C, C, dtype=torch.float32, device=k.device)
     for c in range((S + C - 1) // C):
@@ -77,12 +81,14 @@ def split_blocksolve(k: torch.Tensor, g: torch.Tensor, beta: torch.Tensor, C: in
             t = c * H + h
             k_tasks[t, 0:valid, :] = k[0, base:base + valid, h, :]
             gc[t, 0:valid] = g[0, base:base + valid, h].float()
+            if valid > 1:
+                gprev[t, 1:valid] = gc[t, 0:valid - 1]
             bt[t, 0:valid] = beta[0, base:base + valid, h].float()
             mask[t, 0:valid, 0:valid] = torch.tril(
                 torch.ones(valid, valid, device=k.device), -1
             )
     G = gram_kernel(tasks, C, K, dtype)(k_tasks)
-    N = build_n_kernel(tasks, C)(G, gc.unsqueeze(1), bt.unsqueeze(1), mask)
+    N = build_n_kernel(tasks, C)(G, gprev.unsqueeze(1), gc.unsqueeze(1), bt.unsqueeze(1), mask)
     eye = torch.eye(C, dtype=torch.float32, device=k.device)
     Tmat = eye.unsqueeze(0).repeat(tasks, 1, 1).contiguous()
     P = N.contiguous()
@@ -106,8 +112,9 @@ def golden(k, g, beta, C=64):
         for h in range(H):
             kk = k[0, base:base + valid, h, :].double()
             gg = g[0, base:base + valid, h].double()
+            gpp = torch.cat([torch.zeros(1, dtype=torch.float64), gg[:-1]])
             bb = beta[0, base:base + valid, h].double()
-            Ssys = bb[:, None] * torch.exp(gg[:, None] - gg[None, :]) * (kk @ kk.T)
+            Ssys = bb[:, None] * torch.exp(gpp[:, None] - gg[None, :]) * (kk @ kk.T)
             Ssys = torch.where(strict[:valid, :valid], Ssys, torch.zeros((), dtype=torch.float64))
             A = torch.linalg.solve(torch.eye(valid, dtype=torch.float64) + Ssys,
                                    torch.eye(valid, dtype=torch.float64))
