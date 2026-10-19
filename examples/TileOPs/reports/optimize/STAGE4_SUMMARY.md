@@ -60,7 +60,7 @@
 | 贴线 / 部分达标 | 4 | Add（10/11）、Lerp（9/11）、Hardswish（2/6）、ClampScalar（1/11） |
 | 未达标但**已采纳真实时延收益** | 12 | Hardsigmoid、ClampMin、Isinf、Isfinite、GeluTanh、GeluAndMul、FALN、BatchNormBwd、GLA、Conv1d、Conv1dBias、Conv3dBias |
 | 未达标且未采纳 | 1 | Isnan（无收益） |
-| 未交付 | 1 | GDN（2/6 kernel，CG-2026-0003） |
+| GDN（第 19 个，in-scope） | 墙钟 4.4× vs fallback（S=4096,H=16）；**非 msprof/SOL** | split K1+K2+K6；K5/CP 待续 | `GatedDeltaNetPrefillFwdOp/OPTIMIZE_REPORT.md` |
 
 > 上一版把 Add（11/11）、Sub（14/15）、ClampScalar（8.5 的 6/6）写成“3 个严格达标”；按 9.0 端到端**严格只有 Sub 1 个**，本表为准。
 
@@ -78,7 +78,7 @@
 | 计算受限 + 判据失配 | Hardsigmoid / GeluTanh / GeluAndMul | `aiv_vec_ratio 0.85–0.95`、`computility=Vec_FP32(~99%)` |
 | latency-bound | GLA / FALN | `advice=latency bound:pipeline caused`；并行度受限 / 15+ pass + 2 reduce |
 | fp32 中转结构天花板 | BatchNormBwd / FALN | fp32 中转 + Vec_MISC + 内存 |
-| 编译器缺陷（非优化可解） | GDN blocksolve、Conv1d 的 1 个 bench 形状 | CG-2026-0003（`ConvertHFusionToHIVM` 对 buffer 形态 `mmadL1` 取 `getResult(0)` 越界）|
+| 编译器缺陷（非优化可解） | GDN blocksolve、Conv1d 的 1 个 bench 形状 | CG-2026-0003；GDN 用 K2 split 绕开，K5/CP 仍待续 |
 | 微型 shape 豁免 | Hardsigmoid ×4、Gelu ×1、FALN ×2、GLA smoke | Task Duration ≤5µs 或启动开销 ≥50% |
 
 ## 5. 关键技术与能力缺口
