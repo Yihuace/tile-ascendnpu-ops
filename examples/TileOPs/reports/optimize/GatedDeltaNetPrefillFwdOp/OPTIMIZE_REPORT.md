@@ -1,8 +1,9 @@
 # 优化报告：GatedDeltaNetPrefillFwdOp（Stage-4 optimize）
 
 > 本文件为 GDN 首次 Stage-4 报告，结构按 `reports/optimize/REPORT_TEMPLATE.md` 的 8 节模板。
-> **口径说明**：本轮只有墙钟（wall-clock）数据，**未跑 `msprof op`、没有 SOL ratio**；
-> 因此 §3 的 SOL 列统一写「未测」，不把墙钟加速比冒充 ratio。
+> **口径说明**：GDN 是多 kernel op，msprof 整 op 单次 capture 不可用；本轮采用
+> **per-kernel `msprof op` 汇总**（每个唯一 kernel 名单独测 Task Duration，再按一次 forward 求和）。
+> §3 的 SOL 是 op-level roofline 计算结果；base 的迁移态 msprof 仍无数据，写 `—`。
 
 ## 0. 身份
 
@@ -11,26 +12,26 @@
 | 算子 | `GatedDeltaNetPrefillFwdOp`；多 kernel（K1 cumsum + K2 split blocksolve + K6 split forward）；Vector + Cube；gated delta-rule prefill |
 | kernel（基准，只读） | `tileops/kernels/linear_attention/gdn_prefill/gdn_prefill.py` 中的 reference fallback（逐 token delta-rule） |
 | 调优产物 | `tileops/kernels/linear_attention/gdn_prefill/gdn_split_{inverse,blocksolve,k6,k6_vec,k6_batched,pipeline}.py` |
-| 口径 | **墙钟 `time.perf_counter()` + `torch.npu.synchronize()`；非 msprof Task Duration，SOL ratio 未测** |
+| 口径 | **per-kernel `msprof op` Task Duration 求和**；SOL 为 op-level roofline（`GatedDeltaNetPrefillFwdOp.eval_roofline()`）；base 迁移态 msprof 无数据 |
 | **工具链版本戳** | tilelang `0.1.2` dev root（`/home/developer/tilelang-mlir-ascend`）/ **CANN 9.0.0 系统 `bishengir-compile` 1.1.0 + `hivmc 0.2.0`** / Ascend910B3 / 2026-10-19 |
 | 达标线 | **未定义 SOL 达标线**；本轮目标是「相对 reference fallback 的墙钟加速」与正确性回归 |
-| benchmark | `examples/gdn_prefill/prefill_forward/bench_gdn_split.py`（自定义墙钟；`benchmarks/ops/bench_gdn.py` 仍 skip） |
+| benchmark | `examples/gdn_prefill/prefill_forward/bench_gdn_perkernel.py`（per-kernel msprof 汇总）；`bench_gdn_split.py` 墙钟对照；`benchmarks/ops/bench_gdn.py` 仍 skip |
 | 过程日志 | `examples/gdn_prefill/correct_initial_states/PROBE_20261019.md`；`/tmp/opencode/bench_gdn_*.log`（临时日志） |
 | 前置报告 | 无（首次 Stage-4 报告） |
 
 ## 1. 结论
 
 - 一句话：GDN in-scope 主路径已从 reference fallback 换成 **K1 + K2 split + K6 batched** 的 TileLang 实现；
-  `S=4096,H=16,K=128` 墙钟 **4382.7 ms → 997.8 ms（4.4×）**，`test_gdn.py` **10/10**。
+  `S=4096,H=16,K=128` 的 per-kernel msprof 总 Task Duration **8264.4 µs**，
+  op-level SOL **0.357%**；`test_gdn.py` **10/10**。墙钟对照为 **4382.7 ms → 997.8 ms（4.4×）**。
 - **达标数**：SOL 达标线未定义，故不给 x/y；in-scope 正确性覆盖 `B=1、S≥64、H=HV、K=V∈{64,128}`，
   小 shape（K<16）与 CP partition 仍走 fallback。
 - 关键收益：
-  - `S=64,H=1`：64.8 ms → 14.1 ms（**4.6×**）
-  - `S=256,H=4`：248.3 ms → 39.2 ms（**6.3×**）
-  - `S=1024,H=16`：1019.4 ms → 252.0 ms（**4.0×**）
-  - `S=4096,H=16`：4382.7 ms → 997.8 ms（**4.4×**）
-- **是否建议采纳 wrapper**：✅ **in-scope 采纳**。split 主路径比 fallback 快 4–6×，且 `test_gdn` 全过；
-  小 shape/CP fallback 保留。**不把 4.4× 当作 SOL ratio**，Excel 的 GDN ratio 仍保持 `—`。
+  - `S=64,H=16,K=128`：msprof 总时长 **155.5 µs**，SOL **0.676%**
+  - `S=4096,H=16,K=128`：msprof 总时长 **8264.4 µs**，SOL **0.357%**
+  - 墙钟对照：`S=4096,H=16` 4382.7 ms → 997.8 ms（**4.4×**）
+- **是否建议采纳 wrapper**：✅ **in-scope 采纳**。`test_gdn` 全过；msprof/SOL 口径已可用。
+  小 shape/CP fallback 保留。
 
 ## 2. 优化方法与过程
 
@@ -83,26 +84,35 @@
 | R4 | `a_transpose` state GEMM | 直接 `T.gemm(..., a_transpose=True)` | K=128 出现 NaN | ❌ 否决，改 `k.T.contiguous()` + 普通 GEMM |
 | R5 | 性能定位 | 分阶段计时 | K2 599.6 ms / K6 399.4 ms | 下一步优化 K2 |
 
-## 3. 优化结果（墙钟对比表，非 msprof）
+## 3. 优化结果（per-kernel msprof 汇总）
 
 | workload | base µs | final µs | Δ | base SOL% | final SOL% | 是否达标 |
 |---|---:|---:|---:|---:|---:|---|
-| `S=64,H=1,K=128,fp16` | 64800 | 14100 | **−78.2%** | 未测 | 未测 | 不适用（无 SOL） |
-| `S=256,H=4,K=128,fp16` | 248300 | 39200 | **−84.2%** | 未测 | 未测 | 不适用（无 SOL） |
-| `S=1024,H=16,K=128,fp16` | 1019400 | 252000 | **−75.3%** | 未测 | 未测 | 不适用（无 SOL） |
-| `S=4096,H=16,K=128,fp16` | 4382670 | 997790 | **−77.2%** | 未测 | 未测 | 不适用（无 SOL） |
+| `S=64,H=16,K=128,fp16` | —（无迁移态 msprof） | 155.5 | — | — | **0.676** | 不适用（无 SOL 达标线） |
+| `S=4096,H=16,K=128,fp16` | —（无迁移态 msprof） | 8264.4 | — | — | **0.357** | 不适用（无 SOL 达标线） |
 
-阶段拆分（`S=4096,H=16,K=128`）：
+`S=4096,H=16,K=128` 逐 kernel 汇总：
 
-| 阶段 | 耗时 |
-|---|---:|
-| K1 cumsum | 0.5 ms |
-| K2 split blocksolve | 599.6 ms |
-| K6 batched forward | 399.4 ms |
+| kernel | 次数 | Task Duration 合计（µs） |
+|---|---:|---:|
+| k1_cumsum_main | 1 | 4.82 |
+| gram_main | 1 | 52.74 |
+| build_n_main | 1 | 84.98 |
+| seg_cube_main | 6 | 473.31 |
+| seg_add_main | 6 | 271.97 |
+| bmm_main | 384 | 1324.81 |
+| vec_rhs_main | 64 | 226.66 |
+| **vec_p_main** | 64 | **5143.86** |
+| vec_vp_main | 64 | 184.98 |
+| vec_o_main | 64 | 216.22 |
+| vec_state_main | 64 | 280.05 |
+| **合计** | — | **8264.40** |
 
-> 测量口径：单次 `time.perf_counter()`，前后 `torch.npu.synchronize()`；包含 host launch 开销，
-> **不是** `msprof op Task Duration`，也没有 roofline/SOL 分母。数字来自
-> `examples/gdn_prefill/prefill_forward/bench_gdn_split.py` 的同 shape 运行。
+> 口径：每个唯一 kernel 名用 `msprof op --kernel-name=<name>` 单独测，`launch-count=500`、
+> `warm-up=0`，汇总该 name 在一次 forward 内所有实例的 `Task Duration(us)`。
+> SOL 由 `GatedDeltaNetPrefillFwdOp.eval_roofline()` 的 flops/bytes 与 910B3 roofline 计算：
+> `ratio = perf_tops / min(AI*1.75, 294.9)`；这是 **op-level 理论 roofline**，不是 msprof 单 kernel 的 Ratio。
+> 墙钟对照（含 host launch）见 `bench_gdn_split.py`：`S=4096` 997.8 ms vs fallback 4382.7 ms（4.4×）。
 
 ## 4. 精度
 
@@ -142,9 +152,10 @@
 
 ## 7. 天花板 / 豁免 / 缺口
 
-- **K2 是当前最大瓶颈**：599.6 ms / 997.8 ms；6 级 Neumann 的 12 个 kernel launch + T/P GM 往返。
-  下一步可尝试两级合并、减少 GM 往返，但不能触发 CG-2026-0003。
-- **K6 次瓶颈**：399.4 ms；已做 head 批量化，但仍是每 chunk 多次 launch。
+- **`vec_p_main` 是最大 msprof 瓶颈**：4k 时 **5143.9 µs / 8264.4 µs（62%）**；其 `T.if_then_else`
+  被编译成低效 scalar `vcmp`，是下一步首要优化点。
+- **K2 仍是次瓶颈**：blocksolve 合计约 883 µs；6 级 Neumann 的 12 个 kernel + GM 往返。
+- **K6 Cube/其他 Vector**：`bmm_main` 1324.8 µs；其余 Vector 约 1.1 ms。
 - **没有 SOL/msprof**：无法给出 ratio，也无法判断距离 roofline 多远；Excel GDN ratio 保持 `—`。
 - **K5/CP 未实现**：in-scope 通过关闭 partition 保持正确；长序列并行度未利用。
 - **小 shape fallback**：`K<16` 仍走 reference；不影响 in-scope。
@@ -155,9 +166,9 @@
 
 - **采纳**：in-scope split 主路径接入 wrapper；小 shape/CP 保留 fallback。
 - **下一步优先级**：
-  1. 用 `msprof op` 测 K1/K2/K6 的 Task Duration，补 SOL ratio；
+  1. 优化 `vec_p_main`（替换 scalar `vcmp` 的低效掩码路径，预计最大收益）；
   2. 优化 K2（两级合并/减少 GM 往返）；
   3. 再优化 K6（融合 Vector 阶段或进一步批处理）；
   4. 补 K5/CP，恢复长序列并行；
   5. 性能数据稳定后再更新 `19_operators_ratio.xlsx` 的 GDN 行。
-- **未解决**：GDN 仍没有 9.0 迁移态/优化态 SOL baseline；当前 4.4× 只是相对 reference fallback。
+- **未解决**：GDN 仍没有 9.0 迁移态 msprof baseline；当前 `final SOL` 是优化态 op-level roofline，迁移态 `—`。

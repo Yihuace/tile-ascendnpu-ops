@@ -60,7 +60,7 @@
 | 贴线 / 部分达标 | 4 | Add（10/11）、Lerp（9/11）、Hardswish（2/6）、ClampScalar（1/11） |
 | 未达标但**已采纳真实时延收益** | 12 | Hardsigmoid、ClampMin、Isinf、Isfinite、GeluTanh、GeluAndMul、FALN、BatchNormBwd、GLA、Conv1d、Conv1dBias、Conv3dBias |
 | 未达标且未采纳 | 1 | Isnan（无收益） |
-| GDN（第 19 个，in-scope） | 墙钟 4.4× vs fallback（S=4096,H=16）；**非 msprof/SOL** | split K1+K2+K6；K5/CP 待续 | `GatedDeltaNetPrefillFwdOp/OPTIMIZE_REPORT.md` |
+| GDN（第 19 个，in-scope） | per-kernel msprof 0.357%（4k/H16）/0.676%（64/H16）；墙钟 4.4× vs fallback | split K1+K2+K6；vec_p 是最大瓶颈；K5/CP 待续 | `GatedDeltaNetPrefillFwdOp/OPTIMIZE_REPORT.md` |
 
 > 上一版把 Add（11/11）、Sub（14/15）、ClampScalar（8.5 的 6/6）写成“3 个严格达标”；按 9.0 端到端**严格只有 Sub 1 个**，本表为准。
 

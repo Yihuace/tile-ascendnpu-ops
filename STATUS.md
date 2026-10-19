@@ -103,7 +103,7 @@
 - **唯一默认栈**：CANN **9.0.0 系统 `bishengir-compile`**（`1.1.0 / 428ab8fd / 2026-04-30`）+ `hivmc 0.2.0`；tilelang `build` 前端由 `env_cann90.sh` 驱动。
 - **空 cache 已验证**：最小 Cube GEMM、K4 探针、纯 Vector K1 均 `COMPILE_OK`；`conv1d_bias` **23 passed / 4 xfailed / 1 xpassed**；`conv3d video-down` **1 passed**（50s，真编译）。
 - **`build-v11` 不是默认**：自编 `build-v11` 能过 HIR，但生成的 HIVM IR 与 `hivmc 0.2.0` 不兼容，所有新 kernel 在此编译器下失败；仅保留作 CG-2026-0003 实验。
-- **GDN in-scope 主路径 + 性能已跑通（2026-10-19）**：K1+K2+K6 split 已进 TileOPs package；`test_gdn.py` **10/10**。正确性：`S=64/K=64` `5.2e-5/7.1e-5`；`S=100/K=64` `8e-5/1.8e-4`；`S=3000/K=128` `6.8e-7/2.6e-7`。性能（墙钟，含 launch）：`S=4096,H=16,K=128` **998 ms** vs fallback **4383 ms（4.4×）**；`S=1024,H=16` 252 vs 1019 ms（4.0×）。瓶颈：K2 600 ms、K6 400 ms。剩余：K5/CP、K2 融合优化、SOL ratio。
+- **GDN in-scope 主路径 + 性能已跑通（2026-10-19）**：K1+K2+K6 split 已进 TileOPs package；`test_gdn.py` **10/10**。正确性：`S=64/K=64` `5.2e-5/7.1e-5`；`S=100/K=64` `8e-5/1.8e-4`；`S=3000/K=128` `6.8e-7/2.6e-7`。性能：per-kernel msprof **0.357%（4k/H16）/0.676%（64/H16）**；墙钟 4k **998 ms vs fallback 4383 ms（4.4×）**。瓶颈：`vec_p_main` 5143.9µs（62%）、K2 883µs。剩余：K5/CP、vec_p/K2 优化、迁移态 baseline。
 - **9.2 已物理删除**：`/home/developer/Ascend/cann-9.2.0` 与临时停用目录均已移除；`~/.bashrc` 已切到 `env_cann90.sh`，`.profile` 会在登录 shell 中加载 `.bashrc`。
 - **回退**：无；9.2 已物理删除。
 
