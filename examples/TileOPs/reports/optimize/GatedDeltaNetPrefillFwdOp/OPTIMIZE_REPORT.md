@@ -21,14 +21,17 @@
 
 ## 1. 结论
 
-- 一句话：GDN in-scope 主路径已从 reference fallback 换成 **K1 + K2 split + K6 batched** 的 TileLang 实现；
-  `S=4096,H=16,K=128` 的 per-kernel msprof 总 Task Duration **8264.4 µs**，
-  op-level SOL **0.357%**；`test_gdn.py` **10/10**。墙钟对照为 **4382.7 ms → 997.8 ms（4.4×）**。
+- 一句话：GDN in-scope 主路径已从 per-head 迁移态优化到 **K1 + K2 split + K6 batched**；
+  `S=4096,H=16,K=128` 的 per-kernel msprof 总 Task Duration
+  **110195.1 µs（迁移态，估算）→ 8264.4 µs（优化态）**，
+  op-level SOL **0.027% → 0.357%（约 13.3×）**；`test_gdn.py` **10/10**。
+  墙钟对照为 **4382.7 ms → 997.8 ms（4.4×）**。
 - **达标数**：SOL 达标线未定义，故不给 x/y；in-scope 正确性覆盖 `B=1、S≥64、H=HV、K=V∈{64,128}`，
   小 shape（K<16）与 CP partition 仍走 fallback。
 - 关键收益：
-  - `S=64,H=16,K=128`：msprof 总时长 **155.5 µs**，SOL **0.676%**
-  - `S=4096,H=16,K=128`：msprof 总时长 **8264.4 µs**，SOL **0.357%**
+  - `S=4096,H=16,K=128`：迁移态 **110195.1 µs / SOL 0.027%**；
+    优化态 **8264.4 µs / SOL 0.357%**（**约 13.3×**）
+  - `S=64,H=16,K=128`：优化态 **155.5 µs / SOL 0.676%**
   - 墙钟对照：`S=4096,H=16` 4382.7 ms → 997.8 ms（**4.4×**）
 - **是否建议采纳 wrapper**：✅ **in-scope 采纳**。`test_gdn` 全过；msprof/SOL 口径已可用。
   小 shape/CP fallback 保留。
@@ -88,8 +91,8 @@
 
 | workload | base µs | final µs | Δ | base SOL% | final SOL% | 是否达标 |
 |---|---:|---:|---:|---:|---:|---|
-| `S=64,H=16,K=128,fp16` | —（无迁移态 msprof） | 155.5 | — | — | **0.676** | 不适用（无 SOL 达标线） |
-| `S=4096,H=16,K=128,fp16` | —（无迁移态 msprof） | 8264.4 | — | — | **0.357** | 不适用（无 SOL 达标线） |
+| `S=4096,H=16,K=128,fp16` | 110195.1（迁移态，估算） | 8264.4 | **−92.5%** | 0.027 | **0.357** | 不适用（无 SOL 达标线） |
+| `S=64,H=16,K=128,fp16` | —（未单独测迁移态） | 155.5 | — | — | **0.676** | 不适用（无 SOL 达标线） |
 
 `S=4096,H=16,K=128` 逐 kernel 汇总：
 
@@ -110,6 +113,8 @@
 
 > 口径：每个唯一 kernel 名用 `msprof op --kernel-name=<name>` 单独测，`launch-count=500`、
 > `warm-up=0`，汇总该 name 在一次 forward 内所有实例的 `Task Duration(us)`。
+> 迁移态 base 由两部分重建：K2 H16 实测 **877.7 µs** + per-head K6 H1 **6832.34 µs × 16 = 109317.4 µs**，
+> 合计 **110195.1 µs**；perhead H16 因 6144 个 `mm` 实例触发 msprof 超时，故用 H1×16 等价重建。
 > SOL 由 `GatedDeltaNetPrefillFwdOp.eval_roofline()` 的 flops/bytes 与 910B3 roofline 计算：
 > `ratio = perf_tops / min(AI*1.75, 294.9)`；这是 **op-level 理论 roofline**，不是 msprof 单 kernel 的 Ratio。
 > 墙钟对照（含 host launch）见 `bench_gdn_split.py`：`S=4096` 997.8 ms vs fallback 4382.7 ms（4.4×）。
@@ -171,4 +176,4 @@
   3. 再优化 K6（融合 Vector 阶段或进一步批处理）；
   4. 补 K5/CP，恢复长序列并行；
   5. 性能数据稳定后再更新 `19_operators_ratio.xlsx` 的 GDN 行。
-- **未解决**：GDN 仍没有 9.0 迁移态 msprof baseline；当前 `final SOL` 是优化态 op-level roofline，迁移态 `—`。
+- **已解决**：GDN 迁移态（per-head split）msprof 已重建；迁移/优化 SOL = **0.027% → 0.357%**。
