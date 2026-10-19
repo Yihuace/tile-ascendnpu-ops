@@ -18,6 +18,7 @@ Run: ``python gdn_prefill.py --level all``.
 """
 
 import argparse
+import os
 
 import torch
 import torch_npu  # noqa: F401  (registers the "npu" device)
@@ -260,7 +261,8 @@ class GDNPrefillKernel(Kernel):
         B, S, H, K = q.shape
         HV, V = v.shape[2], v.shape[3]
         if (
-            B == 1 and S >= 64 and H == HV and K == V and K in (64, 128)
+            os.environ.get("GDN_FORCE_FALLBACK") != "1"
+            and B == 1 and S >= 64 and H == HV and K == V and K in (64, 128)
             and q.dtype in (torch.float16, torch.bfloat16)
         ):
             return gdn_prefill_split(q, k, v, g, beta, state, self.scale, self.chunk)
