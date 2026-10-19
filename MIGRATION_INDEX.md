@@ -56,7 +56,9 @@
 
 ## C. 版本戳与状态文件
 
-- 当前工作区版本戳：tilelang `0.1.2`（dev root `/home/developer/tilelang-mlir-ascend`，无 `.git`）/ torch `2.7.1+cpu` / torch_npu `2.7.1.post4` / **CANN `9.0.0`**（`bishengir 1.1.0` + `hivmc 0.2.0`）/ Ascend910B3（可见设备 6）。
+- 当前工作区版本戳：tilelang `0.1.2`（dev root `/home/developer/tilelang-mlir-ascend`）/ torch `2.7.1+cpu` / torch_npu `2.7.1.post4` / Ascend910B3（可见设备 6）。
+  - **2026-10-19 当前运行环境**：**CANN 9.2.0** + Apr **v1.2.0 前端 + `mmadL1` 补丁的 `bishengir-compile`** + `hivmc 0.3.0`（Oct 原栈保留在 `build.oct-bak`，可 `switch_stack.sh oct` 回退）。19 批 MixCV 的 conv1d/conv1d_bias/conv3d 已在该栈验证通过；MHA/SSD/GDN blocksolve 仍卡 `hivmc` 代际。
+  - **报告数据口径**：18 个已交付算子的性能/正确性报告仍为 **CANN 9.0.0** 存档；9.2.0 目前只覆盖 MixCV 修复验证，尚未全量重测。
   - **2026-10-16 重定基线**：工作区自 8.5.2 升级至 CANN 9.0.0。工作流① 知识库结论重验已完（19/19 repro 探针存活，见 `docs/cann9_adaptation.md` §10）。
   - **2026-10-18 口径统一**：表 A 的 18 个已交付接口全部完成 **9.0.0 端到端重测**（Add / Sub / Isnan / ClampMin 为最后 4 个 8.5 残留）；表 B 仍为 8.5.0 历史存档，不参与本批对照。
 - 状态机：`python3 .agents/tools/statectl.py show --dir examples/<op_slug>`；op 级 `migration show --dir examples/<op_slug>`。

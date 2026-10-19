@@ -2,9 +2,10 @@
 
 > 本窗口：**19 算子统一 CANN 9.0.0 口径**。四个 8.5 残留（Add / Sub / Isnan / ClampMin）已完成端到端重测；Add / Sub 同时切到 `perf_opt`。
 > 更新：2026-10-18 16:00 (+08:00) · 会话：9.0 口径统一
-> **收口（2026-10-18 22:2x）**：最终交付报告 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md`；18/19 交付，剩余 GDN / Conv1d bias / FALN 均为阻塞或高不确定项，暂停投入。
+> **收口（2026-10-18 22:2x）**：最终交付报告 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md`；18/19 完整交付 + GDN correctness-first fallback。
+> **环境更新（2026-10-19）**：当前运行环境为 **CANN 9.2.0 + Apr v1.2.0 补丁编译器 + hivmc 0.3.0**；19 批 conv1d/conv1d_bias/conv3d 已验证通过，MHA/SSD/GDN blocksolve 仍卡 hivmc 代际。
 
-## 总览（严格口径，全部 CANN 9.0.0）
+## 总览（严格口径；报告数据为 CANN 9.0.0 存档，当前运行环境已切 CANN 9.2.0/Apr）
 
 **19 个接口：18 个完整交付；GDN 为 correctness-first fallback（6/6 tests），六 kernel 的 TileLang 端口待续。**
 
