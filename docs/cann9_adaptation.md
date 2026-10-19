@@ -527,17 +527,30 @@ T6 复核动作：
   1. 让 `hivmc --version` 不匹配正则，强制编译器走 legacy 分支 → 编译器补上 `--enable-triton-kernel-compile=true`，但 0.2.0 同样不认识该参数；
   2. 给编译器加 `--enable-lir-compile=false` → hivmc 仍报 `Failed to compile BiShengLIR to binary`；
   3. 按 RETROSPECTIVE 去掉 R3-a 的 `kz→l1k` 一个 `nd2nz` → 编译仍失败。
-- 因此 9.0 的环境/Kernel 级规避均未打通；9.0.0 性能报告不受影响。
+- **2026-10-19 空 cache 复验（关键）**：最小 `64×64×64` Cube GEMM、K4 形状探针、纯 Vector K1、conv3d 单用例全部在同一处失败；
+  此前 23/50/67 passed 都是默认 kernel cache 命中。**9.0 当前栈不能生成任何新 `.o`**，只能复用旧缓存。
+- 因此 9.0 的环境/Kernel 级规避均未打通；9.0.0 性能报告不受影响，但不能在 9.0 现场重编新 kernel。
 
 ### 15.5 环境层面还剩什么
-1. **9.0 环境层已无解**：`hivmc 0.2.0` 缺 LIR 编译且闭源不可补；除非 CANN 侧提供支持 LIR 的 hivmc，
-   否则 MHA/SSD/GDN blocksolve 无法在 9.0 编译。
-2. **9.2 不再作为方案**：已停用；历史上 9.2 + hivmc 0.3.0 也只是接受 LIR 参数，GDN 仍 `External hivmc run fails`。
-3. **若继续 9.0，只能做更深的 kernel 重构**：拆 entry、消除整段 MixCV LIR、把 blocksolve 拆成多个小 kernel；
-   这是 kernel 工作，不是环境修复，且不保证成功。
+1. **9.0 环境层已无解，且范围比 GDN 更大**：`hivmc 0.2.0` 缺 LIR 编译且闭源不可补。
+   空 cache 下连最小 Cube GEMM 和纯 Vector K1 都无法出 `.o`，因此不是“GDN 特殊”，而是 9.0 不能开发任何新 kernel。
+2. **9.2 不再作为方案**：已物理删除；历史上 9.2 + hivmc 0.3.0 也只是接受 LIR 参数，GDN 仍 `External hivmc run fails`。
+3. **拆 kernel 不再是可行绕法**：K2 三段拆分能降低 IR 规模，但最小 GEMM 都无法编译，拆分后仍然过不了 hivmc。
+   只有 CANN 侧提供支持 LIR 的 9.0 hivmc，或重新引入可编译的工具链，才能继续 K2/K4–K6。
 4. **环境收尾已完成**：`env_cann90.sh`、`build-v11/bin/hivmc` wrapper 已持久化；`~/.bashrc` 已切 9.0；
    9.2 目录已物理删除。
 5. **不属于环境**：GDN functions 4–6 端口、MHA/SSD kernel 重构、换工具链后的性能重基线。
+
+### 15.6 2026-10-19 K4/K2 编译探针与缓存发现
+
+- 探针目录：`examples/gdn_prefill/correct_initial_states/`
+  - `probe_cube_min.py`：最小 `64×64×64` Cube GEMM
+  - `probe_compile.py`：K4 形状的 Cube 修正探针
+  - `PROBE_20261019.md`：完整命令与结论
+- 结果：Developer/Expert 两种模式、Cube/Vector 两种 kernel 全部 `Failed to compile BiShengLIR to binary`。
+- 空 cache 复验 `test_conv3d_bias[video-down-bias]` 同样失败；默认 cache 下通过，证明此前结果是缓存命中。
+- 影响：K4–K6 与 K2 的新 kernel 开发在 9.0 上**不能开始**；K2 的三段拆分设计保留在 `PROBE_20261019.md`，
+  待 hivmc 修复后再进入 Stage 3。
 
 ### 15.4 复现命令
 ```bash
