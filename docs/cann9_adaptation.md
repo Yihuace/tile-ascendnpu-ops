@@ -522,23 +522,26 @@ T6 复核动作：
   （`External hivmc run fails`），说明不是单纯“代际差”，还有编译器输出/hivmc 能力问题。
 - 试过把 `mmadL1` 补丁从“删除 walk”改为 buffer-form 取 `op.getC()` 并保留 `tile_mix_cube_num` 传播：
   v1.1 与 Apr 1.2.0 都重编，GDN blocksolve 仍失败；9.2 conv 回归 **67 passed / 1 xfailed / 5 xpassed**，无回退。
-- 当前默认仍为 9.2/Apr，9.0/v1.1 作为实验栈保留；9.0.0 性能报告不受影响。
+- **9.2 已按用户要求停用**（`cann-9.2.0` → `.disabled-cann-9.2.0-20261019`）；当前唯一默认栈为 9.0/v1.1。
+- **9.0 的其余尝试也失败**：
+  1. 让 `hivmc --version` 不匹配正则，强制编译器走 legacy 分支 → 编译器补上 `--enable-triton-kernel-compile=true`，但 0.2.0 同样不认识该参数；
+  2. 给编译器加 `--enable-lir-compile=false` → hivmc 仍报 `Failed to compile BiShengLIR to binary`；
+  3. 按 RETROSPECTIVE 去掉 R3-a 的 `kz→l1k` 一个 `nd2nz` → 编译仍失败。
+- 因此 9.0 的环境/Kernel 级规避均未打通；9.0.0 性能报告不受影响。
 
 ### 15.5 环境层面还剩什么
-1. **9.0 不再投入**：`hivmc 0.2.0` 缺 LIR 编译，闭源不可补；除非 CANN 侧提供 0.2.x 的新 hivmc，否则 MHA/SSD/GDN 无解。
-2. **9.2 唯一可继续的方向**：构建 `7b16f3c12`（`release/v2.0.x`，2026-08-05）的 `bishengir-compile`
-   + 同样的 buffer-form 补丁，配 `hivmc 0.3.0`；验证是否只是 v1.2.0 编译器输出不兼容。
-   注意该 commit 仍保留 `op.getResult(0)`，补丁不能省。
-3. **先抓 IR 再决定是否值得重编**：用 `hivmc --save-temps --mlir-print-ir-after-failure --mlir-print-op-on-diagnostic`
-   定位 GDN 失败 pass/op；若落在 `nd2nz`/多 entry，属于 kernel/编译器能力问题，不是换环境能解。
-4. **环境收尾**：把 `/tmp/opencode/env_v11_90.sh` 和 `hivmc` 参数过滤 wrapper 移到持久路径，
-   补 `switch_stack` 入口；清理 `.git/gc.log` 的 gc 警告；任何编译器重编后只跑定向用例，不做全量。
-5. **不属于环境**：GDN functions 4–6 端口、MHA/SSD/GDN 的 kernel 级规避（删一个 `nd2nz`、拆 entry、加 UB buffer）、
-   以及换编译器后的性能重基线。
+1. **9.0 环境层已无解**：`hivmc 0.2.0` 缺 LIR 编译且闭源不可补；除非 CANN 侧提供支持 LIR 的 hivmc，
+   否则 MHA/SSD/GDN blocksolve 无法在 9.0 编译。
+2. **9.2 不再作为方案**：已停用；历史上 9.2 + hivmc 0.3.0 也只是接受 LIR 参数，GDN 仍 `External hivmc run fails`。
+3. **若继续 9.0，只能做更深的 kernel 重构**：拆 entry、消除整段 MixCV LIR、把 blocksolve 拆成多个小 kernel；
+   这是 kernel 工作，不是环境修复，且不保证成功。
+4. **环境收尾已完成**：`env_cann90.sh`、`build-v11/bin/hivmc` wrapper 已持久化；`~/.bashrc` 已切 9.0；
+   9.2 目录已改名停用。
+5. **不属于环境**：GDN functions 4–6 端口、MHA/SSD kernel 重构、换工具链后的性能重基线。
 
 ### 15.4 复现命令
 ```bash
-source /tmp/opencode/env_v11_90.sh   # 9.0.0 + build-v11 + hivmc 参数过滤 wrapper
+source /home/developer/tilelang-mlir-ascend/env_cann90.sh   # 9.0.0 + build-v11 + hivmc wrapper
 cd examples/TileOPs
-python3 -m pytest tests/ops/test_conv1d_bias.py tests/ops/test_conv1d.py tests/ops/test_conv3d_bias.py -q
+python3 -m pytest tests/ops/test_conv1d_bias.py tests/ops/test_conv1d.py tests/ops/test_conv3d_bias.py tests/ops/test_gdn.py -q
 ```
