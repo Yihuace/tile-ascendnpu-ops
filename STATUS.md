@@ -3,7 +3,7 @@
 > 本窗口：**19 算子统一 CANN 9.0.0 口径**。四个 8.5 残留（Add / Sub / Isnan / ClampMin）已完成端到端重测；Add / Sub 同时切到 `perf_opt`。
 > 更新：2026-10-18 16:00 (+08:00) · 会话：9.0 口径统一
 > **收口（2026-10-18 22:2x）**：最终交付报告 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md`；18/19 完整交付 + GDN correctness-first fallback。
-> **环境更新（2026-10-19）**：**9.2 已物理删除**（释放 9.6G）。唯一默认栈为 **CANN 9.0.0 + v1.1 补丁编译器（428ab8fd）+ hivmc 0.2.0**。**9.0 的 JIT 现场编译不可用**：空 cache 下最小 Cube GEMM、纯 Vector K1、conv3d 均报 `Failed to compile BiShengLIR to binary`；此前 23/50/67 passed 都是默认 kernel cache 命中，不是 9.0 重新编译。9.0 只能跑旧缓存，不能开发新 kernel；详见 `examples/gdn_prefill/correct_initial_states/PROBE_20261019.md` 与 `docs/cann9_adaptation.md` §15.6。
+> **环境更新（2026-10-19，修正）**：**9.2 已物理删除**（释放 9.6G）。默认栈为 **CANN 9.0.0 系统 `bishengir-compile` + `hivmc 0.2.0`**。空 cache 下最小 Cube GEMM、K4 探针、纯 Vector K1、conv1d_bias、conv3d **均通过**；此前“9.0 不能编译”是自编 `build-v11` 引入的回归，已切回系统编译器。**GDN blocksolve 仍被系统编译器 `mmadL1 getResult(0)` SIGSEGV 阻塞（CG-2026-0003）**，K2 继续走三段拆分。详见 `examples/gdn_prefill/correct_initial_states/PROBE_20261019.md` 与 `docs/cann9_adaptation.md` §15.6。
 
 ## 总览（严格口径；报告数据为 CANN 9.0.0 存档，当前唯一运行环境为 CANN 9.0.0/v1.1；9.2 已删除）
 
@@ -100,10 +100,10 @@
 
 ## 环境纪律（2026-10-19 更新；9.2 已删除）
 
-- **唯一默认栈**：CANN **9.0.0** + `3rdparty/AscendNPU-IR-v11/build-v11`（`bishengir-compile 1.1.0 428ab8fd + mmadL1 buffer-form 补丁`）+ `hivmc 0.2.0`；tilelang `build` 前端由 `env_cann90.sh` 驱动。
-- **默认 cache 命中**：conv1d_bias **23 passed / 1 xfailed / 4 xpassed**；conv1d + conv3d + GDN fallback **50 passed / 1 xpassed**。这些不是 9.0 现场编译结果。
-- **空 cache 复验（2026-10-19）**：最小 `64×64×64` Cube GEMM、K4 形状探针、纯 Vector K1、conv3d 单用例全部 `Failed to compile BiShengLIR to binary`。**9.0 当前栈无法生成任何新 `.o`，只能复用旧缓存**。
-- **9.0 硬边界**：`hivmc 0.2.0` 不支持 LIR；强制 legacy 会传它不认识的 triton 参数，关 LIR、去掉 R3-a `nd2nz` 均无效。K4–K6/K2 的新 kernel 开发在 9.0 上无法继续，除非 CANN 侧提供支持 LIR 的 hivmc。
+- **唯一默认栈**：CANN **9.0.0 系统 `bishengir-compile`**（`1.1.0 / 428ab8fd / 2026-04-30`）+ `hivmc 0.2.0`；tilelang `build` 前端由 `env_cann90.sh` 驱动。
+- **空 cache 已验证**：最小 Cube GEMM、K4 探针、纯 Vector K1 均 `COMPILE_OK`；`conv1d_bias` **23 passed / 4 xfailed / 1 xpassed**；`conv3d video-down` **1 passed**（50s，真编译）。
+- **`build-v11` 不是默认**：自编 `build-v11` 能过 HIR，但生成的 HIVM IR 与 `hivmc 0.2.0` 不兼容，所有新 kernel 在此编译器下失败；仅保留作 CG-2026-0003 实验。
+- **GDN 边界**：K4 已可进入 Stage 3；K2 blocksolve 在系统编译器下仍 SIGSEGV（CG-2026-0003），继续按三段拆分设计做小 kernel 编译探针。
 - **9.2 已物理删除**：`/home/developer/Ascend/cann-9.2.0` 与临时停用目录均已移除；`~/.bashrc` 已切到 `env_cann90.sh`，`.profile` 会在登录 shell 中加载 `.bashrc`。
 - **回退**：无；9.2 已物理删除。
 

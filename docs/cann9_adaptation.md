@@ -532,29 +532,30 @@ T6 复核动作：
 - 因此 9.0 的环境/Kernel 级规避均未打通；9.0.0 性能报告不受影响，但不能在 9.0 现场重编新 kernel。
 
 ### 15.5 环境层面还剩什么
-1. **9.0 环境层已无解，且范围比 GDN 更大**：`hivmc 0.2.0` 缺 LIR 编译且闭源不可补。
-   空 cache 下连最小 Cube GEMM 和纯 Vector K1 都无法出 `.o`，因此不是“GDN 特殊”，而是 9.0 不能开发任何新 kernel。
-2. **9.2 不再作为方案**：已物理删除；历史上 9.2 + hivmc 0.3.0 也只是接受 LIR 参数，GDN 仍 `External hivmc run fails`。
-3. **拆 kernel 不再是可行绕法**：K2 三段拆分能降低 IR 规模，但最小 GEMM 都无法编译，拆分后仍然过不了 hivmc。
-   只有 CANN 侧提供支持 LIR 的 9.0 hivmc，或重新引入可编译的工具链，才能继续 K2/K4–K6。
-4. **环境收尾已完成**：`env_cann90.sh`、`build-v11/bin/hivmc` wrapper 已持久化；`~/.bashrc` 已切 9.0；
-   9.2 目录已物理删除。
+1. **9.0 默认可用**：系统 `bishengir-compile` + `hivmc 0.2.0` 在空 cache 下可编译最小 Cube GEMM、K4、K1、
+   conv1d_bias 与 conv3d。18 算子复测用的是这套系统编译器，不是自编 `build-v11`。
+2. **`build-v11` 是回归源**：它能过 HIR，但生成的 HIVM IR 与 `hivmc 0.2.0` 不兼容（并把 `--enable-lir-compile`
+   等参数传给 hivmc，系统编译器不传）。此前“9.0 不能编译任何 kernel”的结论只对 `build-v11` 成立。
+3. **K2 仍被 CG-2026-0003 阻塞**：系统编译器在 GDN blocksolve 上 SIGSEGV（`mmadL1 getResult(0)`）；
+   K2 三段拆分是下一步，目标是用小 Cube kernel 规避 IR 规模触发。
+4. **9.2 已物理删除**；`env_cann90.sh` 已切回系统 9.0 编译器，`~/.bashrc` 已同步。
 5. **不属于环境**：GDN functions 4–6 端口、MHA/SSD kernel 重构、换工具链后的性能重基线。
 
-### 15.6 2026-10-19 K4/K2 编译探针与缓存发现
+### 15.6 2026-10-19 K4/K2 编译探针（修正版）
 
 - 探针目录：`examples/gdn_prefill/correct_initial_states/`
   - `probe_cube_min.py`：最小 `64×64×64` Cube GEMM
   - `probe_compile.py`：K4 形状的 Cube 修正探针
   - `PROBE_20261019.md`：完整命令与结论
-- 结果：Developer/Expert 两种模式、Cube/Vector 两种 kernel 全部 `Failed to compile BiShengLIR to binary`。
-- 空 cache 复验 `test_conv3d_bias[video-down-bias]` 同样失败；默认 cache 下通过，证明此前结果是缓存命中。
-- 影响：K4–K6 与 K2 的新 kernel 开发在 9.0 上**不能开始**；K2 的三段拆分设计保留在 `PROBE_20261019.md`，
-  待 hivmc 修复后再进入 Stage 3。
+- **系统编译器 + 空 cache**：最小 GEMM / K4 / K1 均 `COMPILE_OK`；conv1d_bias **23 passed / 4 xfailed / 1 xpassed**；
+  conv3d `video-down` **1 passed**（50s，真编译）。
+- **自编 `build-v11` + 空 cache**：同一批用例全部 `Failed to compile BiShengLIR to binary`；
+  默认 cache 下此前的通过是缓存命中。
+- **影响**：K4 可以进入 Stage 3；K2 blocksolve 仍 SIGSEGV，下一步做三段拆分的单段 Cube 编译探针。
 
 ### 15.4 复现命令
 ```bash
-source /home/developer/tilelang-mlir-ascend/env_cann90.sh   # 9.0.0 + build-v11 + hivmc wrapper
+source /home/developer/tilelang-mlir-ascend/env_cann90.sh   # 系统 CANN 9.0 编译器 + hivmc 0.2.0
 cd examples/TileOPs
 python3 -m pytest tests/ops/test_conv1d_bias.py tests/ops/test_conv1d.py tests/ops/test_conv3d_bias.py tests/ops/test_gdn.py -q
 ```
