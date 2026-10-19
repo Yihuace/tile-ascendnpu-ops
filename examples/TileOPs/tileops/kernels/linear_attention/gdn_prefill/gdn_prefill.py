@@ -67,7 +67,7 @@ def gdn_chunk_cumsum_kernel(
     num_slabs = (head + ht - 1) // ht
 
     @T.prim_func
-    def main(
+    def k1_cumsum_main(
         g: T.Tensor((1, total_tokens, head), in_dtype),
         out: T.Tensor((1, total_tokens, head), "float32"),
     ):
@@ -83,7 +83,7 @@ def gdn_chunk_cumsum_kernel(
             T.cumsum(f_ub, o_ub, dim=0)
             T.copy(o_ub, out[0, c * chunk_size:(c + 1) * chunk_size, hs:hs + ht])
 
-    return main
+    return k1_cumsum_main
 
 
 # ---------------------------------------------------------------------------
@@ -164,7 +164,7 @@ def gdn_warmup_chunks_kernel(batch, num_tokens, heads, chunk_size=64,
     assert num_iters * chunk_size == seq_len, "in-scope: equal-length, seq_len % chunk == 0"
 
     @T.prim_func
-    def main(
+    def warmup_main(
         g: T.Tensor((1, num_tokens, heads), g_dtype),
         cu_seqlens: T.Tensor((batch + 1,), "int32"),
         ht_mask: T.Tensor((batch,), "int32"),
@@ -196,7 +196,7 @@ def gdn_warmup_chunks_kernel(batch, num_tokens, heads, chunk_size=64,
                 num_warmup[bb, h] = nr[h]
                 fallback[bb, h] = fr[h]
 
-    return main
+    return warmup_main
 
 
 def _run_warmup_case(batch, seq_len, heads, dtype, tag, threshold=-10.0):

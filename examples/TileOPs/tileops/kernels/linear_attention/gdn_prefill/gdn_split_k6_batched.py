@@ -20,7 +20,7 @@ def bmm(H: int, M: int, N: int, K: int, ta: bool = False, tb: bool = False,
     b_shape = (H, N, K) if tb else (H, K, N)
 
     @T.prim_func
-    def main(
+    def bmm_main(
         A: T.Tensor(a_shape, dtype),
         B: T.Tensor(b_shape, dtype),
         C: T.Tensor((H, M, N), "float32"),
@@ -36,13 +36,13 @@ def bmm(H: int, M: int, N: int, K: int, ta: bool = False, tb: bool = False,
             with T.rs("PIPE_FIX"):
                 T.copy(c_l0, C[h, 0:M, 0:N])
 
-    return main
+    return bmm_main
 
 
 @tilelang.jit(out_idx=[4], target="npuir")
 def vec_rhs_b(H: int, C: int, V: int):
     @T.prim_func
-    def main(
+    def vec_rhs_main(
         KS: T.Tensor((H, C, V), "float32"),
         v: T.Tensor((H, C, V), "float32"),
         gprev: T.Tensor((H, 1, C), "float32"),
@@ -63,13 +63,13 @@ def vec_rhs_b(H: int, C: int, V: int):
                 out_ub[i, j] = b_ub[0, i] * (v_ub[i, j] - T.exp(gp_ub[0, i]) * ks_ub[i, j])
             T.copy(out_ub, rhs[h, 0:C, 0:V])
 
-    return main
+    return vec_rhs_main
 
 
 @tilelang.jit(out_idx=[2], target="npuir")
 def vec_p_b(H: int, C: int, scale: float = 1.0):
     @T.prim_func
-    def main(
+    def vec_p_main(
         QK: T.Tensor((H, C, C), "float32"),
         gc: T.Tensor((H, 1, C), "float32"),
         P: T.Tensor((H, C, C), "float32"),
@@ -87,13 +87,13 @@ def vec_p_b(H: int, C: int, scale: float = 1.0):
                 )
             T.copy(out_ub, P[h, 0:C, 0:C])
 
-    return main
+    return vec_p_main
 
 
 @tilelang.jit(out_idx=[2], target="npuir")
 def vec_vp_b(H: int, C: int, V: int):
     @T.prim_func
-    def main(
+    def vec_vp_main(
         W: T.Tensor((H, C, V), "float32"),
         gc: T.Tensor((H, 1, C), "float32"),
         Vp: T.Tensor((H, C, V), "float32"),
@@ -108,13 +108,13 @@ def vec_vp_b(H: int, C: int, V: int):
                 out_ub[i, j] = T.exp(g_ub[0, C - 1] - g_ub[0, i]) * w_ub[i, j]
             T.copy(out_ub, Vp[h, 0:C, 0:V])
 
-    return main
+    return vec_vp_main
 
 
 @tilelang.jit(out_idx=[3], target="npuir")
 def vec_o_b(H: int, C: int, V: int, scale: float = 1.0):
     @T.prim_func
-    def main(
+    def vec_o_main(
         QS: T.Tensor((H, C, V), "float32"),
         O2: T.Tensor((H, C, V), "float32"),
         gc: T.Tensor((H, 1, C), "float32"),
@@ -132,13 +132,13 @@ def vec_o_b(H: int, C: int, V: int, scale: float = 1.0):
                 out_ub[i, j] = scale * T.exp(g_ub[0, i]) * qs_ub[i, j] + o2_ub[i, j]
             T.copy(out_ub, o[h, 0:C, 0:V])
 
-    return main
+    return vec_o_main
 
 
 @tilelang.jit(out_idx=[2], target="npuir")
 def vec_state_b(H: int, K: int, V: int):
     @T.prim_func
-    def main(
+    def vec_state_main(
         S_scale: T.Tensor((H, K, V), "float32"),
         S_delta: T.Tensor((H, K, V), "float32"),
         S_out: T.Tensor((H, K, V), "float32"),
@@ -151,7 +151,7 @@ def vec_state_b(H: int, K: int, V: int):
             T.vadd(s_ub, d_ub, s_ub)
             T.copy(s_ub, S_out[h, 0:K, 0:V])
 
-    return main
+    return vec_state_main
 
 
 def k6_forward_batched(q, k, v, g_raw, beta, S_in, scale, C=64, A_all=None):

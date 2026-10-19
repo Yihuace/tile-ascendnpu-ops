@@ -20,7 +20,7 @@ from .gdn_split_inverse import seg_cube, seg_add
 @tilelang.jit(out_idx=[1], target="npuir")
 def gram_kernel(tasks: int, C: int = 64, K: int = 64, dtype: str = "float16"):
     @T.prim_func
-    def main(
+    def gram_main(
         k_tasks: T.Tensor((tasks, C, K), dtype),
         G: T.Tensor((tasks, C, C), "float32"),
     ):
@@ -32,13 +32,13 @@ def gram_kernel(tasks: int, C: int = 64, K: int = 64, dtype: str = "float16"):
             with T.rs("PIPE_FIX"):
                 T.copy(g_l0, G[t, 0:C, 0:C])
 
-    return main
+    return gram_main
 
 
 @tilelang.jit(out_idx=[5], target="npuir")
 def build_n_kernel(tasks: int, C: int = 64):
     @T.prim_func
-    def main(
+    def build_n_main(
         G: T.Tensor((tasks, C, C), "float32"),
         gprev: T.Tensor((tasks, 1, C), "float32"),
         gc: T.Tensor((tasks, 1, C), "float32"),
@@ -62,7 +62,7 @@ def build_n_kernel(tasks: int, C: int = 64):
                 n_ub[i, j] = -b_ub[0, i] * T.exp(gp_ub[0, i] - gc_ub[0, j]) * g_ub[i, j] * m_ub[i, j]
             T.copy(n_ub, N[t, 0:C, 0:C])
 
-    return main
+    return build_n_main
 
 
 def split_blocksolve(k: torch.Tensor, g: torch.Tensor, beta: torch.Tensor, C: int = 64, dtype="float16"):

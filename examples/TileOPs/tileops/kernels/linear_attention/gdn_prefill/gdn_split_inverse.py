@@ -20,7 +20,7 @@ import tilelang.language as T
 @tilelang.jit(out_idx=[2, 3], target="npuir")
 def seg_cube(tasks: int, C: int = 64, dtype: str = "float32"):
     @T.prim_func
-    def main(
+    def seg_cube_main(
         T_in: T.Tensor((tasks, C, C), dtype),
         P_in: T.Tensor((tasks, C, C), dtype),
         tmp_out: T.Tensor((tasks, C, C), dtype),
@@ -39,13 +39,13 @@ def seg_cube(tasks: int, C: int = 64, dtype: str = "float32"):
                 T.copy(tmp_l0, tmp_out[t, 0:C, 0:C])
                 T.copy(p2_l0, p2_out[t, 0:C, 0:C])
 
-    return main
+    return seg_cube_main
 
 
 @tilelang.jit(out_idx=[2], target="npuir")
 def seg_add(tasks: int, C: int = 64, dtype: str = "float32"):
     @T.prim_func
-    def main(
+    def seg_add_main(
         T_in: T.Tensor((tasks, C, C), dtype),
         tmp: T.Tensor((tasks, C, C), dtype),
         T_out: T.Tensor((tasks, C, C), dtype),
@@ -59,7 +59,7 @@ def seg_add(tasks: int, C: int = 64, dtype: str = "float32"):
             T.vadd(t_ub, tmp_ub, out_ub)
             T.copy(out_ub, T_out[t, 0:C, 0:C])
 
-    return main
+    return seg_add_main
 
 
 def split_inverse(n: torch.Tensor, levels: int = 6):
