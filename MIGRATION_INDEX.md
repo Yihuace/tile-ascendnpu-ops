@@ -94,7 +94,9 @@
   9.0.0 正式报告 3 份（`HardsigmoidFwdOp` / `ClampScalarFwdOp` / `HardswishFwdOp`，`reports/tileops/20261017_*`）；
   其余算子按用户口径「**能衔接 8.5 的一律衔接**」沿用 8.5.2 ratio，例外见 §13.6（`BatchNormBwd` +22.7%、clamp 家族 fp32 +7~8%）。
 - **取基线必先定「层」**（§13.2）：必须取**迁移态**而非「最新 run」（优化态），否则 `Hardsigmoid` 会得到 −42% 的**假偏差**（真值 −1.4%）。
-- **未闭合项**：① T6 ——「删 NaN 恢复」优化（`GeluAndMul`）在 9.0 下的重验（**静默失效风险**，§12.5；现有测试无 nan/inf 边界用例）；
+- **未闭合项**：① ~~T6 ——「删 NaN 恢复」优化（`GeluAndMul`）在 9.0 下的重验~~ → **已关闭（2026-10-19）**：
+  9.0 上假设成立（kernel 自检 `[Boundary] inf/nan` 全 PASS）、增益仍在（−8.8%，`opt_log.md §1`），
+  并新增仓库级守卫 `tests/ops/test_gelu_and_mul.py::test_gelu_and_mul_special_values`（反向对照已验证可失败），见 `docs/cann9_adaptation.md` §12.5；
   ② §13.6 两条新异常立项（`BatchNormBwd` large-spatial/fp16、clamp 家族 fp32）；③ `GatedDeltaNetPrefillFwdOp` 未交付（CG-2026-0026）。
 
 - 状态机：`python3 .agents/tools/statectl.py show --dir examples/<op_slug>`；op 级 `migration show --dir examples/<op_slug>`。
