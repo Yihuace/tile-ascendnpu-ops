@@ -1,9 +1,28 @@
 # 迁移索引（MIGRATION_INDEX）
 
 > TileOPs GPU→NPU 迁移总览。算子清单见《TileOPs迁移任务书.md》§5/§6；此处记录**状态 / 正确性 / 性能 / 报告指针 / 版本戳**。
-> 维护约定：每完成一个算子（Stage 5 通过）更新本表一行；一批完成跑一次 `tileops-report run --all` 生成统一横评。
+> 维护约定：每完成一个算子（Stage 5 通过）更新本表一行；一批完成生成统一横评。
+> **2026-10-18 修订**：CANN 9.0 重定基线下，全量 `tileops-report run --all`（约 4.5 h）判定为与 optimize 阶段的基线采集**重复劳动**，
+> 改以**细粒度快扫**（每算子取元素量最小/最大两个非 smoke workload × 全 dtype）承接「9.0 是否打坏性能」这一唯一不可后补的问题，见 `docs/cann9_adaptation.md` §12–§13。
 
 ## A. 本批待迁（任务书 §5/§6，**19 接口全量交付**；交付名 = 任务书原名）
+
+> **口径（2026-10-18 收尾）**
+>
+> - **正确性列 = CANN 9.0.0 重跑值**（工作流②，`docs/cann9_adaptation.md` §11，**逐文件串行**）。表 A 合计 **276 / 282 passed**：
+>   `Conv1dFwdOp`（1/28 失败）与 `Conv1dBiasFwdOp`（5/28 失败）的失败用例**全部**为卷积族工具链缺陷
+>   **CG-2026-0003**（`bishengir-compile` 带 LLVM crash backtrace 的 SIGSEGV），已按**工具链绑定 xfail**
+>   （`tests/conftest.py`，仅 `CANN==9.0.0` 生效、`strict=False`，修好即 XPASS）处理；
+>   故下表这 2 行**仍标 8.5.2 全通过值**，9.0 下的有效通过数与失败清单以 §11.1 为准。
+>   其余 **16 个已交付算子**在 9.0 与 8.5.2 下均全通过；`GatedDeltaNetPrefillFwdOp` 未交付（CG-2026-0026）。
+>
+> - **性能 ratio 列 = 8.5.2 口径**（未标注行）。9.0「迁移态」快扫偏差见 §13（18 算子 / 77 用例：**中位 1.64%**、P90 10.13%，
+>   56% 用例 ≤2%，**无系统回退**）。按 §13.6 判定：**大 shape 与 fp16/bf16 行可照用 8.5 值**（±2%）；µs 级小用例仅作量级参考（±10%）；
+>   例外需修正后再用 —— `BatchNormBwd` large-spatial/fp16 **+22.7%**、clamp 家族 fp32 **+7~8%**。
+>
+> - 9.0.0 正式报告（3 份，`20261017_*`）：`HardsigmoidFwdOp` / `ClampScalarFwdOp` / `HardswishFwdOp`（路径见下方各行报告指针）。
+>
+> 工具链版本戳见 §C 与 `versions.txt`。
 
 | 算子 | family | 批次 | 状态 | 正确性 | 性能 ratio | 报告指针 |
 |---|---|---|---|---|---|---|
@@ -39,6 +58,7 @@
 > `SSDChunkScanFwdOp`（test_mamba）在 9.0 下 `bishengir-compile` **挂死**（CPU 空转 >19min）、
 > `MultiHeadAttentionFwdOp` 按此决策跳过、`MishFwdOp` 7/7 ✅。
 > 详见 `docs/cann9_adaptation.md` §11.2。
+> **版本戳收尾（工作流④）对本节不做 9.0 更新**——本节数据维持 8.5.0 口径存档，不重测、不重写。
 
 | 算子 | 正确性 | avg max_abs_err | shapes | ratio 范围 |
 |---|---|---|---|---|
@@ -52,8 +72,32 @@
 
 ## C. 版本戳与状态文件
 
-- 当前工作区版本戳：tilelang `0.1.2`（dev root `/home/developer/tilelang-mlir-ascend`，无 `.git`）/ torch `2.7.1+cpu` / torch_npu `2.7.1.post4` / **CANN `9.0.0`**（`bishengir 1.1.0` + `hivmc 0.2.0`）/ Ascend910B3（可见设备 6）。
-  - **2026-10-16 重定基线**：工作区自 8.5.2 升级至 CANN 9.0.0。工作流① 知识库结论重验已完（19/19 repro 探针存活，见 `docs/cann9_adaptation.md` §10）；**表 A/B 的正确性/性能数据仍为 8.5.x 口径，待 ②`pytest tests/ops` / ③`tileops-report` 重测后覆盖**。
+### C.1 工具链版本戳（机器可读副本：`versions.txt`）
+
+| 项 | 版本 | 备注 |
+|---|---|---|
+| **CANN** | **9.0.0** | `bishengir-compile 1.1.0`（`428ab8fdab46`，2026-04-30）/ `hivmc 0.2.0`（`3af4c111df44`） |
+| tilelang | `0.1.2` | 自建 dev root：新容器 `/mnt/workspace/tilelang-mlir-ascend`（旧容器 `/home/developer/tilelang-mlir-ascend`）@ `9309edb0`（2026-10-15） |
+| AscendNPU-IR | `31f69036` | 子模块，`legacy-interface-342-g31f690369`（2026-01-14） |
+| torch / torch_npu | `2.7.1+cpu` / `2.7.1.post4` | Python `3.11.4` |
+| 设备 | Ascend910B3 | `ASCEND_VISIBLE_DEVICES=6`；`get_aicore_num()` 实查 **20**（纯 Vector 场景 ×2 = 40）；UB 192 KB |
+
+- **本地补丁（dev root 内，not upstream）**：`tilelang/jit/jit_npu.py` 的 CANN9 `syn_instr_mode` strip shim（见 `docs/cann9_adaptation.md` §3），备份 `jit_npu.py.bak_cann9`。
+- **取戳陷阱**：`tilelang.__version__` 的 `+<sha>` 后缀取自 **cwd 的 git**（非 tilelang 自身），取戳请以本表 / `versions.txt` 的 `commit` 字段为准。
+
+### C.2 数据口径（2026-10-18 收尾）
+
+- **正确性 = 9.0.0 口径**：工作流② 已完（`docs/cann9_adaptation.md` §11）——表 A 19 算子**逐文件串行**重跑，**276/282 passed**；
+  6 个失败全部为卷积族 CG-2026-0003（已工具链绑定 xfail）；表 B 7 算子**退出**本次重定基线范围（§11.2）。
+- **性能 = 混合口径**：工作流③ 以「细粒度快扫」**替代**全量 `tileops-report run --all`（§12：全量约 4.5 h，判定为与 optimize 基线采集重复劳动），
+  完成 **18 算子 / 77 用例**（全量非 smoke 的 31%）「迁移态」偏差复核（§13：中位 1.64%、P90 10.13%，**无系统回退**）。
+  9.0.0 正式报告 3 份（`HardsigmoidFwdOp` / `ClampScalarFwdOp` / `HardswishFwdOp`，`reports/tileops/20261017_*`）；
+  其余算子按用户口径「**能衔接 8.5 的一律衔接**」沿用 8.5.2 ratio，例外见 §13.6（`BatchNormBwd` +22.7%、clamp 家族 fp32 +7~8%）。
+- **取基线必先定「层」**（§13.2）：必须取**迁移态**而非「最新 run」（优化态），否则 `Hardsigmoid` 会得到 −42% 的**假偏差**（真值 −1.4%）。
+- **未闭合项**：① T6 ——「删 NaN 恢复」优化（`GeluAndMul`）在 9.0 下的重验（**静默失效风险**，§12.5；现有测试无 nan/inf 边界用例）；
+  ② §13.6 两条新异常立项（`BatchNormBwd` large-spatial/fp16、clamp 家族 fp32）；③ `GatedDeltaNetPrefillFwdOp` 未交付（CG-2026-0026）。
+
 - 状态机：`python3 .agents/tools/statectl.py show --dir examples/<op_slug>`；op 级 `migration show --dir examples/<op_slug>`。
 - 报告口径：`examples/TileOPs/reports/report.md`（多算子统一 run）vs `examples/TileOPs/reports/tileops/<run_id>/`（单算子）。
-- 待办缺口：顶层 `docs/` 缺失（skill 引用 `docs/开发指南.md`/`docs/Tilelang.language/` 不存在）→ `standards_check` 存量 SC-REF-PATH；补入后应转绿。
+- ~~待办缺口：顶层 `docs/` 缺失（skill 引用 `docs/开发指南.md`/`docs/Tilelang.language/` 不存在）→ `standards_check` 存量 SC-REF-PATH；补入后应转绿。~~
+  → **已闭合**：本分支 `docs/` 已补齐（`开发指南.md` / `快速入门.md` / `安装指南.md` / `Tilelang.language/` 等）。

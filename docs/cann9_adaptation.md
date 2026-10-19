@@ -183,6 +183,10 @@ repro 用 `os.environ.setdefault("TILELANG_ASCEND_MODE", ...)` 声明目标模�
 - ③ 性能比全部失效，需 `tileops-report run --all` 重测（含 `NPUUtils.get().get_aicore_num()` 实查）。
 - ④ `MIGRATION_INDEX.md §C` / `versions.txt` 版本戳收尾；复核「删 NaN 恢复」优化在 9.0 下是否仍有效。
 
+> **状态更新（2026-10-18 收尾）**：② 已完成（§11）；③ 已完成，并按「细粒度快扫」替代全量 `run --all`（§12–§13）；
+> ④ 的**版本戳部分已完成**——`MIGRATION_INDEX.md §C` 重写为 9.0 口径、新增根级 `versions.txt`；
+> ④ 的**第二半「复核删 NaN 恢复」仍未完成**（§12.5 T6，静默失效风险），单独跟踪。
+
 ## 11. 2026-10-17：工作流② 正确性重跑（表 A 全量）+ 表 B 退出重定基线范围
 
 跑法：`pytest tests/ops/<file>.py` **逐文件串行**（每个文件独立进程 + 独立 summary，抗中断），
