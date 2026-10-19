@@ -7,8 +7,8 @@
 
 | 维度 | 结果 |
 |---|---|
-| 接口交付 | **19 / 19 接口可用（GDN 为 correctness-first fallback；六 kernel 端口待续）** |
-| 正确性 | **19 / 19 接口**（GDN `test_gdn.py` 6/6；Conv1d/Conv1dBias 为 27 passed + 1 skipped，0 failed） |
+| 接口交付 | **19 / 19 接口可用**；GDN in-scope 主路径（K1+K2+K6 split）已交付，K5/CP 与小 shape fallback 保留 |
+| 正确性 | **19 / 19 接口**（GDN `test_gdn.py` **10/10**，含 in-scope + tail；Conv1d/Conv1dBias 为 27 passed + 1 skipped，0 failed） |
 | 端到端报告 | **17 passed + 1 partial**（Conv1d：correctness 通过，bench 有 flaky unit_stride 用例） |
 | 有生效调优 kernel | **15 / 18 已交付（83.3%）** |
 | 单算子优化报告 | **16 份** |
@@ -39,7 +39,7 @@
 | 16 | Conv1dBiasFwdOp | ✅ | 27+1 skip | 0.03–1.73% | 0/8 | perf_opt |
 | 17 | Conv3dBiasFwdOp | ✅ | 17/17 | 1.68–20.43% | 0/3 | perf_opt |
 | 18 | GLADecodeOp | ✅ | 11/11 | 3.10–20.16% | 0/5 | perf_opt |
-| 19 | GatedDeltaNetPrefillFwdOp | ✅（fallback） | 6/6 | —（benchmark skip） | — | reference 路径；六 kernel 端口待续 |
+| 19 | GatedDeltaNetPrefillFwdOp | ✅（in-scope split） | 10/10 | —（benchmark skip） | — | K1+K2+K6 split；K5/CP 待续 |
 
 ## 3. 主要性能收益
 
@@ -59,7 +59,7 @@
 
 | 项 | 状态 | 证据 |
 |---|---|---|
-| **GDN prefill** | 未交付（2/6 kernel） | CG-2026-0003；拆分探针：3 级解锁 `S=1024,H=4`，但 `S=64,H=2` 在 1/3/6 级、group、核数下均失败 → 拆 kernel 只能救大 shape。`examples/gdn_prefill/probe/experiments/18_level_split/PROBE_20261018.md` |
+| **GDN prefill** | in-scope 主路径已交付；K5/CP 待续 | K1+K2+K6 split 在 `S=64/K=64`、`S=100/K=64`、`S=3000/K=128` 对拍通过；`test_gdn.py` 10/10。`examples/gdn_prefill/correct_initial_states/PROBE_20261019.md` |
 | **Conv1d bias 中继** | 阻塞 | CG-2026-0028（bias-in-K 不可表达）+ CG-2026-0029（ws 宽度必须 128，160/192/256 触发 AIV/AIC 双 `hacc.entry`）；`encodec-init-bias` 240µs vs nobias 66µs |
 | **ClampScalar / ClampMin 9.0** | 已定性，保留 perf_opt | 9.0 baseline 45.35–64.37% vs tuned 58.21–70.16%；tuned 仍快 7.6–40%，是环境整体下移 |
 | **Add `linear-bias bf16`** | 贴线 10/11 | 69.37%，复测 63.7–69.4%；不再追 |
@@ -98,6 +98,6 @@ python3 ../../.agents/tools/statectl.py gate 4 --dir tileops/kernels/<family>/<o
 
 ## 7. 结论
 
-- **迁移侧收口**：19/19 接口可用；GDN 为 correctness-first fallback（6/6 tests），六 kernel 的 TileLang 端口仍未完成（2/6 done，function 2 卡编译器，4–6 为 reference 路径）。
+- **迁移侧收口**：19/19 接口可用；GDN in-scope 主路径（K1+K2+K6 split）已交付，`test_gdn.py` **10/10**；K5/CP 与小 shape fallback 保留。
 - **优化侧收口**：15/18 有生效调优 kernel；两个最大杠杆（Conv1d 17.7×、Conv3d 21.3×）与 GLA persistent 已落地。
-- **未收口项均有明确证据**：GDN 六 kernel 端口（编译器 + 复杂 Cube/Vector 重写）、Conv1d bias（CG-2026-0028/0029）、FALN（高不确定设计项）；不建议在无新工具链/新证据前继续投入。
+- **未收口项均有明确证据**：GDN K5/CP 与性能数据、Conv1d bias（CG-2026-0028/0029）、FALN（高不确定设计项）；不建议在无新工具链/新证据前继续投入。
