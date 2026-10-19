@@ -490,3 +490,41 @@ T6 复核动作：
 ### 14.4 版本戳
 - 当前生效：tilelang Apr v1.2.0 前端（`build`，Oct 在 `build.oct-bak`）/ **CANN 9.2.0**（`bishengir-compile 1.2.0 8796a8ac + 补丁`、`hivmc 0.3.0`）/ 910B3 / torch 2.7.1 / torch_npu 2.7.1.post4。
 - 既有 9.0.0 性能报告仍按 9.0.0 存档；本轮 MixCV 正确性验证属于 9.2.0 + Apr 栈。
+
+
+## 15. 2026-10-19：v1.1 补丁编译器 + CANN 9.0.0 hivmc 0.2.0（9.0 路线复验）
+
+### 15.1 做了什么
+- 在 `3rdparty/AscendNPU-IR-v11` worktree 检出 `release/v1.1.x @ 428ab8fd`，补两处：
+  - `HFusionToHIVM.cpp`：`mmadL1` 的 `getResult(0)` 守卫（CG-2026-0003）；
+  - `Utils.cpp`：`collapseAndReplace<CollapseShapeOp>` 显式实例化（链接需要）。
+- 用 `/tmp/opencode/pyb212`（pybind11 2.12.0）配置 LLVM，`build-v11` 完整编译成功：
+  `bishengir-compile 1.1.0 (428ab8fd)`。
+- 运行时切 `ASCEND_HOME_PATH=/home/developer/Ascend/cann-9.0.0`，使用自带 `hivmc 0.2.0 (3af4c111)`；
+  tilelang 前端仍为 Apr v1.2.0。
+- 9.0 的 hivmc 不认识前端转发的 `--enable-lir-compile=true` / `--enable-cpu-trace-intrinsic=*`，
+  加参数过滤 wrapper 后继续。
+
+### 15.2 实测
+| 用例 | 结果 |
+|---|---|
+| `test_conv1d_bias.py` | **23 passed / 1 xfailed / 4 xpassed**（SIGSEGV 消失） |
+| `test_conv1d.py` + `test_conv3d_bias.py` | **通过** |
+| `test_multi_head_attention.py` | 4 failed / 2 passed |
+| `test_mamba.py -k ssd` | 1 failed / 3 passed |
+| GDN blocksolve L0 | 失败：`hivmc: Failed to compile BiShengLIR to binary` |
+
+### 15.3 结论
+- **19 批的 MixCV（conv1d / conv1d_bias / conv3d）在 9.0 原生栈上已解锁**，不必依赖 9.2。
+- MHA/SSD/GDN blocksolve 的失败点从 SIGSEGV 变成 **前端 v1.2.0（6 月）与 hivmc 0.2.0（4 月）的代际差**；
+  参数过滤只能过第一层，`BiShengLIR -> binary` 仍失败。
+- 要彻底对齐，需要 **v1.1 同代 tilelang 前端**（4 月）重编，或保留 9.2/Apr 栈；二者对 19 批 conv 等价。
+  当前默认仍为 9.2/Apr，9.0/v1.1 作为实验栈保留。
+- 9.0.0 性能报告不受影响，仍按 9.0.0 存档。
+
+### 15.4 复现命令
+```bash
+source /tmp/opencode/env_v11_90.sh   # 9.0.0 + build-v11 + hivmc 参数过滤 wrapper
+cd examples/TileOPs
+python3 -m pytest tests/ops/test_conv1d_bias.py tests/ops/test_conv1d.py tests/ops/test_conv3d_bias.py -q
+```
