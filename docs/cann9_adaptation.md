@@ -516,11 +516,25 @@ T6 复核动作：
 
 ### 15.3 结论
 - **19 批的 MixCV（conv1d / conv1d_bias / conv3d）在 9.0 原生栈上已解锁**，不必依赖 9.2。
-- MHA/SSD/GDN blocksolve 的失败点从 SIGSEGV 变成 **前端 v1.2.0（6 月）与 hivmc 0.2.0（4 月）的代际差**；
-  参数过滤只能过第一层，`BiShengLIR -> binary` 仍失败。
-- 要彻底对齐，需要 **v1.1 同代 tilelang 前端**（4 月）重编，或保留 9.2/Apr 栈；二者对 19 批 conv 等价。
-  当前默认仍为 9.2/Apr，9.0/v1.1 作为实验栈保留。
-- 9.0.0 性能报告不受影响，仍按 9.0.0 存档。
+- **9.0 路线只能覆盖 conv**：`hivmc 0.2.0` 不支持 `--enable-lir-compile`，且是闭源组件、无法本地重建；
+  过滤该参数后只能退回旧路径，复杂 kernel 必然 `Failed to compile BiShengLIR to binary`。
+- 9.2 的 `hivmc 0.3.0` 支持 `--enable-lir-compile`；但当前 v1.2.0 编译器 + 0.3.0 仍无法 lower GDN blocksolve
+  （`External hivmc run fails`），说明不是单纯“代际差”，还有编译器输出/hivmc 能力问题。
+- 试过把 `mmadL1` 补丁从“删除 walk”改为 buffer-form 取 `op.getC()` 并保留 `tile_mix_cube_num` 传播：
+  v1.1 与 Apr 1.2.0 都重编，GDN blocksolve 仍失败；9.2 conv 回归 **67 passed / 1 xfailed / 5 xpassed**，无回退。
+- 当前默认仍为 9.2/Apr，9.0/v1.1 作为实验栈保留；9.0.0 性能报告不受影响。
+
+### 15.5 环境层面还剩什么
+1. **9.0 不再投入**：`hivmc 0.2.0` 缺 LIR 编译，闭源不可补；除非 CANN 侧提供 0.2.x 的新 hivmc，否则 MHA/SSD/GDN 无解。
+2. **9.2 唯一可继续的方向**：构建 `7b16f3c12`（`release/v2.0.x`，2026-08-05）的 `bishengir-compile`
+   + 同样的 buffer-form 补丁，配 `hivmc 0.3.0`；验证是否只是 v1.2.0 编译器输出不兼容。
+   注意该 commit 仍保留 `op.getResult(0)`，补丁不能省。
+3. **先抓 IR 再决定是否值得重编**：用 `hivmc --save-temps --mlir-print-ir-after-failure --mlir-print-op-on-diagnostic`
+   定位 GDN 失败 pass/op；若落在 `nd2nz`/多 entry，属于 kernel/编译器能力问题，不是换环境能解。
+4. **环境收尾**：把 `/tmp/opencode/env_v11_90.sh` 和 `hivmc` 参数过滤 wrapper 移到持久路径，
+   补 `switch_stack` 入口；清理 `.git/gc.log` 的 gc 警告；任何编译器重编后只跑定向用例，不做全量。
+5. **不属于环境**：GDN functions 4–6 端口、MHA/SSD/GDN 的 kernel 级规避（删一个 `nd2nz`、拆 entry、加 UB buffer）、
+   以及换编译器后的性能重基线。
 
 ### 15.4 复现命令
 ```bash

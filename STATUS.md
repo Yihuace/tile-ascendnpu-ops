@@ -3,7 +3,7 @@
 > 本窗口：**19 算子统一 CANN 9.0.0 口径**。四个 8.5 残留（Add / Sub / Isnan / ClampMin）已完成端到端重测；Add / Sub 同时切到 `perf_opt`。
 > 更新：2026-10-18 16:00 (+08:00) · 会话：9.0 口径统一
 > **收口（2026-10-18 22:2x）**：最终交付报告 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md`；18/19 完整交付 + GDN correctness-first fallback。
-> **环境更新（2026-10-19）**：默认仍是 **CANN 9.2.0 + Apr v1.2.0 补丁编译器 + hivmc 0.3.0**；另建 **CANN 9.0.0 + v1.1 补丁编译器 + hivmc 0.2.0** 实验栈，19 批 conv1d/conv1d_bias/conv3d 已通过，MHA/SSD/GDN blocksolve 仍卡 hivmc 代际（见 `docs/cann9_adaptation.md` §15）。
+> **环境更新（2026-10-19）**：默认仍是 **CANN 9.2.0 + Apr v1.2.0 补丁编译器 + hivmc 0.3.0**；另建 **CANN 9.0.0 + v1.1 补丁编译器 + hivmc 0.2.0** 实验栈，19 批 conv1d/conv1d_bias/conv3d 已通过。**9.0 的 hivmc 0.2.0 不支持 LIR 编译，MHA/SSD/GDN 无法在 9.0 修复**；9.2 下 GDN blocksolve 仍 `External hivmc run fails`。剩余项见 `docs/cann9_adaptation.md` §15.5。
 
 ## 总览（严格口径；报告数据为 CANN 9.0.0 存档，默认运行环境为 CANN 9.2.0/Apr，9.0/v1.1 实验栈见 §15）
 
