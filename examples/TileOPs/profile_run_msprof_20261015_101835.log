@@ -1,0 +1,22 @@
+# NPU Benchmark Report
+Generated: 2026-10-15 10:18:35
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## Conv3dBiasFwdOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | bandwidth_tbs | prof_mode | tflops | @py_assert1 | @py_assert2 | c_in | c_in_g | c_out | d_in | dilation | groups | h_in | input_shape | kd | kh | kw | n | padding | stride | use_bias | w_in | weight_shape | config | dtype |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| smoke-k3-s1-bias | 242.6000 | N/A | 0.0004 | msprof | 0.0493 | None | None | 8 | 8 | 16 | 8 | 1 | 1 | 16 | [1, 8, 8, 16, 16] | 3 | 3 | 3 | 1 | 1 | 1 | True | 16 | [16, 8, 3, 3, 3] | {'block_k': 128, 'block_m': 64, 'block_n': 64, 'num_stages': 1} | float16 |
+| smoke-k3-s1-bias | 280.1800 | N/A | 0.0004 | msprof | 0.0427 | None | None | 8 | 8 | 16 | 8 | 1 | 1 | 16 | [1, 8, 8, 16, 16] | 3 | 3 | 3 | 1 | 1 | 1 | True | 16 | [16, 8, 3, 3, 3] | {'block_k': 128, 'block_m': 64, 'block_n': 64, 'num_stages': 1} | bfloat16 |
+| r3d-stem-bias | 12034.9404 | N/A | 0.0022 | msprof | 0.1648 | None | None | 3 | 3 | 64 | 16 | 1 | 1 | 112 | [1, 3, 16, 112, 112] | 3 | 3 | 3 | 1 | 1 | 1 | True | 112 | [64, 3, 3, 3, 3] | {'block_k': 128, 'block_m': 64, 'block_n': 64, 'num_stages': 1} | float16 |
+| video-down-bias | 2558.7400 | N/A | 0.0017 | msprof | 0.4854 | None | None | 64 | 64 | 128 | 8 | 1 | 1 | 56 | [1, 64, 8, 56, 56] | 3 | 3 | 3 | 1 | 1 | 2 | True | 56 | [128, 64, 3, 3, 3] | {'block_k': 128, 'block_m': 64, 'block_n': 64, 'num_stages': 1} | float16 |
+| unet-encoder-bias | 6722.5000 | N/A | 0.0038 | msprof | 2.0688 | None | None | 32 | 32 | 64 | 32 | 1 | 1 | 64 | [1, 32, 32, 64, 64] | 3 | 3 | 3 | 1 | 1 | 1 | True | 64 | [64, 32, 3, 3, 3] | {'block_k': 128, 'block_m': 64, 'block_n': 64, 'num_stages': 1} | bfloat16 |

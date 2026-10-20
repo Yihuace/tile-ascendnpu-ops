@@ -1,0 +1,1077 @@
+[W1017 15:48:05.214091205 ToKernelNpu.cpp:41] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_conv1d_manifest_bench[encodec-deep-bias-bfloat16] ____________
+
+self = <tilelang.jit.jit_npu.compiler_npu object at 0xffff1123f050>
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        # CANN9 shim: CANN 9.0's *system* bishengir-compile (v1.1.0-post2)
+        # renamed the sync assembly keyword syn_instr_mode -> sync_instr_mode.
+        # Only rewrite it when the compiler actually expects the new spelling;
+        # the matched self-built Oct AscendNPU-IR compiler still wants the
+        # original name (feeding it the renamed one yields
+        # "Dialect `' not found for custom op 'sync_instr_mode'").
+        # Controllable via TILELANG_CANN9_SYNC_SHIM=0|1 (default 1 = old behaviour
+        # = rename, for the system 9.0 compiler).
+        if os.environ.get("TILELANG_CANN9_SYNC_SHIM", "1") == "1":
+            import re as _re
+            linalg = _re.sub(r"\bsyn_instr_mode\b", "sync_instr_mode", linalg)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+>               ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1932: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmptbh4z64i/kernel.npuir', '--enable-auto-multi-buf...', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', ...],)
+kwargs = {'stderr': -1, 'stdout': -1, 'text': True}
+process = <Popen: returncode: -11 args: ['/home/developer/Ascend/cann-9.0.0/bin/bishen...>
+stdout = ''
+stderr = 'PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.\nStack du...aac938a7dc\n16 libc.so.6         0x0000ffff8e985e10 __libc_start_main + 232\n17 bishengir-compile 0x0000aaaac9389e58\n'
+retcode = -11
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmptbh4z64i/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '--disable-hivm-tensor-compile=true', '-o', '/tmp/tmptbh4z64i/kernel']' died with <Signals.SIGSEGV: 11>.
+
+/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py:571: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+functor = <tileops.ops.convolution.Conv1dFwdOp object at 0xffff03489390>
+args = (tensor([[[-1.2422,  0.6133, -0.8086,  ...,  1.1328, -0.5195,  1.7266],
+         [ 1.2031,  0.4941, -0.4883,  ..., -0....
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+       device='npu:0', dtype=torch.bfloat16))
+mode = 'msprof'
+
+    def _bench_with_mode(
+        functor: Callable,
+        args: tuple = (),
+        mode: Optional[str] = None,
+    ) -> tuple[float, str, Optional[str]]:
+        """Dispatch to events or msprof profiling based on *mode* / env var.
+    
+        Returns ``(latency_ms, prof_mode, prof_output_dir)`` where *prof_mode*
+        is either ``"events"`` or ``"msprof"``, and *prof_output_dir* is the
+        path to the msprof output directory (or ``None`` for events mode).
+    
+        The default mode is ``msprof`` (kernel-only latency via ``msprof op``,
+        no launch overhead).  Set ``TILEOPS_PROF_MODE=events`` (or
+        *mode*="events") to use device-event timing instead.  If the functor
+        is not supported by msprof (e.g. closures/lambdas) or msprof is
+        unavailable, falls back to events with a warning.
+        """
+        mode = mode or os.environ.get("TILEOPS_PROF_MODE", "msprof")
+        mode = mode.lower().strip()
+    
+        if mode == "msprof":
+            if bench_kernel_msprof is None:
+                _logger.warning(
+                    "TILEOPS_PROF_MODE=msprof but msprof module is unavailable; falling back to events."
+                )
+                return bench_kernel(functor, args=args), "events", None
+            try:
+                # Call functor once in-process so that Op state (e.g. roofline
+                # spec, kernel cache) is initialized before msprof runs it in
+                # a subprocess.  This mirrors the events-mode warm-up path.
+>               _ = functor(*args)
+
+tileops/benchmark/benchmark_base.py:236: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/convolution.py:289: in forward
+    return kernel(input, weight, bias)
+tileops/kernels/kernel_base.py:94: in __call__
+    return self.forward(*args, **kwargs)
+tileops/kernels/convolution/conv1d/conv1d.py:391: in forward
+    program = self.kernel(**config)
+/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py:151: in wrapper
+    kernel_result = compile(
+/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py:66: in compile
+    return cached_npu(
+/home/developer/tilelang-mlir-ascend/tilelang/cache/__init__.py:29: in cached_npu
+    return _kernel_cache_instance.cached_npu(
+/home/developer/tilelang-mlir-ascend/tilelang/cache/kernel_cache.py:186: in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1585: in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.compiler_npu object at 0xffff1123f050>
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        # CANN9 shim: CANN 9.0's *system* bishengir-compile (v1.1.0-post2)
+        # renamed the sync assembly keyword syn_instr_mode -> sync_instr_mode.
+        # Only rewrite it when the compiler actually expects the new spelling;
+        # the matched self-built Oct AscendNPU-IR compiler still wants the
+        # original name (feeding it the renamed one yields
+        # "Dialect `' not found for custom op 'sync_instr_mode'").
+        # Controllable via TILELANG_CANN9_SYNC_SHIM=0|1 (default 1 = old behaviour
+        # = rename, for the system 9.0 compiler).
+        if os.environ.get("TILELANG_CANN9_SYNC_SHIM", "1") == "1":
+            import re as _re
+            linalg = _re.sub(r"\bsyn_instr_mode\b", "sync_instr_mode", linalg)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+                ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+                print("AscendNPU IR compile success:", ret.stdout)
+            except subprocess.CalledProcessError as e:
+                # print ir
+                print("AscendNPU IR:\n")
+                print(self.mlir_content)
+                # print error info
+                print("err cmd:", " ".join(cmd_list))
+                print(f"err code: {e.returncode}")
+>               raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+E               RuntimeError: NPU IR opt failed: PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.
+E               Stack dump:
+E               0.	Program arguments: /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmptbh4z64i/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true --disable-hivm-tensor-compile=true -o /tmp/tmptbh4z64i/kernel
+E               Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+E               0  bishengir-compile 0x0000aaaacd6d8ba8
+E               1  bishengir-compile 0x0000aaaacd6d671c
+E               2  bishengir-compile 0x0000aaaacd6d9370
+E               3  linux-vdso.so.1   0x0000ffff8ef618dc __kernel_rt_sigreturn + 0
+E               4  bishengir-compile 0x0000aaaac93e9c80
+E               5  bishengir-compile 0x0000aaaac94a0458
+E               6  bishengir-compile 0x0000aaaac939d4f4
+E               7  bishengir-compile 0x0000aaaac939d4f4
+E               8  bishengir-compile 0x0000aaaac939d4f4
+E               9  bishengir-compile 0x0000aaaac939d4f4
+E               10 bishengir-compile 0x0000aaaac94884f4
+E               11 bishengir-compile 0x0000aaaaccadb260
+E               12 bishengir-compile 0x0000aaaaccade820
+E               13 bishengir-compile 0x0000aaaac9433ce4
+E               14 bishengir-compile 0x0000aaaac9407874
+E               15 bishengir-compile 0x0000aaaac938a7dc
+E               16 libc.so.6         0x0000ffff8e985e10 __libc_start_main + 232
+E               17 bishengir-compile 0x0000aaaac9389e58
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1943: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tilelang.jit.jit_npu.compiler_npu object at 0xffff11193790>
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        # CANN9 shim: CANN 9.0's *system* bishengir-compile (v1.1.0-post2)
+        # renamed the sync assembly keyword syn_instr_mode -> sync_instr_mode.
+        # Only rewrite it when the compiler actually expects the new spelling;
+        # the matched self-built Oct AscendNPU-IR compiler still wants the
+        # original name (feeding it the renamed one yields
+        # "Dialect `' not found for custom op 'sync_instr_mode'").
+        # Controllable via TILELANG_CANN9_SYNC_SHIM=0|1 (default 1 = old behaviour
+        # = rename, for the system 9.0 compiler).
+        if os.environ.get("TILELANG_CANN9_SYNC_SHIM", "1") == "1":
+            import re as _re
+            linalg = _re.sub(r"\bsyn_instr_mode\b", "sync_instr_mode", linalg)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+>               ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1932: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmprco89v7l/kernel.npuir', '--enable-auto-multi-buf...', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', ...],)
+kwargs = {'stderr': -1, 'stdout': -1, 'text': True}
+process = <Popen: returncode: -11 args: ['/home/developer/Ascend/cann-9.0.0/bin/bishen...>
+stdout = ''
+stderr = 'PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.\nStack du...aad053a7dc\n16 libc.so.6         0x0000ffff8180fe10 __libc_start_main + 232\n17 bishengir-compile 0x0000aaaad0539e58\n'
+retcode = -11
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmprco89v7l/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '--disable-hivm-tensor-compile=true', '-o', '/tmp/tmprco89v7l/kernel']' died with <Signals.SIGSEGV: 11>.
+
+/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py:571: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+input_shape = (1, 128, 600), weight_shape = (256, 128, 10), stride = 1
+padding = 0, dilation = 1, groups = 1, use_bias = True, dtype = torch.bfloat16
+
+    @pytest.mark.parametrize(
+        "input_shape, weight_shape, stride, padding, dilation, groups, use_bias, dtype",
+        _conv1d_params(load_workloads(_CONV1D_OP)),
+    )
+    def test_conv1d_manifest_bench(
+        input_shape: tuple[int, ...],
+        weight_shape: tuple[int, ...],
+        stride: int,
+        padding: int | str,
+        dilation: int,
+        groups: int,
+        use_bias: bool,
+        dtype: torch.dtype,
+    ) -> None:
+        n, c_in, l_in = input_shape
+        c_out, c_in_g, kernel_size = weight_shape
+        test = Conv1dWorkload(
+            n,
+            c_in,
+            l_in,
+            c_out,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            dtype,
+            use_bias,
+        )
+        x, weight, bias = test.gen_inputs()
+        op = Conv1dFwdOp(stride=stride, padding=padding, dilation=dilation, groups=groups)
+        bm = ManifestBenchmark(_CONV1D_OP, op, test)
+        args = (x, weight) if bias is None else (x, weight, bias)
+>       result = bm.profile(op, *args)
+
+benchmarks/ops/bench_conv1d.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/benchmark/benchmark_base.py:285: in profile
+    latency, prof_mode, prof_output_dir = _bench_with_mode(functor, args=inputs, mode=mode)
+tileops/benchmark/benchmark_base.py:248: in _bench_with_mode
+    return bench_kernel(functor, args=args), "events", None
+tileops/benchmark/benchmark_base.py:179: in bench_kernel
+    _run(i)
+tileops/benchmark/benchmark_base.py:161: in _run
+    return fn(*arg_pool[i % _N_CLONES])
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/convolution.py:289: in forward
+    return kernel(input, weight, bias)
+tileops/kernels/kernel_base.py:94: in __call__
+    return self.forward(*args, **kwargs)
+tileops/kernels/convolution/conv1d/conv1d.py:391: in forward
+    program = self.kernel(**config)
+/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py:151: in wrapper
+    kernel_result = compile(
+/home/developer/tilelang-mlir-ascend/tilelang/jit/__init__.py:66: in compile
+    return cached_npu(
+/home/developer/tilelang-mlir-ascend/tilelang/cache/__init__.py:29: in cached_npu
+    return _kernel_cache_instance.cached_npu(
+/home/developer/tilelang-mlir-ascend/tilelang/cache/kernel_cache.py:186: in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1585: in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tilelang.jit.jit_npu.compiler_npu object at 0xffff11193790>
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        # CANN9 shim: CANN 9.0's *system* bishengir-compile (v1.1.0-post2)
+        # renamed the sync assembly keyword syn_instr_mode -> sync_instr_mode.
+        # Only rewrite it when the compiler actually expects the new spelling;
+        # the matched self-built Oct AscendNPU-IR compiler still wants the
+        # original name (feeding it the renamed one yields
+        # "Dialect `' not found for custom op 'sync_instr_mode'").
+        # Controllable via TILELANG_CANN9_SYNC_SHIM=0|1 (default 1 = old behaviour
+        # = rename, for the system 9.0 compiler).
+        if os.environ.get("TILELANG_CANN9_SYNC_SHIM", "1") == "1":
+            import re as _re
+            linalg = _re.sub(r"\bsyn_instr_mode\b", "sync_instr_mode", linalg)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+                ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+                print("AscendNPU IR compile success:", ret.stdout)
+            except subprocess.CalledProcessError as e:
+                # print ir
+                print("AscendNPU IR:\n")
+                print(self.mlir_content)
+                # print error info
+                print("err cmd:", " ".join(cmd_list))
+                print(f"err code: {e.returncode}")
+>               raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+E               RuntimeError: NPU IR opt failed: PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.
+E               Stack dump:
+E               0.	Program arguments: /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmprco89v7l/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true --disable-hivm-tensor-compile=true -o /tmp/tmprco89v7l/kernel
+E               Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+E               0  bishengir-compile 0x0000aaaad4888ba8
+E               1  bishengir-compile 0x0000aaaad488671c
+E               2  bishengir-compile 0x0000aaaad4889370
+E               3  linux-vdso.so.1   0x0000ffff81deb8dc __kernel_rt_sigreturn + 0
+E               4  bishengir-compile 0x0000aaaad0599c80
+E               5  bishengir-compile 0x0000aaaad0650458
+E               6  bishengir-compile 0x0000aaaad054d4f4
+E               7  bishengir-compile 0x0000aaaad054d4f4
+E               8  bishengir-compile 0x0000aaaad054d4f4
+E               9  bishengir-compile 0x0000aaaad054d4f4
+E               10 bishengir-compile 0x0000aaaad06384f4
+E               11 bishengir-compile 0x0000aaaad3c8b260
+E               12 bishengir-compile 0x0000aaaad3c8e820
+E               13 bishengir-compile 0x0000aaaad05e3ce4
+E               14 bishengir-compile 0x0000aaaad05b7874
+E               15 bishengir-compile 0x0000aaaad053a7dc
+E               16 libc.so.6         0x0000ffff8180fe10 __libc_start_main + 232
+E               17 bishengir-compile 0x0000aaaad0539e58
+
+/home/developer/tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1943: RuntimeError
+----------------------------- Captured stdout call -----------------------------
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+Conv1dUnitStrideKernel initialized with config: {'block_m': 64, 'block_n': 128, 'block_k': 128, 'taps': 1, 'num_stages': 1}
+AscendNPU IR:
+
+module attributes {hivm.module_core_type = #hivm.module_core_type<MIX>, memref.memref_as_ptr} {
+  func.func @_conv1d_unit_stride_bias_main_mix_aic(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xbf16, #hivm.address_space<gm>>, %arg9: memref<?xf32, #hivm.address_space<gm>>, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32, %arg15: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIC>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c128 = arith.constant 128 : index
+    %c64 = arith.constant 64 : index
+    %c2_i32 = arith.constant 2 : i32
+    %c16_i32 = arith.constant 16 : i32
+    %c15_i32 = arith.constant 15 : i32
+    %c591_i32 = arith.constant 591 : i32
+    %c128_i32 = arith.constant 128 : i32
+    %c64_i32 = arith.constant 64 : i32
+    %c5_i32 = arith.constant 5 : i32
+    %c256_i32 = arith.constant 256 : i32
+    %c10_i32 = arith.constant 10 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c39_i32 = arith.constant 39 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1, 128, 600], strides: [76800, 600, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x128x600xbf16, strided<[76800, 600, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg9 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg7 to offset: [0], sizes: [10, 256, 128], strides: [32768, 128, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_MTE2>] flag = 4
+    %2 = arith.subi %c39_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg16 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      scf.for %arg17 = %c0_i32 to %c10_i32 step %c1_i32  : i32 {
+        %alloc_3 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>
+        %alloc_4 = memref.alloc() : memref<128x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>
+        %15 = arith.index_cast %arg17 : i32 to index
+        %16 = arith.muli %arg16, %c256_i32 : i32
+        %17 = arith.divsi %1, %c5_i32 : i32
+        %18 = arith.muli %17, %c64_i32 : i32
+        %19 = arith.addi %16, %18 : i32
+        %20 = arith.index_cast %19 : i32 to index
+        %subview_5 = memref.subview %reinterpret_cast_1[%15, %20, 0] [1, 64, 128] [1, 1, 1] : memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>> to memref<64x128xbf16, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_5 : memref<64x128xbf16, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>) outs(%alloc_3 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>) init_out_buffer = false
+        %21 = arith.remsi %1, %c5_i32 : i32
+        %22 = arith.muli %21, %c128_i32 : i32
+        %23 = arith.addi %22, %arg17 : i32
+        %24 = arith.index_cast %23 : i32 to index
+        %25 = arith.subi %c591_i32, %22 : i32
+        %26 = arith.minsi %25, %c128_i32 : i32
+        %27 = arith.index_cast %26 : i32 to index
+        %subview_6 = memref.subview %reinterpret_cast[0, 0, %24] [1, 128, %27] [1, 1, 1] : memref<1x128x600xbf16, strided<[76800, 600, 1]>, #hivm.address_space<gm>> to memref<128x?xbf16, strided<[600, 1], offset: ?>, #hivm.address_space<gm>>
+        %subview_7 = memref.subview %alloc_4[0, 0] [128, %27] [1, 1] : memref<128x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>> to memref<128x?xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_6 : memref<128x?xbf16, strided<[600, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_7 : memref<128x?xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>) init_out_buffer = false
+        %28 = arith.cmpi eq, %arg17, %c0_i32 : i32
+        %29 = arith.addi %26, %c15_i32 : i32
+        %30 = arith.divsi %29, %c16_i32 : i32
+        %31 = arith.muli %30, %c16_i32 : i32
+        %32 = arith.index_cast %31 : i32 to index
+        hivm.hir.mmadL1 ins(%alloc_3, %alloc_4, %28, %c64, %c128, %32 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>, memref<128x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>, i1, index, index, index) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>)
+      }
+      %4 = arith.muli %arg16, %c2_i32 : i32
+      %5 = arith.addi %4, %c1_i32 : i32
+      %6 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_FIX>] flag = %6
+      %7 = arith.remsi %1, %c5_i32 : i32
+      %8 = arith.muli %7, %c128_i32 : i32
+      %9 = arith.subi %c591_i32, %8 : i32
+      %10 = arith.minsi %9, %c128_i32 : i32
+      %11 = arith.index_cast %10 : i32 to index
+      %subview = memref.subview %alloc[0, 0] [64, %11] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>> to memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      %12 = arith.index_cast %1 : i32 to index
+      %13 = arith.index_cast %arg16 : i32 to index
+      %subview_2 = memref.subview %reinterpret_cast_0[%12, %13, 0, 0] [1, 1, 64, %11] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      hivm.hir.fixpipe {enable_nz2nd} ins(%subview : memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<cc>>) outs(%subview_2 : memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>)
+      %14 = arith.extsi %4 : i32 to i64
+      hivm.hir.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_S>] flag = %14 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+  func.func @_conv1d_unit_stride_bias_main_mix_aiv(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xbf16, #hivm.address_space<gm>>, %arg9: memref<?xf32, #hivm.address_space<gm>>, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32, %arg15: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c591 = arith.constant 591 : index
+    %c64_i32 = arith.constant 64 : i32
+    %c256_i32 = arith.constant 256 : i32
+    %c8192 = arith.constant 8192 : index
+    %c16384 = arith.constant 16384 : index
+    %c5_i32 = arith.constant 5 : i32
+    %c591_i32 = arith.constant 591 : i32
+    %c128_i32 = arith.constant 128 : i32
+    %c2_i32 = arith.constant 2 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c39_i32 = arith.constant 39 : i32
+    %c10_i32 = arith.constant 10 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c16_i32 = arith.constant 16 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg5 to offset: [0], sizes: [1, 256, 591], strides: [151296, 591, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x256x591xbf16, strided<[151296, 591, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg9 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg7 to offset: [0], sizes: [10, 256, 128], strides: [32768, 128, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_2 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [256, 128, 10], strides: [1280, 10, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<256x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_3 = memref.reinterpret_cast %arg6 to offset: [0], sizes: [256], strides: [1] : memref<?xbf16, #hivm.address_space<gm>> to memref<256xbf16, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    scf.for %arg16 = %c0_i32 to %c16_i32 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<16x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<16x10x128xbf16, strided<[1280, 128, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<10x16x128xbf16, strided<[2048, 128, 1]>, #hivm.address_space<ub>>
+      %4 = arith.muli %arg16, %c16_i32 : i32
+      %5 = arith.index_cast %4 : i32 to index
+      %subview = memref.subview %reinterpret_cast_2[%5, 0, 0] [16, 128, 10] [1, 1, 1] : memref<256x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<gm>> to memref<16x128x10xbf16, strided<[1280, 10, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview, %alloc : memref<16x128x10xbf16, strided<[1280, 10, 1], offset: ?>, #hivm.address_space<gm>> to memref<16x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<ub>>
+      hivm.hir.vtranspose ins(%alloc : memref<16x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<ub>>) outs(%alloc_4 : memref<16x10x128xbf16, strided<[1280, 128, 1]>, #hivm.address_space<ub>>) permutation = [0, 2, 1]
+      hivm.hir.vtranspose ins(%alloc_4 : memref<16x10x128xbf16, strided<[1280, 128, 1]>, #hivm.address_space<ub>>) outs(%alloc_5 : memref<10x16x128xbf16, strided<[2048, 128, 1]>, #hivm.address_space<ub>>) permutation = [1, 0, 2]
+      scf.for %arg17 = %c0_i32 to %c10_i32 step %c1_i32  : i32 {
+        %6 = arith.index_cast %arg17 : i32 to index
+        %7 = arith.muli %arg16, %c16_i32 : i32
+        %8 = arith.index_cast %7 : i32 to index
+        %subview_6 = memref.subview %alloc_5[%6, 0, 0] [1, 16, 128] [1, 1, 1] : memref<10x16x128xbf16, strided<[2048, 128, 1]>, #hivm.address_space<ub>> to memref<1x16x128xbf16, strided<[2048, 128, 1], offset: ?>, #hivm.address_space<ub>>
+        %subview_7 = memref.subview %reinterpret_cast_1[%6, %8, 0] [1, 16, 128] [1, 1, 1] : memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>> to memref<1x16x128xbf16, strided<[32768, 128, 1], offset: ?>, #hivm.address_space<gm>>
+        memref.copy %subview_6, %subview_7 : memref<1x16x128xbf16, strided<[2048, 128, 1], offset: ?>, #hivm.address_space<ub>> to memref<1x16x128xbf16, strided<[32768, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      }
+    }
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = 4 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 1 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 3 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    %2 = arith.subi %c39_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg16 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_6 = memref.alloc() : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_7 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %4 = arith.muli %arg16, %c2_i32 : i32
+      %5 = arith.extsi %4 : i32 to i64
+      hivm.hir.sync_block_wait[<VECTOR>, <PIPE_S>, <PIPE_MTE2>] flag = %5
+      %6 = arith.index_cast %1 : i32 to index
+      %7 = arith.index_cast %arg16 : i32 to index
+      %8 = arith.remsi %1, %c5_i32 : i32
+      %9 = arith.muli %8, %c128_i32 : i32
+      %10 = arith.subi %c591_i32, %9 : i32
+      %11 = arith.minsi %10, %c128_i32 : i32
+      %12 = arith.index_cast %11 : i32 to index
+      %13 = arith.muli %6, %c16384 : index
+      %14 = arith.muli %7, %c8192 : index
+      %15 = arith.addi %13, %14 : index
+      %subview = memref.subview %reinterpret_cast_0[%6, %7, 0, 0] [1, 1, 64, %12] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<1x1x64x?xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      %subview_8 = memref.subview %alloc[0, 0] [64, %12] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_9 = memref.reinterpret_cast %subview to offset: [%15], sizes: [64, %12], strides: [128, 1] : memref<1x1x64x?xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %reinterpret_cast_9, %subview_8 : memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %16 = arith.muli %arg16, %c256_i32 : i32
+      %17 = arith.divsi %1, %c5_i32 : i32
+      %18 = arith.muli %17, %c64_i32 : i32
+      %19 = arith.addi %16, %18 : i32
+      %20 = arith.index_cast %19 : i32 to index
+      %subview_10 = memref.subview %reinterpret_cast_3[%20] [64] [1] : memref<256xbf16, strided<[1]>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_11 = memref.reinterpret_cast %alloc_5 to offset: [0], sizes: [64], strides: [1] : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      memref.copy %subview_10, %reinterpret_cast_11 : memref<64xbf16, strided<[1], offset: ?>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      hivm.hir.vcast ins(%alloc_5 : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_6 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vbrc ins(%alloc_6 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_7 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) broadcast_dims = [1]
+      hivm.hir.vadd ins(%alloc_7, %alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>, memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vcast ins(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc_4 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>)
+      %21 = arith.index_cast %9 : i32 to index
+      %22 = arith.muli %20, %c591 : index
+      %23 = arith.addi %22, %21 : index
+      %subview_12 = memref.subview %alloc_4[0, 0] [64, %12] [1, 1] : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x?xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %subview_13 = memref.subview %reinterpret_cast[0, %20, %21] [1, 64, %12] [1, 1, 1] : memref<1x256x591xbf16, strided<[151296, 591, 1]>, #hivm.address_space<gm>> to memref<1x64x?xbf16, strided<[151296, 591, 1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_14 = memref.reinterpret_cast %subview_13 to offset: [%23], sizes: [64, %12], strides: [591, 1] : memref<1x64x?xbf16, strided<[151296, 591, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x?xbf16, strided<[591, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview_12, %reinterpret_cast_14 : memref<64x?xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x?xbf16, strided<[591, 1], offset: ?>, #hivm.address_space<gm>>
+      %24 = arith.addi %4, %c1_i32 : i32
+      %25 = arith.extsi %24 : i32 to i64
+      hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = %25 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+}
+err cmd: /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmptbh4z64i/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true --disable-hivm-tensor-compile=true -o /tmp/tmptbh4z64i/kernel
+err code: -11
+AscendNPU IR:
+
+module attributes {hivm.module_core_type = #hivm.module_core_type<MIX>, memref.memref_as_ptr} {
+  func.func @_conv1d_unit_stride_bias_main_mix_aic(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xbf16, #hivm.address_space<gm>>, %arg9: memref<?xf32, #hivm.address_space<gm>>, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32, %arg15: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIC>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c128 = arith.constant 128 : index
+    %c64 = arith.constant 64 : index
+    %c2_i32 = arith.constant 2 : i32
+    %c16_i32 = arith.constant 16 : i32
+    %c15_i32 = arith.constant 15 : i32
+    %c591_i32 = arith.constant 591 : i32
+    %c128_i32 = arith.constant 128 : i32
+    %c64_i32 = arith.constant 64 : i32
+    %c5_i32 = arith.constant 5 : i32
+    %c256_i32 = arith.constant 256 : i32
+    %c10_i32 = arith.constant 10 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c39_i32 = arith.constant 39 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg3 to offset: [0], sizes: [1, 128, 600], strides: [76800, 600, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x128x600xbf16, strided<[76800, 600, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg9 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg7 to offset: [0], sizes: [10, 256, 128], strides: [32768, 128, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_MTE2>] flag = 4
+    %2 = arith.subi %c39_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg16 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      scf.for %arg17 = %c0_i32 to %c10_i32 step %c1_i32  : i32 {
+        %alloc_3 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>
+        %alloc_4 = memref.alloc() : memref<128x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>
+        %15 = arith.index_cast %arg17 : i32 to index
+        %16 = arith.muli %arg16, %c256_i32 : i32
+        %17 = arith.divsi %1, %c5_i32 : i32
+        %18 = arith.muli %17, %c64_i32 : i32
+        %19 = arith.addi %16, %18 : i32
+        %20 = arith.index_cast %19 : i32 to index
+        %subview_5 = memref.subview %reinterpret_cast_1[%15, %20, 0] [1, 64, 128] [1, 1, 1] : memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>> to memref<64x128xbf16, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_5 : memref<64x128xbf16, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>) outs(%alloc_3 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>) init_out_buffer = false
+        %21 = arith.remsi %1, %c5_i32 : i32
+        %22 = arith.muli %21, %c128_i32 : i32
+        %23 = arith.addi %22, %arg17 : i32
+        %24 = arith.index_cast %23 : i32 to index
+        %25 = arith.subi %c591_i32, %22 : i32
+        %26 = arith.minsi %25, %c128_i32 : i32
+        %27 = arith.index_cast %26 : i32 to index
+        %subview_6 = memref.subview %reinterpret_cast[0, 0, %24] [1, 128, %27] [1, 1, 1] : memref<1x128x600xbf16, strided<[76800, 600, 1]>, #hivm.address_space<gm>> to memref<128x?xbf16, strided<[600, 1], offset: ?>, #hivm.address_space<gm>>
+        %subview_7 = memref.subview %alloc_4[0, 0] [128, %27] [1, 1] : memref<128x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>> to memref<128x?xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>
+        hivm.hir.nd2nz {dst_continuous} ins(%subview_6 : memref<128x?xbf16, strided<[600, 1], offset: ?>, #hivm.address_space<gm>>) outs(%subview_7 : memref<128x?xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>) init_out_buffer = false
+        %28 = arith.cmpi eq, %arg17, %c0_i32 : i32
+        %29 = arith.addi %26, %c15_i32 : i32
+        %30 = arith.divsi %29, %c16_i32 : i32
+        %31 = arith.muli %30, %c16_i32 : i32
+        %32 = arith.index_cast %31 : i32 to index
+        hivm.hir.mmadL1 ins(%alloc_3, %alloc_4, %28, %c64, %c128, %32 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>, memref<128x128xbf16, strided<[128, 1]>, #hivm.address_space<cbuf>>, i1, index, index, index) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>>)
+      }
+      %4 = arith.muli %arg16, %c2_i32 : i32
+      %5 = arith.addi %4, %c1_i32 : i32
+      %6 = arith.extsi %5 : i32 to i64
+      hivm.hir.sync_block_wait[<CUBE>, <PIPE_S>, <PIPE_FIX>] flag = %6
+      %7 = arith.remsi %1, %c5_i32 : i32
+      %8 = arith.muli %7, %c128_i32 : i32
+      %9 = arith.subi %c591_i32, %8 : i32
+      %10 = arith.minsi %9, %c128_i32 : i32
+      %11 = arith.index_cast %10 : i32 to index
+      %subview = memref.subview %alloc[0, 0] [64, %11] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<cc>> to memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<cc>>
+      %12 = arith.index_cast %1 : i32 to index
+      %13 = arith.index_cast %arg16 : i32 to index
+      %subview_2 = memref.subview %reinterpret_cast_0[%12, %13, 0, 0] [1, 1, 64, %11] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      hivm.hir.fixpipe {enable_nz2nd} ins(%subview : memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<cc>>) outs(%subview_2 : memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>)
+      %14 = arith.extsi %4 : i32 to i64
+      hivm.hir.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_S>] flag = %14 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+  func.func @_conv1d_unit_stride_bias_main_mix_aiv(%arg0: i64 {hacc.arg_type = #hacc.arg_type<ffts_base_address>}, %arg1: memref<?xi8>, %arg2: memref<?xi8>, %arg3: memref<?xbf16, #hivm.address_space<gm>>, %arg4: memref<?xbf16, #hivm.address_space<gm>>, %arg5: memref<?xbf16, #hivm.address_space<gm>>, %arg6: memref<?xbf16, #hivm.address_space<gm>>, %arg7: memref<?xbf16, #hivm.address_space<gm>>, %arg8: memref<?xbf16, #hivm.address_space<gm>>, %arg9: memref<?xf32, #hivm.address_space<gm>>, %arg10: i32, %arg11: i32, %arg12: i32, %arg13: i32, %arg14: i32, %arg15: i32) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>, hivm.func_core_type = #hivm.func_core_type<AIV>, hivm.part_of_mix, mix_mode = "mix"} {
+    %c591 = arith.constant 591 : index
+    %c64_i32 = arith.constant 64 : i32
+    %c256_i32 = arith.constant 256 : i32
+    %c8192 = arith.constant 8192 : index
+    %c16384 = arith.constant 16384 : index
+    %c5_i32 = arith.constant 5 : i32
+    %c591_i32 = arith.constant 591 : i32
+    %c128_i32 = arith.constant 128 : i32
+    %c2_i32 = arith.constant 2 : i32
+    %c20_i32 = arith.constant 20 : i32
+    %c39_i32 = arith.constant 39 : i32
+    %c10_i32 = arith.constant 10 : i32
+    %c1_i32 = arith.constant 1 : i32
+    %c16_i32 = arith.constant 16 : i32
+    %c0_i32 = arith.constant 0 : i32
+    hivm.hir.set_ffts_base_addr %arg0
+    %reinterpret_cast = memref.reinterpret_cast %arg5 to offset: [0], sizes: [1, 256, 591], strides: [151296, 591, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<1x256x591xbf16, strided<[151296, 591, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg9 to offset: [0], sizes: [20, 2, 64, 128], strides: [16384, 8192, 128, 1] : memref<?xf32, #hivm.address_space<gm>> to memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_1 = memref.reinterpret_cast %arg7 to offset: [0], sizes: [10, 256, 128], strides: [32768, 128, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_2 = memref.reinterpret_cast %arg4 to offset: [0], sizes: [256, 128, 10], strides: [1280, 10, 1] : memref<?xbf16, #hivm.address_space<gm>> to memref<256x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<gm>>
+    %reinterpret_cast_3 = memref.reinterpret_cast %arg6 to offset: [0], sizes: [256], strides: [1] : memref<?xbf16, #hivm.address_space<gm>> to memref<256xbf16, strided<[1]>, #hivm.address_space<gm>>
+    %0 = hivm.hir.get_block_idx -> i64
+    %1 = arith.trunci %0 : i64 to i32
+    scf.for %arg16 = %c0_i32 to %c16_i32 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<16x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<16x10x128xbf16, strided<[1280, 128, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<10x16x128xbf16, strided<[2048, 128, 1]>, #hivm.address_space<ub>>
+      %4 = arith.muli %arg16, %c16_i32 : i32
+      %5 = arith.index_cast %4 : i32 to index
+      %subview = memref.subview %reinterpret_cast_2[%5, 0, 0] [16, 128, 10] [1, 1, 1] : memref<256x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<gm>> to memref<16x128x10xbf16, strided<[1280, 10, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview, %alloc : memref<16x128x10xbf16, strided<[1280, 10, 1], offset: ?>, #hivm.address_space<gm>> to memref<16x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<ub>>
+      hivm.hir.vtranspose ins(%alloc : memref<16x128x10xbf16, strided<[1280, 10, 1]>, #hivm.address_space<ub>>) outs(%alloc_4 : memref<16x10x128xbf16, strided<[1280, 128, 1]>, #hivm.address_space<ub>>) permutation = [0, 2, 1]
+      hivm.hir.vtranspose ins(%alloc_4 : memref<16x10x128xbf16, strided<[1280, 128, 1]>, #hivm.address_space<ub>>) outs(%alloc_5 : memref<10x16x128xbf16, strided<[2048, 128, 1]>, #hivm.address_space<ub>>) permutation = [1, 0, 2]
+      scf.for %arg17 = %c0_i32 to %c10_i32 step %c1_i32  : i32 {
+        %6 = arith.index_cast %arg17 : i32 to index
+        %7 = arith.muli %arg16, %c16_i32 : i32
+        %8 = arith.index_cast %7 : i32 to index
+        %subview_6 = memref.subview %alloc_5[%6, 0, 0] [1, 16, 128] [1, 1, 1] : memref<10x16x128xbf16, strided<[2048, 128, 1]>, #hivm.address_space<ub>> to memref<1x16x128xbf16, strided<[2048, 128, 1], offset: ?>, #hivm.address_space<ub>>
+        %subview_7 = memref.subview %reinterpret_cast_1[%6, %8, 0] [1, 16, 128] [1, 1, 1] : memref<10x256x128xbf16, strided<[32768, 128, 1]>, #hivm.address_space<gm>> to memref<1x16x128xbf16, strided<[32768, 128, 1], offset: ?>, #hivm.address_space<gm>>
+        memref.copy %subview_6, %subview_7 : memref<1x16x128xbf16, strided<[2048, 128, 1], offset: ?>, #hivm.address_space<ub>> to memref<1x16x128xbf16, strided<[32768, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      }
+    }
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = 4 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 1 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE2>, <PIPE_S>] flag = 3 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    %2 = arith.subi %c39_i32, %1 : i32
+    %3 = arith.divsi %2, %c20_i32 : i32
+    scf.for %arg16 = %c0_i32 to %3 step %c1_i32  : i32 {
+      %alloc = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_4 = memref.alloc() : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %alloc_5 = memref.alloc() : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_6 = memref.alloc() : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>
+      %alloc_7 = memref.alloc() : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %4 = arith.muli %arg16, %c2_i32 : i32
+      %5 = arith.extsi %4 : i32 to i64
+      hivm.hir.sync_block_wait[<VECTOR>, <PIPE_S>, <PIPE_MTE2>] flag = %5
+      %6 = arith.index_cast %1 : i32 to index
+      %7 = arith.index_cast %arg16 : i32 to index
+      %8 = arith.remsi %1, %c5_i32 : i32
+      %9 = arith.muli %8, %c128_i32 : i32
+      %10 = arith.subi %c591_i32, %9 : i32
+      %11 = arith.minsi %10, %c128_i32 : i32
+      %12 = arith.index_cast %11 : i32 to index
+      %13 = arith.muli %6, %c16384 : index
+      %14 = arith.muli %7, %c8192 : index
+      %15 = arith.addi %13, %14 : index
+      %subview = memref.subview %reinterpret_cast_0[%6, %7, 0, 0] [1, 1, 64, %12] [1, 1, 1, 1] : memref<20x2x64x128xf32, strided<[16384, 8192, 128, 1]>, #hivm.address_space<gm>> to memref<1x1x64x?xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>>
+      %subview_8 = memref.subview %alloc[0, 0] [64, %12] [1, 1] : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %reinterpret_cast_9 = memref.reinterpret_cast %subview to offset: [%15], sizes: [64, %12], strides: [128, 1] : memref<1x1x64x?xf32, strided<[16384, 8192, 128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %reinterpret_cast_9, %subview_8 : memref<64x?xf32, strided<[128, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x?xf32, strided<[128, 1]>, #hivm.address_space<ub>>
+      %16 = arith.muli %arg16, %c256_i32 : i32
+      %17 = arith.divsi %1, %c5_i32 : i32
+      %18 = arith.muli %17, %c64_i32 : i32
+      %19 = arith.addi %16, %18 : i32
+      %20 = arith.index_cast %19 : i32 to index
+      %subview_10 = memref.subview %reinterpret_cast_3[%20] [64] [1] : memref<256xbf16, strided<[1]>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_11 = memref.reinterpret_cast %alloc_5 to offset: [0], sizes: [64], strides: [1] : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      memref.copy %subview_10, %reinterpret_cast_11 : memref<64xbf16, strided<[1], offset: ?>, #hivm.address_space<gm>> to memref<64xbf16, strided<[1]>, #hivm.address_space<ub>>
+      hivm.hir.vcast ins(%alloc_5 : memref<64x1xbf16, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_6 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vbrc ins(%alloc_6 : memref<64x1xf32, strided<[1, 1]>, #hivm.address_space<ub>>) outs(%alloc_7 : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) broadcast_dims = [1]
+      hivm.hir.vadd ins(%alloc_7, %alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>, memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>)
+      hivm.hir.vcast ins(%alloc : memref<64x128xf32, strided<[128, 1]>, #hivm.address_space<ub>>) outs(%alloc_4 : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>>)
+      %21 = arith.index_cast %9 : i32 to index
+      %22 = arith.muli %20, %c591 : index
+      %23 = arith.addi %22, %21 : index
+      %subview_12 = memref.subview %alloc_4[0, 0] [64, %12] [1, 1] : memref<64x128xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x?xbf16, strided<[128, 1]>, #hivm.address_space<ub>>
+      %subview_13 = memref.subview %reinterpret_cast[0, %20, %21] [1, 64, %12] [1, 1, 1] : memref<1x256x591xbf16, strided<[151296, 591, 1]>, #hivm.address_space<gm>> to memref<1x64x?xbf16, strided<[151296, 591, 1], offset: ?>, #hivm.address_space<gm>>
+      %reinterpret_cast_14 = memref.reinterpret_cast %subview_13 to offset: [%23], sizes: [64, %12], strides: [591, 1] : memref<1x64x?xbf16, strided<[151296, 591, 1], offset: ?>, #hivm.address_space<gm>> to memref<64x?xbf16, strided<[591, 1], offset: ?>, #hivm.address_space<gm>>
+      memref.copy %subview_12, %reinterpret_cast_14 : memref<64x?xbf16, strided<[128, 1]>, #hivm.address_space<ub>> to memref<64x?xbf16, strided<[591, 1], offset: ?>, #hivm.address_space<gm>>
+      %24 = arith.addi %4, %c1_i32 : i32
+      %25 = arith.extsi %24 : i32 to i64
+      hivm.hir.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_S>] flag = %25 syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>
+    }
+    return
+  }
+}
+err cmd: /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmprco89v7l/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true --disable-hivm-tensor-compile=true -o /tmp/tmprco89v7l/kernel
+err code: -11
+------------------------------ Captured log call -------------------------------
+WARNING  tileops.benchmark:benchmark_base.py:243 msprof profiling failed (RuntimeError: NPU IR opt failed: PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmptbh4z64i/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --enable-triton-kernel-compile=true --enable-hivm-compile=true --disable-hivm-tensor-compile=true -o /tmp/tmptbh4z64i/kernel
+Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+0  bishengir-compile 0x0000aaaacd6d8ba8
+1  bishengir-compile 0x0000aaaacd6d671c
+2  bishengir-compile 0x0000aaaacd6d9370
+3  linux-vdso.so.1   0x0000ffff8ef618dc __kernel_rt_sigreturn + 0
+4  bishengir-compile 0x0000aaaac93e9c80
+5  bishengir-compile 0x0000aaaac94a0458
+6  bishengir-compile 0x0000aaaac939d4f4
+7  bishengir-compile 0x0000aaaac939d4f4
+8  bishengir-compile 0x0000aaaac939d4f4
+9  bishengir-compile 0x0000aaaac939d4f4
+10 bishengir-compile 0x0000aaaac94884f4
+11 bishengir-compile 0x0000aaaaccadb260
+12 bishengir-compile 0x0000aaaaccade820
+13 bishengir-compile 0x0000aaaac9433ce4
+14 bishengir-compile 0x0000aaaac9407874
+15 bishengir-compile 0x0000aaaac938a7dc
+16 libc.so.6         0x0000ffff8e985e10 __libc_start_main + 232
+17 bishengir-compile 0x0000aaaac9389e58
+); falling back to events.
+=============================== warnings summary ===============================
+../../../../../opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66
+  /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+    warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/ops/bench_conv1d.py::test_conv1d_manifest_bench[encodec-deep-bias-bfloat16]
+1 failed, 17 deselected, 1 warning in 5.75s

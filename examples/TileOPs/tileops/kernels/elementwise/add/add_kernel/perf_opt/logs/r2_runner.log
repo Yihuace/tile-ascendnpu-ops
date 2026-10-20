@@ -1,0 +1,72 @@
+[npu_lock] start 2026-10-17T16:46:03+08:00: bash -c source ./env.sh; python3 candidates/add_fwd_kernel_ub_reuse.py --level L0 > logs/l0_a2_alias.log 2>&1; echo "a2-l0-rc=$?"; python3 -u run_experiments.py --experiments experiments_r2.json --workloads linear-bias --dtypes float16,bfloat16 --reps 2 --round 2 --order workload
+a2-l0-rc=1
+[runner] phase=candidate round=2 reps=2 workloads=2 experiments=7
+[runner] base-bs8192: L0=PASS module=../add_fwd_kernel.py bs=8192
+[runner] a3-static-bs8192: L0=PASS module=candidates/add_fwd_kernel_static_tail.py bs=8192
+[runner] a4-pipe2-bs8192: L0=PASS module=candidates/add_fwd_kernel_pipe2.py bs=8192
+[runner] a4-pipe2-bs4096: L0=PASS module=candidates/add_fwd_kernel_pipe2.py bs=4096
+[runner] a5-balanced-bs8192: L0=PASS module=candidates/add_fwd_kernel_balanced.py bs=8192
+[runner] a5-balanced-bs12288: L0=PASS module=candidates/add_fwd_kernel_balanced.py bs=12288
+[runner] a5-balanced-bs16384: L0=PASS module=candidates/add_fwd_kernel_balanced.py bs=16384
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+  candidate-r2-base-bs8192-bs8192-linear-bias-bfloat16-rep1: 13.780us ratio=68.97%
+  candidate-r2-a3-static-bs8192-bs8192-linear-bias-bfloat16-rep1: 13.560us ratio=70.388%
+  candidate-r2-a4-pipe2-bs8192-bs8192-linear-bias-bfloat16-rep1: 13.500us ratio=70.909%
+  candidate-r2-a4-pipe2-bs4096-bs4096-linear-bias-bfloat16-rep1: 13.820us ratio=68.38%
+  candidate-r2-a5-balanced-bs8192-bs8192-linear-bias-bfloat16-rep1: 14.330us ratio=66.546%
+  candidate-r2-a5-balanced-bs12288-bs12288-linear-bias-bfloat16-rep1: 14.400us ratio=65.965%
+[measure] FAIL candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-bfloat16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-bfloat16-rep1.log
+  candidate-r2-base-bs8192-bs8192-linear-bias-float16-rep1: 14.040us ratio=67.896%
+  candidate-r2-a3-static-bs8192-bs8192-linear-bias-float16-rep1: 13.400us ratio=70.595%
+  candidate-r2-a4-pipe2-bs8192-bs8192-linear-bias-float16-rep1: 13.460us ratio=70.388%
+  candidate-r2-a4-pipe2-bs4096-bs4096-linear-bias-float16-rep1: 13.770us ratio=69.672%
+  candidate-r2-a5-balanced-bs8192-bs8192-linear-bias-float16-rep1: 14.160us ratio=67.302%
+  candidate-r2-a5-balanced-bs12288-bs12288-linear-bias-float16-rep1: 14.360us ratio=66.335%
+[measure] FAIL candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-float16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-float16-rep1.log
+  candidate-r2-base-bs8192-bs8192-linear-bias-bfloat16-rep2: 14.000us ratio=67.229%
+  candidate-r2-a3-static-bs8192-bs8192-linear-bias-bfloat16-rep2: 13.840us ratio=68.478%
+  candidate-r2-a4-pipe2-bs8192-bs8192-linear-bias-bfloat16-rep2: 13.800us ratio=72.082%
+  candidate-r2-a4-pipe2-bs4096-bs4096-linear-bias-bfloat16-rep2: 13.910us ratio=69.369%
+  candidate-r2-a5-balanced-bs8192-bs8192-linear-bias-bfloat16-rep2: 14.300us ratio=65.89%
+  candidate-r2-a5-balanced-bs12288-bs12288-linear-bias-bfloat16-rep2: 14.450us ratio=64.705%
+[measure] FAIL candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-bfloat16-rep2: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-bfloat16-rep2.log
+  candidate-r2-base-bs8192-bs8192-linear-bias-float16-rep2: 13.610us ratio=71.225%
+  candidate-r2-a3-static-bs8192-bs8192-linear-bias-float16-rep2: 13.380us ratio=71.119%
+  candidate-r2-a4-pipe2-bs8192-bs8192-linear-bias-float16-rep2: 13.310us ratio=72.19%
+  candidate-r2-a4-pipe2-bs4096-bs4096-linear-bias-float16-rep2: 13.840us ratio=68.674%
+  candidate-r2-a5-balanced-bs8192-bs8192-linear-bias-float16-rep2: 14.340us ratio=65.802%
+  candidate-r2-a5-balanced-bs12288-bs12288-linear-bias-float16-rep2: 14.300us ratio=66.242%
+[measure] FAIL candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-float16-rep2: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/logs/candidate-r2-a5-balanced-bs16384-bs16384-linear-bias-float16-rep2.log
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+| base-bs8192 | 8192 | linear-bias-bfloat16 | 1 | 13.780 | 68.97 |
+| a3-static-bs8192 | 8192 | linear-bias-bfloat16 | 1 | 13.560 | 70.388 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-bfloat16 | 1 | 13.500 | 70.909 |
+| a4-pipe2-bs4096 | 4096 | linear-bias-bfloat16 | 1 | 13.820 | 68.38 |
+| a5-balanced-bs8192 | 8192 | linear-bias-bfloat16 | 1 | 14.330 | 66.546 |
+| a5-balanced-bs12288 | 12288 | linear-bias-bfloat16 | 1 | 14.400 | 65.965 |
+| base-bs8192 | 8192 | linear-bias-float16 | 1 | 14.040 | 67.896 |
+| a3-static-bs8192 | 8192 | linear-bias-float16 | 1 | 13.400 | 70.595 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-float16 | 1 | 13.460 | 70.388 |
+| a4-pipe2-bs4096 | 4096 | linear-bias-float16 | 1 | 13.770 | 69.672 |
+| a5-balanced-bs8192 | 8192 | linear-bias-float16 | 1 | 14.160 | 67.302 |
+| a5-balanced-bs12288 | 12288 | linear-bias-float16 | 1 | 14.360 | 66.335 |
+| base-bs8192 | 8192 | linear-bias-bfloat16 | 2 | 14.000 | 67.229 |
+| a3-static-bs8192 | 8192 | linear-bias-bfloat16 | 2 | 13.840 | 68.478 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-bfloat16 | 2 | 13.800 | 72.082 |
+| a4-pipe2-bs4096 | 4096 | linear-bias-bfloat16 | 2 | 13.910 | 69.369 |
+| a5-balanced-bs8192 | 8192 | linear-bias-bfloat16 | 2 | 14.300 | 65.89 |
+| a5-balanced-bs12288 | 12288 | linear-bias-bfloat16 | 2 | 14.450 | 64.705 |
+| base-bs8192 | 8192 | linear-bias-float16 | 2 | 13.610 | 71.225 |
+| a3-static-bs8192 | 8192 | linear-bias-float16 | 2 | 13.380 | 71.119 |
+| a4-pipe2-bs8192 | 8192 | linear-bias-float16 | 2 | 13.310 | 72.19 |
+| a4-pipe2-bs4096 | 4096 | linear-bias-float16 | 2 | 13.840 | 68.674 |
+| a5-balanced-bs8192 | 8192 | linear-bias-float16 | 2 | 14.340 | 65.802 |
+| a5-balanced-bs12288 | 12288 | linear-bias-float16 | 2 | 14.300 | 66.242 |
+[npu_lock] WARNING: reaping leftover processes after command:
+  pid=578256 /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmpjtuz5d1a/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --en
+  pid=585416 /home/developer/Ascend/cann-9.0.0/bin/bishengir-compile /tmp/tmpajva4gy6/kernel.npuir --enable-auto-multi-buffer=true --disable-hivm-auto-inject-sync=false --en
+[npu_lock] leftovers reaped
+[npu_lock] end   2026-10-17T17:05:13+08:00: rc=0

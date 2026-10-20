@@ -1,0 +1,19 @@
+# NPU Benchmark Report
+Generated: 2026-10-15 16:17:17
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## BatchNormBwdOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | artifact_dir | bandwidth_tbs | msprof | prof_mode | tflops | c | n | s | dtype |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| resnet-stage1 | 20.5600 | N/A | /tmp/opencode/msprof_bn | 0.1530 | {'captured_op_count': 1, 'captured_op_names': ['main_mix_aic'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 20.559999, 'max_latency_us': 20.559999, 'min_latency_us': 20.559999, 'op_name': 'main_mix_aic', 'sample_count': 1} | msprof | 0.2295 | 64 | 8 | 1024 | float16 |
+| resnet-stage1 | 20.2000 | N/A | /tmp/opencode/msprof_bn | 0.1558 | {'captured_op_count': 1, 'captured_op_names': ['main_mix_aic'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 20.200001, 'max_latency_us': 20.200001, 'min_latency_us': 20.200001, 'op_name': 'main_mix_aic', 'sample_count': 1} | msprof | 0.2336 | 64 | 8 | 1024 | bfloat16 |

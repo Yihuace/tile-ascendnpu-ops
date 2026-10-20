@@ -1,0 +1,14 @@
+[npu_lock] start 2026-10-17T21:44:25+08:00: bash -c source ./env.sh; python3 -u run_experiments.py --experiments experiments_faln_baseline.json --all-tune --round 1 --order workload --reps 1
+[runner] phase=candidate round=1 reps=1 workloads=7 experiments=1
+[runner] baseline: L0=PASS module=../_fused_add_layer_norm_kernel.py bs=0
+[measure] FAIL baseline-r1-baseline-bs0-llama-13b-prefill-float32-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/logs/baseline-r1-baseline-bs0-llama-13b-prefill-float32-rep1.log
+[measure] FAIL baseline-r1-baseline-bs0-llama-70b-decode-bfloat16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/logs/baseline-r1-baseline-bs0-llama-70b-decode-bfloat16-rep1.log
+[measure] FAIL baseline-r1-baseline-bs0-llama-70b-prefill-bfloat16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/logs/baseline-r1-baseline-bs0-llama-70b-prefill-bfloat16-rep1.log
+[measure] FAIL baseline-r1-baseline-bs0-llama-70b-prefill-float16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/logs/baseline-r1-baseline-bs0-llama-70b-prefill-float16-rep1.log
+[measure] FAIL baseline-r1-baseline-bs0-llama-8b-decode-bfloat16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/logs/baseline-r1-baseline-bs0-llama-8b-decode-bfloat16-rep1.log
+[measure] FAIL baseline-r1-baseline-bs0-llama-8b-prefill-bfloat16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/logs/baseline-r1-baseline-bs0-llama-8b-prefill-bfloat16-rep1.log
+[measure] FAIL baseline-r1-baseline-bs0-llama-8b-prefill-float16-rep1: no OpBasicInfo rows -> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/logs/baseline-r1-baseline-bs0-llama-8b-prefill-float16-rep1.log
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+[npu_lock] end   2026-10-17T21:48:37+08:00: rc=0

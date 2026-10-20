@@ -1,0 +1,2149 @@
+[0m
+> tilelang-op-conductor · deepseek-v4-pro
+[0m
+[0m$ [0mls -la /mnt/workspace/TileOPs-main 2>&1 | head -50; echo "---SEP---"; test -d /mnt/workspace/TileOPs-main/tileops/manifest && echo "manifest exists" || echo "manifest NOT at root"; test -d /mnt/workspace/TileOPs-main/tests/ops && echo "tests/ops exists" || echo "tests/ops NOT at root"; test -d /mnt/workspace/TileOPs-main/benchmarks/ops && echo "benchmarks/ops exists" || echo "benchmarks/ops NOT at root"
+total 124
+drwxr-xr-x 11 developer developer 4096 Oct 11 22:06 .
+drwxrwxrwx 12 root      root      4096 Oct 12 20:57 ..
+drwxr-xr-x  2 developer developer 4096 Oct 11 22:06 assets
+drwxr-xr-x  6 developer developer 4096 Oct 11 22:06 benchmarks
+-rw-r--r--  1 developer developer   36 Oct 11 22:06 .clang-format
+drwxr-xr-x  5 developer developer 4096 Oct 11 22:06 .claude
+-rw-r--r--  1 developer developer 4839 Oct 11 22:06 CLAUDE.md
+-rw-r--r--  1 developer developer 2728 Oct 11 22:06 conftest.py
+-rw-r--r--  1 developer developer 4883 Oct 11 22:06 constraints-runner-lock.txt
+-rw-r--r--  1 developer developer 2433 Oct 11 22:06 constraints.txt
+-rw-r--r--  1 developer developer 5183 Oct 11 22:06 CONTRIBUTING.md
+drwxr-xr-x  4 developer developer 4096 Oct 11 22:06 docs
+-rw-r--r--  1 developer developer  136 Oct 11 22:06 .gitattributes
+drwxr-xr-x  6 developer developer 4096 Oct 11 22:06 .github
+-rw-r--r--  1 developer developer  863 Oct 11 22:06 .gitignore
+-rw-r--r--  1 developer developer 1127 Oct 11 22:06 LICENSE
+-rw-r--r--  1 developer developer  502 Oct 11 22:06 MANIFEST.in
+-rw-r--r--  1 developer developer 5410 Oct 11 22:06 .pre-commit-config.yaml
+-rw-r--r--  1 developer developer 6870 Oct 11 22:06 pyproject.toml
+-rw-r--r--  1 developer developer 8292 Oct 11 22:06 README.md
+drwxr-xr-x  4 developer developer 4096 Oct 11 22:06 scripts
+drwxr-xr-x  3 developer developer 4096 Oct 11 22:06 src
+drwxr-xr-x  5 developer developer 4096 Oct 11 22:06 tests
+drwxr-xr-x  6 developer developer 4096 Oct 11 22:06 workloads
+---SEP---
+manifest NOT at root
+tests/ops exists
+benchmarks/ops exists
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration 2>&1 | head -60
+total 32
+drwxr-xr-x  5 developer developer 4096 Oct 12 20:58 .
+drwxrwxrwx 12 root      root      4096 Oct 12 20:57 ..
+drwxr-xr-x  6 developer developer 4096 Oct 12 16:36 .agents
+-rw-r--r--  1 developer developer 7388 Oct 12 20:57 AGENTS.md
+-rw-r--r--  1 developer developer 2066 Oct 12 20:58 conductor_run.log
+drwxr-xr-x  3 developer developer 4096 Oct 10 14:34 examples
+drwxr-xr-x  5 developer developer 4096 Oct 12 20:55 .opencode
+[0m
+我将作为 `tilelang-op-conductor` 开始执行。首先进行场景识别与 migration 子模式探测，同时读取场景专属规则文件。
+[0m$ [0mls -la /mnt/workspace/TileOPs-main/src 2>&1; echo "---SEP---"; ls -la /mnt/workspace/TileOPs-main/src/tileops 2>&1 | head -40
+total 12
+drwxr-xr-x  3 developer developer 4096 Oct 11 22:06 .
+drwxr-xr-x 11 developer developer 4096 Oct 11 22:06 ..
+drwxr-xr-x 10 developer developer 4096 Oct 11 22:06 tileops
+---SEP---
+total 112
+drwxr-xr-x 10 developer developer 4096 Oct 11 22:06 .
+drwxr-xr-x  3 developer developer 4096 Oct 11 22:06 ..
+-rw-r--r--  1 developer developer  811 Oct 11 22:06 attention.py
+drwxr-xr-x  2 developer developer 4096 Oct 11 22:06 backend
+-rw-r--r--  1 developer developer  218 Oct 11 22:06 convolution.py
+drwxr-xr-x  2 developer developer 4096 Oct 11 22:06 csrc
+-rw-r--r--  1 developer developer 1631 Oct 11 22:06 _csrc.py
+-rw-r--r--  1 developer developer 2701 Oct 11 22:06 elementwise.py
+-rw-r--r--  1 developer developer  130 Oct 11 22:06 fft.py
+-rw-r--r--  1 developer developer  330 Oct 11 22:06 gemm.py
+-rw-r--r--  1 developer developer 3024 Oct 11 22:06 __init__.py
+drwxr-xr-x 15 developer developer 4096 Oct 11 22:06 kernels
+-rw-r--r--  1 developer developer  558 Oct 11 22:06 linear_attention.py
+-rw-r--r--  1 developer developer  453 Oct 11 22:06 mamba.py
+drwxr-xr-x  3 developer developer 4096 Oct 11 22:06 manifest
+-rw-r--r--  1 developer developer  684 Oct 11 22:06 moe.py
+-rw-r--r--  1 developer developer  585 Oct 11 22:06 norm.py
+drwxr-xr-x 14 developer developer 4096 Oct 11 22:06 ops
+drwxr-xr-x  3 developer developer 4096 Oct 11 22:06 perf
+-rw-r--r--  1 developer developer  881 Oct 11 22:06 pool.py
+-rw-r--r--  1 developer developer  702 Oct 11 22:06 quantization.py
+-rw-r--r--  1 developer developer  799 Oct 11 22:06 reduction.py
+-rw-r--r--  1 developer developer  339 Oct 11 22:06 rope.py
+-rw-r--r--  1 developer developer  416 Oct 11 22:06 sampling.py
+-rw-r--r--  1 developer developer  371 Oct 11 22:06 sequence_modeling.py
+drwxr-xr-x  2 developer developer 4096 Oct 11 22:06 trace
+-rw-r--r--  1 developer developer  266 Oct 11 22:06 transform.py
+drwxr-xr-x  2 developer developer 4096 Oct 11 22:06 utils
+[0m
+[0m$ [0mls -la /mnt/workspace/TileOPs-main/tests/ops 2>&1 | head -40; echo "---SEP---"; ls -la /mnt/workspace/TileOPs-main/benchmarks/ops 2>&1 | head -40
+total 1240
+drwxr-xr-x 2 developer developer  4096 Oct 11 22:06 .
+drwxr-xr-x 5 developer developer  4096 Oct 11 22:06 ..
+-rw-r--r-- 1 developer developer     0 Oct 11 22:06 __init__.py
+-rw-r--r-- 1 developer developer  9681 Oct 11 22:06 test_activation.py
+-rw-r--r-- 1 developer developer  8769 Oct 11 22:06 test_ada_layer_norm.py
+-rw-r--r-- 1 developer developer 23027 Oct 11 22:06 test_argreduce.py
+-rw-r--r-- 1 developer developer 21292 Oct 11 22:06 test_batch_norm.py
+-rw-r--r-- 1 developer developer 41218 Oct 11 22:06 test_binary_arith.py
+-rw-r--r-- 1 developer developer  6687 Oct 11 22:06 test_bitwise.py
+-rw-r--r-- 1 developer developer 12395 Oct 11 22:06 test_bmm.py
+-rw-r--r-- 1 developer developer 12145 Oct 11 22:06 test_comparison.py
+-rw-r--r-- 1 developer developer 30519 Oct 11 22:06 test_compile_boundary.py
+-rw-r--r-- 1 developer developer 40527 Oct 11 22:06 test_convolution.py
+-rw-r--r-- 1 developer developer 12816 Oct 11 22:06 test_cumulative.py
+-rw-r--r-- 1 developer developer 15970 Oct 11 22:06 test_deltanet.py
+-rw-r--r-- 1 developer developer  2574 Oct 11 22:06 test_docstring_args_match_signature.py
+-rw-r--r-- 1 developer developer  6325 Oct 11 22:06 test_dropout.py
+-rw-r--r-- 1 developer developer  7043 Oct 11 22:06 test_dsa_decode.py
+-rw-r--r-- 1 developer developer  5406 Oct 11 22:06 test_elementwise_binary_broadcast.py
+-rw-r--r-- 1 developer developer 38049 Oct 11 22:06 test_elementwise_compile.py
+-rw-r--r-- 1 developer developer  7431 Oct 11 22:06 test_elementwise_unary_activation_conformance.py
+-rw-r--r-- 1 developer developer  4856 Oct 11 22:06 test_empty_tensor.py
+-rw-r--r-- 1 developer developer  6029 Oct 11 22:06 test_engram.py
+-rw-r--r-- 1 developer developer 12698 Oct 11 22:06 test_family_dispatch.py
+-rw-r--r-- 1 developer developer  5890 Oct 11 22:06 test_fft.py
+-rw-r--r-- 1 developer developer  2604 Oct 11 22:06 test_fp8_lightning_indexer.py
+-rw-r--r-- 1 developer developer  1302 Oct 11 22:06 test_fp8_quant.py
+-rw-r--r-- 1 developer developer  3879 Oct 11 22:06 test_fused_gated.py
+-rw-r--r-- 1 developer developer 10612 Oct 11 22:06 test_fused_moe_experts.py
+-rw-r--r-- 1 developer developer 17459 Oct 11 22:06 test_fused_moe.py
+-rw-r--r-- 1 developer developer 10737 Oct 11 22:06 test_fused_moe_shared_expert.py
+-rw-r--r-- 1 developer developer  5622 Oct 11 22:06 test_fused_topk.py
+-rw-r--r-- 1 developer developer 13255 Oct 11 22:06 test_gdn.py
+-rw-r--r-- 1 developer developer 25915 Oct 11 22:06 test_gemm.py
+-rw-r--r-- 1 developer developer 25050 Oct 11 22:06 test_gla.py
+-rw-r--r-- 1 developer developer  6119 Oct 11 22:06 test_gqa_fp8.py
+-rw-r--r-- 1 developer developer 20670 Oct 11 22:06 test_gqa_paged.py
+-rw-r--r-- 1 developer developer 22769 Oct 11 22:06 test_gqa_prefill_paged.py
+-rw-r--r-- 1 developer developer 22430 Oct 11 22:06 test_gqa.py
+---SEP---
+total 308
+drwxr-xr-x 2 developer developer  4096 Oct 11 22:06 .
+drwxr-xr-x 6 developer developer  4096 Oct 11 22:06 ..
+-rw-r--r-- 1 developer developer  1985 Oct 11 22:06 bench_argreduce.py
+-rw-r--r-- 1 developer developer  3420 Oct 11 22:06 bench_batch_norm.py
+-rw-r--r-- 1 developer developer  3585 Oct 11 22:06 bench_bmm.py
+-rw-r--r-- 1 developer developer  3601 Oct 11 22:06 bench_chain_speculative_sampling.py
+-rw-r--r-- 1 developer developer  3692 Oct 11 22:06 bench_convolution.py
+-rw-r--r-- 1 developer developer  1416 Oct 11 22:06 bench_cumulative.py
+-rw-r--r-- 1 developer developer  3384 Oct 11 22:06 bench_deltanet.py
+-rw-r--r-- 1 developer developer  4154 Oct 11 22:06 bench_dsa_decode.py
+-rw-r--r-- 1 developer developer 12453 Oct 11 22:06 bench_elementwise.py
+-rw-r--r-- 1 developer developer  1891 Oct 11 22:06 bench_engram.py
+-rw-r--r-- 1 developer developer   622 Oct 11 22:06 bench_fft.py
+-rw-r--r-- 1 developer developer  1687 Oct 11 22:06 bench_fp8_lightning_indexer.py
+-rw-r--r-- 1 developer developer  1727 Oct 11 22:06 bench_fp8_quant_per_block.py
+-rw-r--r-- 1 developer developer  1078 Oct 11 22:06 bench_fp8_quant.py
+-rw-r--r-- 1 developer developer  1657 Oct 11 22:06 bench_fused_gated.py
+-rw-r--r-- 1 developer developer  2963 Oct 11 22:06 bench_fused_moe_experts.py
+-rw-r--r-- 1 developer developer  3635 Oct 11 22:06 bench_fused_moe.py
+-rw-r--r-- 1 developer developer  2143 Oct 11 22:06 bench_fused_topk.py
+-rw-r--r-- 1 developer developer  6356 Oct 11 22:06 bench_gdn.py
+-rw-r--r-- 1 developer developer 15234 Oct 11 22:06 bench_gemm.py
+-rw-r--r-- 1 developer developer  3089 Oct 11 22:06 bench_gla.py
+-rw-r--r-- 1 developer developer 27474 Oct 11 22:06 bench_gqa.py
+-rw-r--r-- 1 developer developer  3468 Oct 11 22:06 bench_grouped_gemm.py
+-rw-r--r-- 1 developer developer  1293 Oct 11 22:06 bench_group_norm.py
+-rw-r--r-- 1 developer developer  1432 Oct 11 22:06 bench_instance_norm.py
+-rw-r--r-- 1 developer developer   962 Oct 11 22:06 bench_int4_quant_per_group.py
+-rw-r--r-- 1 developer developer  1673 Oct 11 22:06 bench_int8_dequant.py
+-rw-r--r-- 1 developer developer  1997 Oct 11 22:06 bench_int8_quant_per_block.py
+-rw-r--r-- 1 developer developer  1930 Oct 11 22:06 bench_int8_quant_per_channel.py
+-rw-r--r-- 1 developer developer  1638 Oct 11 22:06 bench_int8_quant_per_tensor.py
+-rw-r--r-- 1 developer developer  1855 Oct 11 22:06 bench_kda.py
+-rw-r--r-- 1 developer developer  1964 Oct 11 22:06 bench_logical_reduce.py
+-rw-r--r-- 1 developer developer  8707 Oct 11 22:06 bench_mamba.py
+-rw-r--r-- 1 developer developer  3704 Oct 11 22:06 bench_mha.py
+-rw-r--r-- 1 developer developer  1227 Oct 11 22:06 bench_mhc.py
+-rw-r--r-- 1 developer developer  1358 Oct 11 22:06 bench_min_p_mask.py
+-rw-r--r-- 1 developer developer  1998 Oct 11 22:06 bench_mla_decode.py
+[0m
+[0m$ [0mls -la /mnt/workspace/TileOPs-main/src/tileops/manifest 2>&1; echo "---SEP---"; grep -rl "HardsigmoidFwdOp" /mnt/workspace/TileOPs-main/src/tileops/manifest/ 2>&1
+total 208
+drwxr-xr-x  3 developer developer  4096 Oct 11 22:06 .
+drwxr-xr-x 10 developer developer  4096 Oct 11 22:06 ..
+-rw-r--r--  1 developer developer  1234 Oct 11 22:06 dtype_rules.py
+-rw-r--r--  1 developer developer 27688 Oct 11 22:06 expr.py
+-rw-r--r--  1 developer developer  5433 Oct 11 22:06 __init__.py
+-rw-r--r--  1 developer developer 14153 Oct 11 22:06 kinds.py
+-rw-r--r--  1 developer developer 37101 Oct 11 22:06 plan.py
+-rw-r--r--  1 developer developer 27129 Oct 11 22:06 primitives.py
+-rw-r--r--  1 developer developer   483 Oct 11 22:06 registry.py
+-rw-r--r--  1 developer developer 28038 Oct 11 22:06 signature.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 spec
+-rw-r--r--  1 developer developer  6272 Oct 11 22:06 values.py
+-rw-r--r--  1 developer developer 29163 Oct 11 22:06 workload.py
+---SEP---
+/mnt/workspace/TileOPs-main/src/tileops/manifest/spec/elementwise_unary_activation.yaml
+[0m
+[0m$ [0mls -la /mnt/workspace/TileOPs-main/src/tileops/kernels 2>&1; echo "---SEP---"; find /mnt/workspace/TileOPs-main/src/tileops/kernels -iname "*hardsigmoid*" 2>&1
+total 228
+drwxr-xr-x 15 developer developer  4096 Oct 11 22:06 .
+drwxr-xr-x 10 developer developer  4096 Oct 11 22:06 ..
+drwxr-xr-x  7 developer developer  4096 Oct 11 22:06 attention
+-rw-r--r--  1 developer developer  1848 Oct 11 22:06 buffer_utils.py
+-rw-r--r--  1 developer developer  6669 Oct 11 22:06 call_spec.py
+-rw-r--r--  1 developer developer  2978 Oct 11 22:06 constants.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 convolution
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 elementwise
+-rw-r--r--  1 developer developer 76993 Oct 11 22:06 fft.py
+drwxr-xr-x  4 developer developer  4096 Oct 11 22:06 gemm
+-rw-r--r--  1 developer developer  4096 Oct 11 22:06 grouped_tiling.py
+-rw-r--r--  1 developer developer  8283 Oct 11 22:06 __init__.py
+-rw-r--r--  1 developer developer 20316 Oct 11 22:06 kernel_base.py
+drwxr-xr-x  6 developer developer  4096 Oct 11 22:06 linear_attention
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 mamba
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 moe
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 norm
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 pool
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 quantization
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 reduction
+-rw-r--r--  1 developer developer 34063 Oct 11 22:06 rope.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 sampling
+drwxr-xr-x  4 developer developer  4096 Oct 11 22:06 sequence_modeling
+-rw-r--r--  1 developer developer   559 Oct 11 22:06 tiling.py
+---SEP---
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/.opencode/agents/conductor-scenarios/ 2>&1; echo "---SEP---"; ls -la /mnt/workspace/npuir-migration/.opencode/agents/ 2>&1
+total 52
+drwxr-xr-x 2 developer developer  4096 Oct 12 16:36 .
+drwxr-xr-x 3 developer developer  4096 Oct 12 20:58 ..
+-rw-r--r-- 1 developer developer 15346 Oct 12 16:36 harness.md
+-rw-r--r-- 1 developer developer  5046 Oct 12 16:36 migration.md
+-rw-r--r-- 1 developer developer  8342 Oct 12 16:36 new-op.md
+-rw-r--r-- 1 developer developer  4677 Oct 12 16:36 optimize.md
+---SEP---
+total 184
+drwxr-xr-x 3 developer developer  4096 Oct 12 20:58 .
+drwxr-xr-x 5 developer developer  4096 Oct 12 20:55 ..
+drwxr-xr-x 2 developer developer  4096 Oct 12 16:36 conductor-scenarios
+-rw-r--r-- 1 developer developer 11005 Oct 12 20:58 README.md
+-rw-r--r-- 1 developer developer 15356 Oct 12 20:58 tilelang-design-reviewer.md
+-rw-r--r-- 1 developer developer 44765 Oct 12 20:58 tilelang-op-conductor.md
+-rw-r--r-- 1 developer developer 28715 Oct 12 20:58 tilelang-op-designer.md
+-rw-r--r-- 1 developer developer 10575 Oct 12 20:58 tilelang-op-developer.md
+-rw-r--r-- 1 developer developer 14317 Oct 12 20:58 tilelang-op-integrator.md
+-rw-r--r-- 1 developer developer 16593 Oct 12 20:58 tilelang-op-optimizer.md
+-rw-r--r-- 1 developer developer  9867 Oct 12 20:58 tilelang-skill-evolver.md
+-rw-r--r-- 1 developer developer  4920 Oct 12 20:58 tileops-scaffolder.md
+[0m
+[0m$ [0mgrep -n "HardsigmoidFwdOp" /mnt/workspace/TileOPs-main/src/tileops/manifest/spec/elementwise_unary_activation.yaml 2>&1
+106:HardsigmoidFwdOp:
+[0m
+[0m→ [0mRead .opencode/agents/conductor-scenarios/migration.md
+[0m→ [0mRead .opencode/agents/conductor-scenarios/harness.md
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/examples 2>&1; echo "---SEP---"; ls -la /mnt/workspace/npuir-migration/examples/TileOPs 2>&1 | head -40
+total 12
+drwxr-xr-x 3 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x 5 developer developer 4096 Oct 12 20:58 ..
+drwxr-xr-x 8 developer developer 4096 Oct 10 14:34 TileOPs
+---SEP---
+total 48
+drwxr-xr-x  8 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x  3 developer developer 4096 Oct 10 14:34 ..
+drwxr-xr-x  3 developer developer 4096 Oct 10 14:34 .agents
+drwxr-xr-x  3 developer developer 4096 Oct 10 14:34 benchmarks
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 docs
+-rw-r--r--  1 developer developer 1564 Oct 10 14:34 pyproject.toml
+-rw-r--r--  1 developer developer 8465 Oct 10 14:34 README.md
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 reports
+drwxr-xr-x  4 developer developer 4096 Oct 10 14:34 tests
+drwxr-xr-x 10 developer developer 4096 Oct 10 14:34 tileops
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/.agents/tools/ 2>&1; echo "---SEP---"; ls -la /mnt/workspace/npuir-migration/.agents/skills/_shared/standards/ 2>&1
+total 236
+drwxr-xr-x 3 developer developer  4096 Oct 12 16:36 .
+drwxr-xr-x 6 developer developer  4096 Oct 12 16:36 ..
+-rw-r--r-- 1 developer developer  7114 Oct 12 16:36 ab_test.py
+-rw-r--r-- 1 developer developer 10894 Oct 12 16:36 design_calc_check.py
+-rw-r--r-- 1 developer developer 67880 Oct 12 16:36 gate_lint.py
+-rw-r--r-- 1 developer developer 21038 Oct 12 16:36 kb_lint.py
+-rw-r--r-- 1 developer developer  9442 Oct 12 16:36 kb_search.py
+-rw-r--r-- 1 developer developer  6700 Oct 12 16:36 kb_stale_check.py
+-rw-r--r-- 1 developer developer  6607 Oct 12 16:36 repro_runner.py
+-rw-r--r-- 1 developer developer 18466 Oct 12 16:36 standards_check.py
+-rw-r--r-- 1 developer developer 64312 Oct 12 16:36 statectl.py
+drwxr-xr-x 2 developer developer  4096 Oct 12 16:36 tests
+---SEP---
+total 76
+drwxr-xr-x 2 developer developer  4096 Oct 12 16:36 .
+drwxr-xr-x 3 developer developer  4096 Oct 12 16:36 ..
+-rw-r--r-- 1 developer developer  3973 Oct 12 16:36 algorithm-research.md
+-rw-r--r-- 1 developer developer  5369 Oct 12 16:36 core-split-strategy.md
+-rw-r--r-- 1 developer developer  2673 Oct 12 16:36 final-report-template.md
+-rw-r--r-- 1 developer developer 11709 Oct 12 16:36 gate-and-retry.md
+-rw-r--r-- 1 developer developer  4514 Oct 12 16:36 hardware-cost-model.md
+-rw-r--r-- 1 developer developer  2701 Oct 12 16:36 negative-claim-evidence.md
+-rw-r--r-- 1 developer developer  7624 Oct 12 16:36 perf-feedback.md
+-rw-r--r-- 1 developer developer  3706 Oct 12 16:36 README.md
+-rw-r--r-- 1 developer developer  7646 Oct 12 16:36 signal-registry.md
+-rw-r--r-- 1 developer developer  3694 Oct 12 16:36 stage3-routing.md
+-rw-r--r-- 1 developer developer   972 Oct 12 16:36 standards.lock.json
+[0m
+[0m→ [0mRead .opencode/agents/tileops-scaffolder.md
+[0m→ [0mRead .agents/skills/_shared/standards/signal-registry.md
+[0m→ [0mRead .agents/skills/_shared/standards/gate-and-retry.md
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py --help 2>&1 | head -80
+usage: statectl [-h]
+                {init,start,complete,fail,gate,snapshot,verify,repair,set,show,timeline-summary,migration}
+                ...
+
+tilelang-op-conductor 确定性状态机 CLI（U1 修复：转换校验/计数/门禁/哈希；1.3：timeline 事件流 +
+timeline-summary）
+
+positional arguments:
+  {init,start,complete,fail,gate,snapshot,verify,repair,set,show,timeline-summary,migration}
+    init                按场景路由表生成合法初始状态
+    start               start_stage(N)：校验转换合法性后置 in_progress
+    complete            complete_stage(N)：强制先过 gate，通过才落盘
+    fail                fail_stage(N)：计数、上限判定与 BLOCKED_* 路由
+    gate                单独执行 Stage N 机械门禁（JSON 输出，不改状态）
+    snapshot            对现存工件记录 SHA256 快照
+    verify              schema + 哈希漂移 + 阶段-工件一致性校验
+    repair              检测状态-工件不一致并给修复建议
+    set                 安全写入少量白名单字段
+    show                打印当前状态 JSON
+    timeline-summary    机械汇总 .task_timeline.jsonl（各 Stage
+                        attempts/耗时/失败链——最终报告「时间线」段与 evolver 根因链的数据源，只读）
+    migration           harness 聚合状态 .migration_state.json
+
+options:
+  -h, --help            show this help message and exit
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py migration --help 2>&1; echo "===INIT==="; python3 .agents/tools/statectl.py init --help 2>&1; echo "===START==="; python3 .agents/tools/statectl.py start --help 2>&1
+usage: statectl migration [-h] {init,func,phase,integrate,show} ...
+
+positional arguments:
+  {init,func,phase,integrate,show}
+    func                更新函数状态
+    phase               聚合 phase 迁移（SCAFFOLD→DEV_LOOP→INTEGRATE→DONE）
+    integrate           记录 Stage 5 集成验证结果（pass/fail 计次）
+
+options:
+  -h, --help            show this help message and exit
+===INIT===
+usage: statectl init [-h] --dir DIR --project PROJECT --op OP --scenario
+                     {new_op,migration,optimize}
+                     [--migration-mode {harness,plain}]
+                     [--requirement REQUIREMENT] [--max-retry MAX_RETRY]
+                     [--stage-plan STAGE_PLAN] [--design-path DESIGN_PATH]
+                     [--kernel-path KERNEL_PATH]
+
+options:
+  -h, --help            show this help message and exit
+  --dir DIR             算子目录（含 .stage_state.json）
+  --project PROJECT
+  --op OP
+  --scenario {new_op,migration,optimize}
+  --migration-mode {harness,plain}
+  --requirement REQUIREMENT
+  --max-retry MAX_RETRY
+  --stage-plan STAGE_PLAN
+                        覆盖默认 plan（如 0,1,2,3,5）
+  --design-path DESIGN_PATH
+  --kernel-path KERNEL_PATH
+                        optimize 场景指向既有 kernel
+===START===
+usage: statectl start [-h] --dir DIR [--extend] {0,1,2,3,4,5}
+
+positional arguments:
+  {0,1,2,3,4,5}
+
+options:
+  -h, --help     show this help message and exit
+  --dir DIR      算子目录（含 .stage_state.json）
+  --extend       把可选 Stage 4 追加进 stage_plan（含 DONE 后重开）
+[0m
+[0m→ [0mRead .opencode/agents/tilelang-op-integrator.md
+[0m
+[0m$ [0msed -n '90,140p' /mnt/workspace/TileOPs-main/src/tileops/manifest/spec/elementwise_unary_activation.yaml 2>&1
+inplace: {type: bool, default: false, kw_only: true}
+    inputs:
+      input: {dtype: T, shape: "[*S]", mutated: inplace}
+    outputs:
+      output: {dtype: T, shape: "[*S]", alias: input}
+
+  workloads:
+  # Mobile-style activation map (NHW C, e.g. MobileNetV3 stage)
+  - {S: [32, 96, 56, 56], dtype_cases: [{T: float16}, {T: bfloat16}], label: "mbv3-stage2"}
+  - {S: [32, 240, 28, 28], dtype_cases: [{T: float16}, {T: bfloat16}], label: "mbv3-stage3"}
+
+  roofline:
+    # FLOPs: hardswish(x) = x * relu6(x + 3) / 6.
+    # add(1) + two-sided-clamp(1, per convention) + mul(1) + div(1) = 4 per elem.
+    flops: "4 * prod(S)"
+
+HardsigmoidFwdOp:
+  ref_api: "torch.nn.functional.hardsigmoid"
+  family: elementwise
+  status: implemented
+
+  signature:
+    forall: {S: Shape, T: "DType[float16 | bfloat16 | float32]"}
+    params:
+      inplace: {type: bool, default: false, kw_only: true}
+    inputs:
+      input: {dtype: T, shape: "[*S]", mutated: inplace}
+    outputs:
+      output: {dtype: T, shape: "[*S]", alias: input}
+
+  workloads:
+  # SE-block gating (B, C, 1, 1)
+  - {S: [32, 240, 1, 1], dtype_cases: [{T: float16}, {T: bfloat16}], label: "mbv3-se-gate"}
+  - {S: [32, 960, 1, 1], dtype_cases: [{T: float16}, {T: bfloat16}], label: "mbv3-se-gate-deep"}
+
+  roofline:
+    # FLOPs: hardsigmoid(x) = relu6(x + 3) / 6.
+    # add(1) + two-sided-clamp(1, per convention) + div(1) = 3 per elem.
+    flops: "3 * prod(S)"
+
+MishFwdOp:
+  ref_api: "torch.nn.functional.mish"
+  family: elementwise
+  status: implemented
+
+  signature:
+    forall: {S: Shape, T: "DType[float16 | bfloat16 | float32]"}
+    params:
+      inplace: {type: bool, default: false, kw_only: true}
+    inputs:
+      input: {dtype: T, shape: "[*S]", mutated: inplace}
+[0m
+[0m$ [0mls -la /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/ 2>&1
+total 252
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 .
+drwxr-xr-x 15 developer developer  4096 Oct 11 22:06 ..
+-rw-r--r--  1 developer developer 14322 Oct 11 22:06 activations.py
+-rw-r--r--  1 developer developer  4303 Oct 11 22:06 alibi.py
+-rw-r--r--  1 developer developer 23045 Oct 11 22:06 arithmetic.py
+-rw-r--r--  1 developer developer 30993 Oct 11 22:06 _base.py
+-rw-r--r--  1 developer developer  2937 Oct 11 22:06 bitwise.py
+-rw-r--r--  1 developer developer  5236 Oct 11 22:06 _broadcast.py
+-rw-r--r--  1 developer developer 28577 Oct 11 22:06 _builders.py
+-rw-r--r--  1 developer developer 22771 Oct 11 22:06 call_spec.py
+-rw-r--r--  1 developer developer  6319 Oct 11 22:06 clamp.py
+-rw-r--r--  1 developer developer  6644 Oct 11 22:06 comparison.py
+-rw-r--r--  1 developer developer  5824 Oct 11 22:06 dropout.py
+-rw-r--r--  1 developer developer  1948 Oct 11 22:06 _dtype.py
+-rw-r--r--  1 developer developer  2612 Oct 11 22:06 _erf.py
+-rw-r--r--  1 developer developer  5620 Oct 11 22:06 __init__.py
+-rw-r--r--  1 developer developer  2399 Oct 11 22:06 logical.py
+-rw-r--r--  1 developer developer  6392 Oct 11 22:06 masked_fill.py
+-rw-r--r--  1 developer developer  9464 Oct 11 22:06 math_unary.py
+-rw-r--r--  1 developer developer  3073 Oct 11 22:06 _nan.py
+-rw-r--r--  1 developer developer  3402 Oct 11 22:06 nan_to_num.py
+-rw-r--r--  1 developer developer  2066 Oct 11 22:06 _op_body.py
+-rw-r--r--  1 developer developer  7426 Oct 11 22:06 _policy.py
+-rw-r--r--  1 developer developer  2856 Oct 11 22:06 prelu.py
+-rw-r--r--  1 developer developer  4591 Oct 11 22:06 sinusoidal.py
+-rw-r--r--  1 developer developer  2372 Oct 11 22:06 where.py
+[0m
+[0m$ [0mgrep -n "Hardsigmoid\|hardsigmoid\|HardSigmoid" /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py 2>&1
+39:    "HardsigmoidFwdKernel",
+169:class HardsigmoidFwdKernel(FloatUnaryKernel, UnaryElementwiseFwdInterface):
+170:    """Element-wise HardSigmoid: clamp(x + 3, 0, 6) * (1 / 6).
+172:    Scaling by the reciprocal is what ``torch.nn.functional.hardsigmoid`` does, so
+[0m
+[0m$ [0mgrep -rn "hardsigmoid\|Hardsigmoid" /mnt/workspace/TileOPs-main/tests/ops/test_activation.py /mnt/workspace/TileOPs-main/benchmarks/ops/bench_elementwise.py 2>&1 | head -30
+/mnt/workspace/TileOPs-main/tests/ops/test_activation.py:143:def test_hardsigmoid(n_total: int, dtype: torch.dtype) -> None:
+/mnt/workspace/TileOPs-main/tests/ops/test_activation.py:144:    from tileops.ops.elementwise import HardsigmoidFwdOp
+/mnt/workspace/TileOPs-main/tests/ops/test_activation.py:146:    _make_activation_test(n_total, dtype, _randn, HardsigmoidFwdOp)
+/mnt/workspace/TileOPs-main/benchmarks/ops/bench_elementwise.py:40:    HardsigmoidFwdOp,
+/mnt/workspace/TileOPs-main/benchmarks/ops/bench_elementwise.py:258:@pytest.mark.parametrize("case", bench.cases(HardsigmoidFwdOp), ids=lambda case: case.id)
+/mnt/workspace/TileOPs-main/benchmarks/ops/bench_elementwise.py:259:def test_hardsigmoid_bench(case) -> None:
+/mnt/workspace/TileOPs-main/benchmarks/ops/bench_elementwise.py:260:    _bench(HardsigmoidFwdOp, case)
+[0m
+[0m$ [0msed -n '160,220p' /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py 2>&1
+def op_func(x):
+        three = T.cast(3.0, "float32")
+        six = T.cast(6.0, "float32")
+        zero = T.cast(0.0, "float32")
+        one_sixth = T.cast(1.0 / 6.0, "float32")
+        clamped = T.min(T.max(x + three, zero), six)
+        return x * clamped * one_sixth
+
+
+class HardsigmoidFwdKernel(FloatUnaryKernel, UnaryElementwiseFwdInterface):
+    """Element-wise HardSigmoid: clamp(x + 3, 0, 6) * (1 / 6).
+
+    Scaling by the reciprocal is what ``torch.nn.functional.hardsigmoid`` does, so
+    finite inputs come out bit-identical to it; dividing by 6 lowers to
+    ``div.rn.f32``. A NaN input gives NaN, as in torch.
+    """
+
+    @staticmethod
+    def op_func(x):
+        three = T.cast(3.0, "float32")
+        six = T.cast(6.0, "float32")
+        zero = T.cast(0.0, "float32")
+        one_sixth = T.cast(1.0 / 6.0, "float32")
+        return nan_min(nan_max(x + three, zero), six) * one_sixth
+
+
+class MishFwdKernel(FloatUnaryKernel, UnaryElementwiseFwdInterface):
+    """Element-wise Mish: x * tanh(softplus(x)) = x * tanh(log(1 + exp(x)))."""
+
+    # Where Mish's tanh factor reaches 1 in fp32, and below where ``e**2`` overflows.
+    _SATURATION: float = 20.0
+
+    @staticmethod
+    def op_func(x):
+        """One transcendental where the definition spells out three.
+
+        With ``e = exp(x)``, ``tanh(log(1 + e))`` is exactly ``(e^2 + 2e)/(e^2 + 2e + 2)``:
+        this avoids extra transcendentals and keeps the small values ``log(1 + e)``
+        rounds away. Past ``_SATURATION`` the ratio is 1 to every bit fp32 carries,
+        so clamping the exponent's argument there returns ``x`` on its own and keeps
+        ``e^2`` finite. Clamping rather than selecting on it also keeps the element
+        loop vectorised, which ``T.if_then_else`` does not.
+        """
+        two = T.cast(2.0, "float32")
+        wide = T.cast(x, "float32")
+        e = T.exp(T.min(wide, T.cast(MishFwdKernel._SATURATION, "float32")))
+        saturated = e * e + two * e
+        return wide * saturated / (saturated + two)
+
+
+class SeluFwdKernel(FloatUnaryKernel, UnaryElementwiseFwdInterface):
+    """Element-wise SELU: scale * (max(0,x) + min(0, alpha*(exp(x)-1))).
+
+    alpha = 1.6732632423543772, scale = 1.0507009873554805
+    """
+
+    @staticmethod
+    def op_func(x):
+        alpha = T.cast(1.6732632423543772, "float32")
+        scale = T.cast(1.0507009873554805, "float32")
+        one = T.cast(1.0, "float32")
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/examples/TileOPs/.agents/skills/add-npu-op/ 2>&1; echo "---SEP---"; ls -la /mnt/workspace/npuir-migration/examples/TileOPs/.agents/skills/add-npu-op/scripts/ 2>&1
+total 60
+drwxr-xr-x 3 developer developer  4096 Oct 10 14:34 .
+drwxr-xr-x 3 developer developer  4096 Oct 10 14:34 ..
+drwxr-xr-x 2 developer developer  4096 Oct 10 14:34 scripts
+-rw-r--r-- 1 developer developer 48170 Oct 10 14:34 SKILL.md
+---SEP---
+total 80
+drwxr-xr-x 2 developer developer  4096 Oct 10 14:34 .
+drwxr-xr-x 3 developer developer  4096 Oct 10 14:34 ..
+-rw-r--r-- 1 developer developer 47490 Oct 10 14:34 extract_tl_kernel.py
+-rw-r--r-- 1 developer developer 21361 Oct 10 14:34 integrate_kernel.py
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/ 2>&1; echo "---SEP manifest---"; ls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/manifest/ 2>&1; echo "---SEP workloads---"; ls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/workloads/ 2>&1
+total 36
+drwxr-xr-x  7 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x 10 developer developer 4096 Oct 10 14:34 ..
+drwxr-xr-x  3 developer developer 4096 Oct 10 14:34 attention
+drwxr-xr-x  4 developer developer 4096 Oct 10 14:34 elementwise
+-rw-r--r--  1 developer developer   69 Oct 10 14:34 __init__.py
+-rw-r--r--  1 developer developer 3782 Oct 10 14:34 kernel_base.py
+drwxr-xr-x  3 developer developer 4096 Oct 10 14:34 mamba
+drwxr-xr-x  3 developer developer 4096 Oct 10 14:34 norm
+drwxr-xr-x  4 developer developer 4096 Oct 10 14:34 reduction
+---SEP manifest---
+total 36
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x 10 developer developer 4096 Oct 10 14:34 ..
+-rw-r--r--  1 developer developer 3309 Oct 10 14:34 attention.yaml
+-rw-r--r--  1 developer developer 3624 Oct 10 14:34 elementwise.yaml
+-rw-r--r--  1 developer developer 2730 Oct 10 14:34 __init__.py
+-rw-r--r--  1 developer developer 3737 Oct 10 14:34 mamba.yaml
+-rw-r--r--  1 developer developer 2166 Oct 10 14:34 norm.yaml
+-rw-r--r--  1 developer developer 4161 Oct 10 14:34 reduction.yaml
+---SEP workloads---
+total 36
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x 10 developer developer 4096 Oct 10 14:34 ..
+-rw-r--r--  1 developer developer 1754 Oct 10 14:34 attention.py
+-rw-r--r--  1 developer developer 1916 Oct 10 14:34 elementwise.py
+-rw-r--r--  1 developer developer  194 Oct 10 14:34 __init__.py
+-rw-r--r--  1 developer developer 2700 Oct 10 14:34 mamba.py
+-rw-r--r--  1 developer developer 1160 Oct 10 14:34 norm.py
+-rw-r--r--  1 developer developer  357 Oct 10 14:34 reduction.py
+-rw-r--r--  1 developer developer 1755 Oct 10 14:34 workload_base.py
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/ 2>&1; echo "---SEP ops---"; ls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/ops/ 2>&1 | head -30
+total 60
+drwxr-xr-x 10 developer developer  4096 Oct 10 14:34 .
+drwxr-xr-x  8 developer developer  4096 Oct 10 14:34 ..
+drwxr-xr-x  2 developer developer  4096 Oct 10 14:34 benchmark
+-rw-r--r--  1 developer developer 12851 Oct 10 14:34 device.py
+-rw-r--r--  1 developer developer   850 Oct 10 14:34 __init__.py
+drwxr-xr-x  7 developer developer  4096 Oct 10 14:34 kernels
+drwxr-xr-x  2 developer developer  4096 Oct 10 14:34 manifest
+drwxr-xr-x  7 developer developer  4096 Oct 10 14:34 ops
+drwxr-xr-x  2 developer developer  4096 Oct 10 14:34 reporting
+drwxr-xr-x  2 developer developer  4096 Oct 10 14:34 testing
+drwxr-xr-x  2 developer developer  4096 Oct 10 14:34 utils
+drwxr-xr-x  2 developer developer  4096 Oct 10 14:34 workloads
+---SEP ops---
+total 44
+drwxr-xr-x  7 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x 10 developer developer 4096 Oct 10 14:34 ..
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 attention
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 elementwise
+-rw-r--r--  1 developer developer   53 Oct 10 14:34 __init__.py
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 mamba
+-rw-r--r--  1 developer developer 2609 Oct 10 14:34 _multidim.py
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 norm
+-rw-r--r--  1 developer developer 5184 Oct 10 14:34 op_base.py
+drwxr-xr-x  2 developer developer 4096 Oct 10 14:34 reduction
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/ 2>&1; echo "---SEP ops elementwise---"; ls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/ops/elementwise/ 2>&1; echo "---SEP manifest elementwise.yaml---"; cat /mnt/workspace/npuir-migration/examples/TileOPs/tileops/manifest/elementwise.yaml 2>&1
+total 20
+drwxr-xr-x 4 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x 7 developer developer 4096 Oct 10 14:34 ..
+-rw-r--r-- 1 developer developer  183 Oct 10 14:34 __init__.py
+drwxr-xr-x 3 developer developer 4096 Oct 10 14:34 lerp_tensor
+drwxr-xr-x 3 developer developer 4096 Oct 10 14:34 mish
+---SEP ops elementwise---
+total 24
+drwxr-xr-x 2 developer developer 4096 Oct 10 14:34 .
+drwxr-xr-x 7 developer developer 4096 Oct 10 14:34 ..
+-rw-r--r-- 1 developer developer  159 Oct 10 14:34 __init__.py
+-rw-r--r-- 1 developer developer 6430 Oct 10 14:34 lerp_tensor.py
+-rw-r--r-- 1 developer developer 3861 Oct 10 14:34 mish.py
+---SEP manifest elementwise.yaml---
+# elementwise.yaml -- manifest entries for the 'elementwise' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+MishFwdOp:
+  ref_api: "torch.nn.functional.mish"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: YOLO-style feature map activation
+    - {input_shape: [16, 256, 80, 80], dtypes: [float16, bfloat16], label: "yolo-p3"}
+    - {input_shape: [16, 512, 40, 40], dtypes: [float16, bfloat16], label: "yolo-p4"}
+    # Full: large FC layer
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "fc-wide"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: mish(x) = x * tanh(softplus(x)); softplus = exp + log1p = 2,
+    # tanh(1, transcendental) + final mul(1) = 4 per elem.
+    flops: "4 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/mish/mish.py
+    kernel_map:
+      mish: MishFwdKernel
+    op: tileops/ops/elementwise/mish.py
+    test: tests/ops/test_mish.py
+    bench: benchmarks/ops/bench_mish.py
+    bench_manifest_driven: true
+
+LerpTensorFwdOp:
+  ref_api: "torch.lerp"
+  # Tensor-weight variant: weight is a tensor that broadcasts together
+  # with input and end (PyTorch's torch.lerp(input, end, weight: Tensor)
+  # overload). Implements the 3-way tensor broadcast variant; the Op
+  # layer pre-broadcasts/expands to contiguous 1-D tensors before kernel
+  # dispatch.
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  variant_of: LerpFwdOp
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      end: {dtype: "same_as(input)"}
+      weight: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+    - "output.shape == broadcast_shapes(input.shape, end.shape, weight.shape)"
+
+  workloads:
+    # Smoke: small same-shape broadcast (1M elements per operand)
+    - {input_shape: [1024, 1024], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (same shape for all 3 inputs)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    # Full: mid-size square
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    # Full: GPU manifest elementwise-256M workload
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.lerp_tensor_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too — E14):
+  #   per output element: 3 flops (sub + mul + add);
+  #   3 reads + 1 write at post-broadcast N_total.
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "3 * N"
+    bytes: "4 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/lerp_tensor/lerp_tensor.py
+    kernel_map:
+      lerp_tensor: LerpTensorFwdKernel
+    op: tileops/ops/elementwise/lerp_tensor.py
+    test: tests/ops/test_lerp_tensor.py
+    bench: benchmarks/ops/bench_lerp_tensor.py
+    bench_manifest_driven: true
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py migration init --help 2>&1; echo "===func==="; python3 .agents/tools/statectl.py migration func --help 2>&1; echo "===phase==="; python3 .agents/tools/statectl.py migration phase --help 2>&1; echo "===integrate==="; python3 .agents/tools/statectl.py migration integrate --help 2>&1; echo "===show==="; python3 .agents/tools/statectl.py migration show --help 2>&1
+usage: statectl migration init [-h] --dir DIR --op-slug OP_SLUG --family
+                               FAMILY --meta-path META_PATH --functions
+                               FUNCTIONS [FUNCTIONS ...]
+                               [--phase {SCAFFOLD,DEV_LOOP}]
+
+options:
+  -h, --help            show this help message and exit
+  --dir DIR             op 级目录 examples/{op_slug}
+  --op-slug OP_SLUG
+  --family FAMILY
+  --meta-path META_PATH
+  --functions FUNCTIONS [FUNCTIONS ...]
+  --phase {SCAFFOLD,DEV_LOOP}
+===func===
+usage: statectl migration func [-h] --dir DIR --status
+                               {done,failed,in_progress,pending}
+                               name
+
+positional arguments:
+  name
+
+options:
+  -h, --help            show this help message and exit
+  --dir DIR
+  --status {done,failed,in_progress,pending}
+===phase===
+usage: statectl migration phase [-h] --dir DIR --phase
+                                {SCAFFOLD,DEV_LOOP,INTEGRATE,DONE,FAILED}
+                                [--reason REASON]
+
+options:
+  -h, --help            show this help message and exit
+  --dir DIR
+  --phase {SCAFFOLD,DEV_LOOP,INTEGRATE,DONE,FAILED}
+  --reason REASON
+===integrate===
+usage: statectl migration integrate [-h] --dir DIR --status {pass,fail}
+                                    [--reason REASON]
+
+options:
+  -h, --help            show this help message and exit
+  --dir DIR
+  --status {pass,fail}
+  --reason REASON
+===show===
+usage: statectl migration show [-h] --dir DIR
+
+options:
+  -h, --help  show this help message and exit
+  --dir DIR
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && grep -n "stage_plan\|harness\|SCAFFOLD\|default_plan\|DEFAULT_PLAN\|migration_mode" .agents/tools/statectl.py 2>&1 | head -60
+56:    0: "SCAFFOLD",
+66:    0: "BLOCKED_SCAFFOLD",
+71:MIG_PHASES = ["SCAFFOLD", "DEV_LOOP", "INTEGRATE", "DONE", "FAILED"]
+156:    """scenario + migration_mode 组合标签（与最终报告 vocabulary 一致）。"""
+163:        mm = state.get("migration_mode")
+430:def scenario_stage_plan(scenario: str, migration_mode: str | None, errors: list):
+432:        if migration_mode:
+436:        if migration_mode == "harness":
+439:        if migration_mode == "plain":
+442:            err("E-SCENARIO", "migration 场景必须指定 --migration-mode harness|plain")
+446:        if migration_mode:
+464:    plan = scenario_stage_plan(args.scenario, args.migration_mode, errors)
+465:    if args.stage_plan:
+467:            plan = [int(x) for x in args.stage_plan.split(",")]
+471:            errors.append(err("E-SCENARIO", f"非法 --stage-plan：{args.stage_plan}"))
+485:            "migration_mode": args.migration_mode,
+486:            "stage_plan": plan,
+518:        migration_mode=state["migration_mode"],
+519:        stage_plan=state["stage_plan"],
+526:            "stage_plan": state["stage_plan"],
+528:                "harness 函数级状态：Stage 0/5 由 `statectl migration` 聚合状态跟踪"
+529:                if args.scenario == "migration" and args.migration_mode == "harness"
+564:        state["stage_plan"] = sorted(set(state["stage_plan"]) | {4})
+566:    elif n not in state["stage_plan"]:
+568:            state["stage_plan"] = sorted(set(state["stage_plan"]) | {4})
+573:                    f"Stage {n} 不在 stage_plan={state['stage_plan']}（可选 Stage 4 用 --extend 追加）",
+623:        for s in state["stage_plan"]:
+759:            for s in state["stage_plan"]
+868:        for s in state["stage_plan"]:
+1379:    if phase not in ("SCAFFOLD", "DEV_LOOP"):
+1383:                "errors": [err("E-PHASE-ORDER", "init 只接受 SCAFFOLD|DEV_LOOP")],
+1423:    if state["phase"] not in ("SCAFFOLD", "DEV_LOOP"):
+1452:    order = ["SCAFFOLD", "DEV_LOOP", "INTEGRATE", "DONE"]
+1563:    sp.add_argument("--migration-mode", choices=["harness", "plain"])
+1577:        help="把可选 Stage 4 追加进 stage_plan（含 DONE 后重开）",
+1674:    m = sub.add_parser("migration", help="harness 聚合状态 .migration_state.json")
+1683:    sp.add_argument("--phase", default="DEV_LOOP", choices=["SCAFFOLD", "DEV_LOOP"])
+1693:        "phase", help="聚合 phase 迁移（SCAFFOLD→DEV_LOOP→INTEGRATE→DONE）"
+[0m
+[0m→ [0mRead .agents/tools/statectl.py[90m [offset=430, limit=120][0m
+[0m→ [0mRead .agents/tools/statectl.py[90m [limit=130, offset=620][0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && grep -n "def run_gate\|def cmd_gate\|def gate_payload\|migration_dir\|--meta\|def cmd_fail\|revision_reentry\|def cmd_verify" .agents/tools/statectl.py 2>&1 | head -40
+331:def run_gate(stage: int, ctx: Ctx, meta_path: str | None, migration_dir: str | None):
+334:    `errors` are input problems (missing --meta etc.), not gate failures.
+343:        if not meta and migration_dir:
+344:            mstate = os.path.join(migration_dir, MIGRATION_STATE_FILE)
+353:                err("E-GATE-INPUT", "gate 0 需要 --meta（.migration_meta.json 路径）")
+381:        if migration_dir:
+382:            mpath = os.path.join(migration_dir, MIGRATION_STATE_FILE)
+404:                    "gate 5 需要 --migration-dir（含 .migration_state.json）或 --meta",
+415:def gate_payload(stage: int, failures: list, warnings: list) -> dict:
+593:    revision_reentry = (
+604:    if status == "completed" and not revision_reentry:
+636:    if revision_reentry:
+744:    failures, warnings, gate_errors = run_gate(n, ctx, args.meta, args.migration_dir)
+792:def cmd_fail(args) -> int:
+961:def cmd_gate(args) -> int:
+970:        args.stage, ctx, args.meta, args.migration_dir
+993:def cmd_verify(args) -> int:
+1584:    sp.add_argument("--meta", default=None, help="gate 0 用：.migration_meta.json 路径")
+1607:    sp.add_argument("--meta", default=None)
+1681:    sp.add_argument("--meta-path", required=True)
+[0m
+[0m→ [0mRead .agents/tools/statectl.py[90m [limit=100, offset=331][0m
+[0m→ [0mRead .agents/tools/statectl.py[90m [limit=150, offset=1360][0m
+[0m→ [0mRead .opencode/agents/README.md
+[0m→ [0mRead .agents/tools/statectl.py[90m [limit=120, offset=120][0m
+[0m→ [0mRead .agents/tools/statectl.py[90m [limit=80, offset=1509][0m
+[0m→ [0mRead examples/TileOPs/.agents/skills/add-npu-op/SKILL.md
+[0m
+[0m$ [0mls -la /mnt/workspace/TileOPs-main/src/tileops/ops/ 2>&1; echo "---SEP workloads---"; ls -la /mnt/workspace/TileOPs-main/workloads/ 2>&1 | head -30; echo "---SEP src tileops subdirs---"; ls -la /mnt/workspace/TileOPs-main/src/tileops/ 2>&1 | grep -E "workloads|ops|kernels|manifest"
+total 248
+drwxr-xr-x 14 developer developer  4096 Oct 11 22:06 .
+drwxr-xr-x 10 developer developer  4096 Oct 11 22:06 ..
+drwxr-xr-x  3 developer developer  4096 Oct 11 22:06 attention
+-rw-r--r--  1 developer developer  2906 Oct 11 22:06 compile_boundary.py
+-rw-r--r--  1 developer developer 12652 Oct 11 22:06 convolution.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 elementwise
+-rw-r--r--  1 developer developer  2486 Oct 11 22:06 fft.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 gemm
+-rw-r--r--  1 developer developer  9138 Oct 11 22:06 __init__.py
+drwxr-xr-x  4 developer developer  4096 Oct 11 22:06 linear_attention
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 mamba
+drwxr-xr-x  4 developer developer  4096 Oct 11 22:06 moe
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 norm
+-rw-r--r--  1 developer developer 53835 Oct 11 22:06 op_base.py
+-rw-r--r--  1 developer developer  1430 Oct 11 22:06 _params_codegen.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 pool
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 quantization
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 reduction
+-rw-r--r--  1 developer developer 26965 Oct 11 22:06 rope.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 sampling
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 sequence_modeling
+-rw-r--r--  1 developer developer 62550 Oct 11 22:06 _signature_codegen.py
+-rw-r--r--  1 developer developer   650 Oct 11 22:06 _validation.py
+---SEP workloads---
+total 288
+drwxr-xr-x  6 developer developer  4096 Oct 11 22:06 .
+drwxr-xr-x 11 developer developer  4096 Oct 11 22:06 ..
+drwxr-xr-x  3 developer developer  4096 Oct 11 22:06 attention
+-rw-r--r--  1 developer developer  9260 Oct 11 22:06 convolution.py
+-rw-r--r--  1 developer developer  1108 Oct 11 22:06 device.py
+-rw-r--r--  1 developer developer 28231 Oct 11 22:06 elementwise.py
+-rw-r--r--  1 developer developer  1020 Oct 11 22:06 fft.py
+-rw-r--r--  1 developer developer 23714 Oct 11 22:06 gemm.py
+-rw-r--r--  1 developer developer   527 Oct 11 22:06 __init__.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 linear_attention
+-rw-r--r--  1 developer developer 34175 Oct 11 22:06 mamba.py
+-rw-r--r--  1 developer developer 22812 Oct 11 22:06 moe.py
+-rw-r--r--  1 developer developer 18011 Oct 11 22:06 norm.py
+-rw-r--r--  1 developer developer 23893 Oct 11 22:06 numerics.py
+-rw-r--r--  1 developer developer 12860 Oct 11 22:06 pool.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 quantization
+-rw-r--r--  1 developer developer 17312 Oct 11 22:06 reduction.py
+-rw-r--r--  1 developer developer 14062 Oct 11 22:06 rope.py
+-rw-r--r--  1 developer developer 18404 Oct 11 22:06 sampling.py
+-rw-r--r--  1 developer developer  1459 Oct 11 22:06 sequence_metadata.py
+drwxr-xr-x  2 developer developer  4096 Oct 11 22:06 sequence_modeling
+-rw-r--r--  1 developer developer  5824 Oct 11 22:06 workload_base.py
+---SEP src tileops subdirs---
+drwxr-xr-x 15 developer developer 4096 Oct 11 22:06 kernels
+drwxr-xr-x  3 developer developer 4096 Oct 11 22:06 manifest
+drwxr-xr-x 14 developer developer 4096 Oct 11 22:06 ops
+[0m
+[0m$ [0mfind /mnt/workspace/TileOPs-main/src/tileops -name "*.py" -path "*elementwise*" 2>&1; echo "---SEP workload search---"; find /mnt/workspace/TileOPs-main -name "*.py" -path "*workload*" -name "*elementwise*" 2>&1; find /mnt/workspace/TileOPs-main -path "*workload*" -name "*.py" 2>&1 | head -30
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/masked_fill.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/call_spec.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_policy.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/__init__.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_dtype.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/arithmetic.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/nan_to_num.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/sinusoidal.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/logical.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/where.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/bitwise.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_erf.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/alibi.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_nan.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_broadcast.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/prelu.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/dropout.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_op_body.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/clamp.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/comparison.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_base.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/math_unary.py
+/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_builders.py
+/mnt/workspace/TileOPs-main/src/tileops/elementwise.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/masked_fill.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/__init__.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/activations.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/arithmetic.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/nan_to_num.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/sinusoidal.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/logical.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/where.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/bitwise.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/alibi.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/prelu.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/dropout.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/clamp.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/comparison.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/_base.py
+/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/math_unary.py
+---SEP workload search---
+/mnt/workspace/TileOPs-main/workloads/elementwise.py
+/mnt/workspace/TileOPs-main/workloads/sequence_metadata.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/prefill_paged_kv_append.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/__init__.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/call_metadata.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/bwd.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/dense.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/rope.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/paged.py
+/mnt/workspace/TileOPs-main/workloads/attention/gqa/varlen.py
+/mnt/workspace/TileOPs-main/workloads/attention/mha.py
+/mnt/workspace/TileOPs-main/workloads/attention/paged_kv_cache.py
+/mnt/workspace/TileOPs-main/workloads/attention/fp8_lightning_indexer.py
+/mnt/workspace/TileOPs-main/workloads/attention/__init__.py
+/mnt/workspace/TileOPs-main/workloads/attention/nsa.py
+/mnt/workspace/TileOPs-main/workloads/attention/mla.py
+/mnt/workspace/TileOPs-main/workloads/attention/dsa.py
+/mnt/workspace/TileOPs-main/workloads/attention/topk_select.py
+/mnt/workspace/TileOPs-main/workloads/workload_base.py
+/mnt/workspace/TileOPs-main/workloads/gemm.py
+/mnt/workspace/TileOPs-main/workloads/linear_attention/gdn.py
+/mnt/workspace/TileOPs-main/workloads/linear_attention/gla.py
+/mnt/workspace/TileOPs-main/workloads/linear_attention/__init__.py
+/mnt/workspace/TileOPs-main/workloads/linear_attention/deltanet.py
+/mnt/workspace/TileOPs-main/workloads/linear_attention/input_values.py
+/mnt/workspace/TileOPs-main/workloads/linear_attention/kda.py
+/mnt/workspace/TileOPs-main/workloads/__init__.py
+/mnt/workspace/TileOPs-main/workloads/fft.py
+/mnt/workspace/TileOPs-main/workloads/moe.py
+/mnt/workspace/TileOPs-main/workloads/reduction.py
+/mnt/workspace/TileOPs-main/workloads/device.py
+[0m
+[0m$ [0mgrep -n "src\|gpu_repo_root\|tileops/kernels\|manifest\|def main\|add_argument\|--gpu-repo-root\|spec" /mnt/workspace/npuir-migration/examples/TileOPs/.agents/skills/add-npu-op/scripts/extract_tl_kernel.py 2>&1 | head -60
+3:Reads the op's manifest entry to locate the declared kernel source file and
+16:        --gpu-repo-root /path/to/TileOPs [--out OUT.py]
+41:def load_manifest_entry(op_name: str, repo_root: Path) -> dict[str, Any]:
+42:    """Return the merged manifest entry for *op_name*.
+44:    Scans every ``tileops/manifest/*.yaml`` file and merges them, mirroring
+45:    :func:`tileops.manifest.load_manifest` without importing the package.
+47:    manifest_dir = repo_root / "tileops" / "manifest"
+48:    if not manifest_dir.is_dir():
+49:        raise FileNotFoundError(f"manifest directory not found: {manifest_dir}")
+51:    for path in sorted(manifest_dir.glob("*.yaml")):
+58:                raise ValueError(f"duplicate op {name!r} across manifest files")
+61:        raise KeyError(f"op '{op_name}' not found in manifest under {manifest_dir}")
+64:        raise ValueError(f"op '{op_name}' has no 'source' section in manifest")
+77:    may declare more kernels than the manifest's ``source.kernel_map``):
+83:      3. ``source.kernel_map`` values (manifest-declared, fallback).
+89:        # Fallback to manifest kernel_map if no op source file.
+131:        f"to the manifest"
+300:            src = None if is_external else self._resolve_abs(module)
+305:                source_file=src,
+316:                src = self._resolve_relative(st.path, node)
+320:                src = None if is_external else self._resolve_abs(module)
+325:                source_file=src,
+745:      ``self.kernel`` member to the specific ``@tilelang.jit`` builder
+1110:def main(argv: list[str] | None = None) -> int:
+1114:    parser.add_argument("--op-name", required=True, help="Manifest op key (e.g. MishFwdOp).")
+1115:    parser.add_argument(
+1116:        "--gpu-repo-root", required=True, type=Path, help="Path to the TileOPs repo root."
+1118:    parser.add_argument(
+1129:    repo_root = args.gpu_repo_root.resolve()
+1131:        parser.error(f"--gpu-repo-root does not exist: {repo_root}")
+1133:    entry = load_manifest_entry(args.op_name, repo_root)
+[0m
+[0m→ [0mRead examples/TileOPs/.agents/skills/add-npu-op/scripts/extract_tl_kernel.py[90m [limit=140, offset=40][0m
+[0m→ [0mRead .agents/tools/statectl.py[90m [limit=50, offset=961][0m
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration/set_env.sh 2>&1; echo "---SEP npu check---"; python3 -c "import torch; print('torch', torch.__version__); print('npu available', torch.npu.is_available())" 2>&1 | head -20
+ls: cannot access '/mnt/workspace/npuir-migration/set_env.sh': No such file or directory
+---SEP npu check---
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+torch 2.7.1+cpu
+npu available True
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/kb_stale_check.py --json 2>&1 | head -40
+{
+  "current_stamp": "tilelang 0.1.2 (commit ?) + CANN ?",
+  "checked": "pattern-library topic files + queue.md",
+  "stale_count": 0,
+  "stale": [],
+  "unknown_count": 86,
+  "note": "stale = entry toolchain commit differs from current; re-verify repro-backed entries via: repro_runner.py --filter stale"
+}
+[0m
+[0m$ [0mcat /mnt/workspace/npuir-migration/conductor_run.log 2>&1 | head -40
+[0m
+> tilelang-op-conductor · deepseek-v4-pro
+[0m
+[0m$ [0mls -la /mnt/workspace/TileOPs-main 2>&1 | head -50; echo "---SEP---"; test -d /mnt/workspace/TileOPs-main/tileops/manifest && echo "manifest exists" || echo "manifest NOT at root"; test -d /mnt/workspace/TileOPs-main/tests/ops && echo "tests/ops exists" || echo "tests/ops NOT at root"; test -d /mnt/workspace/TileOPs-main/benchmarks/ops && echo "benchmarks/ops exists" || echo "benchmarks/ops NOT at root"
+total 124
+drwxr-xr-x 11 developer developer 4096 Oct 11 22:06 .
+drwxrwxrwx 12 root      root      4096 Oct 12 20:57 ..
+drwxr-xr-x  2 developer developer 4096 Oct 11 22:06 assets
+drwxr-xr-x  6 developer developer 4096 Oct 11 22:06 benchmarks
+-rw-r--r--  1 developer developer   36 Oct 11 22:06 .clang-format
+drwxr-xr-x  5 developer developer 4096 Oct 11 22:06 .claude
+-rw-r--r--  1 developer developer 4839 Oct 11 22:06 CLAUDE.md
+-rw-r--r--  1 developer developer 2728 Oct 11 22:06 conftest.py
+-rw-r--r--  1 developer developer 4883 Oct 11 22:06 constraints-runner-lock.txt
+-rw-r--r--  1 developer developer 2433 Oct 11 22:06 constraints.txt
+-rw-r--r--  1 developer developer 5183 Oct 11 22:06 CONTRIBUTING.md
+drwxr-xr-x  4 developer developer 4096 Oct 11 22:06 docs
+-rw-r--r--  1 developer developer  136 Oct 11 22:06 .gitattributes
+drwxr-xr-x  6 developer developer 4096 Oct 11 22:06 .github
+-rw-r--r--  1 developer developer  863 Oct 11 22:06 .gitignore
+-rw-r--r--  1 developer developer 1127 Oct 11 22:06 LICENSE
+-rw-r--r--  1 developer developer  502 Oct 11 22:06 MANIFEST.in
+-rw-r--r--  1 developer developer 5410 Oct 11 22:06 .pre-commit-config.yaml
+-rw-r--r--  1 developer developer 6870 Oct 11 22:06 pyproject.toml
+-rw-r--r--  1 developer developer 8292 Oct 11 22:06 README.md
+drwxr-xr-x  4 developer developer 4096 Oct 11 22:06 scripts
+drwxr-xr-x  3 developer developer 4096 Oct 11 22:06 src
+drwxr-xr-x  5 developer developer 4096 Oct 11 22:06 tests
+drwxr-xr-x  6 developer developer 4096 Oct 11 22:06 workloads
+---SEP---
+manifest NOT at root
+tests/ops exists
+benchmarks/ops exists
+[0m
+[0m$ [0mls -la /mnt/workspace/npuir-migration 2>&1 | head -60
+total 32
+drwxr-xr-x  5 developer developer 4096 Oct 12 20:58 .
+drwxrwxrwx 12 root      root      4096 Oct 12 20:57 ..
+drwxr-xr-x  6 developer developer 4096 Oct 12 16:36 .agents
+-rw-r--r--  1 developer developer 7388 Oct 12 20:57 AGENTS.md
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "import tilelang; print('tilelang', getattr(tilelang,'__version__','?'))" 2>&1 | head -10
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+2026-10-12 21:01:52  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-12 21:01:52  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-12 21:01:52  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+tilelang 0.1.2
+[0m
+[0m$ [0mgrep -n "tilelang.jit\|def _.*kernel\|@T.prim_func\|def _elementwise\|def _unary\|def _make" /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_builders.py 2>&1 | head -40
+68:    @tilelang.jit(out_idx=[1])
+72:        @T.prim_func
+89:    @tilelang.jit(out_idx=[1])
+98:        @T.prim_func
+348:        @T.prim_func
+373:        @T.prim_func
+409:    @T.prim_func
+452:    @tilelang.jit(out_idx=[2])
+472:        @T.prim_func
+541:        @tilelang.jit(out_idx=[2])
+545:            @T.prim_func
+562:        @tilelang.jit(out_idx=[2])
+570:    @tilelang.jit(out_idx=[2])
+575:        @T.prim_func
+617:        @tilelang.jit(out_idx=[2])
+636:        @tilelang.jit(out_idx=[2])
+641:            @T.prim_func
+656:    @tilelang.jit(out_idx=[2])
+662:        @T.prim_func
+689:    @tilelang.jit(out_idx=[1])
+694:        @T.prim_func
+[0m
+[0m$ [0mgrep -n "tilelang.jit\|def _.*kernel\|@T.prim_func\|class FloatUnaryKernel\|class .*Unary.*Kernel" /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_base.py 2>&1 | head -40
+158:class UnaryKernel(_StrategyKernel):
+226:    def _build_kernel(self, strategy):
+366:    def _build_kernel(self, strategy):
+469:    def _build_kernel(self, strategy):
+500:class FloatUnaryKernel(UnaryKernel):
+506:class FloatPredicateKernel(FloatUnaryKernel):
+513:class LogicalUnaryKernel(UnaryKernel):
+521:class Uint8StorageUnaryKernel(UnaryKernel):
+658:class ScalarParamUnaryKernel(UnaryKernel):
+[0m
+[0m# [0mTodos
+[✓] 场景识别与状态准备（migration-harness 路由 + 场景文件加载 + 环境体检）
+[•] Stage 0：调度 @tileops-scaffolder 产出 TileOPs 7 文件脚手架 + .migration_meta.json
+[ ] gate 0 校验 + 解析 extracted_functions + statectl migration init 建聚合状态
+[ ] DEV_LOOP：逐函数 Stage 1(designer)→2(reviewer)→3(developer)，含二次校验精度
+[ ] Stage 5：调度 @tilelang-op-integrator 集成验证 + 单算子 report + gate 5 + migration DONE
+[ ] Stage 5 后置：Session 耗时分析 + 终态蒸馏(evolver) + 最终报告
+[0m
+[0m• [0mStage 0 scaffold HardsigmoidFwdOp[90m Tileops-Scaffolder Agent[0m
+Now I'll dispatch the scaffolder for Stage 0. Let me write a detailed prompt with the src-layout facts.
+[0m✓ [0mStage 0 scaffold HardsigmoidFwdOp[90m Tileops-Scaffolder Agent[0m
+[0m
+[0m$ [0mcat /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/.migration_meta.json 2>&1
+{
+  "op_name": "HardsigmoidFwdOp",
+  "op_slug": "hardsigmoid",
+  "family": "elementwise",
+  "gpu_repo_root": "/mnt/workspace/TileOPs-main",
+  "kernel_class_name": "HardsigmoidFwdKernel",
+  "op_class_name": "HardsigmoidFwdOp",
+  "test_path": "tests/ops/test_hardsigmoid.py",
+  "test_slug": "hardsigmoid",
+  "bench_path": "benchmarks/ops/bench_hardsigmoid.py",
+  "bench_slug": "hardsigmoid",
+  "wrapper_path": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py",
+  "extracted_file": "tileops/kernels/elementwise/hardsigmoid/_hardsigmoid_fwd_kernels.py",
+  "extracted_functions": ["hardsigmoid_fwd_kernel"],
+  "created_at": "2026-10-12T13:18:53Z"
+}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py gate 0 --dir examples/hardsigmoid --meta examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/.migration_meta.json 2>&1
+{"action": "gate", "failures": [], "ok": true, "pass": true, "stage": 0, "warnings": []}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py migration init --dir examples/hardsigmoid --op-slug hardsigmoid --family elementwise --meta-path examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/.migration_meta.json --functions hardsigmoid_fwd_kernel --phase DEV_LOOP 2>&1
+{"action": "migration-init", "functions": ["hardsigmoid_fwd_kernel"], "ok": true, "phase": "DEV_LOOP"}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py init --dir examples/hardsigmoid/hardsigmoid_fwd_kernel --project hardsigmoid --op hardsigmoid_fwd_kernel --scenario migration --migration-mode harness --requirement "迁移 hardsigmoid 算子 HardsigmoidFwdOp。其 TileLang 实现函数 hardsigmoid_fwd_kernel 在 tileops/kernels/elementwise/hardsigmoid/_hardsigmoid_fwd_kernels.py。hardsigmoid_fwd_kernel 是对外接口，不要改变接口的参数(除非该参数跟后端实现相关，在迁移时需要适配)。HardsigmoidFwdOp 的规格见 examples/TileOPs/tileops/manifest/elementwise.yaml 中 HardsigmoidFwdOp 的 workloads 部分。精度用例见 examples/TileOPs/tests/ops/test_hardsigmoid.py，性能用例见 examples/TileOPs/benchmarks/ops/bench_hardsigmoid.py。用 developer 模式实现。" 2>&1
+{"action": "init", "note": "harness 函数级状态：Stage 0/5 由 `statectl migration` 聚合状态跟踪", "ok": true, "phase": "DESIGN", "stage_plan": [1, 2, 3], "state_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/.stage_state.json"}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py migration func --dir examples/hardsigmoid hardsigmoid_fwd_kernel --status in_progress 2>&1 && python3 .agents/tools/statectl.py start 1 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "migration-func", "func": "hardsigmoid_fwd_kernel", "ok": true, "status": "in_progress"}
+{"action": "start", "ok": true, "phase": "DESIGN", "stage": 1}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/kb_search.py "hardsigmoid elementwise unary activation float16 bfloat16 clamp relu6" --json --top 5 2>&1
+{
+  "query": "hardsigmoid elementwise unary activation float16 bfloat16 clamp relu6",
+  "results": [
+    {
+      "id": "VP-2026-0004",
+      "source": "queue",
+      "title": "VP-2026-0004",
+      "path": ".agents/evolution/queue.md",
+      "facets": {
+        "status": "pending"
+      },
+      "score": 8.905,
+      "snippet": "- examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/perf_opt/opt_log.md#iteration-3（v3_op2：256M fp16 1765.01 vs 1710.07，+3.2%；1M/16M t"
+    },
+    {
+      "id": "VP-2026-0005",
+      "source": "queue",
+      "title": "VP-2026-0005",
+      "path": ".agents/evolution/queue.md",
+      "facets": {
+        "status": "pending"
+      },
+      "score": 8.26,
+      "snippet": "- examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/perf_opt/opt_log.md#iteration-2（v2_op2 静态尾块全档 tie/-0.6%；guard-free 机制证据 defer <0.3"
+    },
+    {
+      "id": "CASE-elementwise-mish-opt",
+      "source": "pattern-library",
+      "title": "`examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/perf_opt/`",
+      "path": ".agents/skills/tilelang-op-optimize/references/pattern-library/cases.md",
+      "facets": {
+        "kind": "case",
+        "family": "[elementwise]",
+        "apis": "",
+        "dtype": "[fp16, fp32]",
+        "status": "verified",
+        "repro": "none"
+      },
+      "score": 5.97,
+      "snippet": "### `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/perf_opt/`"
+    },
+    {
+      "id": "CASE-elementwise-lerp-opt",
+      "source": "pattern-library",
+      "title": "`examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/perf_opt/`",
+      "path": ".agents/skills/tilelang-op-optimize/references/pattern-library/cases.md",
+      "facets": {
+        "kind": "case",
+        "family": "[elementwise]",
+        "apis": "",
+        "dtype": "[fp16, bf16, fp32]",
+        "status": "verified",
+        "repro": "none"
+      },
+      "score": 5.925,
+      "snippet": "### `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/perf_opt/`"
+    },
+    {
+      "id": "VP-2026-0001",
+      "source": "queue",
+      "title": "VP-2026-0001",
+      "path": ".agents/evolution/queue.md",
+      "facets": {
+        "status": "pending"
+      },
+      "score": 4.751,
+      "snippet": "- examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/perf_opt/opt_log.md（首证 2026-08：run 间 ±2–3.5% 环境双态层、per-process 快/慢双态、<3% 结论须多 run）"
+    }
+  ]
+}
+[0m
+[0m→ [0mRead examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/_hardsigmoid_fwd_kernels.py
+[0m→ [0mRead .opencode/agents/tilelang-op-designer.md
+[0m
+[0m$ [0mgrep -n "class HardsigmoidFwdOp\|class .*ElementwiseFwd\|UnaryElementwiseFwdInterface\|def forward\|def _reshape\|flatten\|reshape" /mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/activations.py 2>&1 | head -30; echo "===SEP op file Hardsigmoid==="; sed -n '/class HardsigmoidFwdOp/,/^class /p' /mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/activations.py 2>&1 | head -60
+113:class HardsigmoidFwdOp(_ParamFreeActivationOp):
+===SEP op file Hardsigmoid===
+class HardsigmoidFwdOp(_ParamFreeActivationOp):
+    """Element-wise HardSigmoid: y = clamp(x + 3, 0, 6) / 6."""
+
+    kernel_types = {"hardsigmoid": HardsigmoidFwdKernel}
+
+
+class MishFwdOp(_ParamFreeActivationOp):
+[0m
+[0m$ [0mgrep -n "class UnaryElementwiseFwdInterface\|def forward\|def _get_or_create_kernel\|reshape\|flatten\|numel\|def __init__" /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_base.py 2>&1 | head -40
+165:        N_total: Total number of elements (flattened).
+187:    def __init__(self, N_total, dtype, config=None):
+253:    def forward(self, x):
+256:        return self._restore_output_dtype(result).reshape(x.shape)
+299:    def __init__(self, a_shape, b_shape, dtype, config=None):
+310:        self.a_numel = math.prod(self.a_shape)
+311:        self.b_numel = math.prod(self.b_shape)
+383:                self.a_numel,
+384:                self.b_numel,
+394:                self.a_numel,
+395:                self.b_numel,
+413:    def forward(self, a, b):
+416:        return self._restore_output_dtype(result).reshape(self.result_shape)
+448:    def __init__(self, M, N, dtype, config=None):
+494:    def forward(self, x):
+539:    def forward(self, x):
+565:    def forward(self, a, b):
+600:    def __init__(self, a_shape, b_shape, dtype, config=None, *, alpha=1):
+700:    ``tile``    broadcast to the output shape and flattened
+703:    ``value``   a 0-dim scalar reshaped to a length-one buffer
+717:    def __init__(self, N_total, dtype, config=None):
+798:                tensor = tensor.contiguous().reshape(1)
+805:        result = self._compiled_fn(*args).reshape(out_shape)
+835:    def forward(self, input: "torch.Tensor") -> "torch.Tensor":
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && sed -n '/HardsigmoidFwdOp:/,/^[A-Z]/p' examples/TileOPs/tileops/manifest/elementwise.yaml 2>&1
+HardsigmoidFwdOp:
+  ref_api: "torch.nn.functional.hardsigmoid"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: SE-block gating (GPU manifest mbv3-se-gate)
+    - {input_shape: [32, 240, 1, 1], dtypes: [float16, bfloat16], label: "mbv3-se-gate"}
+    - {input_shape: [32, 960, 1, 1], dtypes: [float16, bfloat16], label: "mbv3-se-gate-deep"}
+    # Full: large FC layer
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "fc-wide"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: hardsigmoid(x) = relu6(x + 3) / 6.
+    # add(1) + two-sided-clamp(1, per convention) + div(1) = 3 per elem.
+    flops: "3 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py
+    kernel_map:
+      hardsigmoid: HardsigmoidFwdKernel
+    op: tileops/ops/elementwise/hardsigmoid.py
+    test: tests/ops/test_hardsigmoid.py
+    bench: benchmarks/ops/bench_hardsigmoid.py
+    bench_manifest_driven: true
+
+LerpTensorFwdOp:
+[0m
+[0m$ [0mgrep -rn "nan_max\|nan_min\|def nan_max\|def nan_min" /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/_nan.py 2>&1 | head; echo "===SEP op_func==="; sed -n '169,182p' /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py
+6:__all__ = ["keep_nan", "nan_max", "nan_min"]
+66:def nan_max(a, b):
+71:def nan_min(a, b):
+===SEP op_func===
+class HardsigmoidFwdKernel(FloatUnaryKernel, UnaryElementwiseFwdInterface):
+    """Element-wise HardSigmoid: clamp(x + 3, 0, 6) * (1 / 6).
+
+    Scaling by the reciprocal is what ``torch.nn.functional.hardsigmoid`` does, so
+    finite inputs come out bit-identical to it; dividing by 6 lowers to
+    ``div.rn.f32``. A NaN input gives NaN, as in torch.
+    """
+
+    @staticmethod
+    def op_func(x):
+        three = T.cast(3.0, "float32")
+        six = T.cast(6.0, "float32")
+        zero = T.cast(0.0, "float32")
+        one_sixth = T.cast(1.0 / 6.0, "float32")
+[0m
+[0m• [0mStage 1 design hardsigmoid_fwd_kernel[90m Tilelang-Op-Designer Agent[0m
+Now dispatching the designer for Stage 1 (function `hardsigmoid_fwd_kernel`):
+[0m✓ [0mStage 1 design hardsigmoid_fwd_kernel[90m Tilelang-Op-Designer Agent[0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py complete 1 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "gate", "errors": [], "failures": [{"file": "/mnt/workspace/npuir-migration/examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md", "message": "引用的仓库路径不存在：examples/源码佐证（负向断言/佐证路径必须真实存在）", "rule_id": "S1-REF-PATHS"}], "hint": "门禁失败：按「门禁失败处理流程」执行 statectl fail N 后重试，禁止推进状态", "ok": false, "pass": false, "stage": 1, "warnings": []}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && grep -n "源码佐证\|examples/" examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md 2>&1 | head -40
+117:- 源仓参考实现 / 测试基准：`torch.nn.functional.hardsigmoid`（`F.hardsigmoid(x.float()).to(x.dtype)`，见 `examples/TileOPs/tests/ops/test_hardsigmoid.py` 的 `ref_program`）。
+234:**向量化结论**：逐元素计算（x+3 / clamp / ×1/6 / cast / NaN 恢复）已**全部向量化**（替代 API 均有 examples/源码佐证：vadd/vclamp/vmul/vcast/isnan+vselect）。保留 2 处标量：block 起始索引（block 级任务映射）与尾块大小（动态边界），均非逐元素热点，理由见上表。与 §6 循环结构一致（§6 不出现逐元素标量循环）。
+407:| `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高度相似（同族 unary 激活迁移） | Developer 模式、`T.alloc_ub`、`T.copy` 尾块、v-prefix 链、fp32 中转、`T.Kernel(is_npu=True)` |
+408:| `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/perf_opt/mish.py` | 高度相似（Stage 4 调优） | persistent 核内串行 + 2-stage 流水 + block_size=8192 |
+409:| `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/_make_lerp_tensor_kernel.py` | 相似（同族 elementwise） | fp32 中转模式（PL-1.17）、NaN/Inf 传播、`T.min` 尾块 |
+586:    与源仓测试基准一致（examples/TileOPs/tests/ops/test_hardsigmoid.py 的
+646:examples/hardsigmoid/hardsigmoid_fwd_kernel/
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py fail 1 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1 && echo "===START===" && python3 .agents/tools/statectl.py start 1 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "fail", "limit": 3, "ok": true, "stage": 1, "stage_retry_count": 1}
+===START===
+{"action": "start", "ok": true, "phase": "DESIGN", "stage": 1}
+[0m
+[0m• [0mStage 1 gate fix hardsigmoid[90m Tilelang-Op-Designer Agent[0m
+[0m✓ [0mStage 1 gate fix hardsigmoid[90m Tilelang-Op-Designer Agent[0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py complete 1 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "complete", "final_artifact": null, "gate": {"action": "gate", "failures": [], "pass": true, "stage": 1, "warnings": []}, "ok": true, "phase": "REVIEW", "stage": 1}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py start 2 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "start", "ok": true, "phase": "REVIEW", "stage": 2}
+[0m
+[0m→ [0mRead .opencode/agents/tilelang-design-reviewer.md
+[0m• [0mStage 2 review hardsigmoid[90m Tilelang-Design-Reviewer Agent[0m
+[0m✓ [0mStage 2 review hardsigmoid[90m Tilelang-Design-Reviewer Agent[0m
+[0m→ [0mRead examples/hardsigmoid/hardsigmoid_fwd_kernel/REVIEW.md
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py show --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1 | python3 -c "import json,sys; s=json.load(sys.stdin); print('retry_count=',s.get('retry_count'),'stage_retry_count=',s.get('stage_retry_count'),'phase=',s.get('phase'),'stage_status=',s.get('stage_status'))" 2>&1
+retry_count= None stage_retry_count= None phase= None stage_status= None
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py show --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "show", "ok": true, "state": {"artifact_hashes": {"examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md": "5cd2ebba87b0e1360130a899b79edf15606e19f103b41d74bcbf54fd410cb49b"}, "budget": {"max_stage4_experiments": null, "max_subagent_dispatches": null, "max_wallclock_s": null}, "current_stage": 2, "design_md_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md", "env_check_passed": false, "failure_reason": null, "final_artifact": null, "kernel_opt_py_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/perf_opt/hardsigmoid_fwd_kernel.py", "kernel_py_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py", "last_failure_reason": null, "last_updated": "2026-10-12T13:40:19Z", "max_retry": 3, "migration_mode": "harness", "operator_name": "hardsigmoid_fwd_kernel", "perf_feedback": null, "perf_iteration": {"consecutive_no_improvement": 0, "count": 0, "last_improvement": 0.0}, "perf_tuning_requested": null, "phase": "REVIEW", "project_name": "hardsigmoid", "retry_count": 0, "review_md_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/REVIEW.md", "scenario": "migration", "stage3_failure_breakdown": {"precision_fail": 0, "runtime_fail": 0}, "stage_plan": [1, 2, 3], "stage_retry_count": {"0": 0, "1": 1, "2": 0, "3": 0, "4": 0, "5": 0}, "stage_status": {"1": "completed", "2": "in_progress"}, "task_id": "hardsigmoid-hardsigmoid_fwd_kernel-20261012T132114Z", "user_requirement": "迁移 hardsigmoid 算子 HardsigmoidFwdOp。其 TileLang 实现函数 hardsigmoid_fwd_kernel 在 tileops/kernels/elementwise/hardsigmoid/_hardsigmoid_fwd_kernels.py。hardsigmoid_fwd_kernel 是对外接口，不要改变接口的参数(除非该参数跟后端实现相关，在迁移时需要适配)。HardsigmoidFwdOp 的规格见 examples/TileOPs/tileops/manifest/elementwise.yaml 中 HardsigmoidFwdOp 的 workloads 部分。精度用例见 examples/TileOPs/tests/ops/test_hardsigmoid.py，性能用例见 examples/TileOPs/benchmarks/ops/bench_hardsigmoid.py。用 developer 模式实现。"}}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && mkdir -p examples/hardsigmoid/hardsigmoid_fwd_kernel/history_version && cp examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md examples/hardsigmoid/hardsigmoid_fwd_kernel/history_version/design_v0.md && ls -la examples/hardsigmoid/hardsigmoid_fwd_kernel/history_version/ 2>&1
+total 56
+drwxr-xr-x 2 developer developer  4096 Oct 12 21:48 .
+drwxr-xr-x 3 developer developer  4096 Oct 12 21:48 ..
+-rw-r--r-- 1 developer developer 46618 Oct 12 21:48 design_v0.md
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py fail 2 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel --reason design_revision 2>&1 && echo "===START 1===" && python3 .agents/tools/statectl.py start 1 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "fail", "hint": "修订预算未超限：start 1 重新进入设计（revision 模式）", "max_retry": 3, "ok": true, "reason": "design_revision", "retry_count": 1, "stage": 2}
+===START 1===
+{"action": "start", "ok": true, "phase": "DESIGN", "stage": 1}
+[0m
+[0m• [0mStage 1 revision hardsigmoid[90m Tilelang-Op-Designer Agent[0m
+[0m✓ [0mStage 1 revision hardsigmoid[90m Tilelang-Op-Designer Agent[0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py complete 1 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "complete", "final_artifact": null, "gate": {"action": "gate", "failures": [], "pass": true, "stage": 1, "warnings": []}, "ok": true, "phase": "REVIEW", "stage": 1}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py start 2 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "start", "ok": true, "phase": "REVIEW", "stage": 2}
+[0m
+[0m• [0mStage 2 re-review hardsigmoid[90m Tilelang-Design-Reviewer Agent[0m
+[0m✓ [0mStage 2 re-review hardsigmoid[90m Tilelang-Design-Reviewer Agent[0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py complete 2 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "complete", "final_artifact": null, "gate": {"action": "gate", "failures": [], "pass": true, "stage": 2, "warnings": []}, "ok": true, "phase": "DEVELOP", "stage": 2}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py start 3 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "start", "ok": true, "phase": "DEVELOP", "stage": 3}
+[0m
+[0m→ [0mRead .agents/skills/_shared/standards/stage3-routing.md
+[0m→ [0mRead .opencode/agents/tilelang-op-developer.md
+[0m• [0mStage 3 develop hardsigmoid[90m Tilelang-Op-Developer Agent[0m
+[0m✓ [0mStage 3 develop hardsigmoid[90m Tilelang-Op-Developer Agent[0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py complete 3 --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1
+{"action": "complete", "final_artifact": "examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py", "gate": {"action": "gate", "failures": [], "pass": true, "stage": 3, "warnings": []}, "ok": true, "phase": "DONE", "stage": 3}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && timeout 600 python3 examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py --level all 2>&1 | tail -60
+File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/node/serialization.cc", line 389
+TVMError: Wrong value format for field value
+2026-10-12 22:24:35  [TileLang:tilelang.cache.kernel_cache:WARNING]: Incomplete NPU kernel artefacts at /home/developer/.tilelang/cache/dfd96800109ae0cb68b87bf54764bbe7bb4efbe3ebec633ab15eb9de2b6076f5.
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L2] PASS: shape=(2,) dtype=float32 max_diff=0.00e+00
+2026-10-12 22:24:36  [TileLang:tilelang.cache.kernel_cache:ERROR]: Error loading metadata: Traceback (most recent call last):
+  4: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::runtime::ObjectRef (std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>::AssignTypedLambda<tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>(tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  3: tvm::LoadJSON(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+  2: tvm::JSONAttrSetter::Set(tvm::runtime::ObjectPtr<tvm::runtime::Object>*, tvm::JSONNode*)
+  1: tvm::detail::SelectVisitAttrs<tvm::FloatImmNode, tvm::detail::ReflectionTrait<tvm::FloatImmNode>, false>::VisitAttrs(tvm::runtime::Object*)
+  0: tvm::JSONAttrSetter::ParseDouble(char const*, double*) const
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/node/serialization.cc", line 389
+TVMError: Wrong value format for field value
+2026-10-12 22:24:36  [TileLang:tilelang.cache.kernel_cache:WARNING]: Incomplete NPU kernel artefacts at /home/developer/.tilelang/cache/93b9c33d2e503346d7deb039473480beb6c7884d1756910f6c337836e0a0662a.
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L2] PASS: shape=(10,) dtype=float32 max_diff=5.96e-08
+[L2] PASS: shape=(4194304,) dtype=float32 max_diff=5.96e-08
+2026-10-12 22:24:38  [TileLang:tilelang.cache.kernel_cache:ERROR]: Error loading metadata: Traceback (most recent call last):
+  4: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::runtime::ObjectRef (std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>::AssignTypedLambda<tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>(tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  3: tvm::LoadJSON(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+  2: tvm::JSONAttrSetter::Set(tvm::runtime::ObjectPtr<tvm::runtime::Object>*, tvm::JSONNode*)
+  1: tvm::detail::SelectVisitAttrs<tvm::FloatImmNode, tvm::detail::ReflectionTrait<tvm::FloatImmNode>, false>::VisitAttrs(tvm::runtime::Object*)
+  0: tvm::JSONAttrSetter::ParseDouble(char const*, double*) const
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/node/serialization.cc", line 389
+TVMError: Wrong value format for field value
+2026-10-12 22:24:38  [TileLang:tilelang.cache.kernel_cache:WARNING]: Incomplete NPU kernel artefacts at /home/developer/.tilelang/cache/ee3246d1048b409c1b3721fc993425b684d6d09d8a7042f2ae77c7c508890afb.
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[Boundary-zeros] PASS: shape=(4096,) dtype=float32 max_diff=0.00e+00
+2026-10-12 22:24:40  [TileLang:tilelang.cache.kernel_cache:ERROR]: Error loading metadata: Traceback (most recent call last):
+  4: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::runtime::ObjectRef (std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>::AssignTypedLambda<tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>(tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  3: tvm::LoadJSON(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+  2: tvm::JSONAttrSetter::Set(tvm::runtime::ObjectPtr<tvm::runtime::Object>*, tvm::JSONNode*)
+  1: tvm::detail::SelectVisitAttrs<tvm::FloatImmNode, tvm::detail::ReflectionTrait<tvm::FloatImmNode>, false>::VisitAttrs(tvm::runtime::Object*)
+  0: tvm::JSONAttrSetter::ParseDouble(char const*, double*) const
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/node/serialization.cc", line 389
+TVMError: Wrong value format for field value
+2026-10-12 22:24:40  [TileLang:tilelang.cache.kernel_cache:WARNING]: Incomplete NPU kernel artefacts at /home/developer/.tilelang/cache/fd5ecdd271e3ad3634d1a4f59e9926abe4a8615b18d04e3f450e87f6caa8853c.
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[Boundary-large-positive] PASS: shape=(4096,) dtype=float16 max_diff=0.00e+00
+[Boundary-large-negative] PASS: shape=(4096,) dtype=float32 max_diff=0.00e+00
+[Boundary-inf] PASS: shape=(4096,) dtype=float32 max_diff=5.96e-08
+[Boundary] PASS: NaN->NaN (R2 vcmp(ne)+vselect verified) dtype=float32 nan_count=512
+[Boundary] PASS: NaN->NaN (R2 vcmp(ne)+vselect verified) dtype=float16 nan_count=512
+2026-10-12 22:24:41  [TileLang:tilelang.cache.kernel_cache:ERROR]: Error loading metadata: Traceback (most recent call last):
+  4: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::runtime::ObjectRef (std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>::AssignTypedLambda<tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)>(tvm::runtime::ObjectRef (*)(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  3: tvm::LoadJSON(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+  2: tvm::JSONAttrSetter::Set(tvm::runtime::ObjectPtr<tvm::runtime::Object>*, tvm::JSONNode*)
+  1: tvm::detail::SelectVisitAttrs<tvm::FloatImmNode, tvm::detail::ReflectionTrait<tvm::FloatImmNode>, false>::VisitAttrs(tvm::runtime::Object*)
+  0: tvm::JSONAttrSetter::ParseDouble(char const*, double*) const
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/node/serialization.cc", line 389
+TVMError: Wrong value format for field value
+2026-10-12 22:24:41  [TileLang:tilelang.cache.kernel_cache:WARNING]: Incomplete NPU kernel artefacts at /home/developer/.tilelang/cache/adfcff82120b25efb4573ef4094ca54dde9ae6170a5d954716fa0cd70129f7ea.
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[Boundary] PASS: NaN->NaN (R2 vcmp(ne)+vselect verified) dtype=bfloat16 nan_count=512
+[92mAll check passed![0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py migration func --dir examples/hardsigmoid hardsigmoid_fwd_kernel --status done 2>&1 && echo "===PHASE===" && python3 .agents/tools/statectl.py migration phase --dir examples/hardsigmoid --phase INTEGRATE 2>&1
+{"action": "migration-func", "func": "hardsigmoid_fwd_kernel", "ok": true, "status": "done"}
+===PHASE===
+{"action": "migration-phase", "ok": true, "phase": "INTEGRATE"}
+[0m
+[0m# [0mTodos
+[✓] 场景识别与状态准备（migration-harness 路由 + 场景文件加载 + 环境体检）
+[✓] Stage 0：调度 @tileops-scaffolder 产出 TileOPs 7 文件脚手架 + .migration_meta.json
+[✓] gate 0 校验 + 解析 extracted_functions + statectl migration init 建聚合状态
+[✓] DEV_LOOP：逐函数 Stage 1(designer)→2(reviewer)→3(developer)，含二次校验精度
+[•] Stage 5：调度 @tilelang-op-integrator 集成验证 + 单算子 report + gate 5 + migration DONE
+[ ] Stage 5 后置：Session 耗时分析 + 终态蒸馏(evolver) + 最终报告
+[0m
+[0m• [0mStage 5 integrate hardsigmoid[90m Tilelang-Op-Integrator Agent[0m
+[0m✓ [0mStage 5 integrate hardsigmoid[90m Tilelang-Op-Integrator Agent[0m
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py gate 5 --dir examples/hardsigmoid --migration-dir examples/hardsigmoid 2>&1
+{"action": "gate", "failures": [], "ok": true, "pass": true, "stage": 5, "warnings": []}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py migration integrate --dir examples/hardsigmoid --status pass 2>&1 && echo "===PHASE DONE===" && python3 .agents/tools/statectl.py migration phase --dir examples/hardsigmoid --phase DONE 2>&1
+{"action": "migration-integrate", "hint": "可执行 `migration phase --phase DONE`", "ok": true, "status": "pass"}
+===PHASE DONE===
+{"action": "migration-phase", "ok": true, "phase": "DONE"}
+[0m
+[0m$ [0mwhich opencode 2>&1; opencode --version 2>&1 | head -5; echo "---SEP env---"; env | grep -i "session\|opencode" 2>&1 | head -20
+/home/developer/.opencode/bin/opencode
+1.18.35
+---SEP env---
+OPENCODE_PID=109207
+OPENCODE=1
+PATH=/home/developer/.local/share/opencode/bin:/home/developer/.git-ai/bin:/home/developer/.opencode/bin:/opt/buildtools/Python-3.11.4/bin:/home/developer/Ascend/cann-8.5.2/bin:/home/developer/Ascend/cann-8.5.2/tools/ccec_compiler/bin:/home/developer/Ascend/cann-8.5.2/tools/profiler/bin:/home/developer/Ascend/cann-8.5.2/tools/ascend_system_advisor/asys:/home/developer/Ascend/cann-8.5.2/tools/show_kernel_debug_data:/home/developer/Ascend/cann-8.5.2/tools/msobjdump:/home/developer/.nvm/versions/node/v18.19.1/bin:/home/developer/.opencode/bin:/opt/buildtools/Python-3.11.4/bin:/home/developer/.local/bin:/home/developer/bin:/usr/local/cmake/bin:/opt/buildtools/python-3.11.4/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/default-java/bin
+[0m
+[0m$ [0mopencode --help 2>&1 | head -40
+⠀                                ▄     
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+Commands:
+  opencode completion          generate shell completion script
+  opencode acp                 start ACP (Agent Client Protocol) server
+  opencode mcp                 manage MCP (Model Context Protocol) servers
+  opencode [project]           start opencode tui                                          [default]
+  opencode attach <url>        attach to a running opencode server
+  opencode run [message..]     run opencode with a message
+  opencode debug               debugging and troubleshooting tools
+  opencode providers           manage AI providers and credentials                   [aliases: auth]
+  opencode agent               manage agents
+  opencode upgrade [target]    upgrade opencode to the latest or a specific version
+  opencode uninstall           uninstall opencode and remove all related files
+  opencode serve               starts a headless opencode server
+  opencode web                 start opencode server and open web interface
+  opencode models [provider]   list all available models
+  opencode stats               show token usage and cost statistics
+  opencode export [sessionID]  export session data as JSON
+  opencode import <file>       import session data from JSON file or URL
+  opencode github              manage GitHub agent
+  opencode pr <number>         fetch and checkout a GitHub PR branch, then run opencode
+  opencode session             manage sessions
+  opencode plugin <module>     install plugin and update config                      [aliases: plug]
+  opencode db                  database tools
+
+Positionals:
+  project  path to start opencode in                                                        [string]
+
+Options:
+  -h, --help          show help                                                            [boolean]
+  -v, --version       show version number                                                  [boolean]
+      --print-logs    print logs to stderr                                                 [boolean]
+      --log-level     log level                 [string] [choices: "DEBUG", "INFO", "WARN", "ERROR"]
+      --pure          run without external plugins                                         [boolean]
+      --port          port to listen on                                        [number] [default: 0]
+      --hostname      hostname to listen on                          [string] [default: "127.0.0.1"]
+[0m
+[0m$ [0mopencode session --help 2>&1 | head -40
+opencode session
+
+manage sessions
+
+Commands:
+  opencode session list                list sessions
+  opencode session delete <sessionID>  delete a session
+
+Options:
+  -h, --help        show help                                                              [boolean]
+  -v, --version     show version number                                                    [boolean]
+      --print-logs  print logs to stderr                                                   [boolean]
+      --log-level   log level                   [string] [choices: "DEBUG", "INFO", "WARN", "ERROR"]
+      --pure        run without external plugins                                           [boolean]
+[0m
+[0m$ [0mopencode session list 2>&1 | head -30
+Session ID                      Title                                   Updated
+───────────────────────────────────────────────────────────────────────────────
+ses_ecfce8456ffeM6K2kQtEqNcz25  TileOPs HardsigmoidFwdOp 迁移执行           10:50 PM
+ses_ecfb94be7fferfpuwgX1olVatu  严格按迁徙任务书执行并自动确认权限                       9:27 PM
+ses_ed0c4d140ffeJmPRkrwJJoxo2u  简短问候                                    9:17 PM
+ses_ecfcecf5effeKErjcEyvICkfWf  New session - 2026-10-12T12:58:12.513Z  8:58 PM
+ses_ecfcf8e74ffeXtSF502uLsFkWx  New session - 2026-10-12T12:57:23.596Z  8:57 PM
+ses_ed45b21aaffevuMOMCc335OPMp  之前对话记录查找                                11:46 PM · 10/11/2026
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && opencode export ses_ecfce8456ffeM6K2kQtEqNcz25 > examples/hardsigmoid/full.json 2>&1; echo "exit=$?"; ls -la examples/hardsigmoid/full.json 2>&1; python3 -c "import json; d=json.load(open('examples/hardsigmoid/full.json')); print('keys:', list(d.keys()) if isinstance(d,dict) else type(d))" 2>&1 | head -10
+exit=0
+-rw-r--r-- 1 developer developer 1116821 Oct 12 22:50 examples/hardsigmoid/full.json
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/buildtools/Python-3.11.4/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/opt/buildtools/Python-3.11.4/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/buildtools/Python-3.11.4/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && head -c 500 examples/hardsigmoid/full.json; echo ""; echo "===TAIL==="; tail -c 500 examples/hardsigmoid/full.json; echo ""; echo "===LINES==="; wc -l examples/hardsigmoid/full.json
+Exporting session: ses_ecfce8456ffeM6K2kQtEqNcz25
+{
+  "info": {
+    "id": "ses_ecfce8456ffeM6K2kQtEqNcz25",
+    "slug": "curious-star",
+    "projectID": "global",
+    "directory": "/mnt/workspace/npuir-migration",
+    "path": "mnt/workspace/npuir-migration",
+    "title": "TileOPs HardsigmoidFwdOp 迁移执行",
+    "agent": "tilelang-op-conductor",
+    "model": {
+      "id": "deepseek-v4-pro",
+      "providerID": "deepseek",
+      "variant": "default"
+    },
+    "version": "1.18.35",
+    "summar
+===TAIL===
+ -la examples/hardsigmoid/full.json 2>&1; python3 -c \"import json; d=json.load(open('examples/hardsigmoid/full.json')); print('keys:', list(d.keys()) if isinstance(d,dict) else type(d))\" 2>&1 | head -10"
+            },
+            "time": {
+              "start": 1791816627734
+            }
+          },
+          "id": "prt_13097f21f001ccucFhAlXxJUVM",
+          "sessionID": "ses_ecfce8456ffeM6K2kQtEqNcz25",
+          "messageID": "msg_13097e6c8001dUGlHTnx8V57cX"
+        }
+      ]
+    }
+  ]
+}
+
+===LINES===
+8116 examples/hardsigmoid/full.json
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "
+import json
+lines = open('examples/hardsigmoid/full.json').read().split('\n', 1)
+# first line is 'Exporting session: ...' prefix, rest is JSON
+data = json.loads(lines[1])
+print('top keys:', list(data.keys()))
+info = data.get('info', {})
+print('info keys:', list(info.keys()))
+print('title:', info.get('title'))
+print('version:', info.get('version'))
+print('model:', info.get('model'))
+" 2>&1 | head -30
+top keys: ['info', 'messages']
+info keys: ['id', 'slug', 'projectID', 'directory', 'path', 'title', 'agent', 'model', 'version', 'summary', 'cost', 'tokens', 'permission', 'time']
+title: TileOPs HardsigmoidFwdOp 迁移执行
+version: 1.18.35
+model: {'id': 'deepseek-v4-pro', 'providerID': 'deepseek', 'variant': 'default'}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "
+import json
+lines = open('examples/hardsigmoid/full.json').read().split('\n', 1)
+data = json.loads(lines[1])
+info = data.get('info', {})
+t = info.get('time', {})
+print('time:', json.dumps(t, indent=2))
+cost = info.get('cost', {})
+print('cost:', json.dumps(cost, indent=2))
+tokens = info.get('tokens', {})
+print('tokens:', json.dumps(tokens, indent=2))
+" 2>&1 | head -60
+time: {
+  "created": 1791809911722,
+  "updated": 1791816623825
+}
+cost: 0.367828516
+tokens: {
+  "input": 145680,
+  "output": 19061,
+  "reasoning": 22562,
+  "cache": {
+    "read": 8603008,
+    "write": 0
+  }
+}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "
+import json
+lines = open('examples/hardsigmoid/full.json').read().split('\n', 1)
+data = json.loads(lines[1])
+msgs = data['messages']
+print('num messages:', len(msgs))
+for i, m in enumerate(msgs[:5]):
+    print('---msg', i, '---')
+    print(' keys:', list(m.keys()))
+    print(' role:', m.get('role'), '| id:', m.get('id'))
+    t = m.get('time')
+    print(' time:', t)
+    # print role/type
+    for k in ('role','type','name'):
+        if k in m: print(' ', k, '=', m[k])
+" 2>&1 | head -50
+num messages: 78
+---msg 0 ---
+ keys: ['info', 'parts']
+ role: None | id: None
+ time: None
+---msg 1 ---
+ keys: ['info', 'parts']
+ role: None | id: None
+ time: None
+---msg 2 ---
+ keys: ['info', 'parts']
+ role: None | id: None
+ time: None
+---msg 3 ---
+ keys: ['info', 'parts']
+ role: None | id: None
+ time: None
+---msg 4 ---
+ keys: ['info', 'parts']
+ role: None | id: None
+ time: None
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "
+import json
+lines = open('examples/hardsigmoid/full.json').read().split('\n', 1)
+data = json.loads(lines[1])
+msgs = data['messages']
+m = msgs[0]
+print('info keys:', list(m['info'].keys()))
+print(json.dumps(m['info'], indent=2)[:2000])
+" 2>&1 | head -60
+info keys: ['role', 'time', 'agent', 'model', 'summary', 'id', 'sessionID']
+{
+  "role": "user",
+  "time": {
+    "created": 1791809911878
+  },
+  "agent": "tilelang-op-conductor",
+  "model": {
+    "providerID": "deepseek",
+    "modelID": "deepseek-v4-pro"
+  },
+  "summary": {
+    "diffs": []
+  },
+  "id": "msg_130317c46001ad4t8OVLM6wrDW",
+  "sessionID": "ses_ecfce8456ffeM6K2kQtEqNcz25"
+}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "
+import json
+lines = open('examples/hardsigmoid/full.json').read().split('\n', 1)
+data = json.loads(lines[1])
+msgs = data['messages']
+for i, m in enumerate(msgs):
+    info = m.get('info', {})
+    role = info.get('role')
+    t = info.get('time', {})
+    created = t.get('created')
+    # extract text from parts
+    texts = []
+    for p in m.get('parts', []):
+        if isinstance(p, dict):
+            if p.get('type') == 'text':
+                texts.append(p.get('text','')[:80])
+            elif p.get('type') == 'tool':
+                texts.append('[tool:'+p.get('tool','')+'] '+str(p.get('state',{}).get('input',{}))[:80])
+    summary = ' | '.join(texts)[:150]
+    print(f'{i:3d} role={role} ts={created} :: {summary}')
+" 2>&1 | head -90
+0 role=user ts=1791809911878 :: "场景 migration，子模式 harness（TileOPs 同构仓迁移）。op_name=HardsigmoidFwdOp，family=element
+  1 role=assistant ts=1791809913087 :: 我将作为 `tilelang-op-conductor` 开始执行。首先进行场景识别与 migration 子模式探测，同时读取场景专属规则文件。 | [tool:bash] {'command': 'ls -la /mnt/workspace/TileOPs-main 2>&1 | head -5
+  2 role=assistant ts=1791809925036 :: [tool:bash] {'command': 'ls -la /mnt/workspace/TileOPs-main/src 2>&1; echo "---SEP---"; ls - | [tool:bash] {'command': 'ls -la /mnt/workspace/TileOPs-
+  3 role=assistant ts=1791809927663 :: [tool:bash] {'command': 'ls -la /mnt/workspace/TileOPs-main/src/tileops/manifest 2>&1; echo  | [tool:bash] {'command': 'ls -la /mnt/workspace/TileOPs-
+  4 role=assistant ts=1791809931967 :: [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-migration/.opencode/agents/conductor-sc | [tool:bash] {'command': 'grep -n "HardsigmoidFwdOp" /mn
+  5 role=assistant ts=1791809936824 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.opencode/agents/conductor-scenario | [tool:read] {'filePath': '/mnt/workspace/npuir-migratio
+  6 role=assistant ts=1791809939070 :: [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-migration/examples 2>&1; echo "---SEP-- | [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-mi
+  7 role=assistant ts=1791809942702 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.opencode/agents/tileops-scaffolder | [tool:read] {'filePath': '/mnt/workspace/npuir-migratio
+  8 role=assistant ts=1791809946118 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/skills/_shared/standards/ga | [tool:bash] {'command': 'cd /mnt/workspace/npuir-migrat
+  9 role=assistant ts=1791809948361 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl | [tool:read] {'filePath': '/mnt/workspace/npuir-migratio
+ 10 role=assistant ts=1791809950842 :: [tool:bash] {'command': "sed -n '90,140p' /mnt/workspace/TileOPs-main/src/tileops/manifest/s | [tool:bash] {'command': 'ls -la /mnt/workspace/TileOPs-
+ 11 role=assistant ts=1791809955315 :: [tool:bash] {'command': 'grep -n "Hardsigmoid\\|hardsigmoid\\|HardSigmoid" /mnt/workspace/Ti | [tool:bash] {'command': 'grep -rn "hardsigmoid\\|Hardsi
+ 12 role=assistant ts=1791809958270 :: [tool:bash] {'command': "sed -n '160,220p' /mnt/workspace/TileOPs-main/src/tileops/kernels/e | [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-mi
+ 13 role=assistant ts=1791809960593 :: [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kern | [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-mi
+ 14 role=assistant ts=1791809964004 :: [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kern
+ 15 role=assistant ts=1791809966974 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 16 role=assistant ts=1791809975856 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && grep -n "stage_plan\\|harness\
+ 17 role=assistant ts=1791809978529 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/tools/statectl.py', 'offset
+ 18 role=assistant ts=1791809980517 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/tools/statectl.py', 'limit'
+ 19 role=assistant ts=1791809988370 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && grep -n "def run_gate\\|def cm
+ 20 role=assistant ts=1791809994577 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/tools/statectl.py', 'limit'
+ 21 role=assistant ts=1791809996397 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/tools/statectl.py', 'limit'
+ 22 role=assistant ts=1791810001579 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.opencode/agents/README.md'}
+ 23 role=assistant ts=1791810009272 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/tools/statectl.py', 'limit'
+ 24 role=assistant ts=1791810013349 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/tools/statectl.py', 'limit'
+ 25 role=assistant ts=1791810019295 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/examples/TileOPs/.agents/skills/add
+ 26 role=assistant ts=1791810036630 :: [tool:bash] {'command': 'ls -la /mnt/workspace/TileOPs-main/src/tileops/ops/ 2>&1; echo "--- | [tool:bash] {'command': 'find /mnt/workspace/TileOPs-ma
+ 27 role=assistant ts=1791810047601 :: [tool:bash] {'command': 'grep -n "src\\|gpu_repo_root\\|tileops/kernels\\|manifest\\|def mai
+ 28 role=assistant ts=1791810054323 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/examples/TileOPs/.agents/skills/add
+ 29 role=assistant ts=1791810065591 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/tools/statectl.py', 'limit'
+ 30 role=assistant ts=1791810090428 :: [tool:bash] {'command': 'ls -la /mnt/workspace/npuir-migration/set_env.sh 2>&1; echo "---SEP | [tool:bash] {'command': 'cd /mnt/workspace/npuir-migrat
+ 31 role=assistant ts=1791810108947 :: [tool:bash] {'command': 'cat /mnt/workspace/npuir-migration/conductor_run.log 2>&1 | head -4 | [tool:bash] {'command': 'cd /mnt/workspace/npuir-migrat
+ 32 role=assistant ts=1791810125430 :: [tool:bash] {'command': 'grep -n "tilelang.jit\\|def _.*kernel\\|@T.prim_func\\|def _element | [tool:bash] {'command': 'grep -n "tilelang.jit\\|def _.
+ 33 role=assistant ts=1791810139533 :: [tool:todowrite] {'todos': [{'content': '场景识别与状态准备（migration-harness 路由 + 场景文件加载 + 环境体检）', 'statu
+ 34 role=assistant ts=1791810146745 :: Now I'll dispatch the scaffolder for Stage 0. Let me write a detailed prompt wit | [tool:task] {'description': 'Stage 0 scaffold HardsigmoidFwdOp', 's
+ 35 role=assistant ts=1791811256182 :: [tool:bash] {'command': 'cat /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels | [tool:bash] {'command': 'cd /mnt/workspace/npuir-migrat
+ 36 role=assistant ts=1791811260269 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 37 role=assistant ts=1791811268972 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 38 role=assistant ts=1791811274855 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 39 role=assistant ts=1791811277723 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/kb_searc | [tool:read] {'filePath': '/mnt/workspace/npuir-migratio
+ 40 role=assistant ts=1791811292645 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.opencode/agents/tilelang-op-design
+ 41 role=assistant ts=1791811298292 :: [tool:bash] {'command': 'grep -n "class HardsigmoidFwdOp\\|class .*ElementwiseFwd\\|UnaryEle | [tool:bash] {'command': 'grep -n "class UnaryElementwis
+ 42 role=assistant ts=1791811309631 :: [tool:bash] {'command': "cd /mnt/workspace/npuir-migration && sed -n '/HardsigmoidFwdOp:/,/^ | [tool:bash] {'command': 'grep -rn "nan_max\\|nan_min\\|
+ 43 role=assistant ts=1791811319974 :: Now dispatching the designer for Stage 1 (function `hardsigmoid_fwd_kernel`): | [tool:task] {'description': 'Stage 1 design hardsigmoid_fwd_kernel', '
+ 44 role=assistant ts=1791812329334 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 45 role=assistant ts=1791812333066 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && grep -n "源码佐证\\|examples/" exa
+ 46 role=assistant ts=1791812347500 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 47 role=assistant ts=1791812354847 :: [tool:task] {'description': 'Stage 1 gate fix hardsigmoid', 'prompt': '你是 `tilelang-op-desig
+ 48 role=assistant ts=1791812413767 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 49 role=assistant ts=1791812416330 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 50 role=assistant ts=1791812419130 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.opencode/agents/tilelang-design-re
+ 51 role=assistant ts=1791812423711 :: [tool:task] {'description': 'Stage 2 review hardsigmoid', 'prompt': '你是 `tilelang-design-rev
+ 52 role=assistant ts=1791812899753 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/examples/hardsigmoid/hardsigmoid_fw
+ 53 role=assistant ts=1791812904788 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 54 role=assistant ts=1791812911816 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 55 role=assistant ts=1791812914731 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && mkdir -p examples/hardsigmoid/
+ 56 role=assistant ts=1791812918349 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 57 role=assistant ts=1791812921104 :: [tool:task] {'description': 'Stage 1 revision hardsigmoid', 'prompt': '你是 `tilelang-op-desig
+ 58 role=assistant ts=1791813584546 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 59 role=assistant ts=1791813587554 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 60 role=assistant ts=1791813590051 :: [tool:task] {'description': 'Stage 2 re-review hardsigmoid', 'prompt': '你是 `tilelang-design-
+ 61 role=assistant ts=1791814065414 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 62 role=assistant ts=1791814071324 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 63 role=assistant ts=1791814073723 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.agents/skills/_shared/standards/st
+ 64 role=assistant ts=1791814076227 :: [tool:read] {'filePath': '/mnt/workspace/npuir-migration/.opencode/agents/tilelang-op-develo
+ 65 role=assistant ts=1791814079993 :: [tool:task] {'description': 'Stage 3 develop hardsigmoid', 'prompt': '你是 `tilelang-op-develo
+ 66 role=assistant ts=1791815031003 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 67 role=assistant ts=1791815033798 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && timeout 600 python3 examples/h
+ 68 role=assistant ts=1791815088137 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 69 role=assistant ts=1791815093453 :: [tool:todowrite] {'todos': [{'content': '场景识别与状态准备（migration-harness 路由 + 场景文件加载 + 环境体检）', 'prior
+ 70 role=assistant ts=1791815098164 :: [tool:task] {'description': 'Stage 5 integrate hardsigmoid', 'prompt': '你是 `tilelang-op-inte
+ 71 role=assistant ts=1791816601546 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 72 role=assistant ts=1791816604351 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl
+ 73 role=assistant ts=1791816606739 :: [tool:bash] {'command': 'which opencode 2>&1; opencode --version 2>&1 | head -5; echo "---SE
+ 74 role=assistant ts=1791816612297 :: [tool:bash] {'command': 'opencode --help 2>&1 | head -40'}
+ 75 role=assistant ts=1791816616346 :: [tool:bash] {'command': 'opencode session --help 2>&1 | head -40'}
+ 76 role=assistant ts=1791816619641 :: [tool:bash] {'command': 'opencode session list 2>&1 | head -30'}
+ 77 role=assistant ts=1791816623816 :: [tool:bash] {'command': 'cd /mnt/workspace/npuir-migration && opencode export ses_ecfce8456f
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "
+import json
+lines = open('examples/hardsigmoid/full.json').read().split('\n', 1)
+data = json.loads(lines[1])
+msgs = data['messages']
+# Build list of (ts, description) for task dispatches and their completions
+tasks = []
+for i, m in enumerate(msgs):
+    info = m.get('info', {})
+    role = info.get('role')
+    ts = info.get('time', {}).get('created')
+    for p in m.get('parts', []):
+        if isinstance(p, dict) and p.get('type') == 'tool' and p.get('tool') == 'task':
+            inp = p.get('state', {}).get('input', {})
+            desc = inp.get('description','')
+            # task dispatch
+            tasks.append((ts, 'DISPATCH', desc, i))
+        elif isinstance(p, dict) and p.get('type') == 'tool' and p.get('tool') == 'task':
+            pass
+# Find tool results (task completion) - the assistant message that contains the task result
+# Actually results come back as tool results in subsequent assistant messages
+for i, m in enumerate(msgs):
+    info = m.get('info', {})
+    role = info.get('role')
+    ts = info.get('time', {}).get('created')
+    for p in m.get('parts', []):
+        if isinstance(p, dict) and p.get('type') == 'tool' and p.get('tool') == 'task':
+            st = p.get('state', {})
+            if 'output' in st or 'result' in st or st.get('status') == 'completed':
+                tasks.append((ts, 'RESULT', p.get('callID',''), i))
+
+# Just print the task dispatch messages and their timestamps
+print('Task dispatch timeline:')
+for i, m in enumerate(msgs):
+    info = m.get('info', {})
+    ts = info.get('time', {}).get('created')
+    for p in m.get('parts', []):
+        if isinstance(p, dict) and p.get('type') == 'tool' and p.get('tool') == 'task':
+            inp = p.get('state', {}).get('input', {})
+            desc = inp.get('description','')
+            print(f'  msg{i:3d} ts={ts} DISPATCH {desc}')
+" 2>&1
+Task dispatch timeline:
+  msg 34 ts=1791810146745 DISPATCH Stage 0 scaffold HardsigmoidFwdOp
+  msg 43 ts=1791811319974 DISPATCH Stage 1 design hardsigmoid_fwd_kernel
+  msg 47 ts=1791812354847 DISPATCH Stage 1 gate fix hardsigmoid
+  msg 51 ts=1791812423711 DISPATCH Stage 2 review hardsigmoid
+  msg 57 ts=1791812921104 DISPATCH Stage 1 revision hardsigmoid
+  msg 60 ts=1791813590051 DISPATCH Stage 2 re-review hardsigmoid
+  msg 65 ts=1791814079993 DISPATCH Stage 3 develop hardsigmoid
+  msg 70 ts=1791815098164 DISPATCH Stage 5 integrate hardsigmoid
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 -c "
+import json, datetime
+lines = open('examples/hardsigmoid/full.json').read().split('\n', 1)
+data = json.loads(lines[1])
+info = data['info']
+created = info['time']['created']
+updated = info['time']['updated']
+total = (updated - created)/1000
+def t(ms): return datetime.datetime.fromtimestamp(ms/1000).strftime('%H:%M:%S')
+print('created', t(created), 'updated', t(updated), 'total_s', round(total,1))
+# stage boundaries from dispatch->result
+stages = [
+ ('Stage 0 脚手架', 1791810146745, 1791811256182),
+ ('gate0+migration init', 1791811256182, 1791811292645),
+ ('Stage 1 设计(首次)', 1791811319974, 1791812329334),
+ ('Stage 1 门禁修复', 1791812354847, 1791812413767),
+ ('Stage 2 检视(首次)', 1791812423711, 1791812899753),
+ ('Stage 1 设计修订', 1791812921104, 1791813584546),
+ ('Stage 2 复检', 1791813590051, 1791814065414),
+ ('Stage 3 开发', 1791814079993, 1791815031003),
+ ('二次校验精度', 1791815033798, 1791815088137),
+ ('Stage 5 集成', 1791815098164, 1791816601546),
+]
+for name, s, e in stages:
+    d = (e-s)/1000
+    print(f'{name:24s} {t(s)} -> {t(e)}  {d:8.1f}s  {d/total*100:5.1f}%')
+" 2>&1
+created 20:58:31 updated 22:50:23 total_s 6712.1
+Stage 0 脚手架              21:02:26 -> 21:20:56    1109.4s   16.5%
+gate0+migration init     21:20:56 -> 21:21:32      36.5s    0.5%
+Stage 1 设计(首次)           21:21:59 -> 21:38:49    1009.4s   15.0%
+Stage 1 门禁修复             21:39:14 -> 21:40:13      58.9s    0.9%
+Stage 2 检视(首次)           21:40:23 -> 21:48:19     476.0s    7.1%
+Stage 1 设计修订             21:48:41 -> 21:59:44     663.4s    9.9%
+Stage 2 复检               21:59:50 -> 22:07:45     475.4s    7.1%
+Stage 3 开发               22:07:59 -> 22:23:51     951.0s   14.2%
+二次校验精度                   22:23:53 -> 22:24:48      54.3s    0.8%
+Stage 5 集成               22:24:58 -> 22:50:01    1503.4s   22.4%
+[0m
+[0m← [0mWrite examples/hardsigmoid/SESSION_TIMING_ANALYSIS.md
+Wrote file successfully.
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && cat examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/integration_report.json 2>&1
+{
+  "run_json": "examples/TileOPs/reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/run.json"
+}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration/examples/TileOPs && python -m tileops.reporting.cli render examples/TileOPs/reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/run.json --with-session-timing 2>&1 | tail -30
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/reporting/cli.py", line 101, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/reporting/cli.py", line 72, in main
+    run = json.loads(source.read_text(encoding="utf-8"))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/buildtools/Python-3.11.4/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/buildtools/Python-3.11.4/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/workspace/npuir-migration/examples/TileOPs/examples/TileOPs/reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/run.json'
+[ERROR] 2026-10-12-22:52:19 (PID:143558, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration/examples/TileOPs && python -m tileops.reporting.cli render reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/run.json --with-session-timing 2>&1 | tail -30
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+Reports written to /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/report.md and /mnt/workspace/npuir-migration/examples/TileOPs/reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/report.html
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py timeline-summary --dir examples/hardsigmoid/hardsigmoid_fwd_kernel 2>&1 | python3 -c "import json,sys; d=json.load(sys.stdin); print(json.dumps(d, ensure_ascii=False, indent=2)[:3000])" 2>&1 | head -80
+{
+  "action": "timeline-summary",
+  "action_counts": {
+    "complete": 4,
+    "fail": 2,
+    "init": 1,
+    "start": 6,
+    "verify": 1
+  },
+  "dispatches": 6,
+  "elapsed_s": 3759.0,
+  "events_total": 14,
+  "failures": [
+    {
+      "duration_s": 1077.0,
+      "stage": 1,
+      "subagent": "tilelang-op-designer",
+      "ts": "2026-10-12T13:39:14Z",
+      "verdict": "runtime"
+    },
+    {
+      "duration_s": 501.0,
+      "stage": 2,
+      "subagent": "tilelang-design-reviewer",
+      "ts": "2026-10-12T13:48:40Z",
+      "verdict": "design_revision"
+    }
+  ],
+  "first_ts": "2026-10-12T13:21:14Z",
+  "last_ts": "2026-10-12T14:23:53Z",
+  "mode": "migration-harness",
+  "ok": true,
+  "stages": [
+    {
+      "attempts": 3,
+      "completed": 2,
+      "duration_s_total": 1805.0,
+      "durations_s": [
+        1077.0,
+        62.0,
+        666.0
+      ],
+      "failed": 1,
+      "stage": 1,
+      "subagent": "tilelang-op-designer"
+    },
+    {
+      "attempts": 2,
+      "completed": 1,
+      "duration_s_total": 983.0,
+      "durations_s": [
+        501.0,
+        482.0
+      ],
+      "failed": 1,
+      "stage": 2,
+      "subagent": "tilelang-design-reviewer"
+    },
+    {
+      "attempts": 1,
+      "completed": 1,
+      "duration_s_total": 960.0,
+      "durations_s": [
+        960.0
+      ],
+      "failed": 0,
+      "stage": 3,
+      "subagent": "tilelang-op-developer"
+    }
+  ],
+  "timeline_path": "examples/hardsigmoid/hardsigmoid_fwd_kernel/.task_timeline.jsonl"
+}
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && ls -la examples/hardsigmoid/ 2>&1; echo "===SEP func dir==="; ls -la examples/hardsigmoid/hardsigmoid_fwd_kernel/ 2>&1; echo "===SEP repro==="; ls -la examples/hardsigmoid/hardsigmoid_fwd_kernel/repro/ 2>&1; echo "===SEP history==="; ls -la examples/hardsigmoid/hardsigmoid_fwd_kernel/history_version/ 2>&1
+total 1128
+drwxr-xr-x 3 developer developer    4096 Oct 12 22:52 .
+drwxr-xr-x 4 developer developer    4096 Oct 12 21:21 ..
+-rw-r--r-- 1 developer developer 1116821 Oct 12 22:50 full.json
+drwxr-xr-x 5 developer developer    4096 Oct 12 22:23 hardsigmoid_fwd_kernel
+-rw------- 1 developer developer     417 Oct 12 22:50 .migration_state.json
+-rw-r--r-- 1 developer developer    4921 Oct 12 22:49 RETROSPECTIVE.md
+-rw-r--r-- 1 developer developer    6814 Oct 12 22:52 SESSION_TIMING_ANALYSIS.md
+-rw-r--r-- 1 developer developer     868 Oct 12 22:50 .task_timeline.jsonl
+===SEP func dir===
+total 148
+drwxr-xr-x 5 developer developer  4096 Oct 12 22:23 .
+drwxr-xr-x 3 developer developer  4096 Oct 12 22:52 ..
+-rw-r--r-- 1 developer developer 55508 Oct 12 21:58 DESIGN.md
+-rw-r--r-- 1 developer developer 14394 Oct 12 22:15 hardsigmoid_fwd_kernel.py
+drwxr-xr-x 2 developer developer  4096 Oct 12 21:57 history_version
+drwxr-xr-x 2 developer developer  4096 Oct 12 22:22 __pycache__
+drwxr-xr-x 3 developer developer  4096 Oct 12 22:22 repro
+-rw-r--r-- 1 developer developer 21793 Oct 12 22:22 RETROSPECTIVE.md
+-rw-r--r-- 1 developer developer 16158 Oct 12 22:07 REVIEW.md
+-rw------- 1 developer developer  2514 Oct 12 22:23 .stage_state.json
+-rw-r--r-- 1 developer developer  3331 Oct 12 22:23 .task_timeline.jsonl
+-rw-r--r-- 1 developer developer  5881 Oct 12 21:34 verify_equiv.py
+===SEP repro===
+total 20
+drwxr-xr-x 3 developer developer 4096 Oct 12 22:22 .
+drwxr-xr-x 5 developer developer 4096 Oct 12 22:23 ..
+-rw-r--r-- 1 developer developer 4633 Oct 12 22:21 CONST-vcmp-ne-nan-unordered.py
+drwxr-xr-x 2 developer developer 4096 Oct 12 22:22 __pycache__
+===SEP history===
+total 112
+drwxr-xr-x 2 developer developer  4096 Oct 12 21:57 .
+drwxr-xr-x 5 developer developer  4096 Oct 12 22:23 ..
+-rw-r--r-- 1 developer developer 46618 Oct 12 21:48 design_v0.md
+-rw-r--r-- 1 developer developer 55508 Oct 12 21:58 design_v1.md
+[0m
+[0m→ [0mRead .opencode/agents/tilelang-skill-evolver.md
+[0m
+[0m# [0mTodos
+[✓] 场景识别与状态准备（migration-harness 路由 + 场景文件加载 + 环境体检）
+[✓] Stage 0：调度 @tileops-scaffolder 产出 TileOPs 7 文件脚手架 + .migration_meta.json
+[✓] gate 0 校验 + 解析 extracted_functions + statectl migration init 建聚合状态
+[✓] DEV_LOOP：逐函数 Stage 1(designer)→2(reviewer)→3(developer)，含二次校验精度
+[✓] Stage 5：调度 @tilelang-op-integrator 集成验证 + 单算子 report + gate 5 + migration DONE
+[•] Stage 5 后置：Session 耗时分析 + 终态蒸馏(evolver) + 最终报告
+[0m
+[0m• [0m终态蒸馏 evolver hardsigmoid[90m Tilelang-Skill-Evolver Agent[0m
+[0m✓ [0m终态蒸馏 evolver hardsigmoid[90m Tilelang-Skill-Evolver Agent[0m
+[0m→ [0mRead .agents/skills/_shared/standards/final-report-template.md
+[0m
+[0m$ [0mcd /mnt/workspace/npuir-migration && python3 .agents/tools/statectl.py timeline-summary --dir examples/hardsigmoid 2>&1 | python3 -c "import json,sys; d=json.load(sys.stdin); print(json.dumps(d, ensure_ascii=False, indent=2))" 2>&1 | head -60
+{
+  "action": "timeline-summary",
+  "action_counts": {
+    "migration-func": 2,
+    "migration-init": 1,
+    "migration-integrate": 1,
+    "migration-phase": 2
+  },
+  "dispatches": 0,
+  "elapsed_s": 5338.0,
+  "events_total": 6,
+  "failures": [],
+  "first_ts": "2026-10-12T13:21:08Z",
+  "last_ts": "2026-10-12T14:50:06Z",
+  "mode": null,
+  "ok": true,
+  "stages": [],
+  "timeline_path": "examples/hardsigmoid/.task_timeline.jsonl"
+}
+[0m
+全部流程已走完。以下是最终结构化摘要。
+
+---
+
+## 开发结果
+- scenario: **migration-harness**　project: `hardsigmoid`　算子: `HardsigmoidFwdOp`（函数 `hardsigmoid_fwd_kernel`）　phase: **DONE**　failure_reason: 无　design_revisions: **1**
+- design: `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md`（v1 修订版，含 §0 源算子三问解读 + 算法调研 + NPU 重设计）
+- review: `examples/hardsigmoid/hardsigmoid_fwd_kernel/REVIEW.md`（结论: 通过，9 维度 0 阻塞）
+- kernel: `examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py`（kernel + golden + L0/L1/L2/Boundary 分层测试）
+- final_artifact: 集成包 `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/`（集成 kernel + `hardsigmoid_fwd_kernel_DESIGN.md` 快照 + 聚合 `__init__.py` + wrapper 双 import 切换块）
+- migration: 1 个提取函数 `hardsigmoid_fwd_kernel` → `done`；meta `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/.migration_meta.json`；集成结果 `INTEGRATE_COMPLETED`（1 attempt）；本次单算子 report：`examples/TileOPs/reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/run.json`（`report.md` / `report.html`）
+
+## 精度结果
+- status: **PASS**　accuracy_fix_count: 0（无 precision_fix）
+- harness 集成验证：本次 TileOPs report **全量正确性 7/7 通过**（max_abs_err = 5.96e-08）；benchmark **9/9 passed**，6 个 msprof profile 全部有效（profiler_valid=true，0 fallback / 0 invalid）。latency_us / roofline util%：mbv3-se-gate fp16 3.12us/0.46%、bf16 3.06us/0.53%；mbv3-se-gate-deep fp16 2.26us/2.53%、bf16 2.52us/2.56%；fc-wide fp16 30.32us/48.27%、bf16 29.88us/55.07%
+- **关键精度发现**：Boundary 探针实测 **`npuir_cmp(x,x,"ne")` 在 Ascend NPU 上按 IEEE 无序比较（NaN≠NaN→true）**，NaN→NaN 语义三 dtype（fp32/fp16/bf16）全过——正面解决 Stage 1/2 遗留的 §9.1 硬件语义风险点（该结论已转正 repro 并蒸馏为 pattern-library CONST 条目）。
+
+## 性能结果
+- harness 迁移不进入 Stage 4（bench 由 Stage 5 仅报告，见上）。如需进一步性能调优，可另起 optimize 场景。
+
+## 时间线
+- 函数级 `timeline-summary`（`examples/hardsigmoid/hardsigmoid_fwd_kernel`）：
+  - dispatches=6，events_total=14，elapsed_s≈3759
+  - Stage 1（designer）：attempts 3（1077s + 62s + 666s），completed 2 / failed 1（1 次门禁机械死链 + 1 次设计修订）
+  - Stage 2（reviewer）：attempts 2（501s + 482s），completed 1 / failed 1（首次检视判不通过）
+  - Stage 3（developer）：attempts 1（960s），completed 1
+  - 失败事件链：`fail stage1 runtime`（S1-REF-PATHS 死链）→ `fail stage2 design_revision`（T.isnan API 误用 + UB 预算算术错）
+- op 级 `timeline-summary`（`examples/hardsigmoid`）：migration-init / migration-func ×2 / migration-integrate pass / migration-phase ×2，elapsed_s≈5338，无失败事件
+- Session 总耗时：**6712.1s ≈ 111.9 分钟**（详见 `examples/hardsigmoid/SESSION_TIMING_ANALYSIS.md`，含逐阶段占比与 5 条减耗时方案）
+
+## 成本
+- dispatches: **8**（Stage 0 ×1 + Stage 1 ×3 + Stage 2 ×2 + Stage 3 ×1 + Stage 5 ×1）　wallclock_s: 6712.1　budget: 未设置（各维度 null）
+- 各 Stage 耗时（从 timeline-summary.stages 拼接）：Stage 1 设计 attempts 3 次 / duration_s_total 1805；Stage 2 检视 attempts 2 次 / 983；Stage 3 开发 attempts 1 次 / 960；另 Stage 0 脚手架 ~1109s、Stage 5 集成 ~1503s（来自 session full.json）
+
+## 进化结果（自进化）
+- verdict: **EVOLVE_COMPLETED**（distilled 6 候选：D:3 P:1 R:1 C:1）
+- merged（Tier 0 直写 pattern-library）：`CONST-vcmp-ne-nan-unordered`（新，D 类，含 repro 三 dtype 断言）、`CONST-aicore-910B2C`（update，本机实查 20 核注）、`CASE-elementwise-hardsigmoid-migration`（新，C 类族首档案）、`INDEX.md` ×2 路由行、`repro/CONST-vcmp-ne-nan-unordered.py`（ED-C 机械转正）
+- enqueued：`VP-2026-0142`（D，NaN 常数破坏 kernel cache 序列化）、`VP-2026-0143`（P，prim_func 内 buffer 别名赋值陷阱）、`VP-2026-0144`（R，向量 API 签名级验证强制自查）
+- pending_tier2：新增 1 条 R 类提案 `VP-2026-0144`（待人工审批，可经「审阅进化提案」路径处理）；另有 1 条证据链追加至既有 `VP-2026-0047`
+- git_snapshot: skipped（环境非 git 仓库，`/mnt` 无 `.git`，已如实披露）
+
+---
+
+### 交付物清单（均位于 `/mnt/workspace/npuir-migration` 项目根之下）
+
+| 类别 | 路径 |
+|------|------|
+| 集成包（最终产物） | `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/` |
+| 7 文件脚手架 | `examples/TileOPs/tileops/{manifest/elementwise.yaml, workloads/elementwise.py, kernels/elementwise/hardsigmoid/, ops/elementwise/hardsigmoid.py}` + `tests/ops/test_hardsigmoid.py` + `benchmarks/ops/bench_hardsigmoid.py` |
+| 设计/检视/kernel | `examples/hardsigmoid/hardsigmoid_fwd_kernel/{DESIGN.md, REVIEW.md, hardsigmoid_fwd_kernel.py, verify_equiv.py}` |
+| 单算子 report | `examples/TileOPs/reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/` |
+| 复盘/耗时/会话 | `examples/hardsigmoid/{RETROSPECTIVE.md, SESSION_TIMING_ANALYSIS.md, full.json}` + `examples/hardsigmoid/hardsigmoid_fwd_kernel/RETROSPECTIVE.md` |
+
+**迁移全程零越级、零放水、零对 GPU 仓写操作**；唯一一次设计修订（`T.isnan` 向量 API 误用 + fp32 UB 预算算术错）已由 Stage 2 检视拦截并闭环修复，最终 9 维度全过。可另起 optimize 场景对 `HardsigmoidFwdOp` 做进一步性能调优。

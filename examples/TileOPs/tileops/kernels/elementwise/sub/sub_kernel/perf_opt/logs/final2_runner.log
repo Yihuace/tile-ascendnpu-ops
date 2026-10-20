@@ -1,0 +1,6 @@
+[npu_lock] start 2026-10-17T19:45:25+08:00: bash -c source ./env.sh; python3 -u SubFwdOp.py --level all > logs/final2_level_all.log 2>&1; echo "level_rc=$?"; python3 -u validate_final.py SubFwdOp.py --block-size 8192 > logs/final2_validate.log 2>&1; echo "validate_rc=$?"; python3 -u run_experiments.py --experiments experiments_sub_final.json --all-tune --round 4 --order workload --reps 1 --skip-l0
+level_rc=0
+validate_rc=0
+[runner] phase=candidate round=4 reps=1 workloads=15 experiments=2
+[runner] baseline: L0=PASS module=../sub_fwd_kernel.py bs=8192
+[runner] tuned-pipe2-bs8192: L0=PASS module=SubFwdOp.py bs=8192

@@ -1,0 +1,25 @@
+# NPU Benchmark Report
+Generated: 2026-10-15 17:05:28
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## ClampMinFwdOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | AI(Ops/Byte) | Bandwidth(TB/s) | Computility(TOps/s) | Perf(TOps/s) | prof_mode | op_params | config | dtype | shape |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| smoke-1m | 5.2800 | 22.6978 | 2.0043 | 1.7500 | 4.5979 | 0.7961 | msprof | {'min': -0.5} | {'block_size': 8192} | float16 | [1048576] |
+| smoke-1m | 5.2600 | 22.7841 | 2.5042 | 1.7500 | 4.5999 | 0.9985 | msprof | {'min': -0.5} | {'block_size': 8192} | bfloat16 | [1048576] |
+| 16M-min-only | 38.1400 | 50.2728 | 2.0021 | 1.7500 | 4.6032 | 1.7614 | msprof | {'min': -0.5} | {'block_size': 8192} | float16 | [4096, 4096] |
+| 16M-min-only | 38.4400 | 49.8804 | 2.5021 | 1.7500 | 4.6041 | 2.1841 | msprof | {'min': -0.5} | {'block_size': 8192} | bfloat16 | [4096, 4096] |
+| 64M-min-only | 162.6000 | 57.4693 | 1.6432 | 1.7500 | 4.6034 | 1.6525 | msprof | {'min': -0.5} | {'block_size': 8192} | float16 | [8192, 8192] |
+| 64M-min-only | 164.8200 | 57.4052 | 2.0281 | 1.7500 | 4.6043 | 2.0374 | msprof | {'min': -0.5} | {'block_size': 8192} | bfloat16 | [8192, 8192] |
+| 256M-min-only | 841.3000 | 66.0857 | 1.1047 | 1.7500 | 4.6035 | 1.2775 | msprof | {'min': -0.5} | {'block_size': 8192} | float16 | [16384, 16384] |
+| 256M-min-only | 855.6600 | 64.9634 | 1.3808 | 1.7500 | 4.6044 | 1.5698 | msprof | {'min': -0.5} | {'block_size': 8192} | bfloat16 | [16384, 16384] |

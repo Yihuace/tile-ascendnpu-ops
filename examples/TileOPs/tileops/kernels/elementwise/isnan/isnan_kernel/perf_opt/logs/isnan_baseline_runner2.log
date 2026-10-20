@@ -1,0 +1,29 @@
+[npu_lock] start 2026-10-17T20:12:14+08:00: bash -c source ./env.sh; python3 -u run_experiments.py --experiments experiments_isnan_baseline.json --all-tune --round 1 --order workload --reps 1
+[runner] phase=candidate round=1 reps=1 workloads=10 experiments=1
+[runner] baseline: L0=PASS module=../isnan_fwd_kernel.py bs=8192
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+  baseline-r1-baseline-bs8192-16m-bfloat16-rep1: 36.461us ratio=53.024%
+  baseline-r1-baseline-bs8192-16m-float16-rep1: 30.601us ratio=63.238%
+  baseline-r1-baseline-bs8192-16m-float32-rep1: 49.941us ratio=77.219%
+  baseline-r1-baseline-bs8192-16m-half-bfloat16-rep1: 36.901us ratio=51.989%
+  baseline-r1-baseline-bs8192-16m-half-float16-rep1: 31.391us ratio=59.105%
+  baseline-r1-baseline-bs8192-256m-bfloat16-rep1: 694.424us ratio=60.391%
+  baseline-r1-baseline-bs8192-256m-float16-rep1: 650.793us ratio=64.809%
+  baseline-r1-baseline-bs8192-smoke-1m-bfloat16-rep1: 5.260us ratio=23.591%
+  baseline-r1-baseline-bs8192-smoke-1m-float16-rep1: 4.690us ratio=25.717%
+  baseline-r1-baseline-bs8192-smoke-1m-float32-rep1: 5.420us ratio=42.647%
+
+| opt_id | block_size | workload | rep | Task Duration(us) | SOL ratio(%) |
+|---|---:|---|---:|---:|---:|
+| baseline | 8192 | 16m-bfloat16 | 1 | 36.461 | 53.024 |
+| baseline | 8192 | 16m-float16 | 1 | 30.601 | 63.238 |
+| baseline | 8192 | 16m-float32 | 1 | 49.941 | 77.219 |
+| baseline | 8192 | 16m-half-bfloat16 | 1 | 36.901 | 51.989 |
+| baseline | 8192 | 16m-half-float16 | 1 | 31.391 | 59.105 |
+| baseline | 8192 | 256m-bfloat16 | 1 | 694.424 | 60.391 |
+| baseline | 8192 | 256m-float16 | 1 | 650.793 | 64.809 |
+| baseline | 8192 | smoke-1m-bfloat16 | 1 | 5.260 | 23.591 |
+| baseline | 8192 | smoke-1m-float16 | 1 | 4.690 | 25.717 |
+| baseline | 8192 | smoke-1m-float32 | 1 | 5.420 | 42.647 |
+[npu_lock] end   2026-10-17T20:19:04+08:00: rc=0

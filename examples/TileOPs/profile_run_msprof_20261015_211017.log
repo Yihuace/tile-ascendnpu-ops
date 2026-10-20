@@ -1,0 +1,19 @@
+# NPU Benchmark Report
+Generated: 2026-10-15 21:11:48
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## GeluTanhAndMulFwdOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | AI(Ops/Byte) | Bandwidth(TB/s) | Computility(TOps/s) | Perf(TOps/s) | artifact_dir | msprof | prof_mode | M | N | dtype |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| llama-8b-ffn-prefill | 211.3000 | 48.8124 | 3.8985 | 1.7500 | 4.4390 | 2.1668 | /tmp/opencode/mp_gt | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 211.300003, 'max_latency_us': 211.300003, 'min_latency_us': 211.300003, 'op_name': 'main', 'sample_count': 1} | msprof | 2048 | 14336 | float16 |
+| llama-8b-ffn-prefill | 216.1800 | 50.6579 | 4.1485 | 1.7500 | 4.4488 | 2.2537 | /tmp/opencode/mp_gt | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 216.179993, 'max_latency_us': 216.179993, 'min_latency_us': 216.179993, 'op_name': 'main', 'sample_count': 1} | msprof | 2048 | 14336 | bfloat16 |

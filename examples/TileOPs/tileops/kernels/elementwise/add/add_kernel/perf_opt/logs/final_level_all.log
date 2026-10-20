@@ -1,0 +1,333 @@
+/opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/utils/_path_manager.py:66: UserWarning: Permission mismatch: The owner of /opt/buildtools/Python-3.11.4/lib/python3.11/site-packages/torch_npu/lib/libop_plugin_atb.so does not match.
+  warnings.warn(f"Permission mismatch: The owner of {path} does not match.")
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+2026-10-17 17:24:46  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/developer/tilelang-mlir-ascend/build
+2026-10-17 17:24:46  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-17 17:24:46  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+[L0-1] PASS: N=1048576 dtype=float32 alpha=1 block_size=None max_diff=0.000e+00
+[L0-1] PASS: N=1048576 dtype=float16 alpha=1 block_size=None max_diff=0.000e+00
+[L0-1] PASS: N=1048576 dtype=bfloat16 alpha=1 block_size=None max_diff=0.000e+00
+[L0-2] PASS: N=1048576 dtype=float32 alpha=2.0 block_size=None max_diff=0.000e+00
+[L0-2] PASS: N=1048576 dtype=float32 alpha=-1.5 block_size=None max_diff=4.768e-07
+[L0-2] PASS: N=1048576 dtype=float16 alpha=2.0 block_size=None max_diff=0.000e+00
+[L0-2] PASS: N=1048576 dtype=float16 alpha=-1.5 block_size=None max_diff=0.000e+00
+[L0-2] PASS: N=1048576 dtype=bfloat16 alpha=2.0 block_size=None max_diff=0.000e+00
+[L0-2] PASS: N=1048576 dtype=bfloat16 alpha=-1.5 block_size=None max_diff=0.000e+00
+[L0-3] PASS: N=10000 dtype=float16 alpha=2.0 block_size=None max_diff=0.000e+00
+[L0-3] PASS: N=4097 dtype=float16 alpha=2.0 block_size=None max_diff=0.000e+00
+[L0-3] PASS: N=10000 dtype=float32 alpha=2.0 block_size=None max_diff=0.000e+00
+[L0-3] PASS: N=4097 dtype=float32 alpha=2.0 block_size=None max_diff=0.000e+00
+[L0-4] PASS: A=(64, 128) B=(1, 128) -> (64, 128) N=8192 dtype=float32 alpha=1 max_diff=0.000e+00
+[L0-4] PASS: A=(2, 512, 768) B=(1, 1, 768) -> (2, 512, 768) N=786432 dtype=float16 alpha=1.0 max_diff=0.000e+00
+[L0] ALL PASS
+[L0] elapsed 2.9s
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=float16 alpha=0.0 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=float16 alpha=-1.0 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=float16 alpha=0.5 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=float16 alpha=3 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=bfloat16 alpha=0.0 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=bfloat16 alpha=-1.0 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=bfloat16 alpha=0.5 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=bfloat16 alpha=3 block_size=None max_diff=0.000e+00
+AscendNPU IR compile success: 
+Workspace size: kernel declares no '*_infer_workspace_shape_function' callback, no workspace allocated (set TILELANG_ASCEND_WORKSPACE_SIZE if this kernel does need scratch memory)
+[L1-1] PASS: N=65536 dtype=float32 alpha=0.0 block_size=None max_diff=0.000e+00
+[collected] L1-1/float32/alpha=-1.0 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-1/float32/alpha=0.5 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-1/float32/alpha=3 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/float16/N=8192 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+[collected] L1-2/float16/N=8191 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/float16/N=1 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/float16/N=100 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/bfloat16/N=8192 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/bfloat16/N=8191 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/bfloat16/N=1 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/bfloat16/N=100 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[L1-2] PASS: N=8192 dtype=float32 alpha=1 block_size=None max_diff=0.000e+00
+[collected] L1-2/float32/N=8191 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-2/float32/N=1 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+[collected] L1-2/float32/N=100 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-3/fp16/bs=2048 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-3/fp32/bs=4096 RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[collected] L1-4/bf16/[1,4096]x[1024,4096] RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[L1-4] PASS: A=(2, 512, 768) B=(2, 512, 1) -> (2, 512, 768) N=786432 dtype=float16 alpha=1 max_diff=0.000e+00
+[collected] L1-4/fp32/[4,1,8]x[1,8,1] RUNTIME-ERROR: DiagnosticError('Traceback (most recent call last):\n  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n  0: tvm::DiagnosticContext::Render()\n  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131\nDiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.')
+[L1] 18 failing case(s): L1-1/float32/alpha=-1.0, L1-1/float32/alpha=0.5, L1-1/float32/alpha=3, L1-2/float16/N=8192, L1-2/float16/N=8191, L1-2/float16/N=1, L1-2/float16/N=100, L1-2/bfloat16/N=8192, L1-2/bfloat16/N=8191, L1-2/bfloat16/N=1, L1-2/bfloat16/N=100, L1-2/float32/N=8191, L1-2/float32/N=1, L1-2/float32/N=100, L1-3/fp16/bs=2048, L1-3/fp32/bs=4096, L1-4/bf16/[1,4096]x[1024,4096], L1-4/fp32/[4,1,8]x[1,8,1]
+[L1] elapsed 21.9s
+[L2] WARN (Record without blocking): N=1 dtype=float32 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[L2] WARN (Record without blocking): N=2 dtype=float16 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[L2] WARN (Record without blocking): N=10 dtype=bfloat16 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[L2] WARN (Record without blocking): N=16777216 dtype=float16 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[L2] elapsed 0.8s
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+[Boundary] WARN (Record without blocking): inf-nan dtype=float32 alpha=1 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): inf-nan dtype=float32 alpha=2.0 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): inf-nan dtype=float16 alpha=1 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): inf-nan dtype=float16 alpha=2.0 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): inf-nan dtype=bfloat16 alpha=1 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): inf-nan dtype=bfloat16 alpha=2.0 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): alpha=0 dtype=float32 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): alpha=0 dtype=float16 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): alpha=0 dtype=bfloat16 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+error: Function must be decorated
+ --> /mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py:126:1
+     |  
+ 126 |  def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=TUNED_BLOCK_SIZE, num_cores=None):
+     |  ^^^^^^^^^^^^^^^                                                                                       
+[Boundary] WARN (Record without blocking): signed-zero dtype=float32 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): signed-zero dtype=float16 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary] WARN (Record without blocking): signed-zero dtype=bfloat16 err=Traceback (most recent call last):
+  1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::{lambda(tvm::DiagnosticContext)#9}>(tvm::{lambda(tvm::DiagnosticContext)#9}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+  0: tvm::DiagnosticContext::Render()
+  File "/home/developer/tilelang-mlir-ascend/3rdparty/tvm/src/ir/diagnostic.cc", line 131
+DiagnosticError: one or more error diagnostics were emitted, please check diagnostic render for output.
+[Boundary-large] PASS: N=1048576 dtype=float16 alpha=-1.5 block_size=None max_diff=0.000e+00
+[Boundary] elapsed 0.3s
+Summary max_diff per (dtype, alpha): float32/alpha=-1.5=4.768e-07
+Traceback (most recent call last):
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py", line 631, in <module>
+    print("\033[92mAll check passed!\033[0m")
+    ^^^^^^
+  File "/mnt/workspace/npuir-migration/examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/perf_opt/AddFwdOp.py", line 624, in main
+    "Summary max_diff per (dtype, alpha): "
+AssertionError: 18 case(s) failed: L1-1/float32/alpha=-1.0; L1-1/float32/alpha=0.5; L1-1/float32/alpha=3; L1-2/float16/N=8192; L1-2/float16/N=8191; L1-2/float16/N=1; L1-2/float16/N=100; L1-2/bfloat16/N=8192; L1-2/bfloat16/N=8191; L1-2/bfloat16/N=1; L1-2/bfloat16/N=100; L1-2/float32/N=8191; L1-2/float32/N=1; L1-2/float32/N=100; L1-3/fp16/bs=2048; L1-3/fp32/bs=4096; L1-4/bf16/[1,4096]x[1024,4096]; L1-4/fp32/[4,1,8]x[1,8,1]
+[ERROR] 2026-10-17-17:25:24 (PID:637145, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
