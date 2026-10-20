@@ -7,7 +7,7 @@
 > 本轮为 **revision v1 复检（RE-REVIEW）**：v0 判「不通过」（2 阻塞 + 3 建议），v1 作定点修订。复检确认 **两个阻塞项均已真实修复**，且 v0 的 3 个建议项全部落实，未引入新的阻塞级问题。
 
 ## 检视元信息
-- 文档: examples/batch_norm_bwd/_batch_norm_bwd_kernel/DESIGN.md（revision_index 1 / revision v1；上一版 history_version/design_v0.md）
+- 文档: examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_kernel_DESIGN.md（revision_index 1 / revision v1；上一版 history_version/design_v0.md）
 - 任务类型: 迁移（harness 模式）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/norm/batch_norm.py（`_batch_norm_bwd_kernel` L1487 + host `BatchNormBwdKernel` L2146 + 配置源 `_TiledPath` L66）；Stage 0 提取件 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/_batch_norm_bwd_kernels.py`（L357）；NPU wrapper `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py`（L327/`forward` L383）；op `examples/TileOPs/tileops/ops/norm/batch_norm_bwd.py`；探针 `examples/batch_norm_bwd/probe/PROBE.md`
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -31,11 +31,11 @@ O1+O2 (joint)  float32  |  max ulp 0.00 | 违反率 0.0000 | EQUIV_PASS
 - 判别段 A（raw-moment `gw` 拒绝证据）：`float32, N=4, S=2048` 违反率 = **0.1553**（`DISCRIM_OK`），fp16/bf16 = 0.0000（宽容差掩蔽）——与 §1.6.1 内嵌表 0.1553 一致，非纸面论证。
 
 ### design_calc_check 重跑（D-5）
-- 命令: `python3 .agents/tools/design_calc_check.py --design examples/batch_norm_bwd/_batch_norm_bwd_kernel/DESIGN.md`
+- 命令: `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_kernel_DESIGN.md`
 
 ```json
 {
-  "design": "examples/batch_norm_bwd/_batch_norm_bwd_kernel/DESIGN.md",
+  "design": "examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_kernel_DESIGN.md",
   "capacity_constants": {
     "ub_kb": 192.0,
     "ub_inflation": 1.7,
@@ -67,7 +67,7 @@ O1+O2 (joint)  float32  |  max ulp 0.00 | 违反率 0.0000 | EQUIV_PASS
 - **算法解读完整性 / 优化手段覆盖完整性 — pass**：§0.3 步骤表 P0–E2 覆盖源码全部计算语句（含 pass-1/pass-2、persistent/non-persistent 两路、`ragged` 尾块），无遗漏/无臆造；§0.4 十一项优化可逐项溯源，未把实现层优化误判为算法层；舍弃项在 §0.6 末尾意图承接汇总，无静默丢弃。
 - **耦合性判定合理性 — pass**：§0.5 每条四态处置（保留/等价替换/重新设计/舍弃）有依据，与 GPU→NPU 映射不矛盾（shared 流式→UB、线程树→两步 `T.reduce`、flat `l//S`→仿射二维 slice、谓词→`T.min`+双 slice+reduce `size`、`threads`/`T.Parallel`/`T.Pipelined`→舍弃）。
 - **NPU 重设计可行性 / 设计与决策一致性 — pass（v0 阻塞项 1 已修复，本条为复检重点）**：
-  - **§0.6 R2/R7 的「跨 N-block 累加」语义在 §3.3 实现中成立**——`red`/`red2` 的 `T.clear` 已从 v0 的 `for nn` **外**（v0 design L537–538）**移入 `for nn` 循环体内**（v1 §3.3 L568–572：`n0 = nn*bN; rN = T.min(...); T.clear(red); T.clear(red2)`），而 `gb/gw` 的 `T.clear` 仍留在 `for nn` **外**（v1 L566–567）一次。因此块内 `T.reduce(g32, red, dims=[1], clear=False)` 的跨 S-tile 行和仅在**本 N-block 内**累加，块末 `T.reduce(red, gb, dims=[0], clear=False)` 得到 `gb = Σ_nn rowsum(blk_nn)`——**不再重复计入前序块**，`gb/gw/grad_x` 对 `n_tile_N ≥ 2` 的 tiled 用例（大 C `(32,2048,512)` `bN=16,n_tile_N=2`；large-spatial `(4,128,1048576)` `bN=2,n_tile_N=2`）亦正确。该写法与同族已交付拆分核 §3.3 **逐字一致**（`examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md` L577–578 `T.clear(gb/gw)` 在 `for nn` 外、L582–583 `T.clear(red/red2)` 在 `for nn` **内**；已亲自 Read 核对）。
+  - **§0.6 R2/R7 的「跨 N-block 累加」语义在 §3.3 实现中成立**——`red`/`red2` 的 `T.clear` 已从 v0 的 `for nn` **外**（v0 design L537–538）**移入 `for nn` 循环体内**（v1 §3.3 L568–572：`n0 = nn*bN; rN = T.min(...); T.clear(red); T.clear(red2)`），而 `gb/gw` 的 `T.clear` 仍留在 `for nn` **外**（v1 L566–567）一次。因此块内 `T.reduce(g32, red, dims=[1], clear=False)` 的跨 S-tile 行和仅在**本 N-block 内**累加，块末 `T.reduce(red, gb, dims=[0], clear=False)` 得到 `gb = Σ_nn rowsum(blk_nn)`——**不再重复计入前序块**，`gb/gw/grad_x` 对 `n_tile_N ≥ 2` 的 tiled 用例（大 C `(32,2048,512)` `bN=16,n_tile_N=2`；large-spatial `(4,128,1048576)` `bN=2,n_tile_N=2`）亦正确。该写法与同族已交付拆分核 §3.3 **逐字一致**（`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md` L577–578 `T.clear(gb/gw)` 在 `for nn` 外、L582–583 `T.clear(red/red2)` 在 `for nn` **内**；已亲自 Read 核对）。
   - **v-op 静态 extent 语义在 §3.3 实现中成立（v0 阻塞项 2 已修复）**——§3.3 全部 up/down-cast 已从 v0 的运行时切片（v0 L549/L554/L592/L597 `T.vcast(stage[0:rN,0:rS], ...)`）改为**全 buffer** 形态：`T.vcast(stage, g32, round_mode="rint")`（v1 L578/L632）、`T.vcast(stage, xh32, round_mode="rint")`（v1 L583/L637）、`T.vcast(prod, stage, round_mode="rint")`（v1 L619/L650）；所有 v-prefix 逐元素 op 均在 `(bN,bS)` 全 buffer 上运算；运行时 extent（`rN/rS = T.min(...)`）**仅**传给 `T.copy`（I/O 双 slice）与 `T.reduce(size=[rN,rS] / [rN,1])`（归约）。尾块正确性由 **reduce `size` 截断 + dst 显式 slice** 承担，不依赖 v-op 切片——与同族宽核 Stage 3 实测修正（`_batch_norm_bwd_wide_kernel/RETROSPECTIVE.md` L75/L83/L89，全 buffer vcast）一致。
   - **跨 § 一致性 — 无自相矛盾**：§3.3（伪代码）↔ §3.2（映射表 L474/L482 全 buffer）↔ §5.4（L844 复位约束、L845 v-op 静态 extent）↔ §6.1/§6.2/§6.4（L891/L895/L903 累加器复位）↔ §9.2（L1037 N-block 复位条、L1039 v-op 运行时切片条）五处措辞与伪代码完全同口径。
 - **golden 独立性 — pass**：§8.1 golden 直接调用 `torch.sum(dim=(0,2))`/`torch` 逐元素模块函数，**不含** NPU 设计的 persistent 分核、二维 `(bN,bS)` 分块、两步 `T.reduce`、`T.vbrc` 广播、fp32 中转链、分布式 epilogue 等任何算法特征；以 §0.1 语义为唯一依据（移植源仓 `workloads/norm.py`），验证独立。

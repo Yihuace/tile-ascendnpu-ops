@@ -6,7 +6,7 @@
 
 ## 检视元信息
 
-- 文档: examples/isfinite/isfinite_fwd_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/elementwise/isfinite/isfinite_kernel/isfinite_fwd_kernel_DESIGN.md
 - 任务类型: 迁移（harness）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/comparison.py（`IsfiniteFwdKernel`），复用 `_base.py` / `_builders.py` / `_op_body.py` / `ops/elementwise/comparison.py`
 - 检视维度: 9 项（0 源算子理解与迁移分析 / 1 API 可行性 / 2 内存层级 / 3 Tiling / 4 技术约束 / 5 循环同步 / 6 验证方案 / 7 完整性 / 8 算法优化分析）
@@ -16,7 +16,7 @@
 ## 机械复核（D-1/D-5）
 
 - **verify_equiv 重跑**: `python3 examples/isfinite/isfinite_fwd_kernel/verify_equiv.py` → 执行成功（EXIT=0）。采纳项 1（`isfinite(x)` → `(x>-inf)∧(x<+inf)`，fp16/bf16/fp32）mismatches 全 0 / EQUIV_PASS；采纳项 2（`isfinite(cast(x,f32))` → 原生 dtype 双侧有序式，fp16/bf16/fp32）mismatches 全 0 / EQUIV_PASS；判别段 A（`|x|<+inf`）三 dtype 0（DISCRIM_OK）；判别段 B（弃选平方式）fp16 3 / bf16 3 / fp32 5（>0，DISCRIM_OK）。**执行输出与 §1.6.1 内嵌结果表逐行一致，全部 EQUIV_PASS + 判别成立。**
-- **design_calc_check**: 注：工具实际仅接受 `--design <path>`（`design_calc_check.py:280`），不接受任务书写的 `--dir`（`--dir` 报 error 退出 2）；故按 skill Phase 1 第 7 步以 `--design examples/isfinite/isfinite_fwd_kernel/DESIGN.md` 执行并通过（EXIT=0）。JSON checks 摘要：
+- **design_calc_check**: 注：工具实际仅接受 `--design <path>`（`design_calc_check.py:280`），不接受任务书写的 `--dir`（`--dir` 报 error 退出 2）；故按 skill Phase 1 第 7 步以 `--design examples/TileOPs/tileops/kernels/elementwise/isfinite/isfinite_kernel/isfinite_fwd_kernel_DESIGN.md` 执行并通过（EXIT=0）。JSON checks 摘要：
   - `ub_budget`: **skip**（"no per-level buffer tables parsed from the memory plan"）→ 人工复核已核：§4.5 显式逐 buffer 表，fp16/bf16 峰值 52KB、fp32 峰值 76KB，均 < 192KB（`CONST-capacity-910B2C`），`×1.7` 悲观膨胀 129KB 亦安全。**人工核算与设计一致。**
   - `l0c_budget`: **skip**（"no affirmative Cube-path API"）→ 本算子纯 Vector，无 Cube，n/a 成立（人工已核：§5.1 无 `T.gemm`/`load_nd2nz`/`store_fixpipe`）。
   - `core_split`: **skip**（"insufficient parsed dims {}; declared logical cores = 40"）→ 人工复核已核：§5.5 三要素齐全（实查物理核 20、纯 Vector ×2=40；逻辑核 4096/65536；核内串行 `ceil(num_logical/40)` = 103/1639），算术独立复算一致。
@@ -48,7 +48,7 @@
 - `T.vabs` 弃用：`.../数学操作/T.vabs.md` §2.2.1 **bf16 ×**（fp16 √/fp32 √）——佐证免 vabs 双侧式动机。
 - `T.vand`/`T.vnot`/`T.vselect` 弃用：`.../逻辑操作/T.vand.md` §2.2.1 bool ×、`.../逻辑操作/T.vnot.md` §2.2.1 bool/int1 ×、`.../条件操作/T.vselect.md` §2.2.1 bool 操作数 ×——与设计「bool 域合并不走这些 API」一致。
 - `T.infinity` fp16/fp32：`.../创建操作/T.infinity.md` §2.2.1（fp16 √ / fp32 √ / **bf16 ×**）。
-- `T.Kernel(一维, is_npu=True)` / `T.alloc_ub` / 双显式 slice `T.copy`：同族先例 `examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py`（实存）。
+- `T.Kernel(一维, is_npu=True)` / `T.alloc_ub` / 双显式 slice `T.copy`：同族先例 `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel.py`（实存）。
 - v-prefix 优先：设计主体用 `T.vcmp`/`T.vcast`/`T.vmul`，`T.fill` 有 `T.vbrc` 等价替代说明，符合基线。Developer 模式自动同步，无手动 set_flag/wait_flag。**pass**。
 
 ### 2. 内存层级规划 — pass
@@ -88,7 +88,7 @@
 
 - 章节齐全：迁移类含 §0（0.1–0.7 完整）+ §1–§11，模板章节齐全。
 - 无占位符：全文无 `{placeholder}`/`TODO`/`待补充`。
-- 同类引用真实（Glob 实存）：`examples/isinf/isinf_fwd_kernel/DESIGN.md`、`examples/isnan/isnan_fwd_kernel/DESIGN.md`、`examples/isnan/isnan_fwd_kernel/repro/CONST-vcmp-ne-ordered.py`、`examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md`、`examples/bitwise_not/bitwise_not_fwd_kernel/DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel.py`、`examples/TileOPs/tileops/kernels/elementwise/isfinite/_isfinite_fwd_kernels.py` 均存在。
+- 同类引用真实（Glob 实存）：`examples/TileOPs/tileops/kernels/elementwise/isinf/isinf_kernel/isinf_fwd_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/isnan_fwd_kernel_DESIGN.md`、`examples/isnan/isnan_fwd_kernel/repro/CONST-vcmp-ne-ordered.py`、`examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel.py`、`examples/TileOPs/tileops/kernels/elementwise/isfinite/_isfinite_fwd_kernels.py` 均存在。
 - 内部一致：§3.1/§3.2/§4.4/§4.5 对 buffer 与工具链、dtype 描述相互一致。**pass**。
 
 ### 8. 算法优化分析 — pass

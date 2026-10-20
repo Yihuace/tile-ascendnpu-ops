@@ -16,6 +16,7 @@
 | shape 级达标 | **40 / 136（29.4%）** |
 
 > “严格达标”按各算子 AI 分类阈值（访存 70% / 算力 60%），微型 shape 豁免单列。
+> **ratio 口径**：除 GDN 外均为 `msprof op` Roofline（GM Read+Write / Task Duration）。Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的区间**含微型 shape**（下限 0.4%~4%），达标数只按可调 shape 计。GDN 无 msprof ratio，与其它行**不可横比**。
 
 ## 2. 19 接口状态
 
@@ -39,7 +40,7 @@
 | 16 | Conv1dBiasFwdOp | ✅ | 27+1 skip | 0.03–1.73% | 0/8 | perf_opt |
 | 17 | Conv3dBiasFwdOp | ✅ | 17/17 | 1.68–20.43% | 0/3 | perf_opt |
 | 18 | GLADecodeOp | ✅ | 11/11 | 3.10–20.16% | 0/5 | perf_opt |
-| 19 | GatedDeltaNetPrefillFwdOp | ✅（in-scope split） | 10/10 | —（benchmark skip） | — | K1+K2+K6 split；K5/CP 待续 |
+| 19 | GatedDeltaNetPrefillFwdOp | ✅（in-scope split） | 10/10 | **0.027% → 0.357%** | —（未定义达标线） | K1+K2+K6 split；K5/CP 待续；ratio 为 per-kernel msprof 汇总 + op-level 理论 SOL，**非 msprof ratio** |
 
 ## 3. 主要性能收益
 

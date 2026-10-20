@@ -196,7 +196,7 @@ $$
 
 **定量 roofline（D-2）**：基线容量/带宽/发射均匹配 Vector 单元（工作集 < UB、尾轴 32B 对齐、约束可静态化），无候选因违反容量/带宽量级被淘汰。引用 `constants.md` 实测常数条目（`CONST-capacity-910B2C` UB 192KB、`CONST-vector-launch-overhead` 发射 ~0.5µs/op、`CONST-mte2-degradation` MTE2 带宽档）计算估算下界（见本节末「设计期估算」）。
 
-**调研结论**：选定算法族 = **逐元素单遍直接映射 + 算符降代换**——整型用原生一元 `T.vnot`（取代 `xor(x, all-ones)`），bool 用字节域单 `T.vxor(x,1)`（取代 `x==0` + 掩码物化）。关键依据：R1 候选 1/2 数学恒等且 bit-exact、候选 3/4 无更优点数；R2 天然单遍；R3 四口径全同（带宽受限，访存主导）；R4 纯 Vector 亲和（UB 驻留、32B 对齐、静态边界）。与基线结构差异：**逐元素计算由「二元 XOR-with-all-ones / 比较」降为「一元 vnot / 单 vxor」**（§1.6.1 完成等价论证）。「无更优替代（就复杂度量级而言）」调研范围：`algorithm-candidates.md` elementwise 命中行、恒等变形自查（R1 候选 3/4）、pattern-library elementwise 同族先例（`CASE-elementwise-mish-opt`、`examples/hardswish/hardswish_fwd_kernel/DESIGN.md`）、源码 §0.3/§0.4。源优化手段（§0.4）中 #5「XOR-with-all-ones」被调研升级为原生 `vnot`（意图承接见 §0.6/§11.2），其余无被替换。
+**调研结论**：选定算法族 = **逐元素单遍直接映射 + 算符降代换**——整型用原生一元 `T.vnot`（取代 `xor(x, all-ones)`），bool 用字节域单 `T.vxor(x,1)`（取代 `x==0` + 掩码物化）。关键依据：R1 候选 1/2 数学恒等且 bit-exact、候选 3/4 无更优点数；R2 天然单遍；R3 四口径全同（带宽受限，访存主导）；R4 纯 Vector 亲和（UB 驻留、32B 对齐、静态边界）。与基线结构差异：**逐元素计算由「二元 XOR-with-all-ones / 比较」降为「一元 vnot / 单 vxor」**（§1.6.1 完成等价论证）。「无更优替代（就复杂度量级而言）」调研范围：`algorithm-candidates.md` elementwise 命中行、恒等变形自查（R1 候选 3/4）、pattern-library elementwise 同族先例（`CASE-elementwise-mish-opt`、`examples/TileOPs/tileops/kernels/elementwise/hardswish/hardswish_kernel/hardswish_fwd_kernel_DESIGN.md`）、源码 §0.3/§0.4。源优化手段（§0.4）中 #5「XOR-with-all-ones」被调研升级为原生 `vnot`（意图承接见 §0.6/§11.2），其余无被替换。
 
 **设计期估算**（D-2，轻量调研豁免容量项，流量项必算）：
 
@@ -383,7 +383,7 @@ def bitwise_not_fwd_kernel(N, dtype, output_dtype=None, block_size=None, num_cor
 | `T.vnot` | `docs/Tilelang.language/逻辑操作/T.vnot.md`（`T.vnot(src, dst)`，`VNotOp`；DataType 表 uint8/int8/int16/int32/int64 均 √；bool ×） | ✅ 已验证（docs 读） |
 | `T.vxor` | `docs/Tilelang.language/逻辑操作/T.vxor.md`（`T.vxor(src0, src1, dst)`，src1 可为 Python 标量 int 并广播；uint8 √；1-5D） | ✅ 已验证（docs 读） |
 | `T.copy`（双显式 slice） | `docs/Tilelang.language/内存操作/T.copy.md` + 同族先例（`TRAP-T-copy-region-semantics`：src/dst 双显式 slice 为推荐通用形态） | ✅ 已验证 |
-| `T.Kernel(一维, is_npu=True) as (cid, _)` | `examples/TileOPs/tileops/kernels/elementwise/bitwise_not/_bitwise_not_fwd_kernels.py` / 同族迁移 `examples/hardswish/hardswish_fwd_kernel/DESIGN.md` | ✅ 已验证 |
+| `T.Kernel(一维, is_npu=True) as (cid, _)` | `examples/TileOPs/tileops/kernels/elementwise/bitwise_not/_bitwise_not_fwd_kernels.py` / 同族迁移 `examples/TileOPs/tileops/kernels/elementwise/hardswish/hardswish_kernel/hardswish_fwd_kernel_DESIGN.md` | ✅ 已验证 |
 | `T.alloc_ub` | `examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not.py` / 同族迁移先例 | ✅ 已验证 |
 | `T.ceildiv` / `T.min`（标量） | `docs/Tilelang.language/数学操作/T.ceildiv.md` + 同族尾块先例 | ✅ 已验证 |
 
@@ -416,8 +416,8 @@ def bitwise_not_fwd_kernel(N, dtype, output_dtype=None, block_size=None, num_cor
 
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
-| `examples/hardswish/hardswish_fwd_kernel/DESIGN.md` | 高度相似（同族迁移设计；本算子为其「整数 / 无浮点中转」变体） | 一维 Kernel + block_size 折叠、分核三要素、UB 预算口径、persistent 尾块 |
-| `examples/hardswish/hardswish_fwd_kernel/hardswish_fwd_kernel.py` | 高度相似（同族迁移实现骨架） | `T.alloc_ub`、`T.copy` 尾块双显式 slice、`T.Kernel(is_npu=True)`、`NPUUtils.get().get_aicore_num()` |
+| `examples/TileOPs/tileops/kernels/elementwise/hardswish/hardswish_kernel/hardswish_fwd_kernel_DESIGN.md` | 高度相似（同族迁移设计；本算子为其「整数 / 无浮点中转」变体） | 一维 Kernel + block_size 折叠、分核三要素、UB 预算口径、persistent 尾块 |
+| `examples/TileOPs/tileops/kernels/elementwise/hardswish/hardswish_kernel/hardswish_fwd_kernel.py` | 高度相似（同族迁移实现骨架） | `T.alloc_ub`、`T.copy` 尾块双显式 slice、`T.Kernel(is_npu=True)`、`NPUUtils.get().get_aicore_num()` |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 相似（同族 Developer elementwise 迁移） | Developer 模式、persistent 核内串行、UB 分块 |
 | `examples/TileOPs/tileops/kernels/elementwise/bitwise_not/_bitwise_not_fwd_kernels.py` | 相似（迁移对象抽取件） | dtype 分支 `op_func` 的语义与调用约定（CPU reference，需 NPU 重写） |
 

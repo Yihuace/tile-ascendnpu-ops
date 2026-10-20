@@ -10,7 +10,7 @@
 
 ## 检视元信息
 
-- 文档: examples/gelu_and_mul/gelu_and_mul_fwd_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/gelu_and_mul_fwd_kernel_DESIGN.md
 - 任务类型: 迁移（GPU TileOPs → TileLang-NPUIR，harness），mode=revision（v1 → v2；v1 冻结于 `history_version/design_v1.md`，v0 于 `history_version/design_v0.md`）
 - 源算子: `/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py`（`GeluAndMulFwdKernel` L386-402，`activation_func` L395-402）；`.../elementwise/_base.py`（`FusedGatedKernel` L419-497，`_get_effective_op_func` L458-467）；`.../elementwise/_builders.py`（`make_fused_gated_explicit` L686-708）；`.../elementwise/_erf.py`（`erf` L30-69）；`.../elementwise/_nan.py`（`keep_nan` L76-84）；`/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/activations.py`（`GeluAndMulFwdOp` L273-281）+ `.../ops/elementwise/_base.py`（`FusedGatedOp.forward` L153-157）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -23,7 +23,7 @@
 - **design_calc_check**（注：任务书给的调用形参 `--dir` 与工具签名不符，工具 `--help` 明确要求 `--design <DESIGN.md 路径>`；已用正确形参重跑）：
   ```json
   {
-    "design": "examples/gelu_and_mul/gelu_and_mul_fwd_kernel/DESIGN.md",
+    "design": "examples/TileOPs/tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/gelu_and_mul_fwd_kernel_DESIGN.md",
     "capacity_constants": {
       "ub_kb": 192.0, "ub_inflation": 1.7, "l0c_kb": 128.0,
       "source": "pattern-library/constants.md CONST-capacity-910B2C"

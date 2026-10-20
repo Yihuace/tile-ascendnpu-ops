@@ -26,7 +26,7 @@ REPO = Path(__file__).resolve().parents[2]
 SSOT = REPO / "perf_data" / "canonical.json"
 DEFAULT_XLSX = Path("/mnt/workspace/19_operators_ratio.xlsx")
 
-# 与 STAGE4_SUMMARY §2 一致的呈现顺序（序号 1..19）
+# 与 FINAL_DELIVERY §2 一致的呈现顺序（序号 1..19）
 ORDER = [
     "HardsigmoidFwdOp",
     "ClampScalarFwdOp",

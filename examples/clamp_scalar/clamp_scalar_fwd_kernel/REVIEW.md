@@ -4,7 +4,7 @@
 
 ## 检视元信息
 
-- 文档: examples/clamp_scalar/clamp_scalar_fwd_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel_DESIGN.md
 - 任务类型: 迁移（GPU TileOPs `TileOPs-main` → TileLang-NPUIR）
 - 源算子: `/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/clamp.py`（`ClampFwdKernel`）、`_base.py`（`ScalarParamUnaryKernel`/`UnaryKernel`）、`_nan.py`（`nan_max`/`nan_min`）、`_builders.py`（`make_unary_regcopy`）、`/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/clamp.py`（`ClampScalarFwdOp`）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -14,7 +14,7 @@
 ## 机械复核（D-1/D-5）
 
 - **verify_equiv 重跑**: `python3 examples/clamp_scalar/clamp_scalar_fwd_kernel/verify_equiv.py` 执行成功，**16/16 行 EQUIV_PASS，无 EQUIV_FAIL**（9 行有限 bound × {fp32,fp16,bf16} + 6 行 NaN-bound × {fp32,fp16,bf16} + 1 行 NaN 值来源；max ulp=0.000，NaN 失配 0，违反 0）。与 DESIGN.md §1.6.1 内嵌结果表（项 1「9 行」、项 2「6 行」、项 3「1 行」）**逐行一致**（15 bound 行 + 1 item3 行 = 16 行）。
-- **design_calc_check**: `python3 .agents/tools/design_calc_check.py --design examples/clamp_scalar/clamp_scalar_fwd_kernel/DESIGN.md` JSON checks 摘要：
+- **design_calc_check**: `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel_DESIGN.md` JSON checks 摘要：
   - `ub_budget` → **skip**（"no per-level buffer tables parsed from the memory plan"）。机械跳过，**人工已核**：§4.5 fp16/bf16 逐 buffer 和 = 16384+32768+32768+32768+8192+16384 = **139264 B（136KB）**；fp32 全 buffer = 172032 B（168KB）；fp32 复用 `x32←x_ub` = 139264 B、再复用 `y_ub←buf2` = 106496 B（104KB）——四项与 §4.5 声明值逐字一致，均 < 192KB（CONST-capacity-910B2C）。
   - `l0c_budget` → **skip**（设计无 Cube 路径：无 `T.gemm`/`load_nd2nz`/`store_fixpipe`/Cube Scope）；人工确认纯 Vector，L0C 不适用。
   - `core_split` → **skip**（"insufficient parsed dims {'N': 1024}; declared logical cores = 5"——解析器把某个 1024/5 片段误当规模量）。机械跳过，**人工已核**：`ceil(N/8192)` = smoke-1m 1048576→128、16M→2048、4M→489、256M→32768；`num_cores=min(logical,40)`，`tiles_per_core=ceil(logical/40)` = 128→4、2048→52、32768→820——与 §5.5 声明值逐项一致，循环边界静态。

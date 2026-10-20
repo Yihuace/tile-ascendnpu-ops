@@ -14,8 +14,9 @@
    因此 ``8.54e-04``（max_abs_err 数值）、``68.5%``（ratio）都不会误报，
    而 ``8.5``、``8.5.2`` 会被抓住。
 
-2. **文档数字 == SSOT**：文档里的 ratio 区间与达标数必须和
-   ``perf_data/canonical.json`` 一致（每个算子恰好一条记录）。
+2. **文档数字 == SSOT**：交付表（``FINAL_DELIVERY_20261018.md`` §2）与台账
+   （``MIGRATION_INDEX.md`` §A）里的 ratio 区间与达标数必须和 ``perf_data/canonical.json``
+   一致（每个算子恰好一条记录）。STATUS / 总报告 / STAGE4_SUMMARY 只放结论与索引。
 
 用法::
 
@@ -55,17 +56,13 @@ SURFACE_GLOBS = (
 # 历史工具链版本号 token（上一代 = 8.5.x）
 FORBIDDEN = re.compile(r"(?<!\d)8\.5(?!\d)")
 
-STAGE4_SUMMARY = "examples/TileOPs/reports/optimize/STAGE4_SUMMARY.md"
+FINAL_DELIVERY = "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md"
 # ratio 一致性：这些文档里只要某算子行上出现 ratio，就必须能溯源到 SSOT
-NUMBER_DOCS = (
-    STAGE4_SUMMARY,
-    "MIGRATION_INDEX.md",
-    "examples/TileOPs/reports/迁移与优化总报告.md",
-)
+NUMBER_DOCS = (FINAL_DELIVERY, "MIGRATION_INDEX.md")
 # 强制出现：这些文档必须给出每个已交付算子的 ratio 区间
-REQUIRED_DOCS = (STAGE4_SUMMARY, "MIGRATION_INDEX.md")
+REQUIRED_DOCS = (FINAL_DELIVERY, "MIGRATION_INDEX.md")
 # 达标数 a/b：汇总表强制；状态快照表只校验「写出来的那一行」
-COUNT_DOCS = (STAGE4_SUMMARY, "STATUS.md")
+COUNT_DOCS = (FINAL_DELIVERY, "MIGRATION_INDEX.md")
 
 # 令牌 / 私钥特征（命中只报位置，绝不回显内容）
 SECRET_PATTERNS = (
@@ -84,7 +81,7 @@ SINGLE_RE = re.compile(r"(\d+(?:\.\d+)?)\s*%")
 FRACTION_RE = re.compile(r"\b\d+\s*/\s*\d+")
 TOL = 0.15  # 文档按 1 位小数四舍五入，允许的最大偏差
 
-# STAGE4_SUMMARY §2 汇总表用短名/缩写，这里补上别名
+# 交付表用短名/缩写时补别名（FINAL_DELIVERY 用全名）
 ALIASES: dict[str, tuple[str, ...]] = {
     "FusedAddLayerNormFwdOp": ("FALN",),
     "GatedDeltaNetPrefillFwdOp": ("GDN",),
@@ -234,7 +231,7 @@ def check_numbers(canon: dict) -> list[str]:
                 lines = [
                     ln for ln in doc_texts[name].splitlines() if _mentions(ln, names)
                 ]
-                if name == STAGE4_SUMMARY:
+                if name == FINAL_DELIVERY:
                     ok = any(want in ln for ln in lines)
                 else:
                     quoted = any(FRACTION_RE.search(ln) for ln in lines)

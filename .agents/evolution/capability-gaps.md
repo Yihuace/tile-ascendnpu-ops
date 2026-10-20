@@ -729,7 +729,7 @@ capability: >-
   T.tanh 仅为 TIR 标量表达式、无向量形态。
 blocked_algo: 需要全范围忠实 tanh 的向量算子（tanh-GELU 等）无法用原生向量 API；被迫换算法（恒等折叠）。
 evidence:
-  - 复现：examples/gelu_tanh_and_mul/gelu_tanh_and_mul_fwd_kernel/DESIGN.md §1.6.1 `counter npuir-vtanh`（截断发散复现）；codegen_npuir_api.cc Vtanh 源码。
+  - 复现：examples/TileOPs/tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/gelu_tanh_and_mul_fwd_kernel_DESIGN.md §1.6.1 `counter npuir-vtanh`（截断发散复现）；codegen_npuir_api.cc Vtanh 源码。
   - 实测（设计期硬件探针）：显式 sigmoid 机制 fp32 1.9e-7 / fp16 9.4e-4 / bf16 6.8e-3。
 workaround: 恒等折叠 gelu_tanh(g)=g·σ(2u)（`1+tanh(u)=2σ(2u)`）+ 显式 fp32 sigmoid（`vexp`/`vdiv`），RANGE max abs err 1.781e-7。
 occurrences: 1

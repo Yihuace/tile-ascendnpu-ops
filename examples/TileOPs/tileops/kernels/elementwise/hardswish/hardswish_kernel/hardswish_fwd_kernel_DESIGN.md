@@ -389,7 +389,7 @@ def hardswish_fwd_kernel(N, dtype, output_dtype=None, block_size=8192, num_cores
 | `T.vclamp` | `docs/Tilelang.language/比较操作/T.vclamp.md`（`T.vclamp(src, dst, min_val, max_val)`）+ `customize_npuir.py` `npuir_clamp` | ✅ 已验证（docs + 源码读） |
 | `T.vcast` | `docs/Tilelang.language/数据类型转换操作/T.vcast.md`（f16→f32 仅 rint；f32→f16/bf16 含 rint）+ `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py`（`round_mode="rint"`） | ✅ 已验证 |
 | `T.copy`（双显式 slice） | `docs/Tilelang.language/内存操作/T.copy.md` + mish 尾块先例（TRAP-T-copy-region-semantics：src/dst 双显式 slice 为推荐通用形态） | ✅ 已验证 |
-| `T.Kernel(一维, is_npu=True) as (cid, _)` | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` / `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md` 同族先例 | ✅ 已验证 |
+| `T.Kernel(一维, is_npu=True) as (cid, _)` | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` / `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md` 同族先例 | ✅ 已验证 |
 | `T.alloc_ub` | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | ✅ 已验证 |
 | `T.ceildiv` / `T.min`（标量） | `docs/Tilelang.language/数学操作/T.ceildiv.md` + mish 尾块 `T.min` 先例 | ✅ 已验证 |
 
@@ -423,7 +423,7 @@ def hardswish_fwd_kernel(N, dtype, output_dtype=None, block_size=8192, num_cores
 |----------|--------|-----------|
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高度相似（同族 unary 激活迁移） | Developer 模式、`T.alloc_ub`、`T.copy` 尾块、v-prefix 链、fp32 中转、`T.Kernel(is_npu=True)` |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/perf_opt/mish.py` | 高度相似（Stage 4 调优） | persistent 核内串行 + 2-stage 流水 + block_size=8192 |
-| `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md` | 高度相似（同族迁移设计，hardsigmoid/hardswish/hardtanh/relu6 族） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径（本算子为其「无 NaN 链」变体） |
+| `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md` | 高度相似（同族迁移设计，hardsigmoid/hardswish/hardtanh/relu6 族） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径（本算子为其「无 NaN 链」变体） |
 | `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/_make_lerp_tensor_kernel.py` | 相似（同族 elementwise） | fp32 中转模式（PL-1.17）、`T.min` 尾块 |
 
 ---

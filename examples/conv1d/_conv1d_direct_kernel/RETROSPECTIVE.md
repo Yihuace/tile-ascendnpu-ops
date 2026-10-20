@@ -29,7 +29,7 @@
 
 ## Stage 3 (develop) Retrospective — first_impl — 2026-10-14
 
-最终产物：`examples/conv1d/_conv1d_direct_kernel/_conv1d_direct_kernel.py`（Expert / 单 `T.Scope("Vector")`，无 Cube）。测试
+最终产物：`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel.py`（Expert / 单 `T.Scope("Vector")`，无 Cube）。测试
 `python _conv1d_direct_kernel.py --level all`：L0 10/10、L1 24/24、L2 16/16、Boundary 10/10 全 PASS（真机 NPU）；
 全量 max_abs = 7.81e-03（fp16/bias，L2-kW31），在 `1e-2` 容差内。verdict `[PRECISION_PASS]`。
 

@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md（revision v1）
+- 文档: examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md（revision v1）
 - 任务类型: 迁移
 - 源算子: `/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py`（`HardsigmoidFwdKernel`）+ `_base.py` + `_builders.py`（`make_unary_regcopy`）+ `_nan.py`（`nan_min/nan_max`）+ `/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/activations.py`
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）

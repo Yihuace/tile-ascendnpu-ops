@@ -156,7 +156,7 @@ GM[x], GM[weight] --gather(T.Parallel)--> SMEM[weight_shared/data_shared] --T.ge
 
 ### 0.7 标杆实现
 
-- 源算子路径（`source_op_path`）：`/mnt/workspace/TileOPs-main/src/tileops/kernels/convolution/conv1d.py`（`_conv1d_group_kernel` builder，L407-560；`GroupConv1dKernel` 类，L929-1051）。NPU 参考副本：`examples/TileOPs/tileops/kernels/convolution/conv1d/_conv1d_fwd_kernels.py`（`_conv1d_group_kernel`，L429-562）；NPU 分发/包装：`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d.py`。同族已实现参考：`examples/conv1d/_conv1d_kernel/_conv1d_kernel.py`（函数 2 一般 kernel 的 Stage 3 实现，本设计的直接结构基石）、`examples/conv1d/_conv1d_kernel/DESIGN.md`（一般设计）。
+- 源算子路径（`source_op_path`）：`/mnt/workspace/TileOPs-main/src/tileops/kernels/convolution/conv1d.py`（`_conv1d_group_kernel` builder，L407-560；`GroupConv1dKernel` 类，L929-1051）。NPU 参考副本：`examples/TileOPs/tileops/kernels/convolution/conv1d/_conv1d_fwd_kernels.py`（`_conv1d_group_kernel`，L429-562）；NPU 分发/包装：`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d.py`。同族已实现参考：`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py`（函数 2 一般 kernel 的 Stage 3 实现，本设计的直接结构基石）、`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel_DESIGN.md`（一般设计）。
 - 源仓参考实现 / 测试基准：`torch.nn.functional.conv1d(x, weight, bias, stride, padding, dilation, groups=groups)`，见 `examples/TileOPs/tests/ops/test_conv1d.py`（`test_conv1d_grouped_matches_torch`，`Conv1dWorkload.ref_program`）+ `examples/TileOPs/tileops/workloads/convolution.py`（`full-groups2-k3-fp16` / `full-groups3-coutg24-fp16`）。
 - golden 以 §0.1 语义为依据，优先移植源仓参考实现（`F.conv1d`, `groups=groups`），**不复刻 NPU 算法**（保证验证独立性）。
 
@@ -209,7 +209,7 @@ GM[x_gpad] --T.gather(host 索引)--> GM[xdec_g] ; GM[xdec_g] --per-tap slice-->
 
 #### 1.6.0 算法调研（Algorithm Research）⭐
 
-> 调研对象：**分组** conv1d 的算法族。源算法 / 输入公式只是**基线候选之一**。本算子为**矩阵类（per-group implicit GEMM）+ 窗口类**，按 algorithm-research.md §2 判为**完整调研**（R1 候选表 + R3 四口径对比表 + R4 逐候选评估）。信息源：`algorithm-candidates.md`（`ALG-conv` 命中行）、pattern-library `constants.md`、本仓 Cube 先例（gqa/ssd）、同族函数 2 设计与实现（`examples/conv1d/_conv1d_kernel/DESIGN.md`、`examples/conv1d/_conv1d_kernel/_conv1d_kernel.py`）、源算子 §0.3/§0.4、探针 `examples/conv1d/probe/conv1d_geomm_probe.py`。
+> 调研对象：**分组** conv1d 的算法族。源算法 / 输入公式只是**基线候选之一**。本算子为**矩阵类（per-group implicit GEMM）+ 窗口类**，按 algorithm-research.md §2 判为**完整调研**（R1 候选表 + R3 四口径对比表 + R4 逐候选评估）。信息源：`algorithm-candidates.md`（`ALG-conv` 命中行）、pattern-library `constants.md`、本仓 Cube 先例（gqa/ssd）、同族函数 2 设计与实现（`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py`）、源算子 §0.3/§0.4、探针 `examples/conv1d/probe/conv1d_geomm_probe.py`。
 
 **R1 等价化简公式候选**（基线必须在表内；正式等价论证与收益量化在 §1.6.1 完成，此处只做初判）：
 
@@ -353,7 +353,7 @@ GM[x_gpad] --T.gather(host 索引)--> GM[xdec_g] ; GM[xdec_g] --per-tap slice-->
 
 ### 2.2 选型理由
 
-本算子为 Cube（矩阵乘）主导算子，须显式使用 L1（Cube 操作数缓存）与 L0C（fp32 累加器）内存层级，并通过 `T.gemm` 走 Cube 单元。Expert 模式是 npuir 上显式 L1/L0C 与 `T.Scope("Cube")` 的唯一可行路径：Developer 模式的 `T.alloc_shared` / `T.alloc_fragment` 在 persistent + gemm 结构下存在运行时崩溃（`TRAP-DEVMODE-PERSIST-GEMM`），且 `PL-1.16-expert-dualscope-bypass` 记录 Developer 在标量化 / 条件构造 / persistent+gemm 下的结构级阻塞。本算子还需：weight-layout 前置（Vector `T.transpose`，per-group）、group 通道段 `x_gpad` 前置（Vector）、stride>1 polyphase 物化（Vector `T.gather`）、bias epilogue（Vector）——均需 Cube + Vector 双 Scope（MixCV），属 Expert。探针 `examples/conv1d/probe/conv1d_geomm_probe.py` 即以 `TILELANG_ASCEND_MODE=Expert` + `T.Scope("Cube")` 编译运行成功；同族函数 2/3 的 Stage 3 实现（`examples/conv1d/_conv1d_kernel/_conv1d_kernel.py`）即 Expert MixCV。**任务硬性要求编程模式 = Expert**。
+本算子为 Cube（矩阵乘）主导算子，须显式使用 L1（Cube 操作数缓存）与 L0C（fp32 累加器）内存层级，并通过 `T.gemm` 走 Cube 单元。Expert 模式是 npuir 上显式 L1/L0C 与 `T.Scope("Cube")` 的唯一可行路径：Developer 模式的 `T.alloc_shared` / `T.alloc_fragment` 在 persistent + gemm 结构下存在运行时崩溃（`TRAP-DEVMODE-PERSIST-GEMM`），且 `PL-1.16-expert-dualscope-bypass` 记录 Developer 在标量化 / 条件构造 / persistent+gemm 下的结构级阻塞。本算子还需：weight-layout 前置（Vector `T.transpose`，per-group）、group 通道段 `x_gpad` 前置（Vector）、stride>1 polyphase 物化（Vector `T.gather`）、bias epilogue（Vector）——均需 Cube + Vector 双 Scope（MixCV），属 Expert。探针 `examples/conv1d/probe/conv1d_geomm_probe.py` 即以 `TILELANG_ASCEND_MODE=Expert` + `T.Scope("Cube")` 编译运行成功；同族函数 2/3 的 Stage 3 实现（`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py`）即 Expert MixCV。**任务硬性要求编程模式 = Expert**。
 
 ### 2.3 模式影响
 
@@ -702,11 +702,11 @@ def _conv1d_group_kernel(n, c_in, l_in, c_out, kernel_l, stride_l,
 
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
-| `examples/conv1d/_conv1d_kernel/_conv1d_kernel.py` | **最高（同族函数 2 的 Stage 3 实现，本算子 = 其 + group 轴解码）** | Expert Cube + Vector 双 Scope；`T.alloc_L1/L0C` + `T.gemm(size=[...], initC=(kc+kw==0))`；weight-layout 两次 `T.transpose` 前置；`x_pad` 连续前置；stride>1 `T.gather` polyphase；K 分块 per-tap L1 偏移 0；尾块 clamp+裁剪；MixCV bias 深度 2 双槽 4-flag（消费者侧前导）；Expert `T.copy` 不跨 dtype |
-| `examples/conv1d/_conv1d_kernel/DESIGN.md` | 高（同族函数 2 设计，本设计的直接来源） | §0.5/§0.6 迁移决策；§1.6 调研四问；§5.5 分核三要素；stride=1/stride>1 分支设计 |
-| `examples/conv1d/_conv1d_unit_stride_kernel/DESIGN.md` | 高（同族函数 3 stride=1 特化） | tap-major 通道分块、`x_pad` 前置、L1 偏移 16 对齐、MixCV 握手 |
+| `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py` | **最高（同族函数 2 的 Stage 3 实现，本算子 = 其 + group 轴解码）** | Expert Cube + Vector 双 Scope；`T.alloc_L1/L0C` + `T.gemm(size=[...], initC=(kc+kw==0))`；weight-layout 两次 `T.transpose` 前置；`x_pad` 连续前置；stride>1 `T.gather` polyphase；K 分块 per-tap L1 偏移 0；尾块 clamp+裁剪；MixCV bias 深度 2 双槽 4-flag（消费者侧前导）；Expert `T.copy` 不跨 dtype |
+| `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel_DESIGN.md` | 高（同族函数 2 设计，本设计的直接来源） | §0.5/§0.6 迁移决策；§1.6 调研四问；§5.5 分核三要素；stride=1/stride>1 分支设计 |
+| `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel_DESIGN.md` | 高（同族函数 3 stride=1 特化） | tap-major 通道分块、`x_pad` 前置、L1 偏移 16 对齐、MixCV 握手 |
 | `examples/conv1d/probe/conv1d_geomm_probe.py` | **高度相似（同算子族的可行性探针）** | `T.Scope("Cube")` + `T.alloc_L1/L0C` + `T.gemm(size=[...])`；per-tap slice 形态 `T.copy` 承载重叠/跨步 im2col；`target="npuir"` + Expert；golden = `F.conv1d` |
-| `examples/conv1d/_conv1d_pointwise_kernel/DESIGN.md` | 高（K_W=1 的同族简化版） | Expert Cube 结构、MixCV bias 双槽 4-flag 握手（含 Stage 3 修正：前导置消费者侧、bias 显式 vcast） |
+| `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_pointwise_kernel_DESIGN.md` | 高（K_W=1 的同族简化版） | Expert Cube 结构、MixCV bias 双槽 4-flag 握手（含 Stage 3 修正：前导置消费者侧、bias 显式 vcast） |
 | `examples/TileOPs/tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/_gqa_prefill_fwd_kernel.py` | 高（Cube Expert + MixCV + persistent） | 一维 `T.Kernel(NUM_KERNELS)` + `T.serial(num_local_tasks)` + `cid` 钳位；`T.Scope("Cube")`/`T.Scope("Vector")` 双 Scope；`T.rs("PIPE_*")` 手动同步；`T.sync_block_set/wait` 跨引擎握手；分形 clamp `T.max(16, T.ceildiv(...)*16)` |
 | `examples/TileOPs/tileops/kernels/mamba/ssd_chunk_scan/ssd_chunk_scan_kernel/_ssd_chunk_scan_fwd_kernel.py` | 高（Cube Expert + Vector epilogue + 深度 2 双槽握手） | `T.gemm(..., initC=(k==0), size=[...])`；L0C→GM ws 中继；`T.vbrc`/`T.vadd`/`T.vcast` Vector 段；尾块 clamp；深度 2 双槽 4-flag（消费者侧前导） |
 | `examples/TileOPs/tileops/kernels/convolution/conv1d/_conv1d_fwd_kernels.py` | 高（同源 builder 的 NPU 参考副本） | `_conv1d_group_kernel` 源 builder 全文（param/group 解码/数据流契约） |

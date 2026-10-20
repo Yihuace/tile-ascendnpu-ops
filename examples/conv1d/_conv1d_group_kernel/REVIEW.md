@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/conv1d/_conv1d_group_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel_DESIGN.md
 - 任务类型: 迁移（harness，GPU TileOPs-main → NPUIR Ascend，Expert Cube）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/convolution/conv1d.py（`_conv1d_group_kernel` builder，L405-539；`GroupConv1dKernel` 类，L929-1071；op 层 `src/tileops/ops/convolution.py` `Conv1dFwdOp`，L75-163）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -15,10 +15,10 @@
 ## 机械复核（D-1/D-5）
 
 - **verify_equiv 重跑: 不适用（无采纳优化项）**——§1.6.1「优化结论」明确为「无优化空间」（block-diagonal / Winograd / bias 折叠 / 转置 GEMM / split-K 五候选经 §1.6.0 R1/R3/R4 评估均无正收益，不采纳；§1.6.1 第 6 行「不适用」），符合 gate `S1-EQUIV-EXEC` 豁免规则。已确认 `examples/conv1d/_conv1d_group_kernel/verify_equiv.py` **不存在**（`ls` 返回 `No such file or directory`），豁免合法；v1 未新增任何采纳的公式级优化项，故无等价性机器验证对象。
-- **design_calc_check**（`python3 .agents/tools/design_calc_check.py --design examples/conv1d/_conv1d_group_kernel/DESIGN.md`）输出：
+- **design_calc_check**（`python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel_DESIGN.md`）输出：
 ```json
 {
-  "design": "examples/conv1d/_conv1d_group_kernel/DESIGN.md",
+  "design": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel_DESIGN.md",
   "capacity_constants": {
     "ub_kb": 192.0,
     "ub_inflation": 1.7,

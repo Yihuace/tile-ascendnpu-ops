@@ -531,8 +531,8 @@ def gelu_and_mul_fwd_kernel(M, N, dtype, output_dtype=None, block_N=2048, num_co
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
 | `examples/TileOPs/tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul.py` | 最高（本算子 NPU scaffold） | `_register` wrapper、`ascend_mode="Developer"`、`SUPPORTED_DTYPES` 浮点集、单 `[M,2N]` 输入契约、`default_config` 返回 `{}`（block_size 由 factory 定） |
-| `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、`T.verf` 类激活先例、NaN 恢复先例 |
-| `examples/add/add_fwd_kernel/DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 多输入契约、fp32 中转、persistent 分核、UB 预算、`verify_equiv` 结构 |
+| `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、`T.verf` 类激活先例、NaN 恢复先例 |
+| `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 多输入契约、fp32 中转、persistent 分核、UB 预算、`verify_equiv` 结构 |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高度相似（同族 unary 激活迁移） | Developer 模式、`T.alloc_ub`、`T.copy` 尾块、v-prefix 链、fp32 中转 |
 | `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/_make_lerp_tensor_kernel.py` | 相似（同族 elementwise + fp32 中转） | fp32 中转模式（PL-1.17）、`T.min` 尾块 |
 

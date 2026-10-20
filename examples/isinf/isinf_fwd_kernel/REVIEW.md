@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/isinf/isinf_fwd_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/elementwise/isinf/isinf_kernel/isinf_fwd_kernel_DESIGN.md
 - 任务类型: 迁移（scenario=migration，mode=harness）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/comparison.py（`IsinfFwdKernel`，复用 `_base.py` / `_builders.py` / `_op_body.py` / ops/elementwise/comparison.py）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -15,7 +15,7 @@
 ## 机械复核（D-1/D-5）
 
 - verify_equiv 重跑: **PASS**。`python3 examples/isinf/isinf_fwd_kernel/verify_equiv.py` 退出码 0；2 个采纳项 ×3 dtype 全部 `EQUIV_PASS`（item1 fp16/bf16/fp32 mismatches=0；item2 fp16/bf16/fp32 mismatches=0），判别段 A `(x-x)!=0` mismatches=399/403/459（=NaN 数，`DISCRIM_OK`）、判别段 B `NOT(isfinite)&NOT(isnan)` mismatches=0（`DISCRIM_OK`）。执行输出与 §1.6.1 内嵌结果表逐行一致（item1=0、item2=0、A=399/403/459、B=0）。
-- design_calc_check: 以 README/脚本实际接口 `--design examples/isinf/isinf_fwd_kernel/DESIGN.md` 执行（任务提示中的 `--dir` 形参在已安装的 `.agents/tools/design_calc_check.py` 中不存在，脚本仅接受 `--design`；`--dir` 报 `error: the following arguments are required: --design`）。逐项 JSON checks：
+- design_calc_check: 以 README/脚本实际接口 `--design examples/TileOPs/tileops/kernels/elementwise/isinf/isinf_kernel/isinf_fwd_kernel_DESIGN.md` 执行（任务提示中的 `--dir` 形参在已安装的 `.agents/tools/design_calc_check.py` 中不存在，脚本仅接受 `--design`；`--dir` 报 `error: the following arguments are required: --design`）。逐项 JSON checks：
   - `ub_budget` → **skip**：`no per-level buffer tables parsed from the memory plan (advisory checker; verify manually)` —— **机械跳过，人工已核**：§4.5 逐 buffer 求和 = 53248 B（52KB，fp16/bf16 路径）/ 77824 B（76KB，fp32 路径），均 < 192KB（§4.5 已按 ×1.12 显式-alloc 带 ≈85KB、×1.7 悲观膨胀 ≈129KB 双口径核对，均安全）。
   - `l0c_budget` → **skip**：`no affirmative Cube-path API (T.gemm/load_nd2nz/store_fixpipe/Scope(Cube)) in this design` —— 纯 Vector 无 Cube，正确跳过。
   - `core_split` → **skip**：`insufficient parsed dims {}; declared logical cores = 40` —— **机械跳过，人工已核**：脚本无 M/bm 可解析（纯 1-D 逐元素无 GEMM 网格）；§5.5 逻辑核数 `num_logical = ceil(N/block_size)`（16M→4096、256M→65536）、物理核数 `NPUUtils.get().get_aicore_num()` 实查 20 ×2（纯 Vector）= 40、核内串行边界 `num_local_tasks=ceil(num_logical/40)`（16M→103、256M→1639）三要素齐备且算术自洽。
@@ -87,7 +87,7 @@
 
 - **章节齐全**：模板 11 章节齐全，§0 及 0.1–0.7 小节齐全（grep 核对）。
 - **无占位符**：grep `{placeholder}`/`TODO`/`待补充` 无命中。
-- **同类引用真实**：§3.5.3/§0.7 引用的 `examples/isnan/isnan_fwd_kernel/DESIGN.md`、`.../repro/CONST-vcmp-ne-ordered.py`、`examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md`、`examples/bitwise_not/bitwise_not_fwd_kernel/DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/{hardsigmoid,hardsigmoid_kernel/hardsigmoid_fwd_kernel.py,bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py}`、`.../isinf/_isinf_fwd_kernels.py`、`examples/TileOPs/tileops/kernels/reduction/logsumexp/_logsumexp_kernel_tiled/DESIGN.md` 均实际存在（Glob 核对）；manifest `examples/TileOPs/tileops/manifest/elementwise.yaml` 的 `IsinfFwdOp` 条目存在。
+- **同类引用真实**：§3.5.3/§0.7 引用的 `examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/isnan_fwd_kernel_DESIGN.md`、`.../repro/CONST-vcmp-ne-ordered.py`、`examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/{hardsigmoid,hardsigmoid_kernel/hardsigmoid_fwd_kernel.py,bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py}`、`.../isinf/_isinf_fwd_kernels.py`、`examples/TileOPs/tileops/kernels/reduction/logsumexp/_logsumexp_kernel_tiled/DESIGN.md` 均实际存在（Glob 核对）；manifest `examples/TileOPs/tileops/manifest/elementwise.yaml` 的 `IsinfFwdOp` 条目存在。
 - **内部一致**：API 映射（§3）、内存规划（§4）、Tiling（§5）三方描述相互一致（block_size=4096 全程一致；UB 预算与 buffer 表一致；分核方案与 §6 循环一致）。
 
 ### 8. 算法优化分析 — pass ⭐

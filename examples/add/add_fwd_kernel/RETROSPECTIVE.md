@@ -14,7 +14,7 @@
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
 | NPU elementwise binary 的广播契约：GPU kernel 内 stride 计划（`compute_broadcast_offsets`）→ NPU Op 层 `torch.broadcast_shapes`+`expand`+`flatten`（kernel 只见 same-shape 平铺），依据 = NPU 缺跨步 gather 向量指令 + lerp_tensor E15 先例 | P | examples/TileOPs/tileops/ops/elementwise/add.py（`_expand_flat`）；examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/_make_lerp_tensor_kernel_DESIGN.md#0.3（预广播 Op 层契约）；examples/TileOPs/docs/gpu_to_npu_adaptation.md §3.4 E15；pattern-library/traps-compiler.md `TRAP-C10-strided-gather` | none | tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B2C（实查 20 AI Core） | pattern-library/cases.md 或 elementwise.md |
-| `torch.add(scalar alpha)` 与两轮 fp32 链（vmul→vadd）**非逐位一致**——torch 侧对部分幅值用单次舍入（fma/宽域），两轮 fp32 与其差最大 0.0128 tolerance-unit（<1，0 违反）；`alpha` 缩放类迁移的 golden 对照须用容差、不可假设位相等 | C | examples/add/add_fwd_kernel/DESIGN.md §1.6.1（EQUIV 表 + 对照项）；examples/add/add_fwd_kernel/verify_equiv.py | `python3 examples/add/add_fwd_kernel/verify_equiv.py` | tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B2C / 2026-10-13 | pattern-library/traps-runtime.md（数值口径类） |
+| `torch.add(scalar alpha)` 与两轮 fp32 链（vmul→vadd）**非逐位一致**——torch 侧对部分幅值用单次舍入（fma/宽域），两轮 fp32 与其差最大 0.0128 tolerance-unit（<1，0 违反）；`alpha` 缩放类迁移的 golden 对照须用容差、不可假设位相等 | C | examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md §1.6.1（EQUIV 表 + 对照项）；examples/add/add_fwd_kernel/verify_equiv.py | `python3 examples/add/add_fwd_kernel/verify_equiv.py` | tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B2C / 2026-10-13 | pattern-library/traps-runtime.md（数值口径类） |
 
 ### Transferable Lessons（可迁移教训）
 
@@ -26,7 +26,7 @@
 
 ## Stage 3 (implement) Retrospective — first_impl — 2026-10-13
 
-编程模式：Developer；产物 `examples/add/add_fwd_kernel/add_fwd_kernel.py`（`ASCEND_MODE = "Developer"`）；`python add_fwd_kernel.py --level all` exit 0，L0/L1 全过（L2/Boundary 亦全过，无 warn）。
+编程模式：Developer；产物 `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py`（`ASCEND_MODE = "Developer"`）；`python add_fwd_kernel.py --level all` exit 0，L0/L1 全过（L2/Boundary 亦全过，无 warn）。
 
 ### Skill Flow Issues
 

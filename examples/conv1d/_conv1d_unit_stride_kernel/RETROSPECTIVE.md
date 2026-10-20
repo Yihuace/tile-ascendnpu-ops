@@ -6,15 +6,15 @@
 
 | area | issue | evidence | suggested_doc_change | vp_type |
 |---|---|---|---|---|
-| Design-flow | **同族「一般设计」与「特化设计」的可复用结构未被技能显式建模**：函数 2（`_conv1d_kernel`）与函数 3（`_conv1d_unit_stride_kernel`）共享 90% 结构（Expert Cube + MixCV + persistent + tap-major），差异仅在「stride=1 删除 polyphase」「K 分块粒度」。skill 没有"从已通过的同族设计做减法特化"的流程指引，只能靠人工识别可删项 | 本任务 §0.5/§0.6 对照 `examples/conv1d/_conv1d_kernel/DESIGN.md` 逐条判定；删除 xdec/poly_idx/T.gather/T.Parallel 全路径 | `tilelang-op-design` SKILL.md 增补「同族特化任务」分支：当 `examples/{project}/` 已存在同族已通过设计时，Phase M0/M1 以该设计为基线做**减法/加法对照**（保留项、删除项、新增项三分），并在 §0 标注差异清单 | R |
+| Design-flow | **同族「一般设计」与「特化设计」的可复用结构未被技能显式建模**：函数 2（`_conv1d_kernel`）与函数 3（`_conv1d_unit_stride_kernel`）共享 90% 结构（Expert Cube + MixCV + persistent + tap-major），差异仅在「stride=1 删除 polyphase」「K 分块粒度」。skill 没有"从已通过的同族设计做减法特化"的流程指引，只能靠人工识别可删项 | 本任务 §0.5/§0.6 对照 `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel_DESIGN.md` 逐条判定；删除 xdec/poly_idx/T.gather/T.Parallel 全路径 | `tilelang-op-design` SKILL.md 增补「同族特化任务」分支：当 `examples/{project}/` 已存在同族已通过设计时，Phase M0/M1 以该设计为基线做**减法/加法对照**（保留项、删除项、新增项三分），并在 §0 标注差异清单 | R |
 | Info-source | **GPU 源 builder 的 `output_l` 公式在 stride=1 时省略 `//stride + 1`**（L169 `out_l = l_in + pad + padR - dilation*(kernel-1)`），与同文件一般 kernel（L47 带 `//stride+1`）写法不同，但 stride=1 时数学恒等——解读时须自行验证等价而非照抄 | 源 L169 vs L47；F.conv1d 参考实现反查确认等价 | `references/migration-analysis.md` §3.1 增一条：读源算子时须逐条验证"看似不同的公式"是否在限定条件下恒等（避免误判语义差异或漏判） | R |
 
 ### Value Point Proposals
 
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
-| **stride=1 conv1d 的特化减法清单**：相对一般 conv（函数 2），stride=1 可删除全部 polyphase/`xdec`/`poly_idx`/`T.gather`/`T.Parallel` 路径（B 装载退化为 per-tap 连续矩形 slice `T.copy`），且 Expert Vector 段因无逐元素写而**天然规避函数 2 Stage 3 的 `T.Parallel` 崩溃陷阱** | P | `examples/conv1d/_conv1d_unit_stride_kernel/DESIGN.md` §0.5/§0.6/§1.6.2/§9.1；`examples/conv1d/_conv1d_kernel/_conv1d_kernel.py` L219-236（need_poly 分支） | `examples/conv1d/probe/conv1d_geomm_probe.py` L94-98（stride=1 per-tap slice 实证） | tilelang 0.1.2+417dae99 + Ascend910B3（`get_aicore_num`=20）+ CANN | pattern-library / cases.md |
-| **`x_pad` 连续前置同为本算子选用的边界零填充方案**（stride=1 时快慢路径合一为 in-bounds slice）：host `torch.zeros` 预零 + Vector 拷入域内（GM 侧偏移），换取主循环零掩码——代价 `≈2·c_in·l_in·eb`（whisper +9% 流量） | P | DESIGN.md §0.6 R4/§4.4/§9.1；`examples/conv1d/_conv1d_kernel/_conv1d_kernel.py` L200-218 | `examples/conv1d/_conv1d_kernel/repro/TRAP-copy-ub-offset-stride.py`（GM 侧偏移断言） | 同上 | pattern-library / cases.md |
+| **stride=1 conv1d 的特化减法清单**：相对一般 conv（函数 2），stride=1 可删除全部 polyphase/`xdec`/`poly_idx`/`T.gather`/`T.Parallel` 路径（B 装载退化为 per-tap 连续矩形 slice `T.copy`），且 Expert Vector 段因无逐元素写而**天然规避函数 2 Stage 3 的 `T.Parallel` 崩溃陷阱** | P | `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel_DESIGN.md` §0.5/§0.6/§1.6.2/§9.1；`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py` L219-236（need_poly 分支） | `examples/conv1d/probe/conv1d_geomm_probe.py` L94-98（stride=1 per-tap slice 实证） | tilelang 0.1.2+417dae99 + Ascend910B3（`get_aicore_num`=20）+ CANN | pattern-library / cases.md |
+| **`x_pad` 连续前置同为本算子选用的边界零填充方案**（stride=1 时快慢路径合一为 in-bounds slice）：host `torch.zeros` 预零 + Vector 拷入域内（GM 侧偏移），换取主循环零掩码——代价 `≈2·c_in·l_in·eb`（whisper +9% 流量） | P | DESIGN.md §0.6 R4/§4.4/§9.1；`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py` L200-218 | `examples/conv1d/_conv1d_kernel/repro/TRAP-copy-ub-offset-stride.py`（GM 侧偏移断言） | 同上 | pattern-library / cases.md |
 | **tap-major 通道分块（一个 tap = 一个 K 子块，L1 目标偏移 0 或 block_k）在域内公式层面天然正确且可服务任意 dilation/padding**：`off = bx·BN + kw·d_W` 恒在 `[0, l_pad-BN]`（因 `out_l = l_in+p_L+p_R-(K_W-1)·d_W`），无需动态 clamp | P | DESIGN.md §0.6 R4/§5.4；源 `_conv1d_unit_stride_kernel` 的 `channel_blocks`/tap-major（L240-270） | 探针 `examples/conv1d/probe/conv1d_geomm_probe.py`（`L_PAD = L_IN+12` 覆盖右溢出） | 同上 | pattern-library / cases.md |
 
 ### Transferable Lessons（可迁移教训）
@@ -40,7 +40,7 @@
 
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
-| **K 装入-消费宽度单一来源不变式**：在 Cube 迁移设计里，`T.gemm` 的 K（`size[1]`）必须逐字等于该步在 L1 装入的 K 宽度；分组维（如 `taps`）必须同时体现在装入宽度与 gemm extent——否则静默丢 tap/通道 | P | `DESIGN.md` §0.0/§3.3 注 3/§5.2/§5.4/§6.1/§6.2/§6.4；v0 §3.3 缺陷；对照函数 2 `examples/conv1d/_conv1d_kernel/_conv1d_kernel.py` L257-301（每 (kc,kw) 一次 gemm，装入=消费一致） | 回归：`taps=2` vs `taps=1` 同 shape `assert_close`（§8.3 必测点 ⑤） | tilelang 0.1.2+417dae99 + Ascend910B3 + CANN | pattern-library / cases.md |
+| **K 装入-消费宽度单一来源不变式**：在 Cube 迁移设计里，`T.gemm` 的 K（`size[1]`）必须逐字等于该步在 L1 装入的 K 宽度；分组维（如 `taps`）必须同时体现在装入宽度与 gemm extent——否则静默丢 tap/通道 | P | `DESIGN.md` §0.0/§3.3 注 3/§5.2/§5.4/§6.1/§6.2/§6.4；v0 §3.3 缺陷；对照函数 2 `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py` L257-301（每 (kc,kw) 一次 gemm，装入=消费一致） | 回归：`taps=2` vs `taps=1` 同 shape `assert_close`（§8.3 必测点 ⑤） | tilelang 0.1.2+417dae99 + Ascend910B3 + CANN | pattern-library / cases.md |
 | **L1 分片偏移的 16 对齐条件应显式推导而非依赖隐式整除前提**：`kcl` 为 `c_in_pad` 与 `block_k`（均 16 倍数）之差/较小者，必为 16 倍数，故组内连续打包偏移 `t·kcl` 可寻址——设计应写出该推理链，避免如 v0 那样遗留未声明的「`block_k` 整除 `c_in_pad`」前提 | P | `DESIGN.md` §0.6 R4/§5.4/§9.1；REVIEW.md 问题 1 修改建议 | `examples/conv1d/probe/conv1d_geomm_probe.py`（per-tap L1 slice 实证） | 同上 | pattern-library / cases.md |
 
 ### Transferable Lessons（可迁移教训）
@@ -65,7 +65,7 @@
 
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
-| **tap-MAJOR × 单 gemm 覆盖多 tap 的 K-extent 单一来源不变式在硬件上验证成立**：`T.gemm` 的 `size[1]` 逐字等于本步 L1 打包宽度 `taps*kcl`（第 t 个 tap 页写 L1 K 轴偏移 `t*kcl`，`kcl` 为 16 倍数 ⇒ 偏移可寻址）时，`taps=2` 与 `taps=1` 输出**逐位相同**（cross_max_abs=0.000e+00，bias/nobias×f16/bf16 四种组合均 0），证明 v0「装多取少丢 tap」缺陷被完全消除且无残留 gap | D | 本任务 `_conv1d_unit_stride_kernel.py` §`_cube`；L0/L1 `taps2` 用例 cross=0.0；`examples/conv1d/_conv1d_unit_stride_kernel/DESIGN.md` §0.0/§3.3 注 3 | `examples/conv1d/_conv1d_unit_stride_kernel/_conv1d_unit_stride_kernel.py`（`_run_taps_consistency`，`taps=2` vs `taps=1` assert_close + vs golden） | tilelang 0.1.2+417dae99 + Ascend910B3（`get_aicore_num`=20）+ CANN | pattern-library / cases.md |
+| **tap-MAJOR × 单 gemm 覆盖多 tap 的 K-extent 单一来源不变式在硬件上验证成立**：`T.gemm` 的 `size[1]` 逐字等于本步 L1 打包宽度 `taps*kcl`（第 t 个 tap 页写 L1 K 轴偏移 `t*kcl`，`kcl` 为 16 倍数 ⇒ 偏移可寻址）时，`taps=2` 与 `taps=1` 输出**逐位相同**（cross_max_abs=0.000e+00，bias/nobias×f16/bf16 四种组合均 0），证明 v0「装多取少丢 tap」缺陷被完全消除且无残留 gap | D | 本任务 `_conv1d_unit_stride_kernel.py` §`_cube`；L0/L1 `taps2` 用例 cross=0.0；`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel_DESIGN.md` §0.0/§3.3 注 3 | `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py`（`_run_taps_consistency`，`taps=2` vs `taps=1` assert_close + vs golden） | tilelang 0.1.2+417dae99 + Ascend910B3（`get_aicore_num`=20）+ CANN | pattern-library / cases.md |
 
 ### Transferable Lessons（可迁移教训）
 

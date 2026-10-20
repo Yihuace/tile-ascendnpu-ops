@@ -10,7 +10,7 @@
 | `delivery.json` | **交付态（权威）**：19 接口最新 9.0 实测，逐行转录自 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md` §2（2026-10-18 端到端重测表）+ GDN 的 2026-10-19 per-kernel 汇总 |
 | `manual.json` | **迁移态补充**：机器记录里没有 baseline 的算子（见下） |
 
-文档（`STAGE4_SUMMARY.md` §2、`MIGRATION_INDEX.md` §A、`STATUS.md`、`迁移与优化总报告.md`）
+文档（`FINAL_DELIVERY_20261018.md` §2、`MIGRATION_INDEX.md` §A）
 与仓库外交付件 `../19_operators_ratio.xlsx`（由 `.agents/tools/gen_ratio_xlsx.py` 生成）
 的数字必须与它一致，由 `.agents/tools/data_surface_lint.py` 一起校验。
 
@@ -72,7 +72,7 @@ python3 .agents/tools/data_surface_lint.py       # 校验文档数字与 SSOT �
 - **不要手改 `canonical.json`**：它是生成物。交付态要改就更新 `delivery.json`（并注明新的实测来源），
   迁移态要改就更新 `manual.json`，然后重跑生成器。
 - **一个算子一份数据**：不允许同一算子在文档里出现两套口径。
-- **新一批实测落地时**：把新的端到端表更新到 `delivery.json`，同时检查 `STAGE4_SUMMARY` /
+- **新一批实测落地时**：把新的端到端表更新到 `delivery.json`，同时检查 `FINAL_DELIVERY` /
   `MIGRATION_INDEX` / `STATUS` / 总报告 / xlsx，跑一遍 lint。
 - **机器记录也不许带旧版本戳**：`perf_records.jsonl` 属数据面（lint 会扫）。某轮测量若发生在工具链升级前，
   `toolchain` 字段写「上一代工具链（…）」并加 `superseded_by` 指向 9.0.0 的官方报告。

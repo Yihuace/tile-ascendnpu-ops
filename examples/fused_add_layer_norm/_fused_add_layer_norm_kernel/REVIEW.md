@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md
 - 任务类型: 迁移（harness 模式）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/norm/fused_add_norm.py（`FusedAddLayerNormKernel`，L48–240）；本函数迁移精确源 = examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/_fused_add_layer_norm_fwd_kernels.py
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -17,11 +17,11 @@
 - **verify_equiv 重跑: PASS（与 §1.6.1 内嵌表一致，全 EQUIV_PASS）**
   - 命令: `python3 examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/verify_equiv.py`（torch CPU，fp64 参照）
   - 结果: 采纳项 O1+O2+O3 联合（24 案例 = 8 形状 × 3 dtype）**全部 EQUIV_PASS**——fp16/bf16 舍回后 max ulp = 0（逐位一致），fp32 max ulp ≤ 1（低于容差 1e-5），违反率全 0。判别段 A（矩式拒绝证据）fp32 max violation = 0.2099 > 0、fp16 = 0.1554 > 0（DISCRIM_OK，bf16 = 0.0005 被宽容差掩蔽）；判别段 B（round-first vs 源 unrounded 统计）24 案例违反率全 0（DISCRIM_OK）。三者与 DESIGN §1.6.1 内嵌表逐格一致（表内 fp32 0.2100 / fp16 0.1554 / bf16 0.0005 与实测 0.2099 / 0.1554 / 0.0005 仅末位四舍五入差异）。
-- **design_calc_check: 附 JSON checks 摘要**（`python3 .agents/tools/design_calc_check.py --design examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md`；注：调度 prompt 给的 `--dir` 参数该脚本不支持，实际以 `--design <path>` 运行）:
+- **design_calc_check: 附 JSON checks 摘要**（`python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md`；注：调度 prompt 给的 `--dir` 参数该脚本不支持，实际以 `--design <path>` 运行）:
 
 ```json
 {
-  "design": "examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md",
+  "design": "examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md",
   "capacity_constants": {"ub_kb": 192.0, "ub_inflation": 1.7, "l0c_kb": 128.0, "source": "pattern-library/constants.md CONST-capacity-910B2C"},
   "checks": [
     {"check": "ub_budget", "status": "skip", "detail": "no per-level buffer tables parsed from the memory plan (advisory checker; verify manually)"},

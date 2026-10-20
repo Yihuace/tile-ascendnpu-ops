@@ -4,7 +4,7 @@
 
 ## 检视元信息
 
-- 文档: examples/conv1d/_conv1d_direct_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md
 - 任务类型: 迁移（GPU → Ascend NPU harness）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/convolution/conv1d.py（`_conv1d_direct_kernel` builder L316-402；`DepthwiseConv1dKernel` L1074-1126）
 - 检视维度: 9 项（维度 0 源算子理解与迁移分析 / 1 API 可行性 / 2 内存层级规划 / 3 Tiling 策略 / 4 技术约束检测 / 5 循环与同步 / 6 验证方案 / 7 完整性与一致性 / 8 算法优化分析）
@@ -15,11 +15,11 @@
 
 - **verify_equiv 重跑**: **不适用**。§1.6.1 结论为「无优化空间」（无采纳的公式级优化项），按 gate `S1-EQUIV-EXEC` 豁免规则不生成 `verify_equiv.py`；设计 §10.2 文件清单已显式标注「`verify_equiv.py` —（不适用）」并给出豁免依据。已核对 §1.6.1 表内 row 1–4（Winograd / FFT / 降代换 / 加法重排）均为**否决项或「不适用」**，无「采纳项」，与「无优化空间」结论一致。
 - **design_calc_check**: 执行
-  `python3 .agents/tools/design_calc_check.py --design examples/conv1d/_conv1d_direct_kernel/DESIGN.md`，JSON 输出：
+  `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md`，JSON 输出：
 
 ```json
 {
-  "design": "examples/conv1d/_conv1d_direct_kernel/DESIGN.md",
+  "design": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md",
   "capacity_constants": {
     "ub_kb": 192.0,
     "ub_inflation": 1.7,

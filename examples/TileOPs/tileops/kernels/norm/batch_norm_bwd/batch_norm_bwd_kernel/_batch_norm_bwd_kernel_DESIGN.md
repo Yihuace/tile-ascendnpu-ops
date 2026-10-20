@@ -6,7 +6,7 @@
 > Stage 0 提取件（本函数迁移的精确源）：`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/_batch_norm_bwd_kernels.py` 的 `_batch_norm_bwd_kernel`（L357）。
 > NPU wrapper：`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py` 的 `BatchNormBwdKernel`（L327）+ 选核 `select_bwd_kernel`（L150）；op `examples/TileOPs/tileops/ops/norm/batch_norm_bwd.py`；manifest `examples/TileOPs/tileops/manifest/norm.yaml`（`BatchNormBwdOp`）；test `examples/TileOPs/tests/ops/test_batch_norm_bwd.py`；bench `examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py`。
 > 可行性探针（Stage 0，真机 PASS，见 `examples/batch_norm_bwd/probe/PROBE.md` + `examples/batch_norm_bwd/probe/batch_norm_bwd_probe.py`）：验证了 strided 逐通道 plane gather、双累加器两步 `T.reduce`、`T.vbrc` 标量广播、fp16/bf16 fp32 中转链、one-core-per-channel 与超大 S 的核内 S-tiling（无跨核归并、无 atomics）。
-> 同族参考（已完成）：宽核 `examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md`（held 形态 + Stage 3 实测 UB footprint）与拆分核 `examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md`（二维 `(bN,bS)` tiling + 跨段 workspace）；两者 `RETROSPECTIVE.md` 的可迁移教训。
+> 同族参考（已完成）：宽核 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md`（held 形态 + Stage 3 实测 UB footprint）与拆分核 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md`（二维 `(bN,bS)` tiling + 跨段 workspace）；两者 `RETROSPECTIVE.md` 的可迁移教训。
 > 工具链版本戳：tilelang 0.1.2+417dae9908ad2ea5ffb74294a7075b6cb64b4f2b（2026-10-10 build）+ CANN 8.5.2 + Ascend910B3（`NPUUtils.get().get_aicore_num()` 实查 = 20，纯 Vector ×2 = 40）+ torch 2.7.1+cpu + torch_npu 2.7.1.post4。
 
 ## 0. 源算子解读与迁移分析
@@ -19,7 +19,7 @@
 
 **阻塞项 1（pass-1 跨 N-block 双重计数）根因**：v0 §3.3 pass-1 把 `T.clear(red)`/`T.clear(red2)` 放在 `for nn in T.serial(n_tile_N)` 循环**之外**只清一次，而块内两路 `T.reduce(dims=[1], clear=False)` 跨 S-tile 累加行和到 `red/red2`、块末 `T.reduce(dims=[0], clear=False)` 再把该 N-块行和累加进 `(1,1)` 的 `gb/gw`。因 `red/red2` 跨 N-block 不复位，第 k 个 N-block 时 `red[i] = rowsum(blk_0)[i] + … + rowsum(blk_k)[i]`，再次 `dims=[0]` 归约即把前序块**重复计入**（`gb = Σ_k Σ_{j≤k} rowsum(blk_j)`）。凡 `n_tile_N ≥ 2` 的 tiled 用例（大 C `(32,2048,512)`：`bN=16, n_tile_N=2`；large-spatial `(4,128,1048576)`：`bN=2, n_tile_N=2`）`grad_bias/grad_weight/grad_x` 全错。
 
-**v1 修正（`T.clear(red/red2)` 移入 `for nn` 循环内）**：在 `for nn` 循环体起始（`n0`/`rN` 之后、`for tt` 之前）插入 `T.clear(red)`、`T.clear(red2)`；`gb/gw` 的 `clear=False` 跨 N-block 累加保持不变（`T.clear(gb/gw)` 仍在 `for nn` **之外**一次）。这与同族拆分核 §3.3 的累加结构逐字一致（`examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md` §3.3 把 `T.clear(red/red2)` 放在 `for nn` **内**）。§6.2/§6.4 措辞同步。
+**v1 修正（`T.clear(red/red2)` 移入 `for nn` 循环内）**：在 `for nn` 循环体起始（`n0`/`rN` 之后、`for tt` 之前）插入 `T.clear(red)`、`T.clear(red2)`；`gb/gw` 的 `clear=False` 跨 N-block 累加保持不变（`T.clear(gb/gw)` 仍在 `for nn` **之外**一次）。这与同族拆分核 §3.3 的累加结构逐字一致（`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md` §3.3 把 `T.clear(red/red2)` 放在 `for nn` **内**）。§6.2/§6.4 措辞同步。
 
 **阻塞项 2（v-op 运行时 extent 切片）根因**：v0 §3.3 把运行时 TIR 表达式 `rN/rS = T.min(...)` 作为切片 extent 喂给 v-op（`T.vcast(stage[0:rN, 0:rS], g32[0:rN, 0:rS], ...)`）。v-op 操作数切片须为**编译期静态 extent**，运行时 extent 触发 parser 在 `tvm/tir/buffer.py __getitem__` 的 `int(lanes)`（`TypeError: int() argument ... not 'Var'`）；`T.copy` 接受运行时切片、v-op 不接受。该形态与 v0 **自身**的 §5.4/§9.2 规则直接矛盾（§9.2 甚至把该行列为常见错误），同族宽核 Stage 3 已实测首轮编译失败（`examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/RETROSPECTIVE.md`）。
 
@@ -142,7 +142,7 @@ w_rstd_over_L = w_val * rstd_val / L
 
 ### 0.5 硬件耦合性分析与 NPU 适配决策
 
-判定依据：`.agents/skills/tilelang-op-design/references/migration-analysis.md` §5 三层模型 + §5.3 映射表；`examples/` 佐证；`docs/` 条目；pattern-library 实测条目；探针 `examples/batch_norm_bwd/probe/PROBE.md`；同族宽核 `examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md`（含其 Stage 3 实测 UB footprint）。
+判定依据：`.agents/skills/tilelang-op-design/references/migration-analysis.md` §5 三层模型 + §5.3 映射表；`examples/` 佐证；`docs/` 条目；pattern-library 实测条目；探针 `examples/batch_norm_bwd/probe/PROBE.md`；同族宽核 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md`（含其 Stage 3 实测 UB footprint）。
 
 | 条目 | 层级 | 源硬件依赖 | NPU 有等价能力？ | 处置 | NPU 对应方案 / 依据 |
 |------|------|-----------|-----------------|------|---------------------|
@@ -167,7 +167,7 @@ w_rstd_over_L = w_val * rstd_val / L
 **重设计项 R1: 并行结构（一通道一 block 超发 → 一维 persistent 分核）**
 
 - **源方案**：`T.Kernel(C, threads=threads)`——逻辑 block 数 = C，依赖 CUDA 运行时把 C 个 block 调度到 SM。
-- **NPU 新算法**：一维 `T.Kernel(num_kernels, is_npu=True) as (cid, _)`，`num_kernels = min(C, 40)`（40 = 20 AICore × 2，纯 Vector 翻倍，§5.5 实查）；核内 `for i in T.serial(num_local_tasks)` 以 grid-stride 任务映射 `c = i*num_kernels + cid`，`if c < C` 守卫；`num_local_tasks` 为 host 层 Python 编译期常量（静态边界）。意图承接：消除超发逻辑内核的串行调度开销（`.agents/skills/_shared/standards/core-split-strategy.md` §1 极大规模分支）。参照同族 `examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md` 与宽核 `examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md` 同款 persistent 分核。
+- **NPU 新算法**：一维 `T.Kernel(num_kernels, is_npu=True) as (cid, _)`，`num_kernels = min(C, 40)`（40 = 20 AICore × 2，纯 Vector 翻倍，§5.5 实查）；核内 `for i in T.serial(num_local_tasks)` 以 grid-stride 任务映射 `c = i*num_kernels + cid`，`if c < C` 守卫；`num_local_tasks` 为 host 层 Python 编译期常量（静态边界）。意图承接：消除超发逻辑内核的串行调度开销（`.agents/skills/_shared/standards/core-split-strategy.md` §1 极大规模分支）。参照同族 `examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md` 与宽核 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md` 同款 persistent 分核。
 - **语义保持论证**：`C` 个逻辑任务只是源 grid 的重新映射；通道间独立，任务到通道的映射不改变任何任务的计算语义。
 
 **重设计项 R2: 归约（块内线程树 → UB 二维平面两步 `T.reduce`）**
@@ -192,7 +192,7 @@ w_rstd_over_L = w_val * rstd_val / L
 
 - **源方案**：`ragged` 编译期分支 + 非整除时逐元素 `if_then_else(j<L, ...)` / `if l<L` 掩码装载/写出。
 - **NPU 新算法**：统一单路径（去 `ragged` 分支）：子块 extent `rS = T.min(bS, S - s0)`、`rN = T.min(bN, N - n0)`（`docs/Tilelang.language/比较操作/T.min.md` 标量 min），装载/写出用 src/dst 双显式 slice；**归约同样须截断**：`T.reduce(dims=[1])` 传 `size=[rN, rS]`、`T.reduce(dims=[0])` 传 `size=[rN, 1]`，只对有效范围求和（否则尾 tile 垃圾列/行计入 `gb/gw`——宽核 v0 缺陷根因）。
-- **语义保持论证**：越界元素不参与装载/写出；reduce 以 `size` 限定有效 extent（非整除时尾 tile/尾 N-block 用 `T.min` 截尾）；与源谓词掩码等价。参照同族 `examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md` §0.6 R3 并叠加 N 维截尾（拆分核 §0.6 R5）。
+- **语义保持论证**：越界元素不参与装载/写出；reduce 以 `size` 限定有效 extent（非整除时尾 tile/尾 N-block 用 `T.min` 截尾）；与源谓词掩码等价。参照同族 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md` §0.6 R3 并叠加 N 维截尾（拆分核 §0.6 R5）。
 
 **重设计项 R6: dtype 路径（隐式 cast → 显式 `T.vcast(rint)` fp32 中转链）**
 
@@ -220,7 +220,7 @@ w_rstd_over_L = w_val * rstd_val / L
 - manifest：`examples/TileOPs/tileops/manifest/norm.yaml` 的 `BatchNormBwdOp` 条目（5 输入 3 输出；workloads resnet-fc/stage1/2/3/large-spatial；roofline `flops = 9*B*C*prod(L)`，`eval_roofline` nbytes `= (3*N*C*S + 5*C)*elem_bytes`）。
 - 性能基准：`examples/TileOPs/benchmarks/ops/bench_batch_norm_bwd.py`（manifest 驱动，5 输入多输入形态）。
 - 探针：`examples/batch_norm_bwd/probe/PROBE.md` + `examples/batch_norm_bwd/probe/batch_norm_bwd_probe.py`（真机 PASS，含超大 S 核内 tiling）。
-- 同族已交付设计：`examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md`（held + Stage 3 实测 UB footprint）、`examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md`（二维 `(bN,bS)` tiling）。
+- 同族已交付设计：`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md`（held + Stage 3 实测 UB footprint）、`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md`（二维 `(bN,bS)` tiling）。
 
 ---
 ## 1. 概述
@@ -285,7 +285,7 @@ for nn in serial(n_tile_N):
 
 ### 1.6 算法调研与优化分析 ⭐
 
-> 调研对象：同一数学语义（逐通道 BN 反向，从 forward 保存的 mean/rstd 反推三梯度）的算法族。源算法（one block per channel 的 flat shared 流式 + threads）只是基线候选之一。调研深度：**完整调研**（规约/统计类）。信息源：`.agents/skills/tilelang-op-design/references/algorithm-candidates.md` ALG-reduction 族命中行 + 本仓 examples（同族宽核 `examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md`、拆分核 `examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md`、`examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md`、`examples/TileOPs/tileops/kernels/reduction/logsumexp/_logsumexp_kernel_single/DESIGN.md`）+ pattern-library（`constants.md` CONST-mte2-degradation / CONST-vector-launch-overhead / CONST-aicore-910B2C / CONST-capacity-910B2C）+ 源码 §0.3/§0.4 + 探针真机结论 + 结构判据。无互联网检索（本地源全覆盖四问所需候选）。
+> 调研对象：同一数学语义（逐通道 BN 反向，从 forward 保存的 mean/rstd 反推三梯度）的算法族。源算法（one block per channel 的 flat shared 流式 + threads）只是基线候选之一。调研深度：**完整调研**（规约/统计类）。信息源：`.agents/skills/tilelang-op-design/references/algorithm-candidates.md` ALG-reduction 族命中行 + 本仓 examples（同族宽核 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md`、拆分核 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/reduction/logsumexp/_logsumexp_kernel_single/DESIGN.md`）+ pattern-library（`constants.md` CONST-mte2-degradation / CONST-vector-launch-overhead / CONST-aicore-910B2C / CONST-capacity-910B2C）+ 源码 §0.3/§0.4 + 探针真机结论 + 结构判据。无互联网检索（本地源全覆盖四问所需候选）。
 
 #### 1.6.0 算法调研（Algorithm Research）⭐
 
@@ -324,7 +324,7 @@ prefill 代表（resnet-stage1 `N=8,C=64,S=1024` fp16，L=8192）：held 3·8192
 | 跨核 split（4） | Vector ✓ | +部分和缓冲 | ✓ | ✓ | 需核间同步 | ❌（`T.atomic_add`/finalize 可用但无必要；`docs/Tilelang.language/原子操作/T.atomic_add.md`；本函数服务区 C 大、并行度足） |
 | online/Welford（5） | 合并链对 Vector 失分 | 同 | 同 | 同 | 依赖链长 | ❌（R2：无对应 running 统计量） |
 
-**调研结论**：选定**「中心化 `x̂` + 双标量 `T.reduce` 归约 + one core per channel + UB 二维流式分块（held 单扫描 / tiled 两扫描）」算法族**（候选基线数学内核 + 候选 1/2 的 NPU 驻留实现），按 UB 预算在 held（主选 A）与 tiled（主选 B）间切换；采纳 §1.6.1 的 O1/O2。关键依据：R3 表中 held 的 GM 流量 3·L·C·eb 为全候选最小（tiled +66% 流量但 UB 有界，是超大 L / 大 N 的唯一可行档）；R4 全项 Vector 亲和；raw-moment 因大均值小方差抵消被机器证据否决（§1.6.1 判别段 A）；跨核 split 的归并/atomics 在 one core per channel 下无收益、且本函数服务区 `C` 大并行度已足。与基线的结构差异一句话：数学内核不变（中心化 `x̂` + 双和），并行组织从 grid 超发改 persistent 分核、归约从 flat 线程树改 UB 二维两步 `T.reduce`、调度从 `T.Pipelined` 改 `T.serial`、地址从 flat `l//S` 改仿射二维、边界从谓词改 `T.min`+双 slice+reduce `size`、dtype 改显式 fp32 中转、大 L 改单核二维分块（消除跨核归并）。源算法优化手段意图承接见 §0.6 末尾汇总。调研范围：`algorithm-candidates.md` ALG-reduction 族命中行、`examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md`、`examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md`、`examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md`、`examples/TileOPs/tileops/kernels/reduction/logsumexp/_logsumexp_kernel_single/DESIGN.md`、`constants.md` CONST-* 四条、源码 §0.3/§0.4、探针 PROBE.md、结构判据（R2）。
+**调研结论**：选定**「中心化 `x̂` + 双标量 `T.reduce` 归约 + one core per channel + UB 二维流式分块（held 单扫描 / tiled 两扫描）」算法族**（候选基线数学内核 + 候选 1/2 的 NPU 驻留实现），按 UB 预算在 held（主选 A）与 tiled（主选 B）间切换；采纳 §1.6.1 的 O1/O2。关键依据：R3 表中 held 的 GM 流量 3·L·C·eb 为全候选最小（tiled +66% 流量但 UB 有界，是超大 L / 大 N 的唯一可行档）；R4 全项 Vector 亲和；raw-moment 因大均值小方差抵消被机器证据否决（§1.6.1 判别段 A）；跨核 split 的归并/atomics 在 one core per channel 下无收益、且本函数服务区 `C` 大并行度已足。与基线的结构差异一句话：数学内核不变（中心化 `x̂` + 双和），并行组织从 grid 超发改 persistent 分核、归约从 flat 线程树改 UB 二维两步 `T.reduce`、调度从 `T.Pipelined` 改 `T.serial`、地址从 flat `l//S` 改仿射二维、边界从谓词改 `T.min`+双 slice+reduce `size`、dtype 改显式 fp32 中转、大 L 改单核二维分块（消除跨核归并）。源算法优化手段意图承接见 §0.6 末尾汇总。调研范围：`algorithm-candidates.md` ALG-reduction 族命中行、`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/reduction/logsumexp/_logsumexp_kernel_single/DESIGN.md`、`constants.md` CONST-* 四条、源码 §0.3/§0.4、探针 PROBE.md、结构判据（R2）。
 
 **设计期估算（D-2 roofline，估算下界 = max(流量项, 发射项, 容量项)；常数引用 `constants.md` CONST-mte2-degradation 3:1 R/W 地板 ~1.26 TB/s、CONST-vector-launch-overhead ~0.5µs/op）**：
 
@@ -432,7 +432,7 @@ $$
 | 归约 | `T.reduce` dims=[1]/[0] | `references/decision-tree.md`：`T.reduce` 在 Developer 与 Expert 两模式都可使用——模式选择取决于是否需显式控制 UB 层级与同步，而非用了哪个 API |
 | 内存层级 | 仅 GM↔UB，需显式 UB 放置 | `T.alloc_ub`（Expert 显式申请 UB，`docs/Tilelang.language/内存操作/T.alloc_ub.md`：`T.alloc_ub [Expert mode]`） |
 | 同步 | 单 Vector scope 内顺序依赖链、无核间/跨引擎协作（one core per channel） | Vector scope 内默认顺序执行/自动流水；无需手动 `set_flag/wait_flag`（§7） |
-| 先例 | `examples/conv1d/_conv1d_direct_kernel/DESIGN.md`（纯 Vector、`T.Scope("Vector")` + `T.alloc_ub`、persistent，Expert 已交付）、同族 `examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md`（Expert/Vector） | Expert/Vector 形态已验证可行 |
+| 先例 | `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md`（纯 Vector、`T.Scope("Vector")` + `T.alloc_ub`、persistent，Expert 已交付）、同族 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md`（Expert/Vector） | Expert/Vector 形态已验证可行 |
 | 探针 | `examples/batch_norm_bwd/probe/PROBE.md` 真机 PASS——其构造（strided `T.copy` slice / 两步 `T.reduce` / `T.vbrc` / `T.vcast`）均**模式无关**（decision-tree 明确 `T.reduce` 两模式可用），Expert 下由 `T.Scope("Vector")` + `T.alloc_ub` 承载 | 核心构造已真机验证 |
 
 ### 2.3 模式影响
@@ -484,7 +484,7 @@ $$
 ### 3.3 计算伪代码
 
 > 按模板 §3.3 注记：`T.Tensor` 的 dtype 以第二个位置参数传入，不用 `dtype=` 关键字。**Expert 模式**：`with T.Kernel(...)` 内套 `with T.Scope("Vector"):`，UB 缓冲用 `T.alloc_ub`（`docs/Tilelang.language/内存操作/T.alloc_ub.md`）。工厂接口与源一致 `(N, C, S, dtype)`；移除 `threads`（CUDA 执行模型产物，npuir `T.Kernel(threads=)` 无效果），移除 `block_l`（GPU tile 宽度；NPU 改由 `bN/bS` 表达）。
-> **接口保持（`out_idx=[-1]`）**：源 `@T.prim_func _bn_bwd` 参数顺序 `(grad_out, x, weight, mean, rstd, grad_weight, grad_bias, grad_x)` 逐字保持，`out_idx=[-1]`（唯一自动分配 `grad_x`）。`num_inputs = 8 - 1 = 7`，调用 `program(grad_out, x, weight, mean, rstd, grad_weight, grad_bias)` **返回 `grad_x` 张量**（`tilelang/jit/jit_npu.py` 在 `len(out_idx)==1` 时直接 `return full_args[self.out_idx[0]]`，非列表）。`grad_weight/grad_bias` 是**由 host 预分配、以参数传入并写入的 GM 张量**（非 out_idx）——与本仓拆分核把 `partial_sum[C,splits]` / `scale/shift/centered_coef` 作为「无 out_idx 的传入 GM workspace」写法同款（`examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md` §0.2/§3.3），故 NPU wrapper `BatchNormBwdKernel.forward`（`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py` L383-384）**无需改动**。这是本函数与宽核变体（三输出统一 `out_idx=[7,5,6]`、须改 5 参调用）的接口差异，选择依据 = 源 host 契约原样继承、集成零改动。
+> **接口保持（`out_idx=[-1]`）**：源 `@T.prim_func _bn_bwd` 参数顺序 `(grad_out, x, weight, mean, rstd, grad_weight, grad_bias, grad_x)` 逐字保持，`out_idx=[-1]`（唯一自动分配 `grad_x`）。`num_inputs = 8 - 1 = 7`，调用 `program(grad_out, x, weight, mean, rstd, grad_weight, grad_bias)` **返回 `grad_x` 张量**（`tilelang/jit/jit_npu.py` 在 `len(out_idx)==1` 时直接 `return full_args[self.out_idx[0]]`，非列表）。`grad_weight/grad_bias` 是**由 host 预分配、以参数传入并写入的 GM 张量**（非 out_idx）——与本仓拆分核把 `partial_sum[C,splits]` / `scale/shift/centered_coef` 作为「无 out_idx 的传入 GM workspace」写法同款（`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md` §0.2/§3.3），故 NPU wrapper `BatchNormBwdKernel.forward`（`examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py` L383-384）**无需改动**。这是本函数与宽核变体（三输出统一 `out_idx=[7,5,6]`、须改 5 参调用）的接口差异，选择依据 = 源 host 契约原样继承、集成零改动。
 > held/tiled 两档与 `N=1`/`S=1` 的 reduce 退化分支在**工厂层**解析（trace 体之外，规避 parser 作用域陷阱）；held 档 `n_tile_N == n_tile_S == 1`（`single_tile`），pass-2 复用 pass-1 的 `g32/xh32`（单扫描，O3）；`L==1`（`N==1 且 S==1`）的 1 元素平面由工厂 `scalar_plane` 守卫拒绝、交 op/wrapper 路由（§9.1/§9.3）。
 
 ```python
@@ -673,7 +673,7 @@ def _batch_norm_bwd_kernel(N, C, S, dtype):
 | `T.vbrc` | `docs/Tilelang.language/shape操作/T.vbrc.md` | ✅ 已核对 | src (1,1)→(bN,bS) 合法；bf16 支持；**1 元素平面不可用**（同族宽核 Stage 3 实测，见 §9.2） |
 | `T.min` | `docs/Tilelang.language/比较操作/T.min.md` | ✅ 已核对 | 标量 min（fp16/fp32/int ✓），尾块 extent |
 | `T.clear` | `docs/Tilelang.language/内存操作/T.clear.md` | ✅ 已核对 | 累加器初始化 |
-| `T.serial` + if 守卫 | `examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md` §3.3 | ✅ 佐证 | persistent grid-stride 同款 |
+| `T.serial` + if 守卫 | `examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md` §3.3 | ✅ 佐证 | persistent grid-stride 同款 |
 | 探针真机 | `examples/batch_norm_bwd/probe/PROBE.md` | ✅ 真机 PASS | strided plane gather / 双 reduce / vbrc / vcast / held + 超大 S tiled |
 
 ### 3.5 技术约束确认
@@ -710,10 +710,10 @@ def _batch_norm_bwd_kernel(N, C, S, dtype):
 
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
-| `examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md` | 极高（**同算子同族**，已交付 v1；held 形态 + Stage 3 实测 UB footprint） | one core per channel、held 单扫描/tiled 两扫描、两步 `T.reduce`+`size` 截断、fp16/bf16 fp32 中转、UB 预算实测膨胀 BPE、per-chip 分核实查 |
-| `examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md` | 极高（同算子同族，已交付 v1） | 二维 `(bN,bS)` tiling（大 N）、跨块 workspace 无 atomics、`floordiv/mod` 索引真机验证 |
-| `examples/fused_add_layer_norm/_fused_add_layer_norm_kernel/DESIGN.md` | 极高（同族行归约迁移，已交付；Developer streaming 形态） | persistent 分核、尾块 `T.min`+双 slice、fp32 计算域、bf16 fp32 中转、UB 预算表、分核实查 |
-| `examples/conv1d/_conv1d_direct_kernel/DESIGN.md` | 高（**Expert/Vector** 纯 Vector 迁移先例，已交付） | `ascend_mode="Expert"` + 单 `T.Scope("Vector")` + `T.alloc_ub`、persistent 分核、`T.reduce`/`T.vmul`/`T.vcast` fp32 中转、尾块 slice 截断 |
+| `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md` | 极高（**同算子同族**，已交付 v1；held 形态 + Stage 3 实测 UB footprint） | one core per channel、held 单扫描/tiled 两扫描、两步 `T.reduce`+`size` 截断、fp16/bf16 fp32 中转、UB 预算实测膨胀 BPE、per-chip 分核实查 |
+| `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md` | 极高（同算子同族，已交付 v1） | 二维 `(bN,bS)` tiling（大 N）、跨块 workspace 无 atomics、`floordiv/mod` 索引真机验证 |
+| `examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel_DESIGN.md` | 极高（同族行归约迁移，已交付；Developer streaming 形态） | persistent 分核、尾块 `T.min`+双 slice、fp32 计算域、bf16 fp32 中转、UB 预算表、分核实查 |
+| `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md` | 高（**Expert/Vector** 纯 Vector 迁移先例，已交付） | `ascend_mode="Expert"` + 单 `T.Scope("Vector")` + `T.alloc_ub`、persistent 分核、`T.reduce`/`T.vmul`/`T.vcast` fp32 中转、尾块 slice 截断 |
 | `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py` | 极高（本算子 NPU wrapper） | `BatchNormBwdKernel.forward` 7 参调用 + 预分配 gw/gb（接口保持）、`select_bwd_kernel` 路由、`_AI_CORE_COUNT=40`、集成期 `ascend_mode` 须由 `"Developer"` 改 `"Expert"`（§2.3） |
 | `examples/TileOPs/tileops/kernels/reduction/logsumexp/_logsumexp_kernel_single/DESIGN.md` | 高（同族 row-reduction 设计） | 尾块 `T.min`+双显式 slice+垃圾行丢弃、`(bm,1)` reduce 输出形态 |
 | `examples/batch_norm_bwd/probe/PROBE.md` | 极高（本算子可行性探针，真机 PASS） | strided plane gather、两步 `T.reduce`、`T.vbrc` 广播、held/tiled 结构、超大 S 核内 tiling |
@@ -912,7 +912,7 @@ vector_cores = n * 2                  # 纯 Vector 算子翻倍 -> 40
 
 ### 7.2 同步点说明
 
-Expert 模式下 UB 分配与数据放置显式，但**单个 Vector scope 内的顺序依赖链仍由编译器按 MTE2→V→MTE3 拓扑自动插 pipe_barrier**（`examples/conv1d/_conv1d_direct_kernel/DESIGN.md` 同款 Expert/Vector 形态：`T.copy`/`T.vcast`/`T.vmul`/`T.reduce` 顺序书写，未手写 sync 即编译运行）。本算子无跨引擎（无 Cube）与跨核协作，故无需 `T.sync_block_set/wait`、无需 `T.set_flag/T.wait_flag`：
+Expert 模式下 UB 分配与数据放置显式，但**单个 Vector scope 内的顺序依赖链仍由编译器按 MTE2→V→MTE3 拓扑自动插 pipe_barrier**（`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md` 同款 Expert/Vector 形态：`T.copy`/`T.vcast`/`T.vmul`/`T.reduce` 顺序书写，未手写 sync 即编译运行）。本算子无跨引擎（无 Cube）与跨核协作，故无需 `T.sync_block_set/wait`、无需 `T.set_flag/T.wait_flag`：
 
 | 位置 | 同步方式 | 理由 |
 |------|----------|------|
@@ -926,7 +926,7 @@ Expert 模式下 UB 分配与数据放置显式，但**单个 Vector scope 内�
 
 ### 7.3 pass_configs 配置
 
-无特殊 pass_configs。Expert Vector scope 默认编译流水线（`examples/conv1d/_conv1d_direct_kernel/DESIGN.md` 同款）。
+无特殊 pass_configs。Expert Vector scope 默认编译流水线（`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md` 同款）。
 
 ---
 

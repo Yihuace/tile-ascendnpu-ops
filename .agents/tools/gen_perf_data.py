@@ -4,7 +4,7 @@
 Why this exists
 ---------------
 The 19-operator numbers used to be hand-copied into a dozen documents
-(``STAGE4_SUMMARY.md`` §2, ``MIGRATION_INDEX.md`` §A, ``STATUS.md``, the ratio
+(``FINAL_DELIVERY_20261018.md`` §2, ``MIGRATION_INDEX.md`` §A, the ratio
 xlsx, per-op ``OPTIMIZE_REPORT.md``).  They drifted, and several rows were still
 labelled CANN 8.5.2.  This script derives every ratio from the two machine
 records that actually hold one, applies one uniform rule, and writes the result
@@ -22,7 +22,7 @@ to a single file that the documents are checked against:
          so the benchmark stage is run on its own (see PROVENANCE.md). Still the
          same msprof Roofline ratio.
 
-Definitions follow ``STAGE4_SUMMARY.md``:
+Definitions follow ``FINAL_DELIVERY_20261018.md``:
   可调 shape = measured case with Task Duration > 5 µs  (微型 shape 豁免)
   达标       = ratio >= 达标线 (memory 70 / compute 60 / mix 40)
 
@@ -48,7 +48,7 @@ OUT = os.path.join(REPO, "perf_data", "canonical.json")
 MANUAL = os.path.join(REPO, "perf_data", "manual.json")
 DELIVERY = os.path.join(REPO, "perf_data", "delivery.json")
 
-# 达标线 per STAGE4_SUMMARY §2 (访存 70 / 算力 60 / Mix 40)
+# 达标线 per FINAL_DELIVERY §2 (访存 70 / 算力 60 / Mix 40)
 TARGET = {
     "AddFwdOp": 70,
     "SubFwdOp": 70,

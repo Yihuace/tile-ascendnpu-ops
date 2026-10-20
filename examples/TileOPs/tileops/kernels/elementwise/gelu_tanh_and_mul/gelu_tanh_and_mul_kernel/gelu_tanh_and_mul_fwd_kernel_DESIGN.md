@@ -585,10 +585,10 @@ def gelu_tanh_and_mul_fwd_kernel(M, N, dtype, output_dtype=None, block_N=2048, n
 
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
-| `examples/gelu_and_mul/gelu_and_mul_fwd_kernel/DESIGN.md` | 最高（**同族门控激活迁移**，仅激活函数不同：erf vs tanh） | 一维 Kernel + block_N 折叠、fp32 中转、显式超越函数机制、分核三要素、UB 预算口径、`verify_equiv` 结构、边界语义（`gelu(-inf)=NaN`） |
+| `examples/TileOPs/tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/gelu_and_mul_fwd_kernel_DESIGN.md` | 最高（**同族门控激活迁移**，仅激活函数不同：erf vs tanh） | 一维 Kernel + block_N 折叠、fp32 中转、显式超越函数机制、分核三要素、UB 预算口径、`verify_equiv` 结构、边界语义（`gelu(-inf)=NaN`） |
 | `examples/TileOPs/tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul.py` | 最高（本算子 NPU scaffold） | `_register` wrapper、`ascend_mode="Developer"`、SUPPORTED_DTYPES 浮点集、单 `[M,2N]` 输入契约、`default_config` 返回 `{}` |
-| `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、`vbrc` 常数填块先例、`vclamp`/`vcmp`+`vselect` NaN 先例 |
-| `examples/add/add_fwd_kernel/DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 多输入契约、fp32 中转、persistent 分核、UB 预算、`verify_equiv` 结构 |
+| `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、`vbrc` 常数填块先例、`vclamp`/`vcmp`+`vselect` NaN 先例 |
+| `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md` | 高度相似（同族 elementwise 迁移设计） | 多输入契约、fp32 中转、persistent 分核、UB 预算、`verify_equiv` 结构 |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高度相似（同族 unary 激活迁移） | Developer 模式、`T.alloc_ub`、`T.copy` 尾块、v-prefix 链、fp32 中转、`exp` 饱和裁剪先例 |
 | `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel` | 相似（同族 elementwise + fp32 中转） | fp32 中转模式（PL-1.17）、`T.min` 尾块 |
 
@@ -930,6 +930,6 @@ examples/gelu_tanh_and_mul/gelu_tanh_and_mul_fwd_kernel/
 - 源仓（GPU）：`/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py`（`GeluTanhAndMulFwdKernel`）、`_base.py`（`FusedGatedKernel`）、`_builders.py`（`make_fused_gated_explicit`）、`ops/elementwise/activations.py`（`GeluTanhAndMulFwdOp`）、`manifest/spec/elementwise_fused_gated.yaml`。
 - NPU 迁移工作区：`examples/TileOPs/tileops/kernels/elementwise/gelu_tanh_and_mul/`（scaffold + 提取 factory）、`examples/TileOPs/tileops/ops/elementwise/gelu_tanh_and_mul.py`、`examples/TileOPs/tests/ops/test_gelu_tanh_and_mul.py`、`examples/TileOPs/benchmarks/ops/bench_gelu_tanh_and_mul.py`、`examples/TileOPs/tileops/manifest/elementwise.yaml`。
 - 工具链证据：`tilelang-mlir-ascend/src/target/codegen_npuir_api.cc`（`VtanhCodegen`，默认/Expert：截断级数）、`codegen_npuir_dev.cc`（`VtanhCodegen`，Developer：exp 恒等式、`+inf`/溢出 → NaN）、`tilelang/language/customize_npuir.py`（`npuir_vtanh`）、`tilelang/language/tir/op.py`（标量 `tanh`）；`tilelang/engine/lower.py`（按 `TILELANG_ASCEND_MODE` 分派 codegen）。
-- 同族先例：`examples/gelu_and_mul/gelu_and_mul_fwd_kernel/DESIGN.md`（erf 版）、`examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md`、`examples/add/add_fwd_kernel/DESIGN.md`。
+- 同族先例：`examples/TileOPs/tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/gelu_and_mul_fwd_kernel_DESIGN.md`（erf 版）、`examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md`。
 - 知识库：`.agents/evolution/capability-gaps.md`（CG-2026-0021 `T.verf` 截断、CG-2026-0022 torch_npu `F.gelu` 近似）；`.agents/skills/tilelang-op-optimize/references/pattern-library/constants.md`（`CONST-capacity-910B2C` / `CONST-vector-launch-overhead` / `CONST-mte2-degradation` / `CONST-aicore-910B2C`）。
 - 本设计的两项能力缺口（建议登记）：① `T.vtanh` 截断（同 CG-2026-0021，可增补 occurrences）；② `T.vcast(fp32→fp32)` 损坏数据（新缺口，见 §9.2）。

@@ -9,7 +9,7 @@
 
 ## 0. 源算子解读与迁移分析（迁移类任务必填）
 
-> 本章按「三问框架 + 耦合性判定 + 重设计」组织（方法论见 skill `tilelang-op-design` 的 references/migration-analysis.md）：先彻底读懂源算子（0.1–0.4），再判定算法与优化手段的硬件耦合性（0.5），最后给出 NPU 算法设计决策（0.6）。本章结论驱动 §1–§11 的所有设计决策。同族参照：`examples/add/add_fwd_kernel/DESIGN.md`（同为 `AlphaScaledBinaryKernel` 的逐元素 binary+broadcast 迁移，仅 `_combine` 由加法换为减法）。
+> 本章按「三问框架 + 耦合性判定 + 重设计」组织（方法论见 skill `tilelang-op-design` 的 references/migration-analysis.md）：先彻底读懂源算子（0.1–0.4），再判定算法与优化手段的硬件耦合性（0.5），最后给出 NPU 算法设计决策（0.6）。本章结论驱动 §1–§11 的所有设计决策。同族参照：`examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md`（同为 `AlphaScaledBinaryKernel` 的逐元素 binary+broadcast 迁移，仅 `_combine` 由加法换为减法）。
 
 ### 0.1 源算子语义（做什么）
 
@@ -468,7 +468,7 @@ def sub_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=8192, num_co
 
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
-| `examples/add/add_fwd_kernel/DESIGN.md` | 最高（同 `AlphaScaledBinaryKernel` 同族、仅 combine 由 + 换 −） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、persistent 模板、广播 Op 层展平 |
+| `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md` | 最高（同 `AlphaScaledBinaryKernel` 同族、仅 combine 由 + 换 −） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、persistent 模板、广播 Op 层展平 |
 | `examples/TileOPs/tileops/kernels/elementwise/sub/sub.py` | 最高（本算子 NPU scaffold） | `_DEFAULT_BLOCK_SIZE=8192`、`ascend_mode="Developer"`、`SUPPORTED_DTYPES` 浮点子集、flat same-shape 契约 |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高度相似（同族 unary 迁移） | Developer 模式、`T.alloc_ub`、`T.copy` 双显式 slice 尾块、v-prefix 链 |
 | `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/_make_lerp_tensor_kernel.py` | 相似（同族二元 elementwise + fp32 中转） | Op 层预广播契约、fp32 中转模式（PL-1.17）、`T.min` 尾块 |

@@ -10,7 +10,7 @@
 
 ## 检视元信息
 
-- 文档: examples/sub/sub_fwd_kernel/DESIGN.md
+- 文档: examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/sub_fwd_kernel_DESIGN.md
 - 任务类型: 迁移（GPU TileOPs → TileLang-NPUIR）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/arithmetic.py（`SubFwdKernel`，L53-60）、.../elementwise/_base.py（`AlphaScaledBinaryKernel`/`BinaryKernel`/`_alpha_op_func`，L575-655、L259-416）、.../elementwise/_builders.py（`make_binary_register_copy`/`make_binary_explicit`/`_row_broadcast_prim`）、.../elementwise/_broadcast.py（`coalesce_broadcast_dims`/`compute_broadcast_offsets`/`row_broadcast_split`）、.../elementwise/_op_body.py、/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/arithmetic.py（`SubFwdOp`/`_AlphaScaledBinaryOp`）、.../ops/elementwise/_base.py（`BinaryOp.forward`）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -20,7 +20,7 @@
 ## 机械复核（D-1/D-5）
 
 - verify_equiv 重跑: **EQUIV_PASS**（`python3 examples/sub/sub_fwd_kernel/verify_equiv.py` → `total rows: 135   EQUIV_PASS: 135   EQUIV_FAIL: 0`，`OVERALL: EQUIV_PASS`，退出码 0）。结构与 §1.6.1 内嵌表一致：行数一致（135 = item1 30 + item2 105）、覆盖一致（3 dtype × 5 shape；item1 alpha∈{1,1.0}、item2 alpha∈{1,0.5,2.0,−1.0,0.0,3}）、结论一致（全 EQUIV_PASS、0 违反 / 0 NaN 失配；溢出子域 5127 元素逐位一致、0 违反）。注意：脚本 `_make_inputs` 用未设种子的 `torch.randn`，`max ulp` 数值逐次漂移（连跑两次 item2 得 0.0139 / 0.0233，内嵌表记 0.0148；对照基线 base_viol 14–16）——**判定级结论（EQUIV_PASS）稳定可复现**，仅随机 ulp 数值非定值，不构成「与内嵌表不一致」。
-- design_calc_check: 工具仅接受 `--design`（不接受 `--dir`），实跑 `python3 .agents/tools/design_calc_check.py --design examples/sub/sub_fwd_kernel/DESIGN.md`，输出逐项：
+- design_calc_check: 工具仅接受 `--design`（不接受 `--dir`），实跑 `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/sub_fwd_kernel_DESIGN.md`，输出逐项：
   - `ub_budget`: **skip** — "no per-level buffer tables parsed from the memory plan (advisory checker; verify manually)"。人工复核已补做（见维度 2）：fp16/bf16 路径 112KB ✓、fp32 复用路径 96KB ✓；fp32 全 buffer 显式路径正文写 128KB、实算应为 160KB（建议级算术口径错误，仍 < 192KB）。
   - `l0c_budget`: **skip** — "no affirmative Cube-path API ... in this design"（正确，本算子纯 Vector）。
   - `core_split`: **skip** — "insufficient parsed dims {}; declared logical cores = 8192"（工具按 GEMM 语义解析 M/block 维度，对纯 Vector 逐元素不适用；人工复核已补做：§5.5 三要素齐全、算术自洽，见维度 3）。
@@ -71,7 +71,7 @@
 
 ### 7. 完整性与一致性 — pass
 
-章节齐全（§0 含 0.1–0.7 全部小节，§1–§10 完整）；无 `{placeholder}`/`TODO`/`待补充`（§10.2 的「⬜ 待实现（Stage 3）」为交付状态标注，非占位符；LaTeX `\operatorname{...}` 非占位符）。§3.5.3 引用的同类实现路径全部真实存在（已逐条 `ls` 核对：`examples/add/add_fwd_kernel/DESIGN.md`、NPU scaffold `sub.py`、mish kernel、lerp_tensor `_make_lerp_tensor_kernel.py`/perf_opt）。API 映射、内存规划、Tiling 三处描述相互一致。运行期 `shape: T.int32` 与 `N`（JIT 参数）双轨口径清楚。唯一内部矛盾（§0.3 vs §0.6 R2 的广播层级归属）已在维度 0 记录。
+章节齐全（§0 含 0.1–0.7 全部小节，§1–§10 完整）；无 `{placeholder}`/`TODO`/`待补充`（§10.2 的「⬜ 待实现（Stage 3）」为交付状态标注，非占位符；LaTeX `\operatorname{...}` 非占位符）。§3.5.3 引用的同类实现路径全部真实存在（已逐条 `ls` 核对：`examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md`、NPU scaffold `sub.py`、mish kernel、lerp_tensor `_make_lerp_tensor_kernel.py`/perf_opt）。API 映射、内存规划、Tiling 三处描述相互一致。运行期 `shape: T.int32` 与 `N`（JIT 参数）双轨口径清楚。唯一内部矛盾（§0.3 vs §0.6 R2 的广播层级归属）已在维度 0 记录。
 
 ### 8. 算法优化分析 — pass
 

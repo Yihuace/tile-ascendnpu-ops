@@ -469,7 +469,7 @@ def add_fwd_kernel(N, dtype, alpha=1, output_dtype=None, block_size=8192, num_co
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
 | `examples/TileOPs/tileops/kernels/elementwise/add/add.py` | 最高（本算子 NPU scaffold） | `_DEFAULT_BLOCK_SIZE=8192`、`ascend_mode="Developer"`、`SUPPORTED_DTYPES` 浮点子集、flat same-shape 契约 |
-| `examples/hardswish/hardswish_fwd_kernel/DESIGN.md` | 高度相似（同族二元/一元逐元素迁移） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、persistent 模板 |
+| `examples/TileOPs/tileops/kernels/elementwise/hardswish/hardswish_kernel/hardswish_fwd_kernel_DESIGN.md` | 高度相似（同族二元/一元逐元素迁移） | 一维 Kernel + block_size 折叠、fp32 中转、分核三要素、UB 预算口径、persistent 模板 |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高度相似（同族 unary 迁移） | Developer 模式、`T.alloc_ub`、`T.copy` 双显式 slice 尾块、v-prefix 链 |
 | `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/_make_lerp_tensor_kernel.py` | 相似（同族二元 elementwise + fp32 中转） | Op 层预广播契约、fp32 中转模式（PL-1.17）、`T.min` 尾块 |
 

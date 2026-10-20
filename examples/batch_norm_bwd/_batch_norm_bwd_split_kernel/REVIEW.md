@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md（revision_index 1，revision；上一版 `history_version/design_v0.md`）
+- 文档: examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md（revision_index 1，revision；上一版 `history_version/design_v0.md`）
 - 任务类型: 迁移（harness 模式）
 - 源算子: Stage 0 提取件 `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/_batch_norm_bwd_kernels.py`（`_batch_norm_bwd_split_kernel` L173–356：stats L191–252 / finalize L254–290 / apply L292–354）；GPU 原始 `TileOPs-main/src/tileops/kernels/norm/batch_norm.py`（`_batch_norm_bwd_split_kernel` L1795 + host 类 `BatchNormBwdSplitKernel` L2044）；NPU wrapper `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py`；op `examples/TileOPs/tileops/ops/norm/batch_norm_bwd.py`
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -19,11 +19,11 @@
   - 命令: `python3 examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/verify_equiv.py`（torch CPU，fp64 参照 + 角点值），退出码 0。
   - 结果（采纳项 O1+O2 联合，21 案例 = 3 dtype × 7 shape：(32,1)/(8,1024)/(4,1024)/(4,784)/(4,2048)/(1,1)/(2,3)）：`float16 max ulp=0.00 / viol=0.0000`、`bfloat16 max ulp=0.00 / viol=0.0000`、`float32 max ulp=0.00 / viol=0.0000`，三 dtype 全 `EQUIV_PASS`——与 DESIGN §1.6.1 内嵌结果表（L350–353）逐格一致。
   - 判别段 A（raw-moment `gw` 拒绝证据）：`float32, N=4, S=2048` 违反率 = **0.1553**（`DISCRIM_OK`），fp16/bf16 = 0.0000（宽容差掩蔽）——与 §1.6.1 L353 的 0.1553 一致，非纸面论证。
-- **design_calc_check 重跑**（命令：`python3 .agents/tools/design_calc_check.py --design examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md`）：
+- **design_calc_check 重跑**（命令：`python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md`）：
 
 ```json
 {
-  "design": "examples/batch_norm_bwd/_batch_norm_bwd_split_kernel/DESIGN.md",
+  "design": "examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_split_kernel_DESIGN.md",
   "capacity_constants": {
     "ub_kb": 192.0,
     "ub_inflation": 1.7,
@@ -67,7 +67,7 @@
 
 ### 1. API 可行性 — pass
 
-§3.2/§3.4 每条 API 均有文档佐证且路径经 Glob 核实：`T.Kernel(一维, is_npu=True)`（`编译器提示操作/T.Kernel.md`）、`T.alloc_ub`（`内存操作/T.alloc_ub.md`，Expert 显式 UB）、`T.copy` 双显式 slice（`内存操作/T.copy.md`，strided 区域 + 中间轴标量索引，探针真机验证）、`T.vcast(rint)`（`数据类型转换操作/T.vcast.md`）、`T.reduce` dims/clear/**size**（`规约操作/T.reduce.md` §2.1 `size` 控制参与范围；§2.3 `clear=False` 前须初始化 dst）、`T.reduce_sum`、`T.vbrc` `(1,1)→(bN,bS)`（`shape操作/T.vbrc.md` §2.2.2）、`T.vmul/vsub/vadd`（fp16/fp32 ✓ bf16 ×）、`T.min` 标量（`比较操作/T.min.md`：标量运算、不支持 shape，与 §3.2/§3.3 的 `T.min(sp,rem)`/`T.min(bS,·)` 标量用法匹配）、`T.clear`、`T.serial`+`if` 守卫 + floordiv/mod 索引（`examples/fused_add_layer_norm/...` persistent 先例 + 本函数探针真机）、`T.atomic_add`（已核对可用但按确定性要求弃用）。v-prefix 优先 ✓；Expert/Vector 形态有先例 `examples/conv1d/_conv1d_direct_kernel/_conv1d_direct_kernel.py`。**新用法 API 前提**：`T.reduce(dims=[0], clear=False, size=[rN,1])`（N-块累加，§3.3 L614）与 `T.reduce(dims=[1], clear=False, size=[rN,r2])` 同口径（`clear=False` 累加、`size` 限范围）——文档未禁止该组合；§3.3 注（L742）已声明其为 **Stage 3 真机核对项** 并给出回退（`dims=[0], clear=True` 得 `(1,1)` + `T.vadd(gb,part,gb)`）。API 存在性成立，判 pass（该组合的运行时行为属实现期核对，非 API 缺失）。
+§3.2/§3.4 每条 API 均有文档佐证且路径经 Glob 核实：`T.Kernel(一维, is_npu=True)`（`编译器提示操作/T.Kernel.md`）、`T.alloc_ub`（`内存操作/T.alloc_ub.md`，Expert 显式 UB）、`T.copy` 双显式 slice（`内存操作/T.copy.md`，strided 区域 + 中间轴标量索引，探针真机验证）、`T.vcast(rint)`（`数据类型转换操作/T.vcast.md`）、`T.reduce` dims/clear/**size**（`规约操作/T.reduce.md` §2.1 `size` 控制参与范围；§2.3 `clear=False` 前须初始化 dst）、`T.reduce_sum`、`T.vbrc` `(1,1)→(bN,bS)`（`shape操作/T.vbrc.md` §2.2.2）、`T.vmul/vsub/vadd`（fp16/fp32 ✓ bf16 ×）、`T.min` 标量（`比较操作/T.min.md`：标量运算、不支持 shape，与 §3.2/§3.3 的 `T.min(sp,rem)`/`T.min(bS,·)` 标量用法匹配）、`T.clear`、`T.serial`+`if` 守卫 + floordiv/mod 索引（`examples/fused_add_layer_norm/...` persistent 先例 + 本函数探针真机）、`T.atomic_add`（已核对可用但按确定性要求弃用）。v-prefix 优先 ✓；Expert/Vector 形态有先例 `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel.py`。**新用法 API 前提**：`T.reduce(dims=[0], clear=False, size=[rN,1])`（N-块累加，§3.3 L614）与 `T.reduce(dims=[1], clear=False, size=[rN,r2])` 同口径（`clear=False` 累加、`size` 限范围）——文档未禁止该组合；§3.3 注（L742）已声明其为 **Stage 3 真机核对项** 并给出回退（`dims=[0], clear=True` 得 `(1,1)` + `T.vadd(gb,part,gb)`）。API 存在性成立，判 pass（该组合的运行时行为属实现期核对，非 API 缺失）。
 
 ### 2. 内存层级规划 — pass
 
