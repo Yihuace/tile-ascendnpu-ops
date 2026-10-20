@@ -66,6 +66,8 @@ def span(record: dict, phase: str) -> str:
     text = f"{lo:.{digits}f}%" if abs(lo - hi) < 1e-9 else _fmt(lo, hi)
     if block.get("n") == 1:
         text += "（单点）"
+    if phase == "optimized" and record.get("micro_shapes"):
+        text += f"（含{record['micro_shapes']}微型）"
     if phase == "optimized" and record["operator"] == "BatchNormBwdOp":
         text += "（不可比）"
     return text

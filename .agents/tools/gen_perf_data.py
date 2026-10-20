@@ -390,6 +390,8 @@ def build() -> dict:
                     "ratio_pct": dl["ratio_pct"],
                     "meeting": dl["meeting"],
                 }
+            if dl.get("micro_shapes"):
+                rec["micro_shapes"] = dl["micro_shapes"]
             rec["correctness"] = dl.get("correctness")
             rec["effective_kernel"] = dl.get("kernel")
             if dl.get("note"):
