@@ -13,7 +13,7 @@
 | 有生效调优 kernel | **15 / 18 已交付（83.3%）** |
 | 单算子优化报告 | **16 份** |
 | 全 shape 严格达标 | **1 / 19（5.3%，Sub）** |
-| shape 级达标 | **40 / 136（29.4%）** |
+| shape 级达标 | **40 / 128（31.2%）**（8 个微型 shape 已豁免，不计入分母） |
 
 > “严格达标”按各算子 AI 分类阈值（访存 70% / 算力 60%），微型 shape 豁免单列。
 > **ratio 口径**：除 GDN 外均为 `msprof op` Roofline（GM Read+Write / Task Duration）。Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的区间**含微型 shape**（下限 0.4%~4%），达标数只按可调 shape 计。GDN 无 msprof ratio，与其它行**不可横比**。

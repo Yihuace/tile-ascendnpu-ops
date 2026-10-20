@@ -11,7 +11,7 @@
 | 接口交付 | **19 / 19**（GDN in-scope 主路径已交付；K5/CP 与小 shape fallback 待续） |
 | 正确性 | **19 / 19**（GDN `test_gdn.py` 10/10；Conv1d / Conv1dBias 27 passed + 1 skipped、0 failed） |
 | 全 shape 严格达标 | **1 / 19**（Sub 15/15） |
-| shape 级达标 | **40 / 136（29.4%）** |
+| shape 级达标 | **40 / 128（31.2%）**（8 个微型 shape 已豁免，不计入分母） |
 | 有生效调优 kernel | 15 / 18 |
 | 单算子优化报告 | 16 份 |
 

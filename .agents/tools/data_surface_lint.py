@@ -268,6 +268,32 @@ def check_secrets() -> list[str]:
     return problems
 
 
+def check_totals(canon: dict) -> list[str]:
+    """shape 级达标汇总必须按「可调 shape」作分母（微型 shape 豁免，不计入）。"""
+    ops = canon.get("operators") or {}
+    meet = adj = 0
+    for rec in ops.values():
+        if rec.get("target_pct") is None:  # 未定义达标线（GDN）
+            continue
+        sm = rec.get("summary") or {}
+        opt = sm.get("optimized") or {}
+        adj += sm.get("adjustable_shapes") or opt.get("n") or 0
+        meet += opt.get("meeting", 0)
+    if not adj:
+        return []
+    doc = REPO / FINAL_DELIVERY
+    if not doc.exists():
+        return [f"{FINAL_DELIVERY}: 缺失"]
+    text = doc.read_text(encoding="utf-8")
+    want = f"{meet}/{adj}"
+    if want in text or f"{meet} / {adj}" in text:
+        return []
+    return [
+        f"{FINAL_DELIVERY}: shape 级达标汇总应为 {want}"
+        f"（可调 shape 分母；微型 shape 豁免不计入），文档里没找到"
+    ]
+
+
 def check_xlsx(canon: dict) -> list[str]:
     """交付件比率表：无历史版本号 + 优化 ratio 与 SSOT 一致（由 gen_ratio_xlsx.py 生成）。"""
     if not XLSX.exists():
