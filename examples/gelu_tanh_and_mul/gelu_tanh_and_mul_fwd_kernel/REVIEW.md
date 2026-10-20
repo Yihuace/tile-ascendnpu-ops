@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/TileOPs/tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/gelu_tanh_and_mul_fwd_kernel_DESIGN.md
+- 文档: examples/gelu_tanh_and_mul/gelu_tanh_and_mul_fwd_kernel/DESIGN.md
 - 任务类型: 迁移（GPU→Ascend NPU，harness）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py（`GeluTanhAndMulFwdKernel`）+ `_base.py`（`FusedGatedKernel`）+ `_builders.py`（`make_fused_gated_explicit`）+ `ops/elementwise/activations.py`（`GeluTanhAndMulFwdOp`）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -16,7 +16,7 @@
 
 - verify_equiv 重跑: **PASS**。`python3 examples/gelu_tanh_and_mul/gelu_tanh_and_mul_fwd_kernel/verify_equiv.py`（torch CPU，无 NPU）执行输出 `total rows: 42   EQUIV_PASS: 42   not-pass: 0`，`OVERALL: EQUIV_PASS`，exit 0——与 DESIGN §1.6.1 内嵌结果表（采纳项 1：fp32 ≤0.0182 / fp16 ≤0.0379 / bf16 ≤0.0526；采纳项 2：fp32 ≤0.0182 / fp16 ≤0.0860 / bf16 ≤0.4310；违反率 0 / 0、NaN 失配 0）**逐项一致**，无 `EQUIV_FAIL`。
   - 全域（`RANGE`）与边界（`BOUNDARY`）自检重跑：候选 tanh 机制 `2σ(2x)−1` 在 `|x|≤50` 对 fp64 tanh **max abs err = 1.781e-7**；折叠 `gelu_tanh(g)=g·σ(2u)` 在 `|g|≤100`（`u` 涨到 ≈3.6e4）对 fp64 **max abs err = 3.784e-6**（均 < fp32 atol 1e-5）；饱和 `tanh(+inf)=+1`、`tanh(−inf)=−1`、`tanh(NaN)=NaN`、`gelu(+inf)=+inf`、`gelu(−inf)=NaN`、`gelu(NaN)=NaN`、`gelu(−0.0)` signbit 保持——`BOUNDARY` 三 dtype 源式与 golden 双路径均 `gelu(−inf)=NaN`/`gelu(+inf)=+inf`。对照组 `counter npuir-vtanh` 复现截断级数域外发散（`vtanh(2.0)=−3.308`、`vtanh(10)=−5.27e5`、`±inf→NaN`）。
-- design_calc_check: 重跑 `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/gelu_tanh_and_mul_fwd_kernel_DESIGN.md` 的 JSON checks 摘要：
+- design_calc_check: 重跑 `python3 .agents/tools/design_calc_check.py --design examples/gelu_tanh_and_mul/gelu_tanh_and_mul_fwd_kernel/DESIGN.md` 的 JSON checks 摘要：
   - `ub_budget`: **skip**（"no per-level buffer tables parsed"——§4.5 表格首列非 `**UB**` 粗体锚、单元格为"4096（fp32 时 8192）"无 B 后缀，机械解析失败）→ **人工复核**：逐项 buffer 之和 fp16/bf16 全显式 = 100KB、fp32 全显式 = 112KB、复用档 80KB / 88KB，均 ≪ 192KB；DESIGN §4.5 的 4 个「总计」行数值（104/120/92/96KB）**恒高于逐项之和**（偏保守，见维度 2 建议）。
   - `l0c_budget`: skip（无 Cube 路径——纯 Vector，正确）。
   - `core_split`: **skip**（"insufficient parsed dims {M:1, N:14336, bn:2048}; declared logical cores = 2048"——§5.5 的分核用 `M×ceil(N/block_N)` 而非 `ceil(M/bm)×ceil(N/bn)` 形态，机械公式不匹配）→ **人工复核**：logical = M×n_num，block_N=2048、n_num=ceil(N/2048)，与 §5.5 表（smoke 16、prefill 14336、decode 7）自洽，物理核 20×2=40 实查，见维度 3。

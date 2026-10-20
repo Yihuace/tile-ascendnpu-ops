@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_pointwise_kernel_DESIGN.md（revision v1；上一版 `history_version/design_v0.md`）
+- 文档: examples/conv1d/_conv1d_pointwise_kernel/DESIGN.md（revision v1；上一版 `history_version/design_v0.md`）
 - 任务类型: 迁移（harness，GPU TileOPs-main → NPUIR Ascend）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/convolution/conv1d.py（`_conv1d_pointwise_kernel` builder L542-638、`Conv1dPointwiseKernel` L641-742）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -17,10 +17,10 @@
 ## 机械复核（D-1/D-5）
 
 - **verify_equiv 重跑: 不适用（无采纳优化项）**——§1.6.1 结论为「无优化空间」（bias 折叠 / 转置 GEMM / split-K 三候选均无正收益，不采纳；见 §1.6.1 表 + §10.2），无采纳优化项，故按 gate `S1-EQUIV-EXEC` 豁免规则不生成脚本。已确认 `examples/conv1d/_conv1d_pointwise_kernel/verify_equiv.py` **不存在**（`ls` 返回 No such file），豁免合法。
-- **design_calc_check**: 任务书写 `--dir`，脚本实际接口为 `--design`（`python3 .agents/tools/design_calc_check.py -h` 确认仅接受 `--design`，且不接受目录），故以脚本自身接口运行 `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_pointwise_kernel_DESIGN.md`，输出：
+- **design_calc_check**: 任务书写 `--dir`，脚本实际接口为 `--design`（`python3 .agents/tools/design_calc_check.py -h` 确认仅接受 `--design`，且不接受目录），故以脚本自身接口运行 `python3 .agents/tools/design_calc_check.py --design examples/conv1d/_conv1d_pointwise_kernel/DESIGN.md`，输出：
 ```json
 {
-  "design": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_pointwise_kernel_DESIGN.md",
+  "design": "examples/conv1d/_conv1d_pointwise_kernel/DESIGN.md",
   "capacity_constants": {"ub_kb": 192.0, "ub_inflation": 1.7, "l0c_kb": 128.0, "source": "pattern-library/constants.md CONST-capacity-910B2C"},
   "checks": [
     {"check": "l1_budget", "status": "pass", "detail": "L1: 2 buffer entries sum = 48.0 KB; capacity = 512.0 KB", "within_inflation_budget": null},

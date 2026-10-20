@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md（revision v1，相对 history_version/design_v0.md）
+- 文档: examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md（revision v1，相对 history_version/design_v0.md）
 - 任务类型: 迁移（harness 模式）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/norm/batch_norm.py（`_batch_norm_bwd_wide_kernel` L1658 + host 类 `BatchNormBwdWideKernel` L1981–2041）；op `examples/TileOPs/tileops/ops/norm/batch_norm_bwd.py`（`BatchNormBwdOp`，返回 `(grad_x, grad_weight, grad_bias)` L178–181）；NPU wrapper `examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py`；Stage 0 提取件 `.../norm/batch_norm_bwd/_batch_norm_bwd_kernels.py`
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -27,11 +27,11 @@
     | float32 | 0.00 | 0.0000 | EQUIV_PASS |
 
   - 判别段 A（raw-moment `gw` 拒绝证据）：fp32 max 违反率 = **0.1553**（N=4,S=2048 大均值小方差），fp16/bf16 = 0.0000（宽容差掩蔽）→ **DISCRIM_OK**。三处数字与 DESIGN §1.6.1 内嵌表（0/0/0、判别段 0.1553）完全一致。
-- **design_calc_check 重跑**（命令：`python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md`）：
+- **design_calc_check 重跑**（命令：`python3 .agents/tools/design_calc_check.py --design examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md`）：
 
 ```json
 {
-  "design": "examples/TileOPs/tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/_batch_norm_bwd_wide_kernel_DESIGN.md",
+  "design": "examples/batch_norm_bwd/_batch_norm_bwd_wide_kernel/DESIGN.md",
   "capacity_constants": {
     "ub_kb": 192.0,
     "ub_inflation": 1.7,
@@ -89,7 +89,7 @@
 
 ### 1. API 可行性 — pass
 
-§3.2/§3.4 每条 API 均有文档佐证并经 Glob 核实路径存在：`T.Kernel(一维, is_npu=True)`（`编译器提示操作/T.Kernel.md`）、`T.alloc_ub`（`内存操作/T.alloc_ub.md`，Expert 显式 UB）、`T.copy` 双显式 slice（`内存操作/T.copy.md`，strided 区域 + §2.2.2 size-1 维折叠支持 3D→2D 切片）、`T.vcast(rint)` 四方向（`数据类型转换操作/T.vcast.md`）、`T.reduce` dims/clear/**size**（`规约操作/T.reduce.md` §2.1/§2.2.2，bf16 ×）、`T.reduce_sum`、`T.vbrc` `(1,1)→(N,bS)`（`shape操作/T.vbrc.md` §2.2.2）、`T.vmul/vsub/vadd`（fp16/fp32 ✓ bf16 ×，行/列/标量广播）、`T.min` 标量（`比较操作/T.min.md`）、`T.clear`（`内存操作/T.clear.md`）；§3.5.3 引用的 examples 路径全部真实存在。**Expert/Vector 形态有先例**：`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel.py`（Expert + 单 `T.Scope("Vector")` + `T.alloc_ub`，未手写 sync 的 `T.reduce`），`decision-tree.md` 明确 `T.reduce` 两模式可用。标量乘（`T.vmul(coef, L_inv, ...)`，Python 常量作 src2）由探针 `batch_norm_bwd_probe.py` L168/L169 真机 PASS 佐证。v-prefix 优先。
+§3.2/§3.4 每条 API 均有文档佐证并经 Glob 核实路径存在：`T.Kernel(一维, is_npu=True)`（`编译器提示操作/T.Kernel.md`）、`T.alloc_ub`（`内存操作/T.alloc_ub.md`，Expert 显式 UB）、`T.copy` 双显式 slice（`内存操作/T.copy.md`，strided 区域 + §2.2.2 size-1 维折叠支持 3D→2D 切片）、`T.vcast(rint)` 四方向（`数据类型转换操作/T.vcast.md`）、`T.reduce` dims/clear/**size**（`规约操作/T.reduce.md` §2.1/§2.2.2，bf16 ×）、`T.reduce_sum`、`T.vbrc` `(1,1)→(N,bS)`（`shape操作/T.vbrc.md` §2.2.2）、`T.vmul/vsub/vadd`（fp16/fp32 ✓ bf16 ×，行/列/标量广播）、`T.min` 标量（`比较操作/T.min.md`）、`T.clear`（`内存操作/T.clear.md`）；§3.5.3 引用的 examples 路径全部真实存在。**Expert/Vector 形态有先例**：`examples/conv1d/_conv1d_direct_kernel/_conv1d_direct_kernel.py`（Expert + 单 `T.Scope("Vector")` + `T.alloc_ub`，未手写 sync 的 `T.reduce`），`decision-tree.md` 明确 `T.reduce` 两模式可用。标量乘（`T.vmul(coef, L_inv, ...)`，Python 常量作 src2）由探针 `batch_norm_bwd_probe.py` L168/L169 真机 PASS 佐证。v-prefix 优先。
 
 ### 2. 内存层级规划 — pass
 

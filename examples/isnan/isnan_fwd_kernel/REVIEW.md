@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/isnan_fwd_kernel_DESIGN.md（revision v1；基线 history_version/design_v0.md）
+- 文档: examples/isnan/isnan_fwd_kernel/DESIGN.md（revision v1；基线 history_version/design_v0.md）
 - 任务类型: 迁移（GPU TileOPs → TileLang-NPUIR，scenario=migration，mode=harness）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/comparison.py（`IsnanFwdKernel`，复用 `_base.py` / `_op_body.py` / `call_spec.py`）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -23,10 +23,10 @@
     - bfloat16：NaN 数 443，ordered-ne 失配 443（>0），le-取反失配 0 → DISCRIM_OK
     - float32：NaN 数 402，ordered-ne 失配 402（>0），le-取反失配 0 → DISCRIM_OK
   - 结论：判别段确认「有序 `ne` 检不出 NaN、`le` 取反精确等于 isnan」，正是 v0 错误的机器拦截位；与 §1.6.1 内嵌表逐行一致。
-- **design_calc_check**: `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/isnan_fwd_kernel_DESIGN.md`（脚本仅接受 `--design`；任务书的 `--dir` 非合法参数，按 skill 口径改用 `--design`）输出：
+- **design_calc_check**: `python3 .agents/tools/design_calc_check.py --design examples/isnan/isnan_fwd_kernel/DESIGN.md`（脚本仅接受 `--design`；任务书的 `--dir` 非合法参数，按 skill 口径改用 `--design`）输出：
   ```json
   {
-    "design": "examples/TileOPs/tileops/kernels/elementwise/isnan/isnan_kernel/isnan_fwd_kernel_DESIGN.md",
+    "design": "examples/isnan/isnan_fwd_kernel/DESIGN.md",
     "capacity_constants": {
       "ub_kb": 192.0,
       "ub_inflation": 1.7,

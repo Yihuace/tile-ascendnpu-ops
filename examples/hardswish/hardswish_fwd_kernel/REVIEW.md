@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/TileOPs/tileops/kernels/elementwise/hardswish/hardswish_kernel/hardswish_fwd_kernel_DESIGN.md
+- 文档: examples/hardswish/hardswish_fwd_kernel/DESIGN.md
 - 任务类型: 迁移（harness，GPU→Ascend NPU）
 - 源算子: `/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/activations.py`（`HardswishFwdKernel`，L151-166）+ `_base.py`（`FloatUnaryKernel`/`UnaryKernel`/`make_unary_regcopy` 承载路径）+ `_builders.py`（`make_unary_regcopy` L85-121）+ `_policy.py`（`_DEFAULT_THREADS=128`）+ `ops/elementwise/activations.py`（`HardswishFwdOp`）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -15,7 +15,7 @@
 ## 机械复核（D-1/D-5）
 
 - **verify_equiv 重跑: PASS**。`python3 examples/hardswish/hardswish_fwd_kernel/verify_equiv.py` 退出码 0，输出与 §1.6.1 内嵌结果表**逐项一致**：采纳项 1「除法转乘倒数（`x*clamp(...)/6` → `x*clamp(...)*(1/6)`）」`max ulp 差 = 1.000 / 违反率 = 0 / EQUIV_PASS`；逐 dtype 舍入路径 float32 = 0.000/0/EQUIV_PASS、float16 = 0.000/0/EQUIV_PASS、bfloat16 = 0.000/0/EQUIV_PASS；总体结论「全部 EQUIV_PASS — 可采纳」。**无 EQUIV_FAIL**，脚本缺失/执行失败均不成立。
-- **design_calc_check: `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/elementwise/hardswish/hardswish_kernel/hardswish_fwd_kernel_DESIGN.md`** 输出 JSON `checks` 摘要：
+- **design_calc_check: `python3 .agents/tools/design_calc_check.py --design examples/hardswish/hardswish_fwd_kernel/DESIGN.md`** 输出 JSON `checks` 摘要：
   - `ub_budget`: **skip**（"no per-level buffer tables parsed"）——**人工已核**：fp16/bf16 逐 buffer 求和 = `16384(x_ub)+32768(x_f32_ub)+32768(buf1_ub)+32768(buf2_ub)+16384(y_ub)` = **131072B（128KB）**，与 §4.5「总计（fp16/bf16 路径）」一致；fp32 全 buffer 显式 = `32768×5` = **163840B（160KB）**，与 §4.5 一致；fp32 复用链（`x_f32_ub`→`x_ub`、`y_ub`→`buf2_ub`）= `32768×3` = **98304B（96KB）**，与 §4.5 一致。三行逐 buffer 行求和闭合，无混合字节口径偏差。
   - `l0c_budget`: **skip**（"no affirmative Cube-path API in this design"）——**人工已核**：纯 Vector 算子，无 `T.gemm`/`load_nd2nz`/`store_fixpipe`/`Scope(Cube)`，L0C 不适用。
   - `core_split`: **skip**（"insufficient parsed dims {}; declared logical cores = 8192"）——**人工已核**：`declared logical cores = 8192` 为解析伪影（8192 是 `block_size`，§5.5 无该逻辑核数）。§5.5 分核算术独立复算自洽：逻辑核数 = `ceil(N/8192)`（smoke-1m 1048576→128、mbv3-stage2 9633792→1176、mbv3-stage3 6021120→735、fc-wide 8388608→1024）；物理核数实查 `NPUUtils.get().get_aicore_num()=20`，纯 Vector ×2 = 40；`num_kernels = min(num_logical, 40)`，`num_local_tasks = ceil(num_logical/40)`（128→4、1176→30、735→19、1024→26），均与 §5.5 表一致，边界全静态。
@@ -90,7 +90,7 @@
 
 - 章节齐全：模板 11 章节齐全；迁移类 §0 含 0.1–0.7 全部小节 ✓。
 - 无占位符：全文无 `{placeholder}`/`TODO`/`待补充`（grep 已核；§10.2 的「⬜ 待实现（Stage 3）」为交付清单的正常未来项）✓。
-- 同类引用真实：§3.5.3 四条引用路径 **Glob 均存在**（`mish_kernel/mish.py`、`mish_kernel/perf_opt/mish.py`、`examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md`、`lerp_tensor_kernel/_make_lerp_tensor_kernel.py`）✓。
+- 同类引用真实：§3.5.3 四条引用路径 **Glob 均存在**（`mish_kernel/mish.py`、`mish_kernel/perf_opt/mish.py`、`examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md`、`lerp_tensor_kernel/_make_lerp_tensor_kernel.py`）✓。
 - 内部一致：API 映射（§3.2）、内存规划（§4.3-4.5）、Tiling（§5.2/5.5）三处描述相互一致，无矛盾 ✓。
 
 ### 8. 算法优化分析 — pass

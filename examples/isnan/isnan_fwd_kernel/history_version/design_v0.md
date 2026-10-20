@@ -129,7 +129,7 @@ GM[x] --T.copy--> fragment/x_reg --T.cast(f32)--> x_f32 --T.isnan--> pred --if_t
 - 源算子路径：`/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/comparison.py`（`IsnanFwdKernel`）、`.../_base.py`（`FloatPredicateKernel` / `FloatUnaryKernel` / `UnaryKernel`）、`.../_builders.py`（`make_unary_regcopy`）、`.../_op_body.py`（`store_unary_bool_as_int8`）、`.../call_spec.py`（`UnaryPredicateFwdInterface`）。
 - GPU manifest：`src/tileops/manifest/spec/elementwise_unary_math.yaml` 的 `IsnanFwdOp`（L424；`ref_api: torch.isnan`，workloads 16M/256M，`flops: prod(S)`）。
 - NPU 侧工件：wrapper `examples/TileOPs/tileops/kernels/elementwise/isnan/isnan.py`、抽取 GPU 参考 `examples/TileOPs/tileops/kernels/elementwise/isnan/_isnan_fwd_kernels.py`、op `examples/TileOPs/tileops/ops/elementwise/isnan.py`、test `examples/TileOPs/tests/ops/test_isnan.py`、bench `examples/TileOPs/benchmarks/ops/bench_isnan.py`、manifest `examples/TileOPs/tileops/manifest/elementwise.yaml`。
-- bool 输出先例：`examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel_DESIGN.md`（int8 字节存储 + host view，CG-2026-0019）。
+- bool 输出先例：`examples/bitwise_not/bitwise_not_fwd_kernel/DESIGN.md`（int8 字节存储 + host view，CG-2026-0019）。
 - 源仓参考实现 / 测试基准：`torch.isnan`（test 的 `ref_program = torch.isnan(x.detach().cpu().float())`）。
 - golden 以 §0.1 语义为依据，优先移植源仓参考实现（`torch.isnan`），**不复刻 NPU 算法**（保证验证独立性）。
 
@@ -430,9 +430,9 @@ def isnan_fwd_kernel(N, dtype, output_dtype=None, block_size=8192, num_cores=Non
 
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
-| `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md` | 高度相似（同族 float 逐元素迁移；vcmp 掩码先例） | 一维 Kernel + block_size 折叠、分核三要素、UB 预算口径、persistent 尾块、`vcmp(x,x,"ne")` 用法 |
+| `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md` | 高度相似（同族 float 逐元素迁移；vcmp 掩码先例） | 一维 Kernel + block_size 折叠、分核三要素、UB 预算口径、persistent 尾块、`vcmp(x,x,"ne")` 用法 |
 | `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel.py` | 高度相似（vcmp 掩码 + vselect 的 NPU 落地骨架） | `T.vcmp`/`T.alloc_ub(...,"bool")`/persistent 核内串行/`T.min` 尾块 |
-| `examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel_DESIGN.md` | 高度相似（bool 输出 int8 字节存储 + host view，CG-2026-0019） | 输出字节存储契约、host `view`、拒绝非目标 dtype、UB 预算 |
+| `examples/bitwise_not/bitwise_not_fwd_kernel/DESIGN.md` | 高度相似（bool 输出 int8 字节存储 + host view，CG-2026-0019） | 输出字节存储契约、host `view`、拒绝非目标 dtype、UB 预算 |
 | `examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py` | 相似（bool 输出的 NPU 实现骨架） | `int8` 字节存储、`T.Kernel(is_npu=True)`、`NPUUtils.get().get_aicore_num()` |
 | `examples/TileOPs/tileops/kernels/elementwise/isnan/_isnan_fwd_kernels.py` | 相似（迁移对象抽取件） | 谓词语义与 bool-as-int8 落盘约定（CPU/GPU reference，需 NPU 重写） |
 
@@ -750,5 +750,5 @@ examples/isnan/isnan_fwd_kernel/
 ### 11.4 bool 字节存储契约
 
 - kernel 以 `int8` 字节缓冲写 bool 结果（`T.Tensor((N,), "int8")`，`out_idx=[1]`）；Op / Kernel 层在离开 kernel 后 `result.view(torch.bool)`（stride/shape/dtype 元数据视图操作，**不改输入张量真实内容**，满足 ascend-constraints host 侧约束）。
-- 依据：bool i1 无法 load/store GM（`docs/Tilelang.language/比较操作/T.vcmp.md` §2.3）；且 CG-2026-0019 记载 npuir auto output dtype 映射缺 uint8/bool 键，字节域算子须用 `int8` 存储 + host view（bool 输出先例见 `examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel_DESIGN.md`）。
+- 依据：bool i1 无法 load/store GM（`docs/Tilelang.language/比较操作/T.vcmp.md` §2.3）；且 CG-2026-0019 记载 npuir auto output dtype 映射缺 uint8/bool 键，字节域算子须用 `int8` 存储 + host view（bool 输出先例见 `examples/bitwise_not/bitwise_not_fwd_kernel/DESIGN.md`）。
 - bool 结果表示：掩码 true → f16 1.0 → int8 1 → `True`；掩码 false → f16 0.0 → int8 0 → `False`（§0.6 R3）。

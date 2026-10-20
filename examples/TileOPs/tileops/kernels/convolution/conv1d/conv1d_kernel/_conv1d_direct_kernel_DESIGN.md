@@ -4,7 +4,7 @@
 > 迁移目标：TileLang-NPUIR（Ascend NPU），`target="npuir"`，编程模式 **Expert（单一 `T.Scope("Vector")`）**；**计算单元 = Vector（非 Cube）**，**不使用** L1 / L0A / L0B / L0C 与 `T.gemm`。
 > 本设计按 skill `tilelang-op-design` 三问框架（Phase M0）→ 算法调研（Phase R）→ 硬件耦合性判定与 NPU 重设计（Phase M1）→ 通用设计流程（Phase 1–4）产出，为本函数 5 个迁移函数中的第 5 个（函数 5，`_conv1d_direct_kernel`，服务 `DepthwiseConv1dKernel` 的 depthwise/direct 卷积）。
 > **与同族 4 个 Cube 迁移函数（函数 1–4）的根本差异**：本算子是 **depthwise 直接法**——weight 形 `(c_out, 1, kernel_l)`，每个输出通道只有一个输入通道，逐元素 MAC `x[bz,oc,il]·weight[oc,0,kw]`，**输入通道方向上没有收缩（no tensor contraction）**，源码注释明言「with a single channel per group there is no contraction to tile, so each thread accumulates one output position over the kernel window instead of running an implicit GEMM」——因此**不能**（也不应）落到 Cube `T.gemm`，而应落 **Vector** 单元（逐元素 + 小 KW 规模归约）。同族函数 1–4 的 DESIGN.md（implicit GEMM / Cube）仅作为「哪些部分不该照搬」的对照，不作为本算子的结构基石。
-> **结构对比对象**：`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel_DESIGN.md`（函数 4，分组 implicit GEMM）说明「当 group 内只有 1 个输入通道时收缩轴退化为 1，direct 法另服务」，本设计即该 direct 法的 NPU 形态。
+> **结构对比对象**：`examples/conv1d/_conv1d_group_kernel/DESIGN.md`（函数 4，分组 implicit GEMM）说明「当 group 内只有 1 个输入通道时收缩轴退化为 1，direct 法另服务」，本设计即该 direct 法的 NPU 形态。
 > 可行性探针（design probe，D-3）：`examples/conv1d/_conv1d_direct_kernel/history_version/design_probe_direct_vector.py`（Expert + 单一 `T.Scope("Vector")`：GM→UB、GM 偏移目的地的 padded workspace 构造、`vcast`/`vmul` 行广播/`reduce dims=[0]`/`vadd`/store 链路在 npuir 编译并运行成功，`max_abs_err ≈ 7.8e-4` vs `F.conv1d` golden）。同探针在 Developer 模式下编译失败（`multiple entry functions detected ('main_mix_aiv' / 'main_mix_aic')`），是本设计选 Expert 直证。
 
 ---
@@ -98,7 +98,7 @@ GM[x], GM[weight] --逐元素读--> register fragment[out_local] (fp32, 每线�
 | host `.contiguous()` | 优化 | 无（物理连续化，仅改 stride/指针，不改数值） | 有（允许的只读视图/连续化） | **保留** | 仅 metadata/物理连续化，不违反 ascend-constraints.md §4（host 禁改输入内容）；NPU 侧不改 I/O |
 | `num_stages`/`enable_rasterization` 调优参数 | 优化 | CUDA 调度 | 有（分块/调度参数） | **等价替换** | 映射为核内串行/persistent 调度与 block 取值（§5/§6，Stage 4 调优） |
 
-> 每项处置依据：migration-analysis.md §5.3 映射表 + 本仓 Vector 先例（`examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/add/add.py`、`examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py`）+ docs/Tilelang.language Vector 文档 + design probe 实测（`history_version/design_probe_direct_vector.py`）。舍弃项（swizzle / threads）理由已写明。
+> 每项处置依据：migration-analysis.md §5.3 映射表 + 本仓 Vector 先例（`examples/add/add_fwd_kernel/DESIGN.md`、`examples/TileOPs/tileops/kernels/elementwise/add/add.py`、`examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py`）+ docs/Tilelang.language Vector 文档 + design probe 实测（`history_version/design_probe_direct_vector.py`）。舍弃项（swizzle / threads）理由已写明。
 
 ### 0.6 NPU 算法重设计
 
@@ -127,7 +127,7 @@ GM[x], GM[weight] --逐元素读--> register fragment[out_local] (fp32, 每线�
 **重设计项 R4：stride>1 的移位装载重设计（跨步列采样 → polyphase 抽取 workspace）**
 
 - **源方案**：`il = ol·s_W + k_w·d_W - p_L` 逐元素读——`s_W>1` 时对 `ol` 步长 `s_W`。
-- **NPU 新算法**：`s_W>1` 时 GM→UB 连续装载要求最内维连续，跨步列采样不可直接 `T.copy`（否则静默平坦误读，CG-2026-0004 同族）。故加一段 Vector 前置：由 `xpad` 抽取物化 `xdec[n, c_in, s_W·Mdec]`，`xdec[bn, ci, r_kw·Mdec + m] = xpad[bn, ci, m·s_W + r_kw]`（`Mdec = l_pad // s_W`，`r_kw = (k_w·d_W) mod s_W`、`q_kw = (k_w·d_W - r_kw)//s_W`），用 `T.gather` + host 预建常量索引（`docs/Tilelang.language/索引与元素操作/T.gather.md`；跨步 gather 无向量指令，`TRAP-C10-strided-gather`）。则 tap `k_w` 的装载 `xt[kw, 0:tn] = xdec[bz, oc, r_kw·Mdec + ol0 + q_kw : … + tn]`（**连续**）。`s_W=1` 时退化为 `xpad` 直接移位装载（`r_kw=0`、`q_kw=k_w·d_W`；不物化 `xdec`）。机制与函数 2/4 的 polyphase 前置同构（`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py` L219-236）。
+- **NPU 新算法**：`s_W>1` 时 GM→UB 连续装载要求最内维连续，跨步列采样不可直接 `T.copy`（否则静默平坦误读，CG-2026-0004 同族）。故加一段 Vector 前置：由 `xpad` 抽取物化 `xdec[n, c_in, s_W·Mdec]`，`xdec[bn, ci, r_kw·Mdec + m] = xpad[bn, ci, m·s_W + r_kw]`（`Mdec = l_pad // s_W`，`r_kw = (k_w·d_W) mod s_W`、`q_kw = (k_w·d_W - r_kw)//s_W`），用 `T.gather` + host 预建常量索引（`docs/Tilelang.language/索引与元素操作/T.gather.md`；跨步 gather 无向量指令，`TRAP-C10-strided-gather`）。则 tap `k_w` 的装载 `xt[kw, 0:tn] = xdec[bz, oc, r_kw·Mdec + ol0 + q_kw : … + tn]`（**连续**）。`s_W=1` 时退化为 `xpad` 直接移位装载（`r_kw=0`、`q_kw=k_w·d_W`；不物化 `xdec`）。机制与函数 2/4 的 polyphase 前置同构（`examples/conv1d/_conv1d_kernel/_conv1d_kernel.py` L219-236）。
 - **语义保持论证**：`(q_kw, r_kw)` 分解由 `k_w·d_W` 唯一确定（精确恒等，无近似）；`xdec[bn,ci,r·Mdec+m] = xpad[bn,ci,m·s_W+r]` 按定义逐元素恒等；tap `k_w` 读 `xdec` 的连续段与源 `x[.., ol·s_W + k_w·d_W - p_L]` 逐项一致。深度wise 代表 workload（`full-conformer-depthwise-k31-fp16`、smoke）均 `s_W=1`，`xdec` 路径服务一般 stride（保证算子完整性）。
 
 **重设计项 R5：bias + 输出 cast epilogue（fragment 逐元素 → Vector）**
@@ -324,7 +324,7 @@ GM[xpad] --T.gather(host 索引)--> GM[xdec] ; GM[xdec] --per-kw 连续段--> UB
 
 本算子是 **depthwise 逐通道相关**：weight 形 `(c_out,1,K_W)`，每输出通道只有 1 个输入通道，`x[bz,oc,il]·weight[oc,0,kw]` 逐点乘加，**输入通道方向无收缩**——不构成 GEMM/MAC 密集矩阵乘，**不应**（也无法有效）落 Cube `T.gemm`（把 depthwise 视作 block-diagonal dense GEMM 会使 FLOPs 与权重物化均 `groups` 倍劣，§1.6.0 R1 候选 3 已淘汰）。其计算是「逐元素乘 + 沿小轴 `K_W` 的规约」，正确落 **Vector** 单元（`vmul`/`vadd`/`reduce`）。
 
-**为何 Expert 而非 Developer**：纯 Vector 逐元素算子通常用 Developer（如 `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md`、mish/hardshard），但本算子需**零填充 `xpad` 前置**，其构造依赖「同形 UB 中转 + **GM 偏移目的地** `T.copy`」——该形态在 **Expert** 下经 repro（`examples/conv1d/_conv1d_kernel/repro/TRAP-copy-ub-offset-stride.py`）与 design probe 实测正确，且 design probe 证实**同一 kernel 在 Developer 下编译失败**（`multiple entry functions detected ('main_mix_aiv' / 'main_mix_aic')`）。此外，npnir scaffold `DepthwiseConv1dKernel.ascend_mode = "Expert"`（`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d.py` L351）与显式 `T.Scope` 控制一致。故选 **Expert + 单一 `T.Scope("Vector")`**（`T.Scope("Vector")` 单 Scope 形态由 repro L40-47 与 design probe 实证可用）。**不声明 `T.Scope("Cube")`、不使用 `T.alloc_L1`/`T.alloc_L0C`/`T.gemm`。**
+**为何 Expert 而非 Developer**：纯 Vector 逐元素算子通常用 Developer（如 `examples/add/add_fwd_kernel/DESIGN.md`、mish/hardshard），但本算子需**零填充 `xpad` 前置**，其构造依赖「同形 UB 中转 + **GM 偏移目的地** `T.copy`」——该形态在 **Expert** 下经 repro（`examples/conv1d/_conv1d_kernel/repro/TRAP-copy-ub-offset-stride.py`）与 design probe 实测正确，且 design probe 证实**同一 kernel 在 Developer 下编译失败**（`multiple entry functions detected ('main_mix_aiv' / 'main_mix_aic')`）。此外，npnir scaffold `DepthwiseConv1dKernel.ascend_mode = "Expert"`（`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d.py` L351）与显式 `T.Scope` 控制一致。故选 **Expert + 单一 `T.Scope("Vector")`**（`T.Scope("Vector")` 单 Scope 形态由 repro L40-47 与 design probe 实证可用）。**不声明 `T.Scope("Cube")`、不使用 `T.alloc_L1`/`T.alloc_L0C`/`T.gemm`。**
 
 ### 2.3 模式影响
 
@@ -495,7 +495,7 @@ def _conv1d_direct_kernel(n, c_in, l_in, c_out, kernel_l, stride_l,
 | `T.vmul(src1, src2, dst)`（行广播 `[M,N]·[M,1]`） | `docs/Tilelang.language/数学操作/T.vmul.md` §2.2.2（行/列/标量广播；UB 上；dst 可原地）；design probe | ✅ 已验证（probe：`[3,8]·[3,1]`） |
 | `T.vadd(src0, src1, dst)`（列广播 `[1,N]+[1,1]`） | `docs/Tilelang.language/数学操作/T.vadd.md` §2.2.2；design probe（bias 路径） | ✅ 已验证 |
 | `T.reduce(src, dst, dims=[0], reduce_mode="sum", clear=True)` | `docs/Tilelang.language/规约操作/T.reduce.md`（rank 一致；`(M,N)→(1,N)` 合法；`clear=True` 免预初始化；fp32 ✓） | ✅ 已验证（文档 + probe：`[3,8]→[1,8]`） |
-| `T.gather(src, dst, indices, [m,n])`（仅 stride>1） | `docs/Tilelang.language/索引与元素操作/T.gather.md`；`examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py` L219-236 | ✅ 已验证（同族函数 2 实现） |
+| `T.gather(src, dst, indices, [m,n])`（仅 stride>1） | `docs/Tilelang.language/索引与元素操作/T.gather.md`；`examples/conv1d/_conv1d_kernel/_conv1d_kernel.py` L219-236 | ✅ 已验证（同族函数 2 实现） |
 | `T.rs("PIPE_MTE2"/"PIPE_MTE3")` | `examples/conv1d/_conv1d_kernel/repro/TRAP-copy-ub-offset-stride.py`；ssd 先例 | ✅ 已验证 |
 | `T.serial` / `T.min` / `T.ceildiv` / `T.max` | `docs/Tilelang.language/数学操作/T.ceildiv.md`；add/mish 先例 | ✅ 已验证 |
 | `NPUUtils.get().get_aicore_num()` | `tilelang.utils`；本机实查（§5.5） | ✅ 已实查 |
@@ -539,9 +539,9 @@ def _conv1d_direct_kernel(n, c_in, l_in, c_out, kernel_l, stride_l,
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
 | `examples/conv1d/_conv1d_direct_kernel/history_version/design_probe_direct_vector.py` | **最高（本算子直接探针）** | Expert + 单 `T.Scope("Vector")`；GM 偏移目的地构造 `xpad`；`vcast`/`vmul` 行广播/`reduce dims=[0]`/`vadd`/store 链路；golden = `F.conv1d(groups=C)` |
-| `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md` | 高（纯 Vector 逐元素迁移） | 一维 Kernel + `block_size` 折叠、fp32 中转、分核三要素（纯 Vector 翻倍）、UB 预算、persistent 模板 |
+| `examples/add/add_fwd_kernel/DESIGN.md` | 高（纯 Vector 逐元素迁移） | 一维 Kernel + `block_size` 折叠、fp32 中转、分核三要素（纯 Vector 翻倍）、UB 预算、persistent 模板 |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高（Vector 迁移先例） | `T.alloc_ub`、`T.copy` 显式 slice 尾块、v-prefix 链 |
-| `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py` | 中（同族函数 2 实现的 Vector 前置段） | `x_pad`（GM 偏移目的地）+ `xdec`（`T.gather` + host `poly_idx`）前置形态；**Cube 部分不照搬** |
+| `examples/conv1d/_conv1d_kernel/_conv1d_kernel.py` | 中（同族函数 2 实现的 Vector 前置段） | `x_pad`（GM 偏移目的地）+ `xdec`（`T.gather` + host `poly_idx`）前置形态；**Cube 部分不照搬** |
 | `examples/conv1d/_conv1d_kernel/repro/TRAP-copy-ub-offset-stride.py` | 中（关键 trap 的绕法） | UB 偏移目的地错值、GM 偏移目的地正确——`xpad` 构造形态依据 |
 ---
 

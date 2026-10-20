@@ -12,8 +12,8 @@
 
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
-| 分组卷积迁移的「group 轴解码」复用模式：一般 conv 迁移设计中把 `n×groups` 折叠进一维 persistent 的 `cid`，逐 tile 解码 `bz=cid//(GY_g·GX)`、`batch_id=bz//groups`、`group_id=bz%groups`，A/B/bias/out 全按 `group_id` 选片（`oc_base=group_id·c_out_g+by·block_M`） | P | `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel_DESIGN.md` §0.6 R1 / §1.6.3 / §3.3 注 3；源 `src/tileops/kernels/convolution/conv1d.py` L453-455 | 设计期即可复用（无需 GPU/NPU 运行） | tilelang 0.1.2+417dae99 + CANN / Ascend 910B3（实查 get_aicore_num=20） | pattern-library / 待定 |
-| group 尾块「溢出保护」的 NPU 等价改写：源用 `if c_out_g % block_m == 0: T.copy(...) else 掩码写` 防写进下一 group；NPU 侧以输出 slice extent 天然承载——`tm=min(block_M, c_out_g - by·block_M)`、`oc_base=group_id·c_out_g + by·block_M`，`oc_base+tm ≤ c_out` 恒成立，无需运行时分支 | P | `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel_DESIGN.md` §0.6 R2 / §5.4 / §9.2；源 L527-537 | 设计期即可复用 | tilelang 0.1.2+417dae99 + CANN / Ascend 910B3 | pattern-library / 待定 |
+| 分组卷积迁移的「group 轴解码」复用模式：一般 conv 迁移设计中把 `n×groups` 折叠进一维 persistent 的 `cid`，逐 tile 解码 `bz=cid//(GY_g·GX)`、`batch_id=bz//groups`、`group_id=bz%groups`，A/B/bias/out 全按 `group_id` 选片（`oc_base=group_id·c_out_g+by·block_M`） | P | `examples/conv1d/_conv1d_group_kernel/DESIGN.md` §0.6 R1 / §1.6.3 / §3.3 注 3；源 `src/tileops/kernels/convolution/conv1d.py` L453-455 | 设计期即可复用（无需 GPU/NPU 运行） | tilelang 0.1.2+417dae99 + CANN / Ascend 910B3（实查 get_aicore_num=20） | pattern-library / 待定 |
+| group 尾块「溢出保护」的 NPU 等价改写：源用 `if c_out_g % block_m == 0: T.copy(...) else 掩码写` 防写进下一 group；NPU 侧以输出 slice extent 天然承载——`tm=min(block_M, c_out_g - by·block_M)`、`oc_base=group_id·c_out_g + by·block_M`，`oc_base+tm ≤ c_out` 恒成立，无需运行时分支 | P | `examples/conv1d/_conv1d_group_kernel/DESIGN.md` §0.6 R2 / §5.4 / §9.2；源 L527-537 | 设计期即可复用 | tilelang 0.1.2+417dae99 + CANN / Ascend 910B3 | pattern-library / 待定 |
 
 ### Transferable Lessons（可迁移教训）
 
@@ -33,7 +33,7 @@
 
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
-| 分组 Conv1d（`groups>1`）在 NPU Expert 上可直接以「同族一般 kernel + group 轴解码」一次落地：把 `n×groups` 折进一维 persistent `cid`，逐 tile 解 `bz=cid//(GY_g·GX)`、`batch_id=bz//groups`、`group_id=bz%groups`，`oc_base=group_id·c_out_g+by·block_M`，A 片取 `w_flat[group_id,kw,by·BM:+tm,kc·BK:+kcl]`、B 片取 `x_gpad[batch_id,group_id,...]`、bias 取 `bias[oc_base:+tm]`、out 写 `out[batch_id,oc_base:+tm,...]`；`tm=min(block_M,c_out_g-by·block_M)`（相对 `c_out_g`）使 group 溢出保护结构化 | D | `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel.py` L180-500；实测 L0 12 + L1 40 + L2 16 + Boundary 8 全 PASS（首次尝试，0 调试迭代），配置 groups∈{1,2,3,4,8}、stride 1/2/4、dilation 1/2、pad、kW 1/3/5/7/10、c_out_g∈{8,16,17,24,32,48,50,96,168,256,320} | `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel.py` | tilelang 0.1.2+417dae99 + Ascend 910B3（get_aicore_num=20） | pattern-library / 待定 |
+| 分组 Conv1d（`groups>1`）在 NPU Expert 上可直接以「同族一般 kernel + group 轴解码」一次落地：把 `n×groups` 折进一维 persistent `cid`，逐 tile 解 `bz=cid//(GY_g·GX)`、`batch_id=bz//groups`、`group_id=bz%groups`，`oc_base=group_id·c_out_g+by·block_M`，A 片取 `w_flat[group_id,kw,by·BM:+tm,kc·BK:+kcl]`、B 片取 `x_gpad[batch_id,group_id,...]`、bias 取 `bias[oc_base:+tm]`、out 写 `out[batch_id,oc_base:+tm,...]`；`tm=min(block_M,c_out_g-by·block_M)`（相对 `c_out_g`）使 group 溢出保护结构化 | D | `examples/conv1d/_conv1d_group_kernel/_conv1d_group_kernel.py` L180-500；实测 L0 12 + L1 40 + L2 16 + Boundary 8 全 PASS（首次尝试，0 调试迭代），配置 groups∈{1,2,3,4,8}、stride 1/2/4、dilation 1/2、pad、kW 1/3/5/7/10、c_out_g∈{8,16,17,24,32,48,50,96,168,256,320} | `examples/conv1d/_conv1d_group_kernel/_conv1d_group_kernel.py` | tilelang 0.1.2+417dae99 + Ascend 910B3（get_aicore_num=20） | pattern-library / 待定 |
 
 ### Transferable Lessons（可迁移教训）
 

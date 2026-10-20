@@ -485,7 +485,7 @@ def clamp_scalar_fwd_kernel(N, dtype, output_dtype=None, min_val=None, max_val=N
 
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
-| `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md` | 高度相似（同族 clamp/NaN 迁移） | `tcmp`/`vselect` NaN 单点恢复、v-prefix 链、fp32 中转、`T.alloc_ub`、persistent 分核、UB 预算表 |
+| `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md` | 高度相似（同族 clamp/NaN 迁移） | `tcmp`/`vselect` NaN 单点恢复、v-prefix 链、fp32 中转、`T.alloc_ub`、persistent 分核、UB 预算表 |
 | `examples/TileOPs/tileops/kernels/elementwise/mish/mish_kernel/mish.py` | 高度相似（同族 unary 迁移） | Developer 模式、`T.alloc_ub`、`T.copy` 双显式 slice 尾块、v-prefix 链、fp32 中转、`T.Kernel(is_npu=True)` |
 | `examples/TileOPs/tileops/kernels/elementwise/lerp_tensor/lerp_tensor_kernel/_make_lerp_tensor_kernel.py` | 相似（同族 elementwise） | fp32 中转模式（PL-1.17-subfp32-fp32-transit）、`T.min` 尾块 |
 

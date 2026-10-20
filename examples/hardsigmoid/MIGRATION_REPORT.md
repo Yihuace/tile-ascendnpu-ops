@@ -115,7 +115,7 @@ MANIFEST_DIR=src/tileops/manifest
 
 | 工件 | 路径 | 结论字面量 |
 |---|---|---|
-| DESIGN.md | `examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel_DESIGN.md` | v1（含 §0.0 修订说明） |
+| DESIGN.md | `examples/hardsigmoid/hardsigmoid_fwd_kernel/DESIGN.md` | v1（含 §0.0 修订说明） |
 | REVIEW.md | `examples/hardsigmoid/hardsigmoid_fwd_kernel/REVIEW.md` | `结论: 通过` |
 | verify_equiv.py | `examples/hardsigmoid/hardsigmoid_fwd_kernel/verify_equiv.py` | 2 项均 `EQUIV_PASS` |
 

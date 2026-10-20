@@ -10,7 +10,7 @@
 
 ## 检视元信息
 
-- 文档: examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md
+- 文档: examples/add/add_fwd_kernel/DESIGN.md
 - 任务类型: 迁移（GPU TileOPs → TileLang-NPUIR）
 - 源算子: /mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/arithmetic.py（`AddFwdKernel`）、.../elementwise/_base.py、.../elementwise/_builders.py、.../elementwise/_broadcast.py、/mnt/workspace/TileOPs-main/src/tileops/ops/elementwise/arithmetic.py（`AddFwdOp`）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -20,7 +20,7 @@
 ## 机械复核（D-1/D-5）
 
 - verify_equiv 重跑: **EQUIV_PASS**（`python3 examples/add/add_fwd_kernel/verify_equiv.py` → `total rows: 135   EQUIV_PASS: 135   EQUIV_FAIL: 0`，`OVERALL: EQUIV_PASS`）。结构结论与 §1.6.1 内嵌表一致：行数一致（135 = item1 30 + item2 105）、覆盖一致（3 dtype × 5 shape；item1 alpha∈{1,1.0}、item2 alpha∈{1,0.5,2.0,−1.0,0.0,3}）、结论一致（全 EQUIV_PASS、0 违反 / 0 NaN 失配）。注意：脚本 `_make_inputs` 用未设种子的 `torch.randn`，故 `max ulp` 数值逐次漂移（连跑三次 item2 得 0.0124 / 0.0148 / 0.0133，base_viol 1–3），内嵌表记的 0.0128、对照基线 1.093/4 违反属其中一次采样——**判定级结论（EQUIV_PASS）稳定可复现**，仅随机 ulp 数值非定值，不构成「与内嵌表不一致」。
-- design_calc_check: `python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md` 输出（逐项）:
+- design_calc_check: `python3 .agents/tools/design_calc_check.py --design examples/add/add_fwd_kernel/DESIGN.md` 输出（逐项）:
   - `ub_budget`: **skip** — "no per-level buffer tables parsed from the memory plan (advisory checker; verify manually)"。人工复核已补做（见维度 2）：fp16/bf16 路径 112KB ✓、fp32 复用路径 96KB ✓；fp32 全 buffer 显式路径正文写 128KB、实算应为 160KB（建议级算术口径错误，仍 < 192KB）。
   - `l0c_budget`: **skip** — 无 Cube 路径（正确，本算子纯 Vector）。
   - `core_split`: **skip** — "insufficient parsed dims {}; declared logical cores = 8192"（工具未解析出 M/block 维度，人工复核已补做：§5.5 三要素齐全、算术自洽，见维度 3）。

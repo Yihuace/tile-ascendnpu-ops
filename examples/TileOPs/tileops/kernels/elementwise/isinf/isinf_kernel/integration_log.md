@@ -11,7 +11,7 @@
 - 聚合 `__init__.py`: re-export `isinf_fwd_kernel`（baseline 模块 `isinf_fwd_kernel.py`）。
 - wrapper import: 已改写为 baseline/perf_opt 双 import 切换块；baseline（`from .isinf_kernel import isinf_fwd_kernel`）默认激活，perf_opt 行注释占位。
 - ascend_mode: Developer（集成脚本从 Stage 3 kernel 的 `ASCEND_MODE = "Developer"` 读取；wrapper 原声明一致，未变更）。
-- 设计文档快照: `isinf_fwd_kernel_DESIGN.md`（源自 `examples/TileOPs/tileops/kernels/elementwise/isinf/isinf_kernel/isinf_fwd_kernel_DESIGN.md`，与集成 kernel 同目录，未修改）。
+- 设计文档快照: `isinf_fwd_kernel_DESIGN.md`（源自 `examples/isinf/isinf_fwd_kernel/DESIGN.md`，与集成 kernel 同目录，未修改）。
 - import 冒烟: `from tileops.kernels.elementwise.isinf import IsinfFwdKernel` 通过。
 - **bool 输出胶水（无需修复）**: wrapper `forward` 已是 `y = isinf_fwd_kernel(self.N_total, self.dtype_str)(x, self.N_total); return y.view(torch.bool)`，与参考算子 `isnan`/`bitwise_not` 一致。kernel 以 int8 字节落盘（`_BOOL_STORAGE_DTYPE = "int8"`），host `y.view(torch.bool)` 为纯元数据重解释，bit-exact；Op `output_dtype = torch.bool`。本次未修改 wrapper/kernel/任何交付件。
 

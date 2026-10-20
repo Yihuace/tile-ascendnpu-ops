@@ -598,7 +598,7 @@ def _conv1d_kernel(n, c_in, l_in, c_out, kernel_l, stride_l,
 | 文件路径 | 相似度 | 关键参考点 |
 |----------|--------|-----------|
 | `examples/conv1d/probe/conv1d_geomm_probe.py` | **高度相似（同算子族的可行性探针）** | `T.Scope("Cube")` + `T.alloc_L1/L0C` + `T.gemm(size=[...])`；per-tap slice 形态 `T.copy` 承载重叠/跨步 im2col；`target="npuir"` + Expert；golden = `F.conv1d` |
-| `examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_pointwise_kernel_DESIGN.md` | 高（K_W=1 的同族简化版） | Expert Cube 结构、`T.gemm(initC=(k==0), size=[M,K,N])`、MixCV bias 双槽 4-flag 握手（含 Stage 3 修正：前导置消费者侧、bias 显式 vcast） |
+| `examples/conv1d/_conv1d_pointwise_kernel/DESIGN.md` | 高（K_W=1 的同族简化版） | Expert Cube 结构、`T.gemm(initC=(k==0), size=[M,K,N])`、MixCV bias 双槽 4-flag 握手（含 Stage 3 修正：前导置消费者侧、bias 显式 vcast） |
 | `examples/TileOPs/tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/_gqa_prefill_fwd_kernel.py` | 高（Cube Expert + MixCV + persistent） | 一维 `T.Kernel(NUM_KERNELS)` + `T.serial(num_local_tasks)` + `cid` 钳位；`T.Scope("Cube")`/`T.Scope("Vector")` 双 Scope；`T.rs("PIPE_*")` 手动同步；`T.sync_block_set/wait` 跨引擎握手；分形 clamp `T.max(16, T.ceildiv(...)*16)` |
 | `examples/TileOPs/tileops/kernels/mamba/ssd_chunk_scan/ssd_chunk_scan_kernel/_ssd_chunk_scan_fwd_kernel.py` | 高（Cube Expert + Vector epilogue + 深度 2 双槽握手） | `T.gemm(..., initC=(k==0), size=[...])`；L0C→GM ws 中继；`T.vbrc`/`T.vadd`/`T.vcast` Vector 段；尾块 clamp；Expert `T.copy` 不跨 dtype（须显式 `T.vcast`）；深度 2 双槽 4-flag（消费者侧前导） |
 | `examples/TileOPs/tileops/kernels/convolution/conv1d/_conv1d_fwd_kernels.py` | 高（同源 builder 的 NPU 参考副本） | `_conv1d_kernel` 源 builder 全文（param/tiling/data-flow 契约） |

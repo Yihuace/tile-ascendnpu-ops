@@ -6,15 +6,15 @@
 
 | area | issue | evidence | suggested_doc_change | vp_type |
 |---|---|---|---|---|
-| Design-flow | 同族 `AlphaScaledBinaryKernel` 迁移直接复用 Add 设计效率最高——Sub 与 Add 仅 `_combine` 由 `+` 换 `−`，其余（广播 Op 层展平、fp32 中转、`alpha==1` 折叠、分核 persistent、UB 预算）逐字可承接；复用时须逐点核对减法特有项（次序不可交换、`0*inf` 语义、torch golden 分支） | DESIGN.md §0–§11（本体由 `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md` 结构改写）；差异见 §0.1/§0.6 R2/§1.6.1 | 迁移 skill 可在「同族已完成」时提供「同族骨架复用清单（复用字段 + 必须重核的算子特有项）」 | R |
+| Design-flow | 同族 `AlphaScaledBinaryKernel` 迁移直接复用 Add 设计效率最高——Sub 与 Add 仅 `_combine` 由 `+` 换 `−`，其余（广播 Op 层展平、fp32 中转、`alpha==1` 折叠、分核 persistent、UB 预算）逐字可承接；复用时须逐点核对减法特有项（次序不可交换、`0*inf` 语义、torch golden 分支） | DESIGN.md §0–§11（本体由 `examples/add/add_fwd_kernel/DESIGN.md` 结构改写）；差异见 §0.1/§0.6 R2/§1.6.1 | 迁移 skill 可在「同族已完成」时提供「同族骨架复用清单（复用字段 + 必须重核的算子特有项）」 | R |
 | Design-flow | 减法算子的等价性机器验证暴露出**加法不显现**的 `opmath` 域分歧：`fp32(alpha)*fp32(b)` 中间溢出时（`a=b=±max, |alpha|≥2`），两轮 fp32 链给 `±inf`，而 torch CPU alpha 路径保留扩展精度给有限 `±max`——若照抄 Add 的 verify 脚本（仅比 golden）会出现 EQUIV_FAIL | `examples/sub/sub_fwd_kernel/verify_equiv.py`（初版 4 行 EQUIV_FAIL/135，均 `(4096,)`/`(64,128)×(1,128)` dtype∈{fp32,bf16} alpha=2）；DESIGN §1.6.1 表 | design skill 的 D-1 验证模板宜提示「中间量可能溢出目标域」的算子（减法/带 alpha 缩放类）须按「正常域 vs 中间溢出子域」分域对照，而非单一 golden 对照 | R |
 
 ### Value Point Proposals
 
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
-| `torch.sub(a,b,alpha)` 的 CPU alpha 路径保留扩展精度中间值：`fp32(alpha)*fp32(b)` 溢出 fp32 时（`a=b=±max,|alpha|≥2`）golden 给有限 `±max`，而两轮 fp32 链（`vmul→vsub`）与源 GPU 算法同为 `±inf`；加法因中间溢出与结果溢出重合而不显现该分歧。sub 类迁移的 golden 对照须按「正常域（候选 vs golden，≤0.0148 tol-unit）+ 中间溢出子域（候选 vs 源算法，逐位）」分域验证 | C | examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/sub_fwd_kernel_DESIGN.md §1.6.1（EQUIV 表 + 中间溢出子域说明）；examples/sub/sub_fwd_kernel/verify_equiv.py | `python3 examples/sub/sub_fwd_kernel/verify_equiv.py`（135 行全通过；中间溢出元素 5127，0 违反） | tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B2C（实查 20 AI Core → 40）/ torch 2.7.1+cpu / 2026-10-13 | pattern-library/traps-runtime.md（数值口径类，与 TRAP-fp16-opmath-golden 同族） |
-| 同族 `AlphaScaledBinaryKernel`（add/sub/…）迁移骨架：Op 层广播展平 + 一维 Kernel + `block_size=8192` 折叠 + fp32 中转 + `alpha==1` 折叠 + `num_kernels=min(ceil(N/block), aicore×2)` persistent 分核，对 `_combine` 不同的同族算子可直接承接，仅需重核算子特有语义（减法次序、`0*inf`、golden 分支） | P | examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/sub_fwd_kernel_DESIGN.md §0–§11；examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel_DESIGN.md（同族基座） | none | tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B2C（实查 20） | pattern-library/cases.md 或 elementwise.md |
+| `torch.sub(a,b,alpha)` 的 CPU alpha 路径保留扩展精度中间值：`fp32(alpha)*fp32(b)` 溢出 fp32 时（`a=b=±max,|alpha|≥2`）golden 给有限 `±max`，而两轮 fp32 链（`vmul→vsub`）与源 GPU 算法同为 `±inf`；加法因中间溢出与结果溢出重合而不显现该分歧。sub 类迁移的 golden 对照须按「正常域（候选 vs golden，≤0.0148 tol-unit）+ 中间溢出子域（候选 vs 源算法，逐位）」分域验证 | C | examples/sub/sub_fwd_kernel/DESIGN.md §1.6.1（EQUIV 表 + 中间溢出子域说明）；examples/sub/sub_fwd_kernel/verify_equiv.py | `python3 examples/sub/sub_fwd_kernel/verify_equiv.py`（135 行全通过；中间溢出元素 5127，0 违反） | tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B2C（实查 20 AI Core → 40）/ torch 2.7.1+cpu / 2026-10-13 | pattern-library/traps-runtime.md（数值口径类，与 TRAP-fp16-opmath-golden 同族） |
+| 同族 `AlphaScaledBinaryKernel`（add/sub/…）迁移骨架：Op 层广播展平 + 一维 Kernel + `block_size=8192` 折叠 + fp32 中转 + `alpha==1` 折叠 + `num_kernels=min(ceil(N/block), aicore×2)` persistent 分核，对 `_combine` 不同的同族算子可直接承接，仅需重核算子特有语义（减法次序、`0*inf`、golden 分支） | P | examples/sub/sub_fwd_kernel/DESIGN.md §0–§11；examples/add/add_fwd_kernel/DESIGN.md（同族基座） | none | tilelang 0.1.2 dev-root + CANN 8.5.2 + Ascend910B2C（实查 20） | pattern-library/cases.md 或 elementwise.md |
 
 ### Transferable Lessons（可迁移教训）
 
@@ -30,14 +30,14 @@
 
 | area | issue | evidence | suggested_doc_change | vp_type |
 |---|---|---|---|---|
-| Develop-flow | 同族 binary+broadcast 迁移（add→sub）按「机械替换 `+`→`-`、`vadd`→`vsub`、保持 `out_idx=[2]` 与 factory 契约」一次通过，无需 debug 循环——骨架复用清单（DESIGN §3.5.3 已列 add）在实现层同样成立 | `examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/sub_fwd_kernel.py`（对照 `examples/TileOPs/tileops/kernels/elementwise/add/add_kernel/add_fwd_kernel.py`）；`--level all` exit 0 | 迁移 skill 可在实现期复用同族 `{op}.py` 作为直接模板（含 golden/分层套件/main），仅重核算子特有项（减法次序、`0*inf`、golden 用 `torch.sub`） | R |
+| Develop-flow | 同族 binary+broadcast 迁移（add→sub）按「机械替换 `+`→`-`、`vadd`→`vsub`、保持 `out_idx=[2]` 与 factory 契约」一次通过，无需 debug 循环——骨架复用清单（DESIGN §3.5.3 已列 add）在实现层同样成立 | `examples/sub/sub_fwd_kernel/sub_fwd_kernel.py`（对照 `examples/add/add_fwd_kernel/add_fwd_kernel.py`）；`--level all` exit 0 | 迁移 skill 可在实现期复用同族 `{op}.py` 作为直接模板（含 golden/分层套件/main），仅重核算子特有项（减法次序、`0*inf`、golden 用 `torch.sub`） | R |
 
 ### Value Point Proposals
 
 | title | vp_type | evidence | repro | toolchain_stamp | target_doc |
 |---|---|---|---|---|---|
-| npuir fp32 逐元素 K: 5 个显式 UB buffer（`a_ub`/`b_ub`/`a32`/`b32`/`y_ub`，均 `(8192,)`）在 npuir 编译并通过——`f32` 路径 5×32768=160KB < 192KB，未触发 UB overflow；即 add 模板的「无条件全 buffer 分配」对 fp32 直接可用，DESIGN §4.5 的 96KB 复用微优化对**正确性非必需**（仅省 UB/余量） | D | examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/sub_fwd_kernel.py（`sub_fwd_kernel` fp32 路径）；`examples/sub/sub_fwd_kernel/RETROSPECTIVE.md` 本节 | `python sub_fwd_kernel.py --level L0`（fp32 用例全 PASS） | tilelang 0.1.2+417dae9908ad2ea5ffb74294a7075b6cb64b4f2b dev-root + CANN 8.5.2 + Ascend910B2C（实查 20 AI Core → 40）/ torch 2.7.1+cpu / 2026-10-13 | pattern-library/constants.md 或 traps-runtime.md（UB 容量实证） |
-| npuir 减法次序实证：`T.vsub(a32, b32, a32)`（src0=被减数）与 `alpha==1` 折叠路径对全 dtype 精度 = 0 或 9.537e-07（fp32 内），未出现 `b-a` 符号翻转——减法算子的 src0 语义在 npuir 实现层与文档一致 | D | examples/TileOPs/tileops/kernels/elementwise/sub/sub_kernel/sub_fwd_kernel.py:184-190；`--level all` Summary | `python sub_fwd_kernel.py --level all`（L0+L1 ALL PASS） | tilelang 0.1.2+417dae99 + CANN 8.5.2 + Ascend910B2C / torch 2.7.1+cpu / 2026-10-13 | pattern-library/traps-runtime.md（vsub 次序） |
+| npuir fp32 逐元素 K: 5 个显式 UB buffer（`a_ub`/`b_ub`/`a32`/`b32`/`y_ub`，均 `(8192,)`）在 npuir 编译并通过——`f32` 路径 5×32768=160KB < 192KB，未触发 UB overflow；即 add 模板的「无条件全 buffer 分配」对 fp32 直接可用，DESIGN §4.5 的 96KB 复用微优化对**正确性非必需**（仅省 UB/余量） | D | examples/sub/sub_fwd_kernel/sub_fwd_kernel.py（`sub_fwd_kernel` fp32 路径）；`examples/sub/sub_fwd_kernel/RETROSPECTIVE.md` 本节 | `python sub_fwd_kernel.py --level L0`（fp32 用例全 PASS） | tilelang 0.1.2+417dae9908ad2ea5ffb74294a7075b6cb64b4f2b dev-root + CANN 8.5.2 + Ascend910B2C（实查 20 AI Core → 40）/ torch 2.7.1+cpu / 2026-10-13 | pattern-library/constants.md 或 traps-runtime.md（UB 容量实证） |
+| npuir 减法次序实证：`T.vsub(a32, b32, a32)`（src0=被减数）与 `alpha==1` 折叠路径对全 dtype 精度 = 0 或 9.537e-07（fp32 内），未出现 `b-a` 符号翻转——减法算子的 src0 语义在 npuir 实现层与文档一致 | D | examples/sub/sub_fwd_kernel/sub_fwd_kernel.py:184-190；`--level all` Summary | `python sub_fwd_kernel.py --level all`（L0+L1 ALL PASS） | tilelang 0.1.2+417dae99 + CANN 8.5.2 + Ascend910B2C / torch 2.7.1+cpu / 2026-10-13 | pattern-library/traps-runtime.md（vsub 次序） |
 
 ### Transferable Lessons（可迁移教训）
 

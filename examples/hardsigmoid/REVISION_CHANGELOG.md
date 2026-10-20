@@ -10,7 +10,7 @@
 | F1 | `$W/examples/hardsigmoid/MIGRATION_REPORT.md` | update | M1–M8 | rev.2：§0 修订留痕表 + §2.4 代际说明 + §2.5 护栏表 + §4.1–4.6 + §5 明细/登记 + §6 命令 |
 | F2 | `$T/pyproject.toml` | update | M5 | `[tool.ruff.lint.per-file-ignores]` 增 2 条：集成 kernel `E402`、`history_version` 冻结备份 |
 | F3 | `$T/tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py` | update | M5 | 修复 I001（导入块空行），`ruff check --fix` |
-| F4 | `$W/examples/TileOPs/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel.py` | update | M5 | Stage-3 kernel `__all__` 排序（RUF022），语义不变 |
+| F4 | `$W/examples/hardsigmoid/hardsigmoid_fwd_kernel/hardsigmoid_fwd_kernel.py` | update | M5 | Stage-3 kernel `__all__` 排序（RUF022），语义不变 |
 | F5 | `$T/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/hardsigmoid_fwd_kernel.py` | update | M5/M8 | 重跑集成时从 F4 重新拷入（`__all__` 已排序） |
 | F6 | `$T/.agents/skills/add-npu-op/scripts/integrate_kernel.py` | update | M8 | 新增 `write_integration_log()`；`main()` smoke 后调用；必写 `wrapper_rewritten` 字段 |
 | F7 | `$T/tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/integration_log.md` | update | M8 | 追加 `## integrate_kernel.py run` 段（`wrapper_rewritten: true`）+ `## History` 段 |

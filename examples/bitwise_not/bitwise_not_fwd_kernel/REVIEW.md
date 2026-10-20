@@ -5,7 +5,7 @@
 结论: 通过
 
 ## 检视元信息
-- 文档: examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel_DESIGN.md
+- 文档: examples/bitwise_not/bitwise_not_fwd_kernel/DESIGN.md
 - 任务类型: 迁移（harness，GPU→Ascend NPU）
 - 源算子: `/mnt/workspace/TileOPs-main/src/tileops/kernels/elementwise/bitwise.py`（`BitwiseNotFwdKernel`，L87-106；`BITWISE_DTYPES` 在 `_dtype.py` L12-19）+ `_base.py`（`UnaryKernel` L158-256 / `_restore_output_dtype` L100-101）+ `_builders.py`（`make_unary_regcopy` L85-121 / `make_unary_direct` L63-81）+ `_policy.py`（`choose_unary_strategy` L165-174）+ `_op_body.py`（`store_unary_bool_as_int8` L71-77）+ `ops/elementwise/bitwise.py`（`BitwiseNotFwdOp` L42-45）
 - 检视维度: 9 项（源算子理解与迁移分析 / API 可行性 / 内存层级 / Tiling / 技术约束 / 循环同步 / 验证方案 / 完整性 / 算法优化分析）
@@ -15,7 +15,7 @@
 ## 机械复核（D-1/D-5）
 
 - **verify_equiv 重跑: PASS**。`python3 examples/bitwise_not/bitwise_not_fwd_kernel/verify_equiv.py` 退出码 0，输出与 §1.6.1 内嵌结果表**逐项一致**：采纳项 1「`xor(x, all-ones)` → `vnot(x)`」uint8/int8/int16/int32/int64 各 4101 元素 **mismatches = 0 / EQUIV_PASS**；采纳项 2「`(x==0)` → `(x^1)`（bool 字节存储）」bool 4098 元素 **mismatches = 0 / EQUIV_PASS**；总体结论「全部 EQUIV_PASS — 可采纳」。**无 EQUIV_FAIL**，脚本缺失/执行失败均不成立。
-- **design_calc_check**（脚本实际入参为 `--design`；任务书所写 `--dir` 非该脚本参数，改按工具用法执行）：`python3 .agents/tools/design_calc_check.py --design examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel_DESIGN.md` 输出 JSON `checks` 摘要：
+- **design_calc_check**（脚本实际入参为 `--design`；任务书所写 `--dir` 非该脚本参数，改按工具用法执行）：`python3 .agents/tools/design_calc_check.py --design examples/bitwise_not/bitwise_not_fwd_kernel/DESIGN.md` 输出 JSON `checks` 摘要：
   - `ub_budget`: **skip**（"no per-level buffer tables parsed from the memory plan"）——**机械跳过，人工已核**：§4.5 逐 dtype 峰值 = 2 × block_size × elem_bytes（x_ub + y_ub）——1B（bs=8192）16KB、2B 32KB、4B（bs=8192）64KB、8B（bs=4096）64KB；最大 **64KB < 192KB** ✓；按 §4.5 上偏系数 ×1.12 ≈ 72KB、按 `TRAP-UB-multibuffer-inflation` ×1.7 ≈ 109KB，均 < 192KB。int64 取 bs=4096 使 8B 峰值与 int32 齐平，无溢出。
   - `l0c_budget`: **skip**（"no affirmative Cube-path API in this design"）——**机械跳过，人工已核**：纯 Vector 算子，无 `T.gemm`/`load_nd2nz`/`store_fixpipe`/`Scope(Cube)`，L0C 不适用。
   - `core_split`: **skip**（"insufficient parsed dims {}; declared logical cores = 40"）——**机械跳过，人工已核**：`declared logical cores = 40` 为解析伪影（40 是 §5.5 的**物理向量核数**，非逻辑核数）。分核算术独立复算自洽：逻辑核数 = `ceil(N/block_size)`（smoke-1m int32 1048576→**128**、16m int32 →**2048**、16m int64（bs=4096）→**4096**、256m int32 →**32768**）；物理核数实查 `NPUUtils.get().get_aicore_num()` = **20**（本检视独立复跑得 20，与 §5.5 记录一致），纯 Vector ×2 = **40**；`num_kernels = min(num_logical, 40)`，`num_local_tasks = ceil(num_logical/40)`（128→4、2048→52、4096→103、32768→820），与 §5.5 表逐行一致，边界全静态。
