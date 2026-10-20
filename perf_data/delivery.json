@@ -1,0 +1,45 @@
+{
+  "_note": "19 接口【最新 9.0 实测】交付数据（唯一事实源）。源：examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2（2026-10-18 统一端到端重测表）+ GDN 的 2026-10-19 per-kernel msprof 汇总（reports/optimize/GatedDeltaNetPrefillFwdOp/OPTIMIZE_REPORT.md §3）。",
+  "_why_snapshot": "2026-10-18 及之后的 per-run 报告目录被 .gitignore 忽略、未入库，无法从 run.json 自动提取；故以该交付表为机器快照，逐行转录自 FINAL_DELIVERY_20261018.md §2（含达标 a/b 与正确性）。",
+  "_caliber": {
+    "cann": "9.0.0",
+    "soc": "Ascend910B3",
+    "ratio_definition": "msprof op Roofline GM Read+Write SOL / 实测 Task Duration（端到端 tileops-report）",
+    "measured_at": "2026-10-18（GDN 为 2026-10-19）"
+  },
+  "operators": {
+    "HardsigmoidFwdOp": { "ratio_pct": [0.37, 61.52], "meeting": 0, "adjustable": 2, "correctness": "7/7", "kernel": "perf_opt" },
+    "ClampScalarFwdOp": { "ratio_pct": [58.21, 70.16], "meeting": 1, "adjustable": 11, "correctness": "11/11", "kernel": "perf_opt" },
+    "HardswishFwdOp": { "ratio_pct": [50.2, 60.95], "meeting": 2, "adjustable": 6, "correctness": "7/7", "kernel": "baseline" },
+    "AddFwdOp": { "ratio_pct": [69.37, 83.48], "meeting": 10, "adjustable": 11, "correctness": "24/24", "kernel": "perf_opt" },
+    "SubFwdOp": { "ratio_pct": [70.7, 84.0], "meeting": 15, "adjustable": 15, "correctness": "24/24", "kernel": "perf_opt" },
+    "GeluAndMulFwdOp": { "ratio_pct": [4.05, 47.71], "meeting": 0, "adjustable": 4, "correctness": "11/11", "kernel": "perf_opt" },
+    "GeluTanhAndMulFwdOp": { "ratio_pct": [2.22, 47.63], "meeting": 0, "adjustable": 4, "correctness": "11/11", "kernel": "perf_opt" },
+    "IsnanFwdOp": { "ratio_pct": [52.91, 79.33], "meeting": 1, "adjustable": 5, "correctness": "9/9", "kernel": "baseline" },
+    "IsinfFwdOp": { "ratio_pct": [41.45, 78.13], "meeting": 1, "adjustable": 5, "correctness": "9/9", "kernel": "perf_opt" },
+    "IsfiniteFwdOp": { "ratio_pct": [42.29, 78.29], "meeting": 1, "adjustable": 5, "correctness": "9/9", "kernel": "perf_opt" },
+    "FusedAddLayerNormFwdOp": { "ratio_pct": [0.54, 43.89], "meeting": 0, "adjustable": 5, "correctness": "14/14", "kernel": "perf_opt" },
+    "BatchNormBwdOp": { "ratio_pct": [11.91, 24.44], "meeting": 0, "adjustable": 6, "correctness": "12/12", "kernel": "perf_opt", "note": "subid 去双计，与优化前不可比" },
+    "Conv1dFwdOp": { "ratio_pct": [0.04, 1.79], "meeting": 0, "adjustable": 15, "correctness": "27 passed + 1 skipped", "kernel": "perf_opt", "note": "正确性 0 failed（此前记录的 CG-2026-0003 失败已随工具链/用例调整消失）；bench 仍有 flaky unit_stride" },
+    "ClampMinFwdOp": { "ratio_pct": [61.77, 68.84], "meeting": 0, "adjustable": 7, "correctness": "14/14", "kernel": "复用 ClampScalar" },
+    "LerpFwdOp": { "ratio_pct": [60.22, 82.03], "meeting": 9, "adjustable": 11, "correctness": "36/36", "kernel": "baseline" },
+    "Conv1dBiasFwdOp": { "ratio_pct": [0.03, 1.73], "meeting": 0, "adjustable": 8, "correctness": "27 passed + 1 skipped", "kernel": "perf_opt", "note": "正确性 0 failed；bench 仍有 flaky unit_stride" },
+    "Conv3dBiasFwdOp": { "ratio_pct": [1.68, 20.43], "meeting": 0, "adjustable": 3, "correctness": "17/17", "kernel": "perf_opt", "note": "r3d-stem 2.36×、unet 21.3×（Task Duration）" },
+    "GLADecodeOp": { "ratio_pct": [3.1, 20.16], "meeting": 0, "adjustable": 5, "correctness": "11/11", "kernel": "perf_opt" },
+    "GatedDeltaNetPrefillFwdOp": {
+      "ratio_pct": null,
+      "meeting": null,
+      "adjustable": null,
+      "correctness": "10/10",
+      "kernel": "K1+K2 split+K6 batched",
+      "self_sol": {
+        "migrated_pct": 0.027,
+        "optimized_pct": 0.357,
+        "migrated_latency_us": 110195.1,
+        "optimized_latency_us": 8264.4,
+        "note": "per-kernel msprof Task Duration 汇总 + op-level roofline（eval_roofline）；**不是 msprof op 的 ratio**，与其它行不可横比。迁移态由 per-head H1×16 重建（估算），非直测。"
+      },
+      "perf_note": "S=4096,H=16,K=128：110195.1 → 8264.4 µs（−92.5%，约 13.3×）；墙钟 4383 → 998 ms（4.4×）；瓶颈 vec_p_main 占 62%。K5/CP 与小 shape fallback 待续。"
+    }
+  }
+}

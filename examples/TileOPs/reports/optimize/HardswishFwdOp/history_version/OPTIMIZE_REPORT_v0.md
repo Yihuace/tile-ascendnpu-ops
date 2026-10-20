@@ -6,7 +6,7 @@
 | 算子 | `HardswishFwdOp`；单 kernel/单 func/纯 Vector（AIV） |
 | kernel | `tileops/kernels/elementwise/hardswish/hardswish_kernel/` |
 | 口径 | `msprof op Task Duration(us)` |
-| 工具链 | tilelang `0.1.2+417dae99` / **CANN 8.5.2** / Ascend910B3 |
+| 工具链 | tilelang `0.1.2+417dae99` / **上一代工具链**（版本见 `docs/cann9_adaptation.md` §13 两代对照）/ Ascend910B3 |
 
 ## 1. 结论（重要）：**该算子 compute-bound，无实质优化空间**
 `PipeUtilization`（fc-wide fp16）：**`aiv_vec_ratio=0.939`**、mte2=0.534、mte3=0.275

@@ -1,5 +1,7 @@
 # 优化报告：GeluAndMulFwdOp（Stage-4 optimize）
 
+> **口径（2026-10-20 修订）**：本文件是**过程记录**——第 3 节的逐轮测量沿用**当时工具链**，**不参与交付口径**。交付数据一律取 `perf_data/canonical.json`（CANN 9.0.0，每算子恰好一条记录），其中同时给出**迁移态（优化前）**与**交付态（当前交付）**两列；本文数字与之不一致时以 SSOT 为准。同 case 的前后对比见 `examples/TileOPs/reports/迁移与优化总报告.md` 的汇总表。
+
 ## 0. 身份
 
 | 项 | 值 |
@@ -29,7 +31,7 @@
 
 | 观测 | 数值 | 结论 |
 |---|---|---|
-| 瓶颈 pipe | `aiv_vec_ratio = 0.943`、`aiv_mte2_ratio = 0.246`、`aiv_scalar_ratio = 0.147`（prefill fp16，PipeUtilization） | **compute-bound**：Vector FP32 单元是唯一瓶颈（上一轮 8.5.2 记 0.879，本轮复测 0.943，结论未变） |
+| 瓶颈 pipe | `aiv_vec_ratio = 0.943`、`aiv_mte2_ratio = 0.246`、`aiv_scalar_ratio = 0.147`（prefill fp16，PipeUtilization） | **compute-bound**：Vector FP32 单元是唯一瓶颈（上一轮记 0.879，本轮复测 0.943，结论未变） |
 | GM SOL | prefill GM Read+Write SOL ≈ 43–48%（表内 final 46.86 / 47.70） | **非正确判据**：实测向量利用率 ≥0.9 → 按豁免规则 3 改判向量利用率 |
 | 链长构成 | fp16/bf16：2 vcast + erf 段 + gelu 链 + 1 vcast；主瓶颈 = deg-20 Horner erf（40 条 vmul/vadd） | 优化目标 = 减向量 op 数，而不是搬流量 |
 | 精度需求 vs 实际阶数 | fp16/bf16 输出只需 ~1e-3 erf 精度（输出容差 1e-2 / 1.6e-2），远不需要 deg-20 的 2.98e-7 精度 | **deg-20 严重过剩** → 阶数是可动杠杆 |
@@ -39,7 +41,7 @@
 
 ### 2.2 方法（做了什么、为什么这样做）
 
-本轮在 CANN 9.0.0 重采 + 追加；上一轮（CANN 8.5.2）已合入的「删除冗余 NaN 恢复」（−9.3%）作为起点（current best `nan_drop`）。
+本轮在 CANN 9.0.0 重采 + 追加；上一轮（工具链升级前）已合入的「删除冗余 NaN 恢复」（−9.3%）作为起点（current best `nan_drop`）。
 
 1. **T1：dtype 分化多项式阶数（主杠杆）**
    - 改了什么：fp16/bf16 用 **deg-10 minimax** 多项式替代 deg-20（系数 |c|≤309、fp32 求值、max erf err 1.4e-4），**fp32 保持 deg-20**；分支在 trace-time 按 dtype 展开（非运行时条件路径）。
@@ -60,7 +62,7 @@
 
 | 轮次 | 候选 | 改动 | 结果 | 处置 |
 |---|---|---|---|---|
-| R0 | `nan_drop`（上一轮，CANN 8.5.2） | 删除冗余 NaN 恢复（−9.3%），本轮在 9.0.0 重采为起点 | prefill fp16 800.076µs / bf16 804.756µs / swiglu 13.850 / 13.910µs | ✅ 起点 current best |
+| R0 | `nan_drop`（上一轮，工具链升级前） | 删除冗余 NaN 恢复（−9.3%），本轮在 9.0.0 重采为起点 | prefill fp16 800.076µs / bf16 804.756µs / swiglu 13.850 / 13.910µs | ✅ 起点 current best |
 | R1 | `op10`（deg-10） | fp16/bf16 用 deg-10 minimax，fp32 保持 deg-20 | prefill 505.640 / 510.370µs（**−36.8% / −36.6%**）、swiglu 9.750 / 10.040µs，L0 PASS | ✅ winner（主杠杆） |
 | R1 | `op12`（deg-12） | fp16/bf16 用 deg-12 minimax | prefill 564.521 / 569.381µs、swiglu 10.740 / 10.810µs，L0 PASS | ❌ 否决：精度过剩、op 更多 → 更慢 |
 | R2 | `fold` | 折叠 `z=gate/√2` 与 `u=t/4` 为 `clamp(gate,±4√2)·1/(4√2)` | **精度 FAIL**：破坏精确饱和，`gelu(-inf)` 变 `-inf`，L1-4/Boundary 失败 | ❌ 否决：`c0=1/A` 精确性不可破坏 |

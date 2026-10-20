@@ -1,6 +1,8 @@
 # 优化报告：HardsigmoidFwdOp（Stage-4 optimize）
 
-> 口径说明：本文件为 **CANN 9.0.0 重跑版**（依据同目录 `perf_opt/opt_log.md`）。原 CANN 8.5.2 版本
+> **口径（2026-10-20 修订）**：本文件是**过程记录**——第 3 节的逐轮测量沿用**当时工具链**，**不参与交付口径**。交付数据一律取 `perf_data/canonical.json`（CANN 9.0.0，每算子恰好一条记录），其中同时给出**迁移态（优化前）**与**交付态（当前交付）**两列；本文数字与之不一致时以 SSOT 为准。同 case 的前后对比见 `examples/TileOPs/reports/迁移与优化总报告.md` 的汇总表。
+
+> 口径说明：本文件为 **CANN 9.0.0 重跑版**（依据同目录 `perf_opt/opt_log.md`）。原（上一代工具链）版本
 > （fc-wide 55.7% / 64.6%）已归档到 `history_version/OPTIMIZE_REPORT_v0.md`，**两版数值不得混排**。
 
 ## 0. 身份
@@ -14,8 +16,8 @@
 | **工具链版本戳** | tilelang `0.1.2` dev root（`/home/developer/tilelang-mlir-ascend`，AscendNPU-IR `31f6903`）/ **CANN 9.0.0**（bishengir-compile 1.1.0 `428ab8fdab46` + hivmc 0.2.0）/ torch 2.7.1 / torch_npu 2.7.1.post4 / **Ascend910B3**（Chip 6，20 AIC / 40 AIV）/ 2026-10-18 |
 | 达标线 | 逐元素/访存受限 **SOL ≥70%**；微型 shape（≤5µs）豁免；判据失配（向量利用率 ≥0.9）改用向量利用率判据（仍要求 Task Duration 下降）。**AI：fc-wide fp16 = 2.50 / bf16 = 3.00**；实测 roofline `advice = latency bound:compute caused`、`computility = Vec_FP32(99.98%)` ⇒ 归类为 compute-bound |
 | benchmark | `benchmarks/ops/bench_hardsigmoid.py::test_hardsigmoid_bench`（6 tune + 3 smoke） |
-| 过程日志 | `.../perf_opt/opt_log.md`、`perf_records.jsonl`、`workload_inventory.json`、`profiles/`、`logs/`、`batch_measure_out.txt`、`final_measure_out.txt`；旧 8.5.2 记录 `perf_records.cann852.jsonl.bak` |
-| 前置报告 | `history_version/OPTIMIZE_REPORT_v0.md`（**CANN 8.5.2 旧版**：fc-wide fp16 55.7% / bf16 64.6%） |
+| 过程日志 | `.../perf_opt/opt_log.md`、`perf_records.jsonl`、`workload_inventory.json`、`profiles/`、`logs/`、`batch_measure_out.txt`、`final_measure_out.txt`；旧记录备份（上一代工具链）**已从交付面移除** |
+| 前置报告 | `history_version/OPTIMIZE_REPORT_v0.md`（**旧版·上一代工具链**：fc-wide fp16 55.7% / bf16 64.6%） |
 
 ## 1. 结论
 
@@ -46,7 +48,7 @@
 
 | 观测 | 数值 | 结论 |
 |---|---|---|
-| baseline（9.0.0 重测现状 kernel） | fc-wide fp16 **17.16µs / 55.6%**；bf16 **17.98µs / 59.7%** | 起点已比 8.5.2 旧版（17.2µs / 16.9µs）不同；bf16 17.98µs 高于旧版 16.9µs，提示基线侧可能采到慢态 |
+| baseline（9.0.0 重测现状 kernel） | fc-wide fp16 **17.16µs / 55.6%**；bf16 **17.98µs / 59.7%** | 起点已比旧版（上一代工具链，17.2µs / 16.9µs）不同；bf16 17.98µs 高于旧版 16.9µs，提示基线侧可能采到慢态 |
 | roofline / 归类 | AI **2.50**（fp16）/ **3.00**（bf16）；`advice = latency bound:compute caused`；`computility = Vec_FP32(99.98%)` | **判据失配**：GM Read+Write SOL ≥70% 是访存判据，本算子向量计算受限 |
 | 瓶颈 pipe（fc-wide fp16） | `aiv_vec_time ≈ 12.8µs`（占 Task Duration ~74%）、`aiv_vec_ratio ≈ 0.85`；`aiv_mte2_time ≈ 11µs` / `ratio ≈ 0.72`；`aiv_mte3_time ≈ 5µs`（~33%）；`aiv_scalar_time ≈ 1.1–2.4µs` | 向量链主导；MTE2 与向量链部分重叠；per-tile 分支/`T.min` 有少量标量开销 |
 | 计算链 | fp32 链 = `vcast + vadd + vclamp(2) + vmul` ≈ 5 fp32 op/elem（`aiv_vec_fops/elem ≈ 5.08`） | 已是语义最小（多步链须 fp32 中转对齐 torch golden，PL-1.17） |
@@ -119,7 +121,7 @@ bf16 的 −2.6% / −3.4% 方向相反，均落在噪声带内；bf16 baseline 
 | token input/output/reasoning | 原文未记录（9.0.0） |
 | token 合计 / cost | 原文未记录（9.0.0） |
 
-> 仅 CANN 8.5.2 旧版报告记录过 ≈33.0 min、11,564 token、$0.0212（见
+> 仅旧版（上一代工具链）报告记录过 ≈33.0 min、11,564 token、$0.0212（见
 > `history_version/OPTIMIZE_REPORT_v0.md`）。该数据属**旧工具链口径，不得与本文件 §3 的 9.0.0 性能数据混排**。
 
 ## 6. 产物
@@ -129,8 +131,8 @@ bf16 的 −2.6% / −3.4% 方向相反，均落在噪声带内；bf16 baseline 
 | final kernel | `.../hardsigmoid_kernel/perf_opt/HardsigmoidFwdOp.py`（winner `pipe2`） |
 | 起点 kernel（9.0 baseline） | `.../perf_opt/hardsigmoid_fwd_kernel.py`（上一轮 Stage-4 现状，5 向量 op） |
 | 调优记录 | `.../perf_opt/opt_log.md`、`perf_records.jsonl`、`workload_inventory.json`、`profiles/`、`logs/`、`batch_measure_out.txt`、`final_measure_out.txt`、`logs_l0_pipe2_run1.txt` |
-| 旧 8.5.2 记录 | `.../perf_opt/perf_records.cann852.jsonl.bak` |
-| 迁移期 / 旧版报告 | `reports/tileops/20261015_113947_514885_HardsigmoidFwdOp/`（baseline，8.5.2）/ `reports/tileops/20261015_214729_104006_HardsigmoidFwdOp/`（perf_opt，8.5.2，passed） |
+| 旧记录（上一代工具链） | 已移除、不上交付面（原为 `perf_opt/perf_records.*.jsonl.bak` 备份） |
+| 迁移期 / 旧版报告 | `reports/tileops/20261015_113947_514885_HardsigmoidFwdOp/`（baseline，上一代工具链）/ `reports/tileops/20261015_214729_104006_HardsigmoidFwdOp/`（perf_opt，上一代工具链，passed） |
 | 端到端 report（9.0.0） | 队列表记「正确性 7/7、单算子 report status=passed」；report 目录路径原文未记录 |
 | gate 4 | 原文未记录（9.0.0 版 opt_log 未载 gate 结论；队列表该算子状态记 DONE） |
 | 算子状态 | `phase=DONE`（`.stage_state.json`：`perf_iteration.count=1`、`last_improvement=0.0`、`stage_status[4]=completed`） |
@@ -148,7 +150,7 @@ bf16 的 −2.6% / −3.4% 方向相反，均落在噪声带内；bf16 baseline 
 - **ceiling 证据**：fp32 链 5 op 已是语义最小（PL-1.17：多步链须 fp32 中转对齐 torch golden）；
   native fp16 无吞吐收益（CG-2026-0006：f16 与 f32 逐元素速率相同）⇒ 参数/tiling 级无剩余空间。
 - **贴线风险**：无贴线项（2 个可调 shape 属判据失配，不是「差一点到线」）；但也**没有 Task Duration 收益**。
-- **8.5 旧值**：CANN 8.5.2 版结论（fc-wide fp16 55.7% / bf16 64.6%，opt 17.2 / 16.9µs）见
+- **旧值（上一代工具链）**：旧版结论（fc-wide fp16 55.7% / bf16 64.6%，opt 17.2 / 16.9µs）见
   `history_version/OPTIMIZE_REPORT_v0.md`；**不得与本节 9.0.0 数据混排或拼接**。
 - **能力缺口**：原文未记录新 CG 编号；本轮只引用既有 CG-2026-0006（f16/f32 同速率）。
 
@@ -159,6 +161,6 @@ bf16 的 −2.6% / −3.4% 方向相反，均落在噪声带内；bf16 baseline 
    本报告不主张净收益。
 2. **不要在 compute-bound 的 5-op fp32 链上继续投结构杠杆**：本轮已证 `T.Pipelined(2)` 是 wash；
    若要跨 70% SOL，只能减少向量 op 数（语义上已最小）或改用向量利用率判据。
-3. **跨 CANN 版本复核**：8.5.2 与 9.0.0 的 fc-wide 数值不可混排；升级后需重跑 6 个 tune workload 与
+3. **跨 CANN 版本复核**：上一代工具链与 9.0.0 的 fc-wide 数值不可混排；升级后需重跑 6 个 tune workload 与
    3 个 smoke（`smoke-1m` fp32/fp16/bf16）的精度。
 4. 未解决项：Task Duration 未变短（bf16 −3.4%、fp16 +3.0%，噪声带内），如实留档，不宣称收益。

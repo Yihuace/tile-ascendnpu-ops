@@ -13,52 +13,52 @@
 >   `Conv1dFwdOp`（1/28 失败）与 `Conv1dBiasFwdOp`（5/28 失败）的失败用例**全部**为卷积族工具链缺陷
 >   **CG-2026-0003**（`bishengir-compile` 带 LLVM crash backtrace 的 SIGSEGV），已按**工具链绑定 xfail**
 >   （`tests/conftest.py`，仅 `CANN==9.0.0` 生效、`strict=False`，修好即 XPASS）处理；
->   故下表这 2 行**仍标 8.5.2 全通过值**，9.0 下的有效通过数与失败清单以 §11.1 为准。
->   其余 **16 个已交付算子**在 9.0 与 8.5.2 下均全通过；`GatedDeltaNetPrefillFwdOp` in-scope 主路径已交付（10/10）；K5/CP 待续。
+>   故下表这 2 行**仍标 上一代工具链 全通过值**，9.0 下的有效通过数与失败清单以 §11.1 为准。
+>   其余 **16 个已交付算子**在 9.0 与 上一代工具链 下均全通过；`GatedDeltaNetPrefillFwdOp` in-scope 主路径已交付（10/10）；K5/CP 待续。
 >
-> - **性能 ratio 列 = 8.5.2 口径**（未标注行）。9.0「迁移态」快扫偏差见 §13（18 算子 / 77 用例：**中位 1.64%**、P90 10.13%，
->   56% 用例 ≤2%，**无系统回退**）。按 §13.6 判定：**大 shape 与 fp16/bf16 行可照用 8.5 值**（±2%）；µs 级小用例仅作量级参考（±10%）；
+> - **性能 ratio 列 = 上一代工具链 口径**（未标注行）。9.0「迁移态」快扫偏差见 §13（18 算子 / 77 用例：**中位 1.64%**、P90 10.13%，
+>   56% 用例 ≤2%，**无系统回退**）。按 §13.6 判定：**大 shape 与 fp16/bf16 行可照用 上一代工具链 值**（±2%）；µs 级小用例仅作量级参考（±10%）；
 >   例外需修正后再用 —— `BatchNormBwd` large-spatial/fp16 **+22.7%**、clamp 家族 fp32 **+7~8%**。
 >
 > - 9.0.0 正式报告（3 份，`20261017_*`）：`HardsigmoidFwdOp` / `ClampScalarFwdOp` / `HardswishFwdOp`（路径见下方各行报告指针）。
 >
 > 工具链版本戳见 §C 与 `versions.txt`。
 
-| 算子 | family | 批次 | 状态 | 正确性 | 性能 ratio | 报告指针 |
+| 算子 | family | 批次 | 状态 | 正确性 | 性能 ratio（9.0：迁移态 → 交付态） | 报告指针 |
 |---|---|---|---|---|---|---|
-| `HardsigmoidFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 7/7, max_abs_err 5.96e-08 | 0.46%–55.07% (6 shapes) | `examples/hardsigmoid/MIGRATION_REPORT.md`；run `reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/` |
-| `ClampScalarFwdOp` | elementwise | 1a | ✅ **已完成**（harness, `phase=DONE`） | 11/11, max_abs_err 0.00e+00 | 44.93%–71.81% (11 shapes) | `examples/TileOPs/reports/tileops/20261013_141507_226988_ClampScalarFwdOp/` |
-| `HardswishFwdOp` | elementwise | 1a | ✅ **已完成**（harness, `phase=DONE`） | 7/7, max_abs_err 4.77e-07 | 49.89%–60.61% (6 shapes) | `examples/TileOPs/reports/tileops/20261013_150641_447235_HardswishFwdOp/` |
-| `AddFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 24/24, max_abs_err 0.00e+00 | 66.12%–82.16% (11 shapes) | `examples/TileOPs/reports/tileops/20261013_162043_457669_AddFwdOp/` |
-| `SubFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 24/24, max_abs_err 0.00e+00 | 68.43%–82.70% (15 shapes) | `examples/TileOPs/reports/tileops/20261013_170400_275674_SubFwdOp/` |
-| `GeluAndMulFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`；1 轮设计修订） | 11/11, max_abs_err 1.43e-06(fp32)/0.0312(bf16) | 4.77%–43.99% (5 shapes) | `examples/TileOPs/reports/tileops/20261013_215524_720318_GeluAndMulFwdOp/` |
-| `GeluTanhAndMulFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 11/11, max_abs_err 0(fp32)/1.56e-02(bf16) | 2.46%–49.73% (5 shapes) | `examples/TileOPs/reports/tileops/20261013_224655_433825_GeluTanhAndMulFwdOp/` |
-| `IsnanFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`；1 设计修订） | 9/9, max_abs_err 0.00e+00 | 51.91%–74.40% (5 shapes) | `examples/TileOPs/reports/tileops/20261014_093134_398669_IsnanFwdOp/` |
-| `IsinfFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`） | 9/9, max_abs_err 0.00e+00 | 41.21%–75.58% (5 shapes) | `examples/TileOPs/reports/tileops/20261014_101823_741698_IsinfFwdOp/` |
-| `IsfiniteFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`） | 9/9, max_abs_err 0.00e+00 | 40.78%–72.06% (5 shapes) | `examples/TileOPs/reports/tileops/20261014_105757_589000_IsfiniteFwdOp/` |
-| `FusedAddLayerNormFwdOp` | norm | 2 | ✅ **已完成**（harness, `phase=DONE`） | 14/14, max_abs_err 1.56e-02(bf16) | 27.52%–45.08% (7 shapes) | `examples/TileOPs/reports/tileops/20261014_115534_389335_FusedAddLayerNormFwdOp/` |
-| `BatchNormBwdOp` | norm | 3 | ✅ **已完成**（harness, `phase=DONE`；3 kernel: wide/split/general） | 12/12, avg max_abs_err 2.29e-03 | ratio 15.80%–29.98%（msprof；ratio 解析缺口已修） | `examples/TileOPs/reports/tileops/20261015_162156_553625_BatchNormBwdOp/` |
-| `Conv1dFwdOp` | convolution | 3 | ✅ **已完成**（harness, `phase=DONE`；5 kernel） | 28/28, avg max_abs_err 3.91e-02 | ratio 0.07%–0.46%（msprof；极低，待 optimize） | `examples/TileOPs/reports/tileops/20261015_162520_967795_Conv1dFwdOp/` |
-| `ClampMinFwdOp` | elementwise | 1c | ✅ **已完成**（薄接口；复用 ClampScalar kernel，max=None；fp32 block_size 修正） | 14/14, max_abs_err 0.00e+00 | benchmark 10/10（fp32 UB 溢出已修，block_size 8192→4096） | `examples/TileOPs/reports/tileops/20261014_214827_195753_ClampMinFwdOp/` |
-| `LerpFwdOp`（标量权重） | elementwise | 1c | ✅ **已完成**（薄接口；新 npuir `lerp_scalar` 二元 kernel） | 36/36, fp16≤1.95e-3 / bf16≤1.56e-2 | 见 `git show 5fd2613` | `tests/ops/test_lerp_scalar.py` |
-| `Conv1dBiasFwdOp` | convolution | 3 | ✅ **已完成**（薄接口；复用已迁 Conv1d 5 kernel 的 has_bias 路径） | 28/28, max_abs_err 2.50e-01(bf16) | 见 `git show b2b4a4b` | `tests/ops/test_conv1d_bias.py` |
-| `Conv3dBiasFwdOp` | convolution | 3 | ✅ **已完成**（新增 dense NCDHW implicit-GEMM + MixCV bias kernel；stride/dilation/pad 通用，W 轴 polyphase） | 17/17, max_abs_err 3.125e-02(fp16 r3d-stem) / 5.00e-01(bf16 unet-encoder) | 迁移 0.73%–6.17% → 优化 1.68%–20.43%（msprof） | `examples/TileOPs/reports/tileops/20261018_185919_687302_Conv3dBiasFwdOp/` |
-| `GLADecodeOp` | linear_attention | 4 | ✅ **已完成**（Vector kernel；K-tile 流式 state，bf16 fp32 中转） | 11/11, worst max_abs_err 1.51e-02(bf16) | ratio 2.47%–14.12%（msprof，5 shapes） | `examples/TileOPs/reports/tileops/20261015_141409_254847_GLADecodeOp/` |
-| `GatedDeltaNetPrefillFwdOp` | linear_attention | 4 | ✅ **in-scope 主路径已交付**：K1 cumsum + K2 split blocksolve + K6 split forward（K=V∈{64,128}，含尾 chunk）；K5/CP 仍 pending，fallback 保留 | **10/10**（`tests/ops/test_gdn.py`，含 in-scope + tail） | **per-kernel msprof：迁移 0.027% → 优化 0.357%（4k/H16，约 13.3×）**；墙钟 4.4× vs fallback | `tests/ops/test_gdn.py`；`gdn_split_*.py`；`GatedDeltaNetPrefillFwdOp/OPTIMIZE_REPORT.md` |
+| `HardsigmoidFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 7/7, max_abs_err 5.96e-08 | 55.6–59.7% → 0.37–61.52%（0/2 达标） | `examples/hardsigmoid/MIGRATION_REPORT.md`；run `reports/tileops/20261012_223321_664388_HardsigmoidFwdOp/` |
+| `ClampScalarFwdOp` | elementwise | 1a | ✅ **已完成**（harness, `phase=DONE`） | 11/11, max_abs_err 0.00e+00 | 45.1–64.4% → 58.2–70.2%（1/11 达标） | `examples/TileOPs/reports/tileops/20261013_141507_226988_ClampScalarFwdOp/` |
+| `HardswishFwdOp` | elementwise | 1a | ✅ **已完成**（harness, `phase=DONE`） | 7/7, max_abs_err 4.77e-07 | 50.2–61.0% → 50.2–61.0%（2/6 达标） | `examples/TileOPs/reports/tileops/20261013_150641_447235_HardswishFwdOp/` |
+| `AddFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 24/24, max_abs_err 0.00e+00 | 69.5–82.3% → 69.4–83.5%（10/11 达标） | `examples/TileOPs/reports/tileops/20261013_162043_457669_AddFwdOp/` |
+| `SubFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 24/24, max_abs_err 0.00e+00 | 68.1–83.4% → 70.7–84.0%（15/15 达标） | `examples/TileOPs/reports/tileops/20261013_170400_275674_SubFwdOp/` |
+| `GeluAndMulFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`；1 轮设计修订） | 11/11, max_abs_err 1.43e-06(fp32)/0.0312(bf16) | 34.4–44.0% → 4.05–47.71%（0/4 达标） | `examples/TileOPs/reports/tileops/20261013_215524_720318_GeluAndMulFwdOp/` |
+| `GeluTanhAndMulFwdOp` | elementwise | 1b | ✅ **已完成**（harness, `phase=DONE`） | 11/11, max_abs_err 0(fp32)/1.56e-02(bf16) | 23.3–49.7% → 2.22–47.63%（0/4 达标） | `examples/TileOPs/reports/tileops/20261013_224655_433825_GeluTanhAndMulFwdOp/` |
+| `IsnanFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`；1 设计修订） | 9/9, max_abs_err 0.00e+00 | 51.1–77.3% → 52.9–79.3%（1/5 达标） | `examples/TileOPs/reports/tileops/20261014_093134_398669_IsnanFwdOp/` |
+| `IsinfFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`） | 9/9, max_abs_err 0.00e+00 | 41.7–71.9% → 41.5–78.1%（1/5 达标） | `examples/TileOPs/reports/tileops/20261014_101823_741698_IsinfFwdOp/` |
+| `IsfiniteFwdOp` | elementwise | 1c | ✅ **已完成**（harness, `phase=DONE`） | 9/9, max_abs_err 0.00e+00 | 41.3–73.0% → 42.3–78.3%（1/5 达标） | `examples/TileOPs/reports/tileops/20261014_105757_589000_IsfiniteFwdOp/` |
+| `FusedAddLayerNormFwdOp` | norm | 2 | ✅ **已完成**（harness, `phase=DONE`） | 14/14, max_abs_err 1.56e-02(bf16) | 27.1–45.1% → 0.54–43.89%（0/5 达标） | `examples/TileOPs/reports/tileops/20261014_115534_389335_FusedAddLayerNormFwdOp/` |
+| `BatchNormBwdOp` | norm | 3 | ✅ **已完成**（harness, `phase=DONE`；3 kernel: wide/split/general） | 12/12, avg max_abs_err 2.29e-03 | 15.3–28.2% → 11.9–24.4%（0/6 达标） | `examples/TileOPs/reports/tileops/20261015_162156_553625_BatchNormBwdOp/` |
+| `Conv1dFwdOp` | convolution | 3 | ✅ **已完成**（harness, `phase=DONE`；5 kernel） | 28/28, avg max_abs_err 3.91e-02 | 0.07–0.41% → 0.04–1.79%（0/15 达标） | `examples/TileOPs/reports/tileops/20261015_162520_967795_Conv1dFwdOp/` |
+| `ClampMinFwdOp` | elementwise | 1c | ✅ **已完成**（薄接口；复用 ClampScalar kernel，max=None；fp32 block_size 修正） | 14/14, max_abs_err 0.00e+00 | 49.4–65.5% → 61.8–68.8%（0/7 达标） | `examples/TileOPs/reports/tileops/20261014_214827_195753_ClampMinFwdOp/` |
+| `LerpFwdOp`（标量权重） | elementwise | 1c | ✅ **已完成**（薄接口；新 npuir `lerp_scalar` 二元 kernel） | 36/36, fp16≤1.95e-3 / bf16≤1.56e-2 | 60.2–82.0% → 60.2–82.0%（9/11 达标） | `tests/ops/test_lerp_scalar.py` |
+| `Conv1dBiasFwdOp` | convolution | 3 | ✅ **已完成**（薄接口；复用已迁 Conv1d 5 kernel 的 has_bias 路径） | 28/28, max_abs_err 2.50e-01(bf16) | 0.07–0.46% → 0.03–1.73%（0/8 达标） | `tests/ops/test_conv1d_bias.py` |
+| `Conv3dBiasFwdOp` | convolution | 3 | ✅ **已完成**（新增 dense NCDHW implicit-GEMM + MixCV bias kernel；stride/dilation/pad 通用，W 轴 polyphase） | 17/17, max_abs_err 3.125e-02(fp16 r3d-stem) / 5.00e-01(bf16 unet-encoder) | 迁移 0.73–6.17% → 优化 1.68–20.43% | `examples/TileOPs/reports/tileops/20261018_185919_687302_Conv3dBiasFwdOp/` |
+| `GLADecodeOp` | linear_attention | 4 | ✅ **已完成**（Vector kernel；K-tile 流式 state，bf16 fp32 中转） | 11/11, worst max_abs_err 1.51e-02(bf16) | 3.17–18.09% → 3.1–20.16%（0/5 达标） | `examples/TileOPs/reports/tileops/20261015_141409_254847_GLADecodeOp/` |
+| `GatedDeltaNetPrefillFwdOp` | linear_attention | 4 | ✅ **in-scope 主路径已交付**：K1 cumsum + K2 split blocksolve + K6 split forward（K=V∈{64,128}，含尾 chunk）；K5/CP 仍 pending，fallback 保留 | **10/10**（`tests/ops/test_gdn.py`，含 in-scope + tail） | 0.03% → 0.36%（0/1 达标） | `tests/ops/test_gdn.py`；`gdn_split_*.py`；`GatedDeltaNetPrefillFwdOp/OPTIMIZE_REPORT.md` |
 
 > 基线名映射（**交付名 = 任务书原名**；基线 commit `1238a9f` 注册名为映射参考，非交付名）：`ClampMinFwdOp`→`ClampScalarFwdOp`(max=None)；`LerpFwdOp`→`LerpScalar`/`LerpTensor`；`Conv1dBiasFwdOp`/`Conv3dBiasFwdOp`→基线 conv1d/conv3d（bias 可选）；`GLADecodeOp`→`GLARecurrentFwdOp`；`GatedDeltaNetPrefillFwdOp`→`GDNFwdOp`。裸 `Conv3dFwdOp` **不在 19 内**（任务书 §5）。
 
 ## B. 此前已完成（不在本批清单）
 
-来源：`examples/TileOPs/reports/report.md`（统一 run `20261009_022152_829230_all`，环境 910B2C / CANN 8.5.0 / git `84519be`）。
+来源：`examples/TileOPs/reports/report.md`（统一 run `20261009_022152_829230_all`，环境 910B2C / CANN 上一代工具链 / git `84519be`）。
 
 > ⚠️ **2026-10-17 决策：表 B 退出本次 CANN 9.0 重定基线范围。**
 > 这 7 个算子**不属于本批迁移/优化目标**，后续阶段（②正确性 / ③性能 / ④记录）**一律不再纳入**，除非另行下令；
-> 本节数据**维持 8.5.0 口径不动**（不做 9.0 重测）。仅存档观察到的事实：
+> 本节数据**维持 上一代工具链 口径不动**（不做 9.0 重测）。仅存档观察到的事实：
 > `SSDChunkScanFwdOp`（test_mamba）在 9.0 下 `bishengir-compile` **挂死**（CPU 空转 >19min）、
 > `MultiHeadAttentionFwdOp` 按此决策跳过、`MishFwdOp` 7/7 ✅。
 > 详见 `docs/cann9_adaptation.md` §11.2。
-> **版本戳收尾（工作流④）对本节不做 9.0 更新**——本节数据维持 8.5.0 口径存档，不重测、不重写。
+> **版本戳收尾（工作流④）对本节不做 9.0 更新**——本节数据维持 上一代工具链 口径存档，不重测、不重写。
 
 | 算子 | 正确性 | avg max_abs_err | shapes | ratio 范围 |
 |---|---|---|---|---|
@@ -67,7 +67,7 @@
 | `LerpTensorFwdOp` | 8/8 | 5.21e-08 | 7 | 67.38%–80.61% |
 | `LogSumExpFwdOp` | 23/23 | 3.67e-08 | 6 | 3.23%–36.61% |
 | `MishFwdOp` | 7/7 | 2.45e-05 | 6 | 54.01%–64.87% |
-| `MultiHeadAttentionFwdOp` | 6/6 | 8.54e-04 | 8 | 14.34%–23.44% |
+| `MultiHeadAttentionFwdOp` | 6/6 | 上一代工具链4e-04 | 8 | 14.34%–23.44% |
 | `SSDChunkScanFwdOp` | 4/4 | 2.19e-04 | 11 | 0.13%–20.30% |
 
 ## C. 版本戳与状态文件
@@ -92,7 +92,7 @@
 - **性能 = 混合口径**：工作流③ 以「细粒度快扫」**替代**全量 `tileops-report run --all`（§12：全量约 4.5 h，判定为与 optimize 基线采集重复劳动），
   完成 **18 算子 / 77 用例**（全量非 smoke 的 31%）「迁移态」偏差复核（§13：中位 1.64%、P90 10.13%，**无系统回退**）。
   9.0.0 正式报告 3 份（`HardsigmoidFwdOp` / `ClampScalarFwdOp` / `HardswishFwdOp`，`reports/tileops/20261017_*`）；
-  其余算子按用户口径「**能衔接 8.5 的一律衔接**」沿用 8.5.2 ratio，例外见 §13.6（`BatchNormBwd` +22.7%、clamp 家族 fp32 +7~8%）。
+  其余算子按用户口径「**能衔接 上一代工具链 的一律衔接**」沿用 上一代工具链 ratio，例外见 §13.6（`BatchNormBwd` +22.7%、clamp 家族 fp32 +7~8%）。
 - **取基线必先定「层」**（§13.2）：必须取**迁移态**而非「最新 run」（优化态），否则 `Hardsigmoid` 会得到 −42% 的**假偏差**（真值 −1.4%）。
 - **未闭合项**：① ~~T6 ——「删 NaN 恢复」优化（`GeluAndMul`）在 9.0 下的重验~~ → **已关闭（2026-10-19）**：
   9.0 上假设成立（kernel 自检 `[Boundary] inf/nan` 全 PASS）、增益仍在（−8.8%，`opt_log.md §1`），

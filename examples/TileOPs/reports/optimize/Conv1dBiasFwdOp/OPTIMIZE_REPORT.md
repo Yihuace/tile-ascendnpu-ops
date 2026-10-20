@@ -1,5 +1,7 @@
 # 优化报告：Conv1dBiasFwdOp（Stage-4 optimize）
 
+> **口径（2026-10-20 修订）**：本文件是**过程记录**——第 3 节的逐轮测量沿用**当时工具链**，**不参与交付口径**。交付数据一律取 `perf_data/canonical.json`（CANN 9.0.0，每算子恰好一条记录），其中同时给出**迁移态（优化前）**与**交付态（当前交付）**两列；本文数字与之不一致时以 SSOT 为准。同 case 的前后对比见 `examples/TileOPs/reports/迁移与优化总报告.md` 的汇总表。
+
 > 口径说明：本文件结论已按**形状路由解封后的最终状态**更新（依据 `reports/optimize/STAGE4_QUEUE.md`
 > 的 #9 / #11 行）。解封前版本（结论为「SIGSEGV 阻塞、不建议采纳」）归档在
 > `history_version/OPTIMIZE_REPORT_v0.md`，其性能数字仍然有效。
