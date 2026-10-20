@@ -165,7 +165,9 @@ CALIBER_ROWS = [
     (
         "区间含微型 shape",
         "Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的交付态区间**含微型 shape**"
-        "（故下限只有 0.4%~4%），达标数只按可调 shape 计。",
+        "（≤5µs、物理不可达，故下限只有 0.4%~4%）。这些 case 在交付表里没有逐 case 数据"
+        "（10-18 那批 per-run 目录未入库、工作区已删除），**无法事后剔除**，且按用户口径不接受重测，"
+        "故保留原区间并显式标注。**判定/达标一律只用可调 shape**。",
     ),
     (
         "正确性",
