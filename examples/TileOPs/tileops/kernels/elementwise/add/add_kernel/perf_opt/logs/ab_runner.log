@@ -1,4 +1,0 @@
-[npu_lock] start 2026-10-17T17:12:35+08:00: bash -c source ./env.sh; for dt in float16 bfloat16; do python3 /mnt/workspace/npuir-migration/.agents/tools/ab_test.py --a-cmd "python bench_kernel.py --module ../add_fwd_kernel.py --workload linear-bias --dtype $dt --block-size 8192 --launches 25" --b-cmd "python bench_kernel.py --module candidates/add_fwd_kernel_pipe2.py --workload linear-bias --dtype $dt --block-size 8192 --launches 25" --workdir ab_r3_$dt --pairs 5 --launch-count 20 --noise 0.02 > logs/ab_$dt.json 2> logs/ab_$dt.err; echo "$dt rc=$?"; done
-float16 rc=0
-bfloat16 rc=0
-[npu_lock] end   2026-10-17T17:24:11+08:00: rc=0

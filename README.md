@@ -45,7 +45,6 @@ TileOPs GPU → Ascend NPU 算子迁移与自动开发工作区，聚焦于 `Til
 │   ├── hardsigmoid/            # 已完成迁移算子工作区示例
 │   └── <op_slug>/              # 每个待迁移算子的任务工作区
 ├── .gitignore
-├── conductor_run.log
 └── ...
 ```
 
