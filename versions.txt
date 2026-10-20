@@ -34,5 +34,6 @@ ub_size               = 192KB
 
 [data_caliber]
 correctness           = 9.0.0   # 工作流②，表 A 276/282（6 例 CG-2026-0003 已工具链绑定 xfail）
-performance           = mixed   # 工作流③ 细粒度快扫（18 算子 / 77 用例，迁移态，中位偏差 1.64%）；
-                                # 正式 9.0.0 报告 3 份，其余按「能衔接 8.5 的一律衔接」沿用 8.5.2 ratio
+performance           = 9.0.0   # 单一事实源 perf_data/canonical.json（每算子恰好一条 9.0 记录）
+                                # 来源：Stage-4 perf_records.jsonl（多数算子）/ CANN 9.0.0 正式报告（其余）
+                                # 口径与生成方式见 perf_data/README.md

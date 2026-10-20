@@ -8,7 +8,7 @@
 | kernel（基准，只读） | `tileops/kernels/elementwise/hardswish/hardswish_kernel/` |
 | 调优产物 | `.../hardswish_kernel/perf_opt/`（原文仅记「产物仅 `perf_opt/`」；具体 kernel 文件名原文未记录） |
 | 口径 | `msprof op Task Duration(us)` |
-| **工具链版本戳** | tilelang `0.1.2+417dae99` / **CANN 8.5.2** / Ascend910B3 / 日期 `2026-10-15`（任务窗口起 14:04:01Z） |
+| **工具链版本戳** | tilelang `0.1.2+417dae99` / **CANN 上一代（升级前）** / Ascend910B3 / 日期 `2026-10-15`（任务窗口起 14:04:01Z） |
 | 达标线 | 原文按「带宽利用率 **≥60%**」判据讨论，并判定**该判据对本算子不适用**（compute-bound）；正确判据为向量利用率（已达 0.94）；AI 数值原文未记录 |
 | benchmark | 原文未记录 benchmark 文件::函数与 tune/smoke 计数（原文仅给 label：`fc-wide` / `mbv3-stage2` / `mbv3-stage3`） |
 | 过程日志 | `.../hardswish_kernel/perf_opt/opt_log.md`、`perf_records.jsonl` |
@@ -21,7 +21,7 @@
   无冗余 op 可删、无 fused vmad 可合并。
 - **达标数（双分母）**：原文未记录 x/y 与 a/b 达标数（原报告未按双分母统计，结论为「带宽判据不适用」）；
   豁免 **0**（原文未声明豁免项；6 个 workload 时延 15.8–24.3µs，均非微型 shape）。
-- **9.0 端到端复测（2026-10-18，run `20261018_133632_996783_HardswishFwdOp`）**：正确性 **7/7**、ratio **50.20–60.95%（2/6 ≥60%）**，与 8.5 的 compute-bound 结论一致；wrapper 未切换。
+- **9.0 端到端复测（2026-10-18，run `20261018_133632_996783_HardswishFwdOp`）**：正确性 **7/7**、ratio **50.20–60.95%（2/6 ≥60%）**，与 上一代工具链 的 compute-bound 结论一致；wrapper 未切换。
 - 关键结果：**6 项 A/B 全部在噪声内**（原文结论），无性能收益：
 
   | workload | base µs | opt µs |
@@ -130,4 +130,4 @@
    补 fp32 用例属本轮未执行动作（原文未记录是否已补）。
 4. 未解决项：计算链无进一步压缩空间（原文已证「无冗余 op、无 fused vmad」）；
    若未来工具链提供可融合的乘加或更高吞吐的向量指令，需重开评估。
-5. 跨 CANN 版本复核：本报告为 CANN 8.5.2 口径，升级后应重测 `aiv_vec_ratio` 与 6 个 workload 时延。
+5. 跨 CANN 版本复核：本报告为 CANN 上一代工具链 口径，升级后应重测 `aiv_vec_ratio` 与 6 个 workload 时延。

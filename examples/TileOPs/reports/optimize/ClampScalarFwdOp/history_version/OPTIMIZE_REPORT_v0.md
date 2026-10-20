@@ -11,7 +11,7 @@
 | 算子类型 | **单 kernel / 单 func / 纯 Vector（AIV）**，非 Mixed |
 | kernel 目录 | `examples/TileOPs/tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/` |
 | 性能口径 | `msprof op Task Duration(us)`（唯一） |
-| 工具链 | tilelang `0.1.2+417dae99` / **CANN 8.5.2** / Ascend910B3 / torch_npu 2.7.1.post4 |
+| 工具链 | tilelang `0.1.2+417dae99` / **上一代工具链**（版本见 `docs/cann9_adaptation.md` §13 两代对照）/ Ascend910B3 / torch_npu 2.7.1.post4 |
 
 ## 1. 优化方法
 

@@ -1,13 +1,13 @@
 # 当前工作状态（每轮更新）
 
-> 本窗口：**19 算子统一 CANN 9.0.0 口径**。四个 8.5 残留（Add / Sub / Isnan / ClampMin）已完成端到端重测；Add / Sub 同时切到 `perf_opt`。
+> 本窗口：**19 算子统一 CANN 9.0.0 口径**。四个 历史口径残留（Add / Sub / Isnan / ClampMin）已完成端到端重测；Add / Sub 同时切到 `perf_opt`。
 > 更新：2026-10-18 16:00 (+08:00) · 会话：9.0 口径统一
 > **收口（2026-10-18 22:2x）**：最终交付报告 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md`；18/19 完整交付 + GDN correctness-first fallback。
 > **环境更新（2026-10-19，修正）**：**9.2 已物理删除**（释放 9.6G）。默认栈为 **CANN 9.0.0 系统 `bishengir-compile` + `hivmc 0.2.0`**。空 cache 下最小 Cube GEMM、K4 探针、纯 Vector K1、conv1d_bias、conv3d **均通过**；此前“9.0 不能编译”是自编 `build-v11` 引入的回归，已切回系统编译器。**GDN blocksolve 仍被系统编译器 `mmadL1 getResult(0)` SIGSEGV 阻塞（CG-2026-0003）**，K2 继续走三段拆分。详见 `examples/gdn_prefill/correct_initial_states/PROBE_20261019.md` 与 `docs/cann9_adaptation.md` §15.6。
 
 ## 总览（严格口径；报告数据为 CANN 9.0.0 存档，当前唯一运行环境为 CANN 9.0.0/v1.1；9.2 已删除）
 
-**19 个接口：18 个完整交付；GDN 为 correctness-first fallback（6/6 tests），六 kernel 的 TileLang 端口待续。**
+**19 个接口全部交付**：GDN in-scope 主路径（K1+K2 split+K6 batched）已交付、`test_gdn.py` **10/10**；K5/CP 与小 shape fallback 待续。
 
 | 判定 | 数量 | 算子 |
 |---|---|---|
@@ -15,12 +15,12 @@
 | 贴线 / 部分达标 | 4 | Add（10/11；`linear-bias bf16` 复测 63.7–69.4%，确认贴线未过）、Lerp（9/11）、Hardswish（2/6）、ClampScalar（1/11） |
 | 未达标但**已采纳真实时延收益** | 12 | Hardsigmoid、ClampMin、Isinf、Isfinite、GeluTanh、GeluAndMul、FALN、BatchNormBwd、Conv1d、Conv1dBias、Conv3dBias、GLA |
 | 未达标且未采纳 | 1 | Isnan（无收益，MTE2 带宽地板） |
-| 正确性交付但 kernel 未收口 | 1 | GDN（reference fallback，6/6；2/6 kernel，CG-2026-0003；拆分探针见 PROBE_20261018） |
+| 正确性交付、K5/CP 待续 | 1 | GDN（in-scope 主路径 10/10；K1+K2 split+K6；小 shape fallback；op-level SOL 0.027%→0.357%） |
 
-> 全 shape 达标从上一版“3 个”修正为“1 个”：Add 在 9.0 端到端下 10/11（`linear-bias bf16` 69.37%，复测 63.7–69.4%，确认未过线），ClampScalar 在 9.0 下仅 1/11（8.5 的 71.9–82.8% 不再引用）。
-> 所有数字来自 `reports/tileops/<run_id>/run.json`；8.5.2 数据仅保留在 `MIGRATION_INDEX.md` 表 B 历史存档（不在本批范围）。
+> 全 shape 达标从上一版“3 个”修正为“1 个”：Add 在 9.0 端到端下 10/11（`linear-bias bf16` 69.37%，复测 63.7–69.4%，确认未过线），ClampScalar 在 9.0 下仅 1/11（上一代工具链 的 71.9–82.8% 不再引用）。
+> 所有数字来自 `reports/tileops/<run_id>/run.json`；上一代工具链数据仅保留在 `MIGRATION_INDEX.md` 表 B 历史存档（不在本批范围）。
 
-## 本轮 9.0 统一重测（4 个 8.5 残留）
+## 本轮 9.0 统一重测（4 个 历史口径残留）
 
 | 算子 | 生效内核 | 正确性 | ratio（9.0 端到端） | 达标 | run_id |
 |---|---|---|---:|---:|---|
@@ -33,8 +33,8 @@
 
 | 算子 | 生效内核 | 正确性 | bench | 关键收益 | run_id |
 |---|---|---|---:|---|---|
-| Conv1dFwdOp | `perf_opt`（通用 `conv1d`） | **27 passed + 1 skipped**（CG-2026-0003），0 failed | 15/17（2 例 flaky） | wav2vec2 **17.7×/17.2×**、encodec-init **4.2×/3.4×** | `20261018_180016_718940` |
-| Conv1dBiasFwdOp | 同上（has_bias 路径） | **27 passed + 1 skipped**，0 failed | 8/9（1 例 flaky） | wav2vec2-bias **8.3×/8.9×**、encodec-init-bias 1.15×/1.20× | `20261018_180716_376489` |
+| Conv1dFwdOp | `perf_opt`（通用 `conv1d`） | **27 passed + 1 skipped**（CG-2026-0003），0 failed | 15/17（2 例 flaky；达标 0/15） | wav2vec2 **17.7×/17.2×**、encodec-init **4.2×/3.4×** | `20261018_180016_718940` |
+| Conv1dBiasFwdOp | 同上（has_bias 路径） | **27 passed + 1 skipped**，0 failed | 8/9（1 例 flaky；达标 0/8） | wav2vec2-bias **8.3×/8.9×**、encodec-init-bias 1.15×/1.20× | `20261018_180716_376489` |
 
 > 手法：taps-in-K 单次 gemm + A 直读原生 weight + 恒等 x_pad 跳过 + 单通道 polyphase + N tile 512。
 > **wav2vec2 的 CG-2026-0003 编译崩溃已被新 IR 形态绕开**；残余 bench 失败为 unit_stride 的 flaky SIGSEGV，单点重跑 2 passed。
@@ -44,7 +44,7 @@
 
 | 算子 | 生效内核 | 正确性 | 关键收益 | run_id |
 |---|---|---|---|---:|
-| Conv3dBiasFwdOp | `perf_opt`（tap 打包 + padded-N 分块 + NDHWC 暂存） | **17/17**，0 failed | unet-encoder **6428 → 307µs（21.3×）**；r3d-stem **3096 → 2589µs（对 Stage-3 2.36×）**；video-down 持平 | `20261018_185919_687302` |
+| Conv3dBiasFwdOp | `perf_opt`（tap 打包 + padded-N 分块 + NDHWC 暂存） | **17/17**，0 failed | 达标 0/3；unet-encoder **6428 → 307µs（21.3×）**；r3d-stem **3096 → 2589µs（对 Stage-3 2.36×）**；video-down 持平 | `20261018_185919_687302` |
 
 > **归因更正**：`c_in_pad=32` 的权重 L1 常驻**早已生效**（IR 中 27 次 `nd2nz` 在 task 循环外），旧结论“编译器仍逐 task 重载”不成立。真正病根是 **im2col 输入 copy 的 DMA 段数**（每 copy = `c_in_pad` 个 128B 小段、跨 359KB 平面；`aic_mte2_instructions=91774`、`GM_to_L1` 仅 5.63% 带宽）；两轮结构改造把段数降到 **973 条（−94×）** → 301.6µs。常驻反而把 L1 顶到 220KB、丢失多缓冲，是负杠杆。
 
@@ -81,15 +81,15 @@
 
 ## 必须记住的七件事
 
-1. **CANN 9.0 编译器缺陷（CG-2026-0003, recurring, occurrences=4）**：`ConvertHFusionToHIVM` 对 buffer 形态 `mmadL1` 取 `getResult(0)` 越界；**9.0.0 与 9.2.0 官方包均有**，8.5.2 无（405/405）。
+1. **CANN 9.0 编译器缺陷（CG-2026-0003, recurring, occurrences=4）**：`ConvertHFusionToHIVM` 对 buffer 形态 `mmadL1` 取 `getResult(0)` 越界；**9.0.0 与 9.2.0 官方包均有**，上一代工具链 无（405/405）。
    - Conv1d/Conv1dBias 已用**形状路由**绕开（`dilation==1` 才走 unit-stride；unit-stride 仅 `c_in>=64` 用调优版）；通用 kernel 的 wav2vec2 由 taps-in-K 新 IR 形态绕开
    - GDN blocksolve 仍阻塞（触发点在算法本体的 L0C→GM→L1 回喂；2026-10-18 拆分探针：3 级解锁 `S=1024,H=4`，但 `S=64,H=2` 在 1/3/6 级、group、核数下均失败）
 2. **ratio 与收益脱钩**：compute-bound 算子删指令时 `total_fops` 同步下降（GeluAndMul −43.6% 时延，ratio 43.2%→46.0%）。这类算子看 Task Duration，不看 ratio。
 3. **BatchNormBwd 的 ratio 因 subid 去双计而下降**（15.3–28.2% → 13.0–25.5%），不可比，时延 −40%。
-4. **口径策略：全部统一 CANN 9.0.0**（2026-10-18 用户口径）。8.5.2 数据仅在表 B 历史存档中保留，不再用于本批 19 接口的结论；跨版本数字不横比。
+4. **口径策略：全部统一 CANN 9.0.0**（2026-10-18 用户口径）。上一代工具链数据仅在表 B 历史存档中保留，不再用于本批 19 接口的结论；跨版本数字不横比。
 5. **CG-2026-0028（新）**：Vector prelude 里「1D GM 切片 → 带列偏移 GM 子区域」写必崩（`Unknown core type: llvm.func @malloc`），bias-in-K 折叠不可表达；bias 路径保留 Cube→ws→Vector 中继（`encodec-init-bias` 240µs vs nobias 66µs，差 3.7×）。
 6. **Conv3d 的 L1 常驻归因已更正**：`c_in_pad=32` 常驻早已生效，不是杠杆；真正病根是 im2col 输入 copy 的 DMA 段数（128B 小段 × `c_in_pad`）。修段数（padded-N 分块 + NDHWC 暂存）拿到 unet 21.3×；常驻把 L1 顶到 220KB 会丢多缓冲，反成负杠杆。
-7. **Clamp 族 9.0 回退已定性：工具链/环境整体下移，不是调优失效**。同链路 baseline vs tuned（`20261018_160303` vs `20261018_131331`）：tuned 仍快 **7.6–40%**（16M 30.7–32.9µs vs 38.3–43.1µs；256M 803–810µs vs 864–874µs）。9.0 baseline 自身只有 **45.35–64.37%**，所以 8.5 的 71.9–82.8% 不能跨版本引用；**保留 perf_opt**，不再重优化。
+7. **Clamp 族 9.0 回退已定性：工具链/环境整体下移，不是调优失效**。同链路 baseline vs tuned（`20261018_160303` vs `20261018_131331`）：tuned 仍快 **7.6–40%**（16M 30.7–32.9µs vs 38.3–43.1µs；256M 803–810µs vs 864–874µs）。9.0 baseline 自身只有 **45.35–64.37%**，所以 上一代工具链 的 71.9–82.8% 不能跨版本引用；**保留 perf_opt**，不再重优化。
 
 ## 报告规范
 

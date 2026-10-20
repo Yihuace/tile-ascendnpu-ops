@@ -1,0 +1,224 @@
+{
+  "_note": "人工补充，由 gen_perf_data.py 合并进 canonical.json。`operators` 现已清空（Conv3dBias 已由 FINAL_DELIVERY 的正式 msprof ratio 覆盖）；`migrated` 只补「迁移态」缺口，交付态一律以 delivery.json 为准。",
+  "operators": {},
+  "migrated": {
+    "Conv1dFwdOp": {
+      "kind": "stage4_bench_log",
+      "path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/logs/bench_all.json",
+      "basis": "优化前的 benchmark 全量记录（generated_at 2026-10-17T15:38，落在 CANN 9.0.0 定基线之后）。只取与交付态同 case、且该记录里有 ratio 的 5 项；wav2vec2-layer1（2 项）与 encodec-init/bf16 当时无 ratio，不纳入。迁移态 5 项 vs 交付态 11 项，两个区间覆盖的 case 集合不同、不可直接横比，同 case 见备注。",
+      "cases": [
+        {
+          "label": "whisper-conv1",
+          "dtype": "float16",
+          "ratio_pct": 0.1178,
+          "latency_us": 5339.167
+        },
+        {
+          "label": "whisper-conv1",
+          "dtype": "bfloat16",
+          "ratio_pct": 0.1076,
+          "latency_us": 5846.417
+        },
+        {
+          "label": "encodec-init",
+          "dtype": "float16",
+          "ratio_pct": 0.4092,
+          "latency_us": 283.206
+        },
+        {
+          "label": "encodec-deep",
+          "dtype": "float16",
+          "ratio_pct": 0.0693,
+          "latency_us": 1924.619
+        },
+        {
+          "label": "encodec-deep",
+          "dtype": "bfloat16",
+          "ratio_pct": 0.0701,
+          "latency_us": 1901.758
+        }
+      ]
+    },
+    "Conv1dBiasFwdOp": {
+      "kind": "stage4_bench_log",
+      "path": "examples/TileOPs/tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/logs/bench_all.json",
+      "basis": "同上文件的 bias 分支（同一次优化前 run）。取有 ratio 的 7 项；迁移态 7 项 vs 交付态 8 项（交付态多一个 smoke-bias），case 集合不同、不可直接横比。",
+      "cases": [
+        {
+          "label": "whisper-conv1-bias",
+          "dtype": "float16",
+          "ratio_pct": 0.1127,
+          "latency_us": 5610.732
+        },
+        {
+          "label": "whisper-conv1-bias",
+          "dtype": "bfloat16",
+          "ratio_pct": 0.1136,
+          "latency_us": 5584.412
+        },
+        {
+          "label": "wav2vec2-layer1-bias",
+          "dtype": "float16",
+          "ratio_pct": 0.329,
+          "latency_us": 589.952
+        },
+        {
+          "label": "wav2vec2-layer1-bias",
+          "dtype": "bfloat16",
+          "ratio_pct": 0.3278,
+          "latency_us": 595.472
+        },
+        {
+          "label": "encodec-init-bias",
+          "dtype": "float16",
+          "ratio_pct": 0.457,
+          "latency_us": 256.265
+        },
+        {
+          "label": "encodec-init-bias",
+          "dtype": "bfloat16",
+          "ratio_pct": 0.439,
+          "latency_us": 268.745
+        },
+        {
+          "label": "encodec-deep-bias",
+          "dtype": "bfloat16",
+          "ratio_pct": 0.072,
+          "latency_us": 1857.397
+        }
+      ]
+    },
+    "HardswishFwdOp": {
+      "kind": "identity",
+      "alias_of": "optimized",
+      "basis": "wrapper 未切换：该算子只有 baseline 内核、无 perf_opt 目录；Stage-4 唯一采纳项是 R1 的 `_DEFAULT_BLOCK_SIZE` fp32 8192→4096，原文结论「全部在噪声内」。故迁移态 ≡ 交付态，同一次 9.0 官方报告同时充当两态。"
+    },
+    "LerpFwdOp": {
+      "kind": "identity",
+      "alias_of": "optimized",
+      "basis": "无 perf_opt 内核、从未优化（`lerp_scalar_kernel/` 下只有 baseline 实现），wrapper 始终走 baseline；故迁移态 ≡ 交付态。"
+    },
+    "ClampScalarFwdOp": {
+      "kind": "migrated_bench_run",
+      "path": "examples/TileOPs/reports/tileops/20261020_084325_437924482_ClampScalarFwdOp_migrated/PROVENANCE.md",
+      "basis": "2026-10-20 迁移态补测：把 `clamp_scalar.py` 的 kernel 选择临时切到 Stage-3 baseline，只跑 benchmark 阶段（正确性已由 §11 覆盖），跑完按字节还原 wrapper。排除 smoke-1m 用例，与交付态官方报告同口径。该算子上一次 9.0 迁移态只有 §13.5 的 16M/fp32 单点（74.0 / 68.83 µs），本次全量实测该点分别为 66.94 / 64.08 µs，故以本次为准。",
+      "cases": [
+        {
+          "label": "16M",
+          "dtype": "float16",
+          "ratio_pct": 45.073,
+          "latency_us": 42.54
+        },
+        {
+          "label": "16M-max-only",
+          "dtype": "bfloat16",
+          "ratio_pct": 48.8635,
+          "latency_us": 39.24
+        },
+        {
+          "label": "16M-min-only",
+          "dtype": "float16",
+          "ratio_pct": 49.2399,
+          "latency_us": 38.94
+        },
+        {
+          "label": "16M-min-only",
+          "dtype": "bfloat16",
+          "ratio_pct": 49.751,
+          "latency_us": 38.54
+        },
+        {
+          "label": "16M-max-only",
+          "dtype": "float16",
+          "ratio_pct": 49.8286,
+          "latency_us": 38.48
+        },
+        {
+          "label": "16M",
+          "dtype": "bfloat16",
+          "ratio_pct": 52.0114,
+          "latency_us": 42.06
+        },
+        {
+          "label": "16M",
+          "dtype": "float32",
+          "ratio_pct": 57.2871,
+          "latency_us": 66.94
+        },
+        {
+          "label": "16M-min-only",
+          "dtype": "float32",
+          "ratio_pct": 60.1254,
+          "latency_us": 63.78
+        },
+        {
+          "label": "16M-max-only",
+          "dtype": "float32",
+          "ratio_pct": 61.4945,
+          "latency_us": 62.36
+        },
+        {
+          "label": "256M",
+          "dtype": "float16",
+          "ratio_pct": 62.1701,
+          "latency_us": 894.26
+        },
+        {
+          "label": "256M",
+          "dtype": "bfloat16",
+          "ratio_pct": 64.4395,
+          "latency_us": 863.2
+        }
+      ]
+    },
+    "ClampMinFwdOp": {
+      "kind": "migrated_bench_run",
+      "path": "examples/TileOPs/reports/tileops/20261020_085542_122689902_ClampMinFwdOp_migrated/PROVENANCE.md",
+      "basis": "2026-10-20 迁移态补测：把 `clamp_scalar.py` 的 kernel 选择临时切到 Stage-3 baseline，只跑 benchmark 阶段（正确性已由 §11 覆盖），跑完按字节还原 wrapper。排除 smoke-1m 用例，与交付态官方报告同口径。该算子上一次 9.0 迁移态只有 §13.5 的 16M/fp32 单点（74.0 / 68.83 µs），本次全量实测该点分别为 66.94 / 64.08 µs，故以本次为准。",
+      "cases": [
+        {
+          "label": "16M-min-only",
+          "dtype": "bfloat16",
+          "ratio_pct": 49.4176,
+          "latency_us": 38.8
+        },
+        {
+          "label": "16M-min-only",
+          "dtype": "float16",
+          "ratio_pct": 50.5644,
+          "latency_us": 37.92
+        },
+        {
+          "label": "64M-min-only",
+          "dtype": "float16",
+          "ratio_pct": 57.7566,
+          "latency_us": 165.56
+        },
+        {
+          "label": "64M-min-only",
+          "dtype": "bfloat16",
+          "ratio_pct": 58.3661,
+          "latency_us": 162.0
+        },
+        {
+          "label": "16M-min-only",
+          "dtype": "float32",
+          "ratio_pct": 59.8439,
+          "latency_us": 64.08
+        },
+        {
+          "label": "256M-min-only",
+          "dtype": "float16",
+          "ratio_pct": 64.5264,
+          "latency_us": 861.52
+        },
+        {
+          "label": "256M-min-only",
+          "dtype": "bfloat16",
+          "ratio_pct": 65.511,
+          "latency_us": 848.78
+        }
+      ]
+    }
+  }
+}

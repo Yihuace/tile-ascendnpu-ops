@@ -1,5 +1,7 @@
 # 优化报告：GeluTanhAndMulFwdOp（Stage-4 optimize）
 
+> **口径（2026-10-20 修订）**：本文件是**过程记录**——第 3 节的逐轮测量沿用**当时工具链**，**不参与交付口径**。交付数据一律取 `perf_data/canonical.json`（CANN 9.0.0，每算子恰好一条记录），其中同时给出**迁移态（优化前）**与**交付态（当前交付）**两列；本文数字与之不一致时以 SSOT 为准。同 case 的前后对比见 `examples/TileOPs/reports/迁移与优化总报告.md` 的汇总表。
+
 ## 0. 身份
 
 | 项 | 值 |
@@ -39,7 +41,7 @@
 
 ### 2.2 方法（做了什么、为什么这样做）
 
-上一轮（CANN 8.5.2）已合入「fold `sqrt(2/π)×(−2)` 为一次 vmul」，作为本轮起点（current best `fold`）；本轮在 CANN 9.0.0 重采 + 追加。
+上一轮（工具链升级前）已合入「fold `sqrt(2/π)×(−2)` 为一次 vmul」，作为本轮起点（current best `fold`）；本轮在 CANN 9.0.0 重采 + 追加。
 
 1. **T1（上一轮已合入，本轮复现）：fold `−2u = (g+cg³)·(−2√(2/π))`**
    - 改了什么：把 `sqrt(2/π)` 与 `(−2)` 两次连续 vmul 合并为一次系数乘法。
@@ -62,7 +64,7 @@
 
 | 轮次 | 候选 | 改动 | 结果 | 处置 |
 |---|---|---|---|---|
-| R0 | `fold`（上一轮，CANN 8.5.2） | fold `sqrt(2/π)×(−2)` 为一次 vmul（上轮 −5.2%），本轮在 9.0.0 重采为起点 | prefill fp16 204.024µs / bf16 209.044µs / swiglu 5.790µs | ✅ 起点 current best |
+| R0 | `fold`（上一轮，工具链升级前） | fold `sqrt(2/π)×(−2)` 为一次 vmul（上轮 −5.2%），本轮在 9.0.0 重采为起点 | prefill fp16 204.024µs / bf16 209.044µs / swiglu 5.790µs | ✅ 起点 current best |
 | R1 | `op1`（pipelined） | `T.serial` → `T.Pipelined(2)` | prefill 204.024 / bf16 208.954 / swiglu 5.810µs | ❌ 否决：tie（compute-bound 无可重叠阶段） |
 | R1 | `op2`（hoist vbrc） | 常数 1 缓冲 `vbrc` 提到循环外 | prefill **197.494 / 202.234µs**（−3.2% / −3.3%）、swiglu 5.660µs，L0 PASS | ✅ **winner** |
 | R1 | `op3`（static+pipe） | 整除 N 走静态满块 + `T.Pipelined(2)` | prefill 204.204 / bf16 208.794 / swiglu 5.720µs | ❌ 否决：tie（同 op1） |

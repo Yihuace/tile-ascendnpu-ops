@@ -8,7 +8,7 @@
 | kernel（基准，只读） | `examples/TileOPs/tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py` |
 | 调优产物 | `.../clamp_scalar_kernel/perf_opt/clamp_scalar_fwd_kernel.py` |
 | 口径 | `msprof op Task Duration(us)`（唯一） |
-| **工具链版本戳** | tilelang `0.1.2+417dae99`（dev root）/ **CANN 8.5.2** / Ascend910B3 / torch_npu 2.7.1.post4 / 日期 `2026-10-15`（取自 `.start_utc`） |
+| **工具链版本戳** | tilelang `0.1.2+417dae99`（dev root）/ **CANN 上一代（升级前）** / Ascend910B3 / torch_npu 2.7.1.post4 / 日期 `2026-10-15`（取自 `.start_utc`） |
 | 达标线 | 原文按 **≥60%** 判定（原文「全部 ≥60% 目标」）；AI 与归类依据原文未记录 |
 | benchmark | 原文未记录 benchmark 文件::函数与 tune/smoke 计数（原文仅记 `tileops.reporting.cli run --op ClampScalarFwdOp`） |
 | 过程日志 | `.../clamp_scalar_kernel/perf_opt/opt_log.md`、`perf_records.jsonl` |
@@ -23,12 +23,12 @@
 - 关键收益（代表值）：
   - `16M` fp16 **42.1 → 26.1 µs（−38.0%）**，ratio **45.5% → 73.5%**；
   - `16M` bf16 **42.3 → 25.9 µs（−38.7%）**，ratio **51.7% → 74.0%**；
-  - `16M` fp32 **68.5 → 46.3 µs（−32.4%）**，ratio **56.0% → 82.8%**；
+  - `16M` fp32 **6上一代工具链 → 46.3 µs（−32.4%）**，ratio **56.0% → 82.8%**；
   - 最大 shape `256M` fp16 **891.4 → 751.4 µs（−15.7%）**，ratio **62.4% → 73.9%**。
 - **是否建议采纳 wrapper**：✅ 建议采纳（原文记录：wrapper 切换块已翻至 perf_opt；接入后
   `tileops.reporting.cli run --op ClampScalarFwdOp` 正确性 **11/11**、`status=passed`）。
   收益来自纯 op 数削减、无 shape 回退，判据余量充足（最低 71.9% vs 60% 线）。
-- **9.0 端到端复测（2026-10-18，run `20261018_131331_663371_ClampScalarFwdOp`）**：正确性 **11/11**、report `passed`，但 ratio 降到 **58.21–70.16%（1/11 ≥70%）**，相对本报告 8.5 的 71.9–82.8% 明显回退。**A/B 定性（2026-10-18，baseline run `20261018_160303_880572`）**：同链路 9.0 baseline 仅 **45.35–64.37%**，tuned 仍比 baseline 快 **7.6–40%** ⇒ 回退是 9.0 工具链/环境整体下移，不是调优失效；**保留 perf_opt**，8.5 的绝对值不再跨版本引用。
+- **9.0 端到端复测（2026-10-18，run `20261018_131331_663371_ClampScalarFwdOp`）**：正确性 **11/11**、report `passed`，但 ratio 降到 **58.21–70.16%（1/11 ≥70%）**，相对本报告 上一代工具链 的 71.9–82.8% 明显回退。**A/B 定性（2026-10-18，baseline run `20261018_160303_880572`）**：同链路 9.0 baseline 仅 **45.35–64.37%**，tuned 仍比 baseline 快 **7.6–40%** ⇒ 回退是 9.0 工具链/环境整体下移，不是调优失效；**保留 perf_opt**，上一代工具链 的绝对值不再跨版本引用。
 - **ClampMin（同 kernel）9.0 端到端（run `20261018_153708_107121_ClampMinFwdOp`）**：正确性 **14/14**、ratio **61.77–68.84%（0/7）**；同受 9.0 clamp 链回退影响。
 
 ## 2. 优化方法与过程
@@ -75,7 +75,7 @@
 |---|---:|---:|---:|---:|---:|:--:|
 | 16M / float16 | 42.1 | 26.1 | −38.0% | 45.5 | 73.5 | ✅ |
 | 16M / bfloat16 | 42.3 | 25.9 | −38.7% | 51.7 | 74.0 | ✅ |
-| 16M / float32 | 68.5 | 46.3 | −32.4% | 56.0 | 82.8 | ✅ |
+| 16M / float32 | 6上一代工具链 | 46.3 | −32.4% | 56.0 | 82.8 | ✅ |
 | 256M / float16 | 891.4 | 751.4 | −15.7% | 62.4 | 73.9 | ✅ |
 | 256M / bfloat16 | 884.6 | 773.3 | −12.6% | 62.8 | 71.9 | ✅ |
 | 16M-min-only / float16 | 39.3 | 26.2 | −33.5% | 48.7 | 73.3 | ✅ |
@@ -141,7 +141,7 @@
 - **贴线风险**：原文按 60% 口径判定无贴线项（最低 71.9%）。若按族内 70% 访存线复核，
   `256M bf16` 71.9% 为最近的一项（距 70% 线 1.9pp）——该复核口径原文未记录。
 - **ceiling 证据**：原文未记录 roofline advice / pipe ratio 上限分析；本算子未声明结构上限。
-- **能力缺口**：原文未记录 CG 编号；NaN 传播结论依赖本工具链（CANN 8.5.2）实测，跨版本需复验。
+- **能力缺口**：原文未记录 CG 编号；NaN 传播结论依赖本工具链（CANN 上一代工具链）实测，跨版本需复验。
 
 ## 8. 建议
 
@@ -149,7 +149,7 @@
 2. `ClampMinFwdOp` 复用同 kernel，**同步受益**（原文）——两算子应一起复核。
 3. 该优化点（去除被证伪的冗余 NaN 恢复）机制清晰，原文建议作为 pattern-library 候选回写：
    纯 Vector 逐元素算子若 NaN 已由 `vmax`/`vmin`/`vclamp` 原生传播，则 `vcmp + vselect` 恢复是纯开销。
-4. 跨 CANN 版本复核：本报告为 CANN 8.5.2 口径，升级后需先复验 NaN 传播再沿用结论。
+4. 跨 CANN 版本复核：本报告为 CANN 上一代工具链 口径，升级后需先复验 NaN 传播再沿用结论。
 5. **复核入口**（原文）：
 
 ```bash

@@ -219,6 +219,8 @@ repro 用 `os.environ.setdefault("TILELANG_ASCEND_MODE", ...)` 声明目标模�
 
 **合计：276 / 282 passed（6 failed）。**
 
+> **后续更新（2026-10-19）**：本表是 2026-10-17 的存档。其后 GDN in-scope 主路径交付、`test_gdn.py` **10/10**；卷积族那 6 个失败在后续运行中**未复现**（Conv1d / Conv1dBias 均为 27 passed + 1 skipped、0 failed）。最新交付口径见 `examples/TileOPs/reports/FINAL_DELIVERY_20261018.md` 与 `perf_data/canonical.json`。
+
 失败的 6 个**全部**在卷积族，形态**全部为 SIGSEGV**（`bishengir-compile` 带 LLVM crash backtrace）：
 
 | 用例 | 形态 |

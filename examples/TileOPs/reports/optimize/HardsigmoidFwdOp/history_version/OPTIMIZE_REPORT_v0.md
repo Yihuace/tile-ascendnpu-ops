@@ -8,7 +8,7 @@
 | 类型 | 单 kernel / 单 func / 纯 Vector（AIV） |
 | kernel 目录 | `tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/` |
 | 性能口径 | `msprof op Task Duration(us)` |
-| 工具链 | tilelang `0.1.2+417dae99` / **CANN 8.5.2** / Ascend910B3 |
+| 工具链 | tilelang `0.1.2+417dae99` / **上一代工具链**（版本见 `docs/cann9_adaptation.md` §13 两代对照）/ Ascend910B3 |
 
 ## 1. 优化方法（两项）
 
