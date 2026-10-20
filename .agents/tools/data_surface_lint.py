@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -65,6 +66,14 @@ NUMBER_DOCS = (
 REQUIRED_DOCS = (STAGE4_SUMMARY, "MIGRATION_INDEX.md")
 # 达标数 a/b：汇总表强制；状态快照表只校验「写出来的那一行」
 COUNT_DOCS = (STAGE4_SUMMARY, "STATUS.md")
+
+# 令牌 / 私钥特征（命中只报位置，绝不回显内容）
+SECRET_PATTERNS = (
+    ("GitHub fine-grained PAT", re.compile(r"github_pat_[A-Za-z0-9_]{20,}")),
+    ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}")),
+    ("AWS access key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
+    ("私钥", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----")),
+)
 
 SSOT = REPO / "perf_data" / "canonical.json"
 # 交付件（仓库外）：19 算子比率表
@@ -235,6 +244,33 @@ def check_numbers(canon: dict) -> list[str]:
     return problems
 
 
+def check_secrets() -> list[str]:
+    """仓库内（git 跟踪文件）不得出现令牌/私钥；命中只报文件+行号，不回显内容。"""
+    problems: list[str] = []
+    out = subprocess.run(
+        ["git", "-C", str(REPO), "ls-files", "-z"], capture_output=True
+    ).stdout
+    for raw in out.split(b"\0"):
+        if not raw:
+            continue
+        path = REPO / raw.decode("utf-8", "replace")
+        try:
+            if path.stat().st_size > 2 * 1024 * 1024:  # 大二进制跳过
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        for label, pat in SECRET_PATTERNS:
+            m = pat.search(text)
+            if m:
+                lineno = text[: m.start()].count("\n") + 1
+                problems.append(
+                    f"{path.relative_to(REPO)}:{lineno}: 检出疑似{label}"
+                    "（内容不回显；请移除该文件中的凭据并轮换令牌）"
+                )
+    return problems
+
+
 def check_xlsx(canon: dict) -> list[str]:
     """交付件比率表：无历史版本号 + 优化 ratio 与 SSOT 一致（由 gen_ratio_xlsx.py 生成）。"""
     if not XLSX.exists():
@@ -294,7 +330,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     canon = _canonical()
-    problems = check_forbidden() + check_numbers(canon) + check_xlsx(canon)
+    problems = (
+        check_forbidden() + check_secrets() + check_numbers(canon) + check_xlsx(canon)
+    )
     if problems:
         print(f"[lint] 发现 {len(problems)} 个问题：")
         for problem in problems:

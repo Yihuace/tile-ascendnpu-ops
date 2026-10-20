@@ -8,6 +8,13 @@ This repository uses AGENTS skills for TileLang NPUIR development.
 - 新增或修改 `.opencode/agents/*.md` 时，`model:` 必须写 `deepseek/deepseek-flash`；调度 prompt 中也不得指定 pro 变体。
 - 若发现任何会话以 pro 运行（历史日志除外），立即停止并改为 flash 重派。
 
+## Secrets Policy (Mandatory)
+
+- **禁止把任何令牌 / 私钥 / 凭据写进仓库、提交或推送**（用户口径 2026-10-20）。
+- 需要认证时只在**进程内**使用（环境变量 + `GIT_ASKPASS`），不写进仓库文件、不写进 `~/.git-credentials`。
+- `.agents/tools/data_surface_lint.py` 会扫描 git 跟踪文件中的 GitHub PAT / GitHub token / AWS key / 私钥，**提交前必须通过**；命中只报文件与行号，不回显内容。
+- 任何在聊天、日志、提交里出现过的凭据一律视为已泄露：**立即吊销并轮换**，不要继续复用。
+
 ## Scope
 
 The skills in .agents/skills are designed for target="npuir" workflows.
