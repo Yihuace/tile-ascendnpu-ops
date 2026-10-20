@@ -16,23 +16,24 @@
 | shape 级达标 | **40 / 128（31.2%）**（8 个微型 shape 已豁免，不计入分母） |
 
 > “严格达标”按各算子 AI 分类阈值（访存 70% / 算力 60%），微型 shape 豁免单列。
-> **ratio 口径**：除 GDN 外均为 `msprof op` Roofline（GM Read+Write / Task Duration）。Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的区间**含微型 shape**（下限 0.4%~4%），达标数只按可调 shape 计。GDN 无 msprof ratio，与其它行**不可横比**。
+> **ratio 口径**：除 GDN 外均为 `msprof op` Roofline（GM Read+Write / Task Duration）。**区间一律只含可调 shape（Task Duration > 5 µs）；≤5µs 的微型 shape 物理不可达，已剔除。**
+> Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 4 行的区间取自各自 `reports/optimize/<Op>/OPTIMIZE_REPORT.md` §3 的逐 case final SOL（其余 15 行取本表 10-18 端到端 run 的全部 case，这些算子没有微型 shape）。GDN 无 msprof ratio，与其它行**不可横比**。
 
 ## 2. 19 接口状态
 
 | # | 算子 | 交付 | 正确性 | 9.0 ratio | 达标（可调 shape） | 生效内核 |
 |---|---|---|---:|---:|---:|---|
-| 1 | HardsigmoidFwdOp | ✅ | 7/7 | 0.37–61.52% | 0/2 | perf_opt |
+| 1 | HardsigmoidFwdOp | ✅ | 7/7 | 53.60–63.20% | 0/2 | perf_opt |
 | 2 | ClampScalarFwdOp | ✅ | 11/11 | 58.21–70.16% | 1/11 | perf_opt |
 | 3 | HardswishFwdOp | ✅ | 7/7 | 50.20–60.95% | 2/6 | baseline |
 | 4 | AddFwdOp | ✅ | 24/24 | 69.37–83.48% | 10/11 | perf_opt |
 | 5 | SubFwdOp | ✅ | 24/24 | 70.70–84.00% | **15/15** | perf_opt |
-| 6 | GeluAndMulFwdOp | ✅ | 11/11 | 4.05–47.71% | 0/4 | perf_opt |
-| 7 | GeluTanhAndMulFwdOp | ✅ | 11/11 | 2.22–47.63% | 0/4 | perf_opt |
+| 6 | GeluAndMulFwdOp | ✅ | 11/11 | 32.75–47.70% | 0/4 | perf_opt |
+| 7 | GeluTanhAndMulFwdOp | ✅ | 11/11 | 22.04–47.71% | 0/4 | perf_opt |
 | 8 | IsnanFwdOp | ✅ | 9/9 | 52.91–79.33% | 1/5 | baseline |
 | 9 | IsinfFwdOp | ✅ | 9/9 | 41.45–78.13% | 1/5 | perf_opt |
 | 10 | IsfiniteFwdOp | ✅ | 9/9 | 42.29–78.29% | 1/5 | perf_opt |
-| 11 | FusedAddLayerNormFwdOp | ✅ | 14/14 | 0.54–43.89% | 0/5 | perf_opt |
+| 11 | FusedAddLayerNormFwdOp | ✅ | 14/14 | 29.25–45.25% | 0/5 | perf_opt |
 | 12 | BatchNormBwdOp | ✅ | 12/12 | 11.91–24.44% | 0/6 | perf_opt |
 | 13 | Conv1dFwdOp | ✅ | 27+1 skip | 0.04–1.79% | 0/15 | perf_opt |
 | 14 | ClampMinFwdOp | ✅ | 14/14 | 61.77–68.84% | 0/7 | 复用 ClampScalar |

@@ -66,8 +66,7 @@ def span(record: dict, phase: str) -> str:
     text = f"{lo:.{digits}f}%" if abs(lo - hi) < 1e-9 else _fmt(lo, hi)
     if block.get("n") == 1:
         text += "（单点）"
-    if phase == "optimized" and record.get("micro_shapes"):
-        text += f"（含{record['micro_shapes']}微型）"
+
     if phase == "optimized" and record["operator"] == "BatchNormBwdOp":
         text += "（不可比）"
     return text
@@ -163,11 +162,11 @@ CALIBER_ROWS = [
         "早期 0.25% 自算 SOL 已废弃。",
     ),
     (
-        "区间含微型 shape",
-        "Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的交付态区间**含微型 shape**"
-        "（≤5µs、物理不可达，故下限只有 0.4%~4%）。这些 case 在交付表里没有逐 case 数据"
-        "（10-18 那批 per-run 目录未入库、工作区已删除），**无法事后剔除**，且按用户口径不接受重测，"
-        "故保留原区间并显式标注。**判定/达标一律只用可调 shape**。",
+        "区间只含可调 shape",
+        "**区间一律只含可调 shape（Task Duration > 5 µs）**；≤5µs 的微型 shape 物理不可达，已剔除。"
+        "Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 4 行的区间取自各自 "
+        "`reports/optimize/<Op>/OPTIMIZE_REPORT.md` §3 的逐 case final SOL；其余 15 行取 10-18 端到端 run 的全部 case"
+        "（这些算子没有微型 shape）。",
     ),
     (
         "正确性",

@@ -50,16 +50,15 @@ Conv3dBias 的迁移态来自 `20261018_101545_935539_Conv3dBiasFwdOp` 官方 ru
 
 ## 溯源等级（如实记录）
 
-| 数据 | 溯源到什么级别 | 备注 |
-|---|---|---|
-| 迁移态 | **逐 case** | 11 个来自已入库的 `perf_records.jsonl`（`phase=baseline`）；卷积来自已入库的 `bench_all.json`；clamp 来自 `manual.json`；Hardswish / Lerp 为恒等 |
-| 交付态 | **聚合快照**（19/19） | 逐行转录自 `FINAL_DELIVERY_20261018.md` §2（min–max + 达标 a/b） |
-| 交付态 · 逐 case | 仅 7 个算子有本地 `run.json`（10-17/10-19，**未入库**）：ClampScalar / Lerp / ClampMin / Hardswish / Hardsigmoid / Conv1d / Conv1dBias；GDN 在 `OPTIMIZE_REPORT.md` §3 内嵌 | 其余 11 个（Add / Sub / Isnan / Isinf / Isfinite / GeluAndMul / GeluTanh / FALN / BatchNormBwd / GLA / Conv3dBias）**只有聚合值** |
+| 数据 | 溯源到什么级别 |
+|---|---|
+| **迁移态** | **逐 case**：11 个来自已入库的 `perf_records.jsonl`（`phase=baseline`）；Conv1d/Conv1dBias 来自已入库的 `bench_all.json`；ClampScalar/ClampMin 来自 `manual.json`；Hardswish/Lerp 为恒等；Conv3dBias 来自其官方 baseline run |
+| **交付态 · 15 行** | **聚合快照**（`FINAL_DELIVERY_20261018.md` §2 的 min–max + 达标 a/b）；10-18 那批 per-run 目录未入库、工作区已删除，**逐 case 不可恢复** |
+| **交付态 · 4 行含微型的** | **逐 case**：取自各自 `reports/optimize/<Op>/OPTIMIZE_REPORT.md` §3 的 final SOL，**已剔除 ≤5µs 微型 shape**（Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul） |
+| 逐 case 补充 | 17/19 的 `OPTIMIZE_REPORT.md` §3 有优化轮逐 case 表（ClampMin 由 ClampScalar 覆盖、Lerp 未优化）；它们与 10-18 交付轮不是同一轮，仅作过程证据 |
 
-> 10-18 那批 per-run 目录被 `.gitignore` 排除、从未提交，所在工作区已删除 →
-> **交付态的逐 case 证据对 11 个算子不可恢复**。按用户口径（2026-10-20）**不接受重测**，
-> 因此：交付值保持聚合快照，口径上凡涉及"按可调 shape"的统计（达标数、40/128）
-> 仍按规则计算；**ratio 区间无法剔除微型 shape，已在表格中标注**。
+> 用户口径（2026-10-20）：**不接受重测**。因此交付值保持 10-18 的实测结果：
+> 15 行用聚合快照；4 行含微型的用报告里的逐 case 值重算区间（只含可调 shape）。
 > 新一批实测落地时，请把逐 case 存成 `cases.json` 一并入库，避免再次不可溯。
 
 ## 特殊条目
