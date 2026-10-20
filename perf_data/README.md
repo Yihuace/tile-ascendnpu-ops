@@ -36,21 +36,23 @@
 
 ## 迁移态从哪来
 
-`manual.json` 的 `migrated` 段，**只补缺口、不覆盖交付态**，登记三类补充来源：
+`manual.json` 的 `migrated` 段，**只补缺口、不覆盖交付态**，登记四类补充来源：
 
 | `kind` | 用于 | 说明 |
 |---|---|---|
 | `stage4_bench_log` | Conv1d / Conv1dBias | 优化前 benchmark 全量记录（`perf_opt/logs/bench_all.json`，2026-10-17T15:38）；只取与交付态同 case 且有 ratio 的部分 |
 | `identity` | Hardswish / Lerp | 无 perf_opt 内核、wrapper 未切换 → 迁移态 ≡ 交付态 |
 | `migrated_bench_run` | ClampScalar / ClampMin | 2026-10-20 补测：wrapper 临时切到 Stage-3 baseline，只跑 benchmark，跑完按字节还原（`reports/tileops/*_migrated/PROVENANCE.md`）；排除 smoke 用例 |
+| `official_baseline_run` | Conv3dBias | 2026-10-18 官方迁移态 run（`git_commit 8109d785`，wrapper 仍 import `_conv3d_kernel`）；正确性 17/17、benchmark 4/4，3 个 case 均为 msprof Roofline ratio |
 
 其余 11 个算子的迁移态来自各自 `perf_records.jsonl` 的 `phase == "baseline"`（每个 workload 取最后一轮）。
-Conv3dBias 没有迁移态——早期那个 0.25% 是自算 SOL，已随正式 msprof ratio 废弃。
+Conv3dBias 的迁移态来自 `20261018_101545_935539_Conv3dBiasFwdOp` 官方 run：r3d **1.2111%**、video **6.291%**、unet **0.757%**，0.76–6.29%。早期 0.25% 自算 SOL 已废弃。
 
 ## 特殊条目
 
 - **GDN**：`mode = self_sol`。交付态 0.357% / 迁移态 0.027% 是 **per-kernel msprof Task Duration 汇总 +
   op-level 理论 roofline**，**不是 msprof op 的 ratio**，与其它行不可横比；迁移态由 per-head H1×16 重建（估算）。
+- **Conv3dBias**：迁移态 run 中 r3d 捕获 `_conv3d_bias_main`，video/unet 捕获 `_conv3d_bias_main_base`；两者都属于 Stage-3 baseline kernel，不是优化态。
 - **BatchNormBwd**：ratio 因 subid 去双计下降，与优化前不可比，以 Task Duration 为准。
 - **微型 shape**：Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的区间含微型 shape，
   下限很低（0.4%~4%），但达标数只按可调 shape 计。

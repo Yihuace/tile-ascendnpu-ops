@@ -121,7 +121,8 @@ ROWS = [
     ),
     (
         "Conv3dBiasFwdOp",
-        "3 个可调 shape；达标 0/3；r3d-stem 2.36×、unet 21.3×（Task Duration）",
+        "3 个可调 shape；达标 0/3；迁移 0.76–6.29% → 交付 1.68–20.43%；"
+        "r3d-stem 2.36×、unet 21.3×（Task Duration）",
     ),
     (
         "GLADecodeOp",
@@ -154,8 +155,9 @@ CALIBER_ROWS = [
         "② 卷积族优化前 `bench_all.json`（Conv1d 5 项 / Conv1dBias 7 项）；"
         "③ 恒等（Hardswish / Lerp：无 perf_opt 内核、wrapper 未切）；"
         "④ clamp 迁移态补测（ClampScalar / ClampMin：临时切 Stage-3 baseline 跑 benchmark-only，"
-        "见 `reports/tileops/*_migrated/PROVENANCE.md`）。"
-        "Conv3dBias 无迁移态（早期 0.25% 是自算 SOL，已废弃）：它的收益看 2.36× / 21.3×。",
+        "见 `reports/tileops/*_migrated/PROVENANCE.md`）；"
+        "⑤ Conv3dBias 官方迁移态 run `20261018_101545`（baseline `_conv3d_kernel`，17/17，ratio 0.76–6.29%）。"
+        "早期 0.25% 自算 SOL 已废弃。",
     ),
     (
         "区间含微型 shape",

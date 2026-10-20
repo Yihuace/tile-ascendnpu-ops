@@ -219,6 +219,31 @@
           "latency_us": 848.78
         }
       ]
+    },
+    "Conv3dBiasFwdOp": {
+      "kind": "official_baseline_run",
+      "path": "examples/TileOPs/reports/tileops/20261018_101545_935539_Conv3dBiasFwdOp/run.json",
+      "basis": "CANN 9.0.0 官方迁移态 run：git_commit 8109d785 的 Conv3dKernel 仍 import Stage-3 `_conv3d_kernel`（baseline），正确性 17/17、benchmark 4/4；3 个 case 均为 msprof Roofline ratio。r3d 捕获 `_conv3d_bias_main`，video/unet 捕获 `_conv3d_bias_main_base`，均属迁移态 kernel。",
+      "cases": [
+        {
+          "label": "r3d-stem-bias",
+          "dtype": "float16",
+          "ratio_pct": 1.2111,
+          "latency_us": 3084.301758
+        },
+        {
+          "label": "video-down-bias",
+          "dtype": "float16",
+          "ratio_pct": 6.291,
+          "latency_us": 84.781693
+        },
+        {
+          "label": "unet-encoder-bias",
+          "dtype": "bfloat16",
+          "ratio_pct": 0.757,
+          "latency_us": 6448.548828
+        }
+      ]
     }
   }
 }
