@@ -161,3 +161,57 @@ python tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/cla
 # 端到端报告
 python -m tileops.reporting.cli run --op ClampScalarFwdOp --prof-mode msprof
 ```
+
+---
+
+## 9. R2（2026-10-21）：9.0 结构重试 —— 原生 dtype clamp + A4
+
+> 本轮把 9.0 的 58.21–70.16%（1/11）拉回 **69.62–80.53%（10/11）**；ClampMin 同 kernel **7/7**。
+> 口径：CANN 9.0.0 / Ascend910B3 / 2026-10-21；数据 `perf_opt/REPORT_CLAMP_R2_DATA.md`、`perf_records.jsonl`。
+
+### 9.1 诊断：9.0 回退的根因不是“环境整体下移”
+
+R1 的 3-op 链在 9.0 上仍是：
+
+```
+T.copy(GM→UB) → vcast(f16→f32) → vclamp/vmax/vmin(fp32) → vcast(f32→f16) → T.copy(UB→GM)
+                 \__ 2 条无信息类型搬运 __/
+```
+
+- pipe：`vec_ratio 0.72 ≫ mte2_ratio 0.56`，`mte2_active_bw≈39 GB/s/core` ⇒ **瓶颈是向量 pass 数，不是带宽**。
+- 语义：clamp 输出只可能是输入值或标量边界，fp32 opmath 不产生新中间值；舍入单调 ⇒
+  `rn(clamp(x,lo,hi)) == clamp(x,rn(lo),rn(hi))`。**两条 vcast 是纯开销**（R1 只删了 NaN 恢复的 2 条）。
+- 结构：R1 每 tile 重算 `T.min(block_size, shape-offset)` 与动态 copy extent，流水拿不到静态长度。
+
+### 9.2 方法（3 个单点改动）
+
+1. **N1 原生 dtype clamp**：fp16/fp32 直接 `vmax/vmin`，删 2 条 vcast；边界按 dtype 网格预舍入（round-half-even）。
+   bf16 无原生向量算术，保留 fp32 中转（文档 `T.vclamp.md` §2.2.1 明示 bf16 ×）。
+2. **N2 A4 结构**：满块静态 extent + 单尾块 epilogue（core 0）+ `T.Pipelined(2)`。
+3. **N3**：显式 `vmax→vmin`（只出现 `dst==src1`，避免 `dst==src2` 的 alias 税）。
+
+**被否决**：`block_size=16384`、`num_stages=3`（均 `config_no_gain`）；
+同 dtype `vcast`（fp32→fp32）在 9.0 **不报错但结果错**，直通必须 `T.copy`（已作为陷阱记录）。
+
+### 9.3 结果（端到端，交付口径）
+
+| 维度 | R1（9.0） | **R2（9.0）** |
+|---|---:|---:|
+| ratio 区间 | 58.21–70.16% | **69.62–80.53%** |
+| 达标（70%） | 1/11 | **10/11** |
+| kernel Task Duration | — | **18/18 变短，均值 −27.0%**（最大 −40.7%） |
+
+逐 workload 见 `perf_opt/REPORT_CLAMP_R2_DATA.md` §3；唯一未达 `16M-min-only bf16` 69.62%
+（同计算姊妹 75.02%，时延稳定，判为 ratio 估计器随会话摆动，未做 shape 特判）。
+
+### 9.4 精度与产物
+
+- `perf_opt/ClampScalarFwdOp.py --level all` → **All check passed**；586 点 NaN 探针 `max_diff=0`（逐位）。
+- 端到端：ClampScalar **11/11 passed**（run `20261021_172100`），ClampMin **14/14 passed**（run `20261021_173421`）。
+- 产物：`perf_opt/ClampScalarFwdOp.py`（sha256 `760579b0…`）+ 转发层 `perf_opt/clamp_scalar_fwd_kernel.py`；
+  wrapper import 未改。gate 4 **pass**。
+
+### 9.5 结论
+
+9.0 的 clamp 回退**可以通过实现级修复拿回**：原生 dtype 去掉 2 条无信息 vcast + A4 静态化，
+即从 1/11 提升到 10/11（ClampMin 0/7 → 7/7）。R1 报告中“环境整体下移、不重优化”的结论**已被本轮推翻**。

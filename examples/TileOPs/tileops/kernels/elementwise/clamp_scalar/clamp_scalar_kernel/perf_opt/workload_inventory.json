@@ -1,0 +1,550 @@
+{
+  "meta": {
+    "operator": "ClampScalarFwdOp (+ ClampMinFwdOp reuses the same kernel)",
+    "family": "elementwise",
+    "kernel_id": "clamp_scalar_fwd_kernel",
+    "benchmarks": [
+      "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench"
+    ],
+    "tune_count": 18,
+    "smoke_count": 6,
+    "skipped_count": 0,
+    "block_size_by_dtype": {
+      "float32": 4096,
+      "float16": 8192,
+      "bfloat16": 8192
+    },
+    "note": "block_size is pinned by the Stage-5 wrapper (_DEFAULT_BLOCK_SIZE: fp32 4096, fp16/bf16 8192) and is therefore measured, not tuned, in R2."
+  },
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-float16",
+      "label": "16M",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-bfloat16",
+      "label": "16M",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-float32",
+      "label": "16M",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float32",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 4096,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-256M-float16",
+      "label": "256M",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        268435456
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-256M-bfloat16",
+      "label": "256M",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        268435456
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-min-only-float16",
+      "label": "16M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-min-only-bfloat16",
+      "label": "16M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-min-only-float32",
+      "label": "16M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float32",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 4096,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-max-only-float16",
+      "label": "16M-max-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": null,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-max-only-bfloat16",
+      "label": "16M-max-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": null,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-16M-max-only-float32",
+      "label": "16M-max-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float32",
+      "params": {
+        "min": null,
+        "max": 0.5
+      },
+      "block_size": 4096,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-16M-min-only-float16",
+      "label": "16M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-16M-min-only-bfloat16",
+      "label": "16M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-16M-min-only-float32",
+      "label": "16M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16777216
+      ],
+      "dtype": "float32",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 4096,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-64M-min-only-float16",
+      "label": "64M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        67108864
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-64M-min-only-bfloat16",
+      "label": "64M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        67108864
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-256M-min-only-float16",
+      "label": "256M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        268435456
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-256M-min-only-bfloat16",
+      "label": "256M-min-only",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        268435456
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 4096,
+      "kind": "smoke",
+      "reason": "smoke workload: no performance record; precision covered by the 1M-element L0 cases of the final kernel (same shape 1048576 x 3 dtypes)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "smoke",
+      "reason": "smoke workload: no performance record; precision covered by the 1M-element L0 cases of the final kernel (same shape 1048576 x 3 dtypes)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_scalar.py::test_clamp_scalar_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampscalar-smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": 0.5
+      },
+      "block_size": 8192,
+      "kind": "smoke",
+      "reason": "smoke workload: no performance record; precision covered by the 1M-element L0 cases of the final kernel (same shape 1048576 x 3 dtypes)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 4096,
+      "kind": "smoke",
+      "reason": "smoke workload: no performance record; precision covered by the 1M-element L0 cases of the final kernel (same shape 1048576 x 3 dtypes)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "smoke",
+      "reason": "smoke workload: no performance record; precision covered by the 1M-element L0 cases of the final kernel (same shape 1048576 x 3 dtypes)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_clamp_min.py::test_clamp_min_bench",
+      "kernel_id": "clamp_scalar_fwd_kernel",
+      "kernel_file": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_scalar_fwd_kernel.py",
+      "workload_id": "clampmin-smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "min": -0.5,
+        "max": null
+      },
+      "block_size": 8192,
+      "kind": "smoke",
+      "reason": "smoke workload: no performance record; precision covered by the 1M-element L0 cases of the final kernel (same shape 1048576 x 3 dtypes)",
+      "precision_pass": true
+    }
+  ]
+}
