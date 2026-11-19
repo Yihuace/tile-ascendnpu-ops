@@ -5,40 +5,51 @@
     "cann": "9.0.0",
     "soc": "Ascend910B3",
     "ratio_definition": "msprof op Roofline GM Read+Write SOL / 实测 Task Duration（端到端 tileops-report）",
-    "measured_at": "2026-10-18（GDN 为 2026-10-19）"
+    "measured_at": "2026-10-18（GDN 2026-10-19；Hardsigmoid 2026-10-30；BatchNormBwd R11 2026-11-03）"
   },
   "operators": {
     "HardsigmoidFwdOp": {
       "ratio_pct": [
-        53.6,
-        63.2
+        60.15,
+        60.36
       ],
       "meeting": 0,
       "adjustable": 2,
       "correctness": "7/7",
       "kernel": "perf_opt",
       "micro_shapes": 4,
-      "ratio_source": "reports/optimize/HardsigmoidFwdOp/OPTIMIZE_REPORT.md §3 的逐 case final SOL，已剔除 Task Duration ≤5µs 的微型 shape"
+      "ratio_source": "reports/tileops/20261030_095946_544487_HardsigmoidFwdOp/report.md 的逐 case msprof ratio（只含 2 个可调 shape）",
+      "measured_at": "2026-10-30",
+      "run_id": "20261030_095946_544487_HardsigmoidFwdOp",
+      "source_kind": "stage4_r3_endtoend",
+      "source_path": "examples/TileOPs/reports/tileops/20261030_095946_544487_HardsigmoidFwdOp/report.md",
+      "note": "R3（2026-10-30）：fp16 3-op 域内链 + block 16384；官方 fc-wide fp16 15.88µs/60.36%、bf16 18.16µs/60.15%，avg 60.26%。2026-11-02 复跑 20261102_094507 的 fp16 17.84µs/53.74%、bf16 17.10µs/63.90% 为环境恢复后验证跑（ratio 与 Duration 严格反比，纯时长波动），不作为优化后交付值。"
     },
     "ClampScalarFwdOp": {
       "ratio_pct": [
-        58.21,
-        70.16
+        69.62,
+        80.53
       ],
-      "meeting": 1,
+      "meeting": 10,
       "adjustable": 11,
       "correctness": "11/11",
-      "kernel": "perf_opt"
+      "kernel": "perf_opt",
+      "measured_at": "2026-10-21",
+      "run_id": "20261021_172100_734147_ClampScalarFwdOp",
+      "source_kind": "stage4_clamp_r2_endtoend",
+      "source_path": "examples/TileOPs/reports/tileops/20261021_172100_734147_ClampScalarFwdOp/report.md",
+      "source_note": "Clamp R2 端到端重测（2026-10-21）；11 个可调 shape，仅 16M bf16 69.62% 未达 70%",
+      "note": "R2：输入 dtype 原生 clamp（fp16 1 op）+ A4；18/18 workload 变短、均值 −27.0%；9.0 回退根因是 fp32 中转的 2 条无信息 vcast"
     },
     "HardswishFwdOp": {
       "ratio_pct": [
-        50.2,
-        60.95
+        60.13,
+        67.17
       ],
-      "meeting": 2,
+      "meeting": 6,
       "adjustable": 6,
       "correctness": "7/7",
-      "kernel": "baseline"
+      "kernel": "perf_opt"
     },
     "AddFwdOp": {
       "ratio_pct": [
@@ -62,80 +73,111 @@
     },
     "GeluAndMulFwdOp": {
       "ratio_pct": [
-        32.75,
-        47.7
+        25.1188,
+        98.0626
       ],
-      "meeting": 0,
-      "adjustable": 4,
-      "correctness": "11/11",
+      "meeting": 2,
+      "adjustable": 3,
+      "correctness": "14/14",
       "kernel": "perf_opt",
-      "micro_shapes": 1,
-      "ratio_source": "reports/optimize/GeluAndMulFwdOp/OPTIMIZE_REPORT.md §3 的逐 case final SOL，已剔除 Task Duration ≤5µs 的微型 shape"
+      "micro_shapes": 2,
+      "ratio_source": "examples/TileOPs/reports/tileops/20261105_150113_550408_GeluAndMulFwdOp/report.md 的 msprof Roofline ratio；只统计 Task Duration >5µs 的 3 个 shape",
+      "measured_at": "2026-11-05",
+      "run_id": "20261105_150113_550408_GeluAndMulFwdOp",
+      "source_kind": "official_run_20261105",
+      "source_path": "examples/TileOPs/reports/tileops/20261105_150113_550408_GeluAndMulFwdOp/report.md",
+      "source_note": "2026-11-05 收口 run：P0 tile 宽度 padding（fp16 16256 / bf16 base+128）+ P1-3 bf16 in-place 7296 tile；3 个可调 shape（prefill fp16 98.06%、prefill bf16 68.63%、swiglu bf16 25.12%），2/3 达标；decode 2.38µs 与 swiglu fp16 4.46µs 为微型豁免",
+      "note": "Gelu 家族收口：3-shape avg 63.94%（11-04 为 54.38%）；bf16 prefill 162.76→142.16µs，fp16 prefill 90.24→88.60µs"
     },
     "GeluTanhAndMulFwdOp": {
       "ratio_pct": [
-        22.04,
-        47.71
+        24.4841,
+        97.4467
       ],
-      "meeting": 0,
-      "adjustable": 4,
+      "meeting": 2,
+      "adjustable": 3,
       "correctness": "11/11",
       "kernel": "perf_opt",
-      "micro_shapes": 1,
-      "ratio_source": "reports/optimize/GeluTanhAndMulFwdOp/OPTIMIZE_REPORT.md §3 的逐 case final SOL，已剔除 Task Duration ≤5µs 的微型 shape"
+      "micro_shapes": 2,
+      "ratio_source": "examples/TileOPs/reports/tileops/20261105_151346_181062_GeluTanhAndMulFwdOp/report.md 的 msprof Roofline ratio；只统计 Task Duration >5µs 的 3 个 shape",
+      "measured_at": "2026-11-05",
+      "run_id": "20261105_151346_181062_GeluTanhAndMulFwdOp",
+      "source_kind": "official_run_20261105",
+      "source_path": "examples/TileOPs/reports/tileops/20261105_151346_181062_GeluTanhAndMulFwdOp/report.md",
+      "source_note": "2026-11-05 收口 run：与 GeluAndMul 同链，P0 tile 宽度 padding + P1-3 bf16 in-place 7296 tile；3 个可调 shape（prefill fp16 97.45%、prefill bf16 68.69%、swiglu bf16 24.48%），2/3 达标；decode 2.36µs 与 swiglu fp16 4.52µs 为微型豁免",
+      "note": "Gelu 家族收口：3-shape avg 63.54%（11-04 为 54.29%）；bf16 prefill 175.04→142.04µs，fp16 prefill 88.72→89.16µs（同量级）"
     },
     "IsnanFwdOp": {
       "ratio_pct": [
-        52.91,
-        79.33
+        64.95,
+        76.36
       ],
-      "meeting": 1,
+      "meeting": 3,
       "adjustable": 5,
       "correctness": "9/9",
-      "kernel": "baseline"
+      "kernel": "perf_opt"
     },
     "IsinfFwdOp": {
       "ratio_pct": [
-        41.45,
-        78.13
+        49.39,
+        79.23
       ],
-      "meeting": 1,
+      "meeting": 3,
       "adjustable": 5,
       "correctness": "9/9",
       "kernel": "perf_opt"
     },
     "IsfiniteFwdOp": {
       "ratio_pct": [
-        42.29,
-        78.29
+        48.59,
+        78.1
       ],
-      "meeting": 1,
+      "meeting": 2,
       "adjustable": 5,
       "correctness": "9/9",
       "kernel": "perf_opt"
     },
     "FusedAddLayerNormFwdOp": {
       "ratio_pct": [
-        29.25,
-        45.25
+        32.8,
+        71.37
       ],
-      "meeting": 0,
+      "meeting": 1,
       "adjustable": 5,
       "correctness": "14/14",
       "kernel": "perf_opt",
       "micro_shapes": 2,
-      "ratio_source": "reports/optimize/FusedAddLayerNormFwdOp/OPTIMIZE_REPORT.md §3 的逐 case final SOL，已剔除 Task Duration ≤5µs 的微型 shape"
+      "measured_at": "2026-10-21",
+      "run_id": "20261021_095838_127621_FusedAddLayerNormFwdOp",
+      "source_kind": "stage4_r8_endtoend",
+      "source_path": "examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/report.md",
+      "source_note": "R8 深挖后端到端重测（2026-10-21，Developer 模式）；decode 两个微型 shape 按豁免剔除",
+      "note": "R8：UB 逐平面模型让 fp32 bm=2 合法 → 13b −14.85%（SOL 71.37%，首个达标 shape）；8b/70b 行批处理被 UB 精确否决"
     },
     "BatchNormBwdOp": {
       "ratio_pct": [
-        11.91,
-        24.44
+        9.92,
+        60.02
       ],
       "meeting": 0,
       "adjustable": 6,
       "correctness": "12/12",
       "kernel": "perf_opt",
-      "note": "subid 去双计，与优化前不可比"
+      "note": "R11（2026-11-03）：x_hat 消去 + 静态 full-tile + tiling bN=2/bS=4096/splits=4；large-spatial stats 1091.74→511.14µs（−53.2%），全 pipeline 估算 −24.9%。large-spatial 60.02% 为 stats kernel only，其他 5 个 shape 为 full pipeline；subid 去双计使 ratio 不可横比，19-op 达标口径仍记 0/6。",
+      "measured_at": "2026-11-03",
+      "run_id": "20261103_183513_599243_BatchNormBwdOp",
+      "source_kind": "stage4_r11_endtoend",
+      "source_path": "examples/TileOPs/reports/tileops/20261103_183513_599243_BatchNormBwdOp/report.md",
+      "source_note": "R11 端到端重测（2026-11-03）；large-spatial 仅捕获 stats kernel，完整 pipeline 见 perf_records/OPTIMIZE_REPORT",
+      "ratio_scope": "5 个 full-pipeline shape + 1 个 stats-only shape（large-spatial）；达标数只计可横比的 full-pipeline shape",
+      "meeting_note": "large-spatial 60.02% 为 stats kernel only，19-op 达标口径不计入，仍记 0/6",
+      "stats_only": {
+        "label": "large-spatial-float16",
+        "ratio_pct": 60.02,
+        "latency_us": 511.14,
+        "kernel": "stats",
+        "note": "stats kernel only；full pipeline 估算 ~1756µs（stats 511.14 + apply 1234.37 + finalize 10.71）"
+      }
     },
     "Conv1dFwdOp": {
       "ratio_pct": [
@@ -150,23 +192,35 @@
     },
     "ClampMinFwdOp": {
       "ratio_pct": [
-        61.77,
-        68.84
+        72.5,
+        78.39
       ],
-      "meeting": 0,
+      "meeting": 7,
       "adjustable": 7,
       "correctness": "14/14",
-      "kernel": "复用 ClampScalar"
+      "kernel": "perf_opt（复用 ClampScalar）",
+      "measured_at": "2026-10-21",
+      "run_id": "20261021_173421_838918_ClampMinFwdOp",
+      "source_kind": "stage4_clamp_r2_endtoend",
+      "source_path": "examples/TileOPs/reports/tileops/20261021_173421_838918_ClampMinFwdOp/report.md",
+      "source_note": "Clamp R2 端到端重测（2026-10-21）；7 个可调 shape 全部 ≥70%",
+      "note": "R2 同 kernel（max=None 路径）：原生 dtype clamp + A4；7/7 达标"
     },
     "LerpFwdOp": {
       "ratio_pct": [
-        60.22,
-        82.03
+        66.12,
+        83.24
       ],
-      "meeting": 9,
+      "meeting": 10,
       "adjustable": 11,
       "correctness": "36/36",
-      "kernel": "baseline"
+      "kernel": "perf_opt",
+      "measured_at": "2026-10-20",
+      "run_id": "20261020_221130_419333_LerpFwdOp",
+      "source_kind": "stage4_lerp_endtoend",
+      "source_path": "examples/TileOPs/reports/tileops/20261020_221130_419333_LerpFwdOp/report.md",
+      "source_note": "Lerp 首次 Stage-4 调优后端到端重测（2026-10-20）；linear-bias bf16 66.12% 未达 70% 线",
+      "note": "A4 结构 + fp16 3-pass / bf16 5-pass 折减 + fp32 去 staging；合计 −3.16%，llama bf16 −10.4%，达标 10/11"
     },
     "Conv1dBiasFwdOp": {
       "ratio_pct": [
@@ -208,12 +262,12 @@
       "kernel": "K1+K2 split+K6 batched",
       "self_sol": {
         "migrated_pct": 0.027,
-        "optimized_pct": 0.357,
+        "optimized_pct": 0.375,
         "migrated_latency_us": 110195.1,
-        "optimized_latency_us": 8264.4,
-        "note": "per-kernel msprof Task Duration 汇总 + op-level roofline（eval_roofline）；**不是 msprof op 的 ratio**，与其它行不可横比。迁移态由 per-head H1×16 重建（估算），非直测。"
+        "optimized_latency_us": 7875.3,
+        "note": "per-kernel msprof Task Duration 汇总（R6 K2 后 7875.3µs）+ op-level roofline（eval_roofline）；**不是 msprof op 的 ratio**，与其它行不可横比。迁移态由 per-head H1×16 重建（估算）。"
       },
-      "perf_note": "S=4096,H=16,K=128：110195.1 → 8264.4 µs（−92.5%，约 13.3×）；墙钟 4383 → 998 ms（4.4×）；瓶颈 vec_p_main 占 62%。K5/CP 与小 shape fallback 待续。"
+      "perf_note": "R6 K2 persistent（−43.8%）+ R7 host 向量化 + R8 K6 graph + R9 K2 graph：逐 kernel 8264.4→7875.3µs（SOL 0.357→0.375）；墙钟 4373.8→11.0ms（397×）。K5/CP 与小 shape fallback 待续。"
     }
   }
 }

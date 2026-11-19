@@ -41,11 +41,11 @@
 | `kind` | 用于 | 说明 |
 |---|---|---|
 | `stage4_bench_log` | Conv1d / Conv1dBias | 优化前 benchmark 全量记录（`perf_opt/logs/bench_all.json`，2026-10-17T15:38）；只取与交付态同 case 且有 ratio 的部分 |
-| `identity` | Hardswish / Lerp | 无 perf_opt 内核、wrapper 未切换 → 迁移态 ≡ 交付态 |
+| `identity` | Hardswish | 无 perf_opt 内核、wrapper 未切换 → 迁移态 ≡ 交付态 |
 | `migrated_bench_run` | ClampScalar / ClampMin | 2026-10-20 补测：wrapper 临时切到 Stage-3 baseline，只跑 benchmark，跑完按字节还原（`reports/tileops/*_migrated/PROVENANCE.md`）；排除 smoke 用例 |
 | `official_baseline_run` | Conv3dBias | 2026-10-18 官方迁移态 run（`git_commit 8109d785`，wrapper 仍 import `_conv3d_kernel`）；正确性 17/17、benchmark 4/4，3 个 case 均为 msprof Roofline ratio |
 
-其余 11 个算子的迁移态来自各自 `perf_records.jsonl` 的 `phase == "baseline"`（每个 workload 取最后一轮）。
+其余 12 个算子的迁移态来自各自 `perf_records.jsonl` 的 `phase == "baseline"`（每个 workload 取最后一轮；Lerp 于 2026-10-20 首次调优后由 identity 改为实测 baseline）。
 Conv3dBias 的迁移态来自 `20261018_101545_935539_Conv3dBiasFwdOp` 官方 run：r3d **1.2111%**、video **6.291%**、unet **0.757%**，0.76–6.29%。早期 0.25% 自算 SOL 已废弃。
 
 ## 溯源等级（如实记录）
@@ -53,22 +53,30 @@ Conv3dBias 的迁移态来自 `20261018_101545_935539_Conv3dBiasFwdOp` 官方 ru
 | 数据 | 溯源到什么级别 |
 |---|---|
 | **迁移态** | **逐 case**：11 个来自已入库的 `perf_records.jsonl`（`phase=baseline`）；Conv1d/Conv1dBias 来自已入库的 `bench_all.json`；ClampScalar/ClampMin 来自 `manual.json`；Hardswish/Lerp 为恒等；Conv3dBias 来自其官方 baseline run |
-| **交付态 · 15 行** | **聚合快照**（`FINAL_DELIVERY_20261018.md` §2 的 min–max + 达标 a/b）；10-18 那批 per-run 目录未入库、工作区已删除，**逐 case 不可恢复** |
-| **交付态 · 4 行含微型的** | **逐 case**：取自各自 `reports/optimize/<Op>/OPTIMIZE_REPORT.md` §3 的 final SOL，**已剔除 ≤5µs 微型 shape**（Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul） |
+| **交付态 · 14 行** | **聚合快照**（`FINAL_DELIVERY_20261018.md` §2 的 min–max + 达标 a/b）；10-18 那批 per-run 目录未入库、工作区已删除，**逐 case 不可恢复** |
+| **交付态 · 4 行含微型的** | **逐 case**：FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 取自各自 `reports/optimize/<Op>/OPTIMIZE_REPORT.md` §3 的 final SOL；Hardsigmoid 取 2026-10-30 优化后官方 report `20261030_095946_544487`（60.15–60.36%，avg 60.26%）；均只含可调 shape |
+| **交付态 · BatchNormBwd** | **逐 case**：2026-11-03 R11 端到端 run `20261103_183513_599243`；`large-spatial` 只捕获 stats kernel（511.14µs / 60.02%），其他 5 个 shape 为 full pipeline（9.92–16.62%）；19-op 达标口径不计 stats-only，仍记 0/6 |
 | 逐 case 补充 | 17/19 的 `OPTIMIZE_REPORT.md` §3 有优化轮逐 case 表（ClampMin 由 ClampScalar 覆盖、Lerp 未优化）；它们与 10-18 交付轮不是同一轮，仅作过程证据 |
 
 > 用户口径（2026-10-20）：**不接受重测**。因此交付值保持 10-18 的实测结果：
 > 15 行用聚合快照；4 行含微型的用报告里的逐 case 值重算区间（只含可调 shape）。
 > 新一批实测落地时，请把逐 case 存成 `cases.json` 一并入库，避免再次不可溯。
+>
+> 2026-11-03 更新：Hardsigmoid 取 10-30 优化后官方 report `20261030_095946_544487`；BatchNormBwd 取 11-03 R11 report
+> `20261103_183513_599243`。两行属于新一批优化交付，不是对 10-18 批次的重新测量。
 
 ## 特殊条目
 
 - **GDN**：`mode = self_sol`。交付态 0.357% / 迁移态 0.027% 是 **per-kernel msprof Task Duration 汇总 +
   op-level 理论 roofline**，**不是 msprof op 的 ratio**，与其它行不可横比；迁移态由 per-head H1×16 重建（估算）。
 - **Conv3dBias**：迁移态 run 中 r3d 捕获 `_conv3d_bias_main`，video/unet 捕获 `_conv3d_bias_main_base`；两者都属于 Stage-3 baseline kernel，不是优化态。
-- **BatchNormBwd**：ratio 因 subid 去双计下降，与优化前不可比，以 Task Duration 为准。
-- **微型 shape**：Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的区间含微型 shape，
-  下限很低（0.4%~4%），但达标数只按可调 shape 计。
+- **BatchNormBwd**：ratio 因 subid 去双计下降，与优化前不可比，以 Task Duration 为准。2026-11-03 **R11** 后
+  full-pipeline 交付态 ratio 9.92–16.62%；large-spatial 只捕获 stats kernel，511.14µs / 60.02%，不计入 19-op 达标（仍 0/6）；
+  stats 相对原始 1091.74µs −53.2%，全 pipeline 估算 −24.9%。
+- **Hardsigmoid**：交付态取 2026-10-30 优化后官方 report `20261030_095946_544487`（fp16 15.88µs/60.36%、bf16 18.16µs/60.15%，avg 60.26%）。
+  2026-11-02 复跑 `20261102_094507`（fp16 17.84µs/53.74%、bf16 17.10µs/63.90%）为环境恢复后验证跑，ratio 与 Duration 严格反比，不作为优化后交付值。
+- **微型 shape**：Hardsigmoid / FusedAddLayerNorm / GeluAndMul / GeluTanhAndMul 的 `micro_shapes` 字段记录豁免数；
+  `ratio_pct` 只含可调 shape，达标数也只按可调 shape 计。
 
 ## 用法
 

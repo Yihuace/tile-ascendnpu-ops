@@ -220,153 +220,227 @@
       "family": "elementwise",
       "status": "delivered",
       "target_pct": 70,
-      "summary": {
-        "optimized": {
-          "n": 11,
-          "ratio_pct": [
-            58.21,
-            70.16
-          ],
-          "meeting": 1
-        },
-        "migrated": {
-          "n": 11,
-          "ratio_pct": [
-            45.073,
-            64.4395
-          ],
-          "meeting": 0
-        }
-      },
-      "optimized": [],
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "stage4_clamp_r2_endtoend",
+        "path": "examples/TileOPs/reports/tileops/20261021_172100_734147_ClampScalarFwdOp/report.md",
+        "note": "Clamp R2 端到端重测（2026-10-21）；11 个可调 shape，仅 16M bf16 69.62% 未达 70%",
+        "run_id": "20261021_172100_734147_ClampScalarFwdOp"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-10-21"
       },
-      "correctness": "11/11",
-      "effective_kernel": "perf_opt",
       "migrated": [
         {
-          "label": "16M",
-          "dtype": "float16",
-          "ratio_pct": 45.073,
-          "latency_us": 42.54
+          "label": "clampscalar-16M-float16",
+          "ratio_pct": 44.343,
+          "latency_us": 42.83
         },
         {
-          "label": "16M-max-only",
-          "dtype": "bfloat16",
-          "ratio_pct": 48.8635,
-          "latency_us": 39.24
+          "label": "clampscalar-16M-min-only-float16",
+          "ratio_pct": 47.983,
+          "latency_us": 39.25
         },
         {
-          "label": "16M-min-only",
-          "dtype": "float16",
-          "ratio_pct": 49.2399,
-          "latency_us": 38.94
+          "label": "clampmin-16M-min-only-bfloat16",
+          "ratio_pct": 48.715,
+          "latency_us": 39.48
         },
         {
-          "label": "16M-min-only",
-          "dtype": "bfloat16",
-          "ratio_pct": 49.751,
-          "latency_us": 38.54
+          "label": "clampscalar-16M-max-only-float16",
+          "ratio_pct": 48.963,
+          "latency_us": 39.14
         },
         {
-          "label": "16M-max-only",
-          "dtype": "float16",
-          "ratio_pct": 49.8286,
-          "latency_us": 38.48
+          "label": "clampscalar-16M-min-only-bfloat16",
+          "ratio_pct": 48.988,
+          "latency_us": 39.03
         },
         {
-          "label": "16M",
-          "dtype": "bfloat16",
-          "ratio_pct": 52.0114,
-          "latency_us": 42.06
+          "label": "clampscalar-16M-max-only-bfloat16",
+          "ratio_pct": 49.089,
+          "latency_us": 39.31
         },
         {
-          "label": "16M",
-          "dtype": "float32",
-          "ratio_pct": 57.2871,
-          "latency_us": 66.94
+          "label": "clampmin-16M-min-only-float16",
+          "ratio_pct": 49.674,
+          "latency_us": 38.93
         },
         {
-          "label": "16M-min-only",
-          "dtype": "float32",
-          "ratio_pct": 60.1254,
-          "latency_us": 63.78
+          "label": "clampscalar-16M-bfloat16",
+          "ratio_pct": 50.475,
+          "latency_us": 42.9
         },
         {
-          "label": "16M-max-only",
-          "dtype": "float32",
-          "ratio_pct": 61.4945,
-          "latency_us": 62.36
+          "label": "clampscalar-16M-float32",
+          "ratio_pct": 52.575,
+          "latency_us": 73.23
         },
         {
-          "label": "256M",
-          "dtype": "float16",
-          "ratio_pct": 62.1701,
-          "latency_us": 894.26
+          "label": "clampscalar-16M-max-only-float32",
+          "ratio_pct": 55.003,
+          "latency_us": 69.14
         },
         {
-          "label": "256M",
-          "dtype": "bfloat16",
-          "ratio_pct": 64.4395,
-          "latency_us": 863.2
+          "label": "clampmin-16M-min-only-float32",
+          "ratio_pct": 55.034,
+          "latency_us": 69.02
+        },
+        {
+          "label": "clampscalar-16M-min-only-float32",
+          "ratio_pct": 55.098,
+          "latency_us": 68.82
+        },
+        {
+          "label": "clampmin-64M-min-only-float16",
+          "ratio_pct": 55.884,
+          "latency_us": 165.28
+        },
+        {
+          "label": "clampmin-64M-min-only-bfloat16",
+          "ratio_pct": 58.089,
+          "latency_us": 168.65
+        },
+        {
+          "label": "clampscalar-256M-bfloat16",
+          "ratio_pct": 62.684,
+          "latency_us": 883.54
+        },
+        {
+          "label": "clampscalar-256M-float16",
+          "ratio_pct": 63.032,
+          "latency_us": 881.1
+        },
+        {
+          "label": "clampmin-256M-min-only-float16",
+          "ratio_pct": 64.709,
+          "latency_us": 857.31
+        },
+        {
+          "label": "clampmin-256M-min-only-bfloat16",
+          "ratio_pct": 65.188,
+          "latency_us": 854.97
         }
       ],
-      "migrated_source": {
-        "kind": "migrated_bench_run",
-        "path": "examples/TileOPs/reports/tileops/20261020_084325_437924482_ClampScalarFwdOp_migrated/PROVENANCE.md",
-        "basis": "2026-10-20 迁移态补测：把 `clamp_scalar.py` 的 kernel 选择临时切到 Stage-3 baseline，只跑 benchmark 阶段（正确性已由 §11 覆盖），跑完按字节还原 wrapper。排除 smoke-1m 用例，与交付态官方报告同口径。该算子上一次 9.0 迁移态只有 §13.5 的 16M/fp32 单点（74.0 / 68.83 µs），本次全量实测该点分别为 66.94 / 64.08 µs，故以本次为准。"
-      }
+      "summary": {
+        "migrated": {
+          "n": 18,
+          "ratio_pct": [
+            44.343,
+            65.188
+          ],
+          "meeting": 0
+        },
+        "optimized": {
+          "n": 11,
+          "ratio_pct": [
+            69.62,
+            80.53
+          ],
+          "meeting": 10
+        }
+      },
+      "optimized": [],
+      "correctness": "11/11",
+      "effective_kernel": "perf_opt",
+      "note": "R2：输入 dtype 原生 clamp（fp16 1 op）+ A4；18/18 workload 变短、均值 −27.0%；9.0 回退根因是 fp32 中转的 2 条无信息 vcast"
     },
     "LerpFwdOp": {
       "operator": "LerpFwdOp",
       "family": "elementwise",
       "status": "delivered",
       "target_pct": 70,
-      "summary": {
-        "optimized": {
-          "n": 11,
-          "ratio_pct": [
-            60.22,
-            82.03
-          ],
-          "meeting": 9
-        },
-        "migrated": {
-          "n": 11,
-          "ratio_pct": [
-            60.22,
-            82.03
-          ],
-          "meeting": 9
-        }
-      },
-      "optimized": [],
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "stage4_lerp_endtoend",
+        "path": "examples/TileOPs/reports/tileops/20261020_221130_419333_LerpFwdOp/report.md",
+        "note": "Lerp 首次 Stage-4 调优后端到端重测（2026-10-20）；linear-bias bf16 66.12% 未达 70% 线",
+        "run_id": "20261020_221130_419333_LerpFwdOp"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-10-20"
       },
+      "migrated": [
+        {
+          "label": "linear-bias-float16",
+          "ratio_pct": 66.392,
+          "latency_us": 14.12
+        },
+        {
+          "label": "hidden-state-prefill-bfloat16",
+          "ratio_pct": 67.849,
+          "latency_us": 28.09
+        },
+        {
+          "label": "linear-bias-bfloat16",
+          "ratio_pct": 68.972,
+          "latency_us": 14.66
+        },
+        {
+          "label": "llama-7b-ffn-bfloat16",
+          "ratio_pct": 69.711,
+          "latency_us": 36.6
+        },
+        {
+          "label": "linear-bias-float32",
+          "ratio_pct": 69.724,
+          "latency_us": 26.15
+        },
+        {
+          "label": "llama-7b-ffn-float16",
+          "ratio_pct": 73.868,
+          "latency_us": 35.89
+        },
+        {
+          "label": "cnn-feat-broadcast-float16",
+          "ratio_pct": 74.632,
+          "latency_us": 38.63
+        },
+        {
+          "label": "cnn-feat-broadcast-bfloat16",
+          "ratio_pct": 75.788,
+          "latency_us": 39.37
+        },
+        {
+          "label": "llama-7b-ffn-float32",
+          "ratio_pct": 79.399,
+          "latency_us": 64.95
+        },
+        {
+          "label": "hidden-state-prefill-float32",
+          "ratio_pct": 81.765,
+          "latency_us": 47.28
+        },
+        {
+          "label": "cnn-feat-broadcast-float32",
+          "ratio_pct": 82.449,
+          "latency_us": 72.11
+        }
+      ],
+      "summary": {
+        "migrated": {
+          "n": 11,
+          "ratio_pct": [
+            66.392,
+            82.449
+          ],
+          "meeting": 6
+        },
+        "optimized": {
+          "n": 11,
+          "ratio_pct": [
+            66.12,
+            83.24
+          ],
+          "meeting": 10
+        }
+      },
+      "optimized": [],
       "correctness": "36/36",
-      "effective_kernel": "baseline",
-      "migrated": [],
-      "migrated_source": {
-        "kind": "identity",
-        "path": null,
-        "basis": "无 perf_opt 内核、从未优化（`lerp_scalar_kernel/` 下只有 baseline 实现），wrapper 始终走 baseline；故迁移态 ≡ 交付态。"
-      }
+      "effective_kernel": "perf_opt",
+      "note": "A4 结构 + fp16 3-pass / bf16 5-pass 折减 + fp32 去 staging；合计 −3.16%，llama bf16 −10.4%，达标 10/11"
     },
     "ClampMinFwdOp": {
       "operator": "ClampMinFwdOp",
@@ -377,10 +451,10 @@
         "optimized": {
           "n": 7,
           "ratio_pct": [
-            61.77,
-            68.84
+            72.5,
+            78.39
           ],
-          "meeting": 0
+          "meeting": 7
         },
         "migrated": {
           "n": 7,
@@ -393,17 +467,19 @@
       },
       "optimized": [],
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "stage4_clamp_r2_endtoend",
+        "path": "examples/TileOPs/reports/tileops/20261021_173421_838918_ClampMinFwdOp/report.md",
+        "note": "Clamp R2 端到端重测（2026-10-21）；7 个可调 shape 全部 ≥70%",
+        "run_id": "20261021_173421_838918_ClampMinFwdOp"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-10-21"
       },
       "correctness": "14/14",
-      "effective_kernel": "复用 ClampScalar",
+      "effective_kernel": "perf_opt（复用 ClampScalar）",
+      "note": "R2 同 kernel（max=None 路径）：原生 dtype clamp + A4；7/7 达标",
       "migrated": [
         {
           "label": "16M-min-only",
@@ -463,10 +539,10 @@
         "optimized": {
           "n": 6,
           "ratio_pct": [
-            50.2,
-            60.95
+            60.13,
+            67.17
           ],
-          "meeting": 2
+          "meeting": 6
         },
         "migrated": {
           "n": 6,
@@ -481,15 +557,15 @@
       "source": {
         "kind": "delivery_20261018",
         "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "note": "2026-10-18 交付快照；2026-11-03 Hardswish R5/R6 重测：fp16 域内 + vdiv-by-6，stage3 exact-wave block 10752、stage2/fc 16384、bf16 8192；6-shape avg 64.4%（60.13–67.17），达标 6/6；官方 report 20261103_120518_061190。"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-11-03"
       },
       "correctness": "7/7",
-      "effective_kernel": "baseline",
+      "effective_kernel": "perf_opt",
       "migrated": [],
       "migrated_source": {
         "kind": "identity",
@@ -503,14 +579,15 @@
       "status": "delivered",
       "target_pct": 70,
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "stage4_r3_endtoend",
+        "path": "examples/TileOPs/reports/tileops/20261030_095946_544487_HardsigmoidFwdOp/report.md",
+        "note": "R3（2026-10-30）优化后官方 report；fc-wide fp16/bf16 为仅有的 2 个可调 shape",
+        "run_id": "20261030_095946_544487_HardsigmoidFwdOp"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-10-30"
       },
       "migrated": [
         {
@@ -536,16 +613,28 @@
         "optimized": {
           "n": 2,
           "ratio_pct": [
-            53.6,
-            63.2
+            60.15,
+            60.36
           ],
           "meeting": 0
         }
       },
-      "optimized": [],
+      "optimized": [
+        {
+          "label": "fc-wide-float16",
+          "latency_us": 15.8835,
+          "ratio_pct": 60.36
+        },
+        {
+          "label": "fc-wide-bfloat16",
+          "latency_us": 18.164,
+          "ratio_pct": 60.15
+        }
+      ],
       "micro_shapes": 4,
       "correctness": "7/7",
-      "effective_kernel": "perf_opt"
+      "effective_kernel": "perf_opt",
+      "note": "R3：fp16 3-op 域内链 + block 16384；官方 avg 60.26%（60.15–60.36%）。2026-11-02 复跑 20261102_094507 为环境恢复后验证跑（fp16 17.84µs/53.74%、bf16 17.10µs/63.90%），ratio 与 Duration 严格反比，属纯时长波动，不作为优化后交付值。"
     },
     "IsnanFwdOp": {
       "operator": "IsnanFwdOp",
@@ -555,12 +644,12 @@
       "source": {
         "kind": "delivery_20261018",
         "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "note": "2026-10-18 交付快照；2026-11-03 Isnan Round 7：f16/bf16 block 16384 单 buffer、fp32 8192；5-shape avg 70.6%（64.95–76.36），达标 3/5；wrapper 已从 baseline 切到 perf_opt；官方 report 20261103_153056_476674。"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-11-03"
       },
       "migrated": [
         {
@@ -611,15 +700,15 @@
         "optimized": {
           "n": 5,
           "ratio_pct": [
-            52.91,
-            79.33
+            64.95,
+            76.36
           ],
-          "meeting": 1
+          "meeting": 3
         }
       },
       "optimized": [],
       "correctness": "9/9",
-      "effective_kernel": "baseline"
+      "effective_kernel": "perf_opt"
     },
     "IsinfFwdOp": {
       "operator": "IsinfFwdOp",
@@ -629,12 +718,12 @@
       "source": {
         "kind": "delivery_20261018",
         "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "note": "2026-10-18 交付快照；2026-11-02/03 Isinf 重测更新：fp16 block 16384 + bf16 block 16384 单缓冲，5 可调 shape avg 68.9%（49.39–79.23），达标 3/5；官方 report 20261103_093550_370038_IsinfFwdOp。"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-11-03"
       },
       "migrated": [
         {
@@ -685,10 +774,10 @@
         "optimized": {
           "n": 5,
           "ratio_pct": [
-            41.45,
-            78.13
+            49.39,
+            79.23
           ],
-          "meeting": 1
+          "meeting": 3
         }
       },
       "optimized": [],
@@ -703,12 +792,12 @@
       "source": {
         "kind": "delivery_20261018",
         "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "note": "2026-10-18 交付快照；2026-11-03 Isfinite Round 4 重测：block 16384（fp16 auto-mb / bf16 单 buffer）、fp32 8192；5-shape avg 66.8%（48.59–78.10），达标 2/5；官方 report 20261103_145103_721951。"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-11-03"
       },
       "migrated": [
         {
@@ -759,10 +848,10 @@
         "optimized": {
           "n": 5,
           "ratio_pct": [
-            42.29,
-            78.29
+            48.59,
+            78.1
           ],
-          "meeting": 1
+          "meeting": 2
         }
       },
       "optimized": [],
@@ -775,14 +864,14 @@
       "status": "delivered",
       "target_pct": 60,
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "official_run_20261105",
+        "path": "examples/TileOPs/reports/tileops/20261105_151346_181062_GeluTanhAndMulFwdOp/report.md",
+        "note": "2026-11-05 Gelu 家族收口 run（与 GeluAndMul 同链；P0 tile padding + P1-3 bf16 in-place 7296 tile）；只统计 3 个可调 shape"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-11-05"
       },
       "migrated": [
         {
@@ -816,16 +905,16 @@
           "meeting": 0
         },
         "optimized": {
-          "n": 4,
+          "n": 3,
           "ratio_pct": [
-            22.04,
-            47.71
+            24.4841,
+            97.4467
           ],
-          "meeting": 0
+          "meeting": 2
         }
       },
       "optimized": [],
-      "micro_shapes": 1,
+      "micro_shapes": 2,
       "correctness": "11/11",
       "effective_kernel": "perf_opt"
     },
@@ -835,14 +924,14 @@
       "status": "delivered",
       "target_pct": 60,
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "official_run_20261105",
+        "path": "examples/TileOPs/reports/tileops/20261105_150113_550408_GeluAndMulFwdOp/report.md",
+        "note": "2026-11-05 Gelu 家族收口 run（P0 tile padding + P1-3 bf16 in-place 7296 tile）；只统计 3 个可调 shape"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-11-05"
       },
       "migrated": [
         {
@@ -876,17 +965,17 @@
           "meeting": 0
         },
         "optimized": {
-          "n": 4,
+          "n": 3,
           "ratio_pct": [
-            32.75,
-            47.7
+            25.1188,
+            98.0626
           ],
-          "meeting": 0
+          "meeting": 2
         }
       },
       "optimized": [],
-      "micro_shapes": 1,
-      "correctness": "11/11",
+      "micro_shapes": 2,
+      "correctness": "14/14",
       "effective_kernel": "perf_opt"
     },
     "FusedAddLayerNormFwdOp": {
@@ -895,64 +984,66 @@
       "status": "delivered",
       "target_pct": 60,
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "stage4_r8_endtoend",
+        "path": "examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/report.md",
+        "note": "R8 深挖后端到端重测（2026-10-21，Developer 模式）；decode 两个微型 shape 按豁免剔除",
+        "run_id": "20261021_095838_127621_FusedAddLayerNormFwdOp"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-10-21"
       },
       "migrated": [
         {
           "label": "llama-8b-prefill-float16",
-          "ratio_pct": 27.138,
-          "latency_us": 82.452
+          "ratio_pct": 27.165,
+          "latency_us": 82.36
         },
         {
           "label": "llama-70b-prefill-float16",
-          "ratio_pct": 29.698,
-          "latency_us": 164.233
+          "ratio_pct": 29.078,
+          "latency_us": 165.37
         },
         {
           "label": "llama-8b-prefill-bfloat16",
-          "ratio_pct": 31.345,
-          "latency_us": 84.012
+          "ratio_pct": 31.085,
+          "latency_us": 84.26
         },
         {
           "label": "llama-70b-prefill-bfloat16",
-          "ratio_pct": 33.142,
-          "latency_us": 168.283
+          "ratio_pct": 32.695,
+          "latency_us": 168.76
         },
         {
           "label": "llama-13b-prefill-float32",
-          "ratio_pct": 45.081,
-          "latency_us": 107.642
+          "ratio_pct": 44.646,
+          "latency_us": 107.36
         }
       ],
       "summary": {
         "migrated": {
           "n": 5,
           "ratio_pct": [
-            27.138,
-            45.081
+            27.165,
+            44.646
           ],
           "meeting": 0
         },
         "optimized": {
           "n": 5,
           "ratio_pct": [
-            29.25,
-            45.25
+            32.8,
+            71.37
           ],
-          "meeting": 0
+          "meeting": 1
         }
       },
       "optimized": [],
       "micro_shapes": 2,
       "correctness": "14/14",
-      "effective_kernel": "perf_opt"
+      "effective_kernel": "perf_opt",
+      "note": "R8：UB 逐平面模型让 fp32 bm=2 合法 → 13b −14.85%（SOL 71.37%，首个达标 shape）；8b/70b 行批处理被 UB 精确否决"
     },
     "BatchNormBwdOp": {
       "operator": "BatchNormBwdOp",
@@ -960,69 +1051,118 @@
       "status": "delivered",
       "target_pct": 60,
       "source": {
-        "kind": "delivery_20261018",
-        "path": "examples/TileOPs/reports/FINAL_DELIVERY_20261018.md §2",
-        "note": "2026-10-18 端到端重测表；per-run 报告目录未入库，故以该表为快照"
+        "kind": "stage4_r11_endtoend",
+        "path": "examples/TileOPs/reports/tileops/20261103_183513_599243_BatchNormBwdOp/report.md",
+        "note": "R11 端到端重测（2026-11-03）；large-spatial 仅捕获 stats kernel，完整 pipeline 见 perf_records/OPTIMIZE_REPORT",
+        "run_id": "20261103_183513_599243_BatchNormBwdOp"
       },
       "stamp": {
         "cann": "9.0.0",
         "soc": "Ascend910B3",
-        "measured_at": "2026-10-18"
+        "measured_at": "2026-11-03"
       },
       "migrated": [
         {
           "label": "resnet-stage3-float16",
-          "ratio_pct": 15.281,
-          "latency_us": 42.241
+          "ratio_pct": 15.81,
+          "latency_us": 41.26
         },
         {
           "label": "resnet-stage3-float32",
-          "ratio_pct": 15.866,
-          "latency_us": 43.181
+          "ratio_pct": 16.03,
+          "latency_us": 41.68
         },
         {
           "label": "resnet-stage2-float16",
-          "ratio_pct": 16.117,
-          "latency_us": 25.351
+          "ratio_pct": 16.104,
+          "latency_us": 25.44
         },
         {
           "label": "resnet-stage1-float16",
-          "ratio_pct": 17.995,
-          "latency_us": 21.08
+          "ratio_pct": 18.912,
+          "latency_us": 20.52
         },
         {
           "label": "resnet-stage1-bfloat16",
-          "ratio_pct": 19.698,
-          "latency_us": 20.4
+          "ratio_pct": 19.217,
+          "latency_us": 21.16
         },
         {
           "label": "large-spatial-float16",
-          "ratio_pct": 28.164,
-          "latency_us": 5365.027
+          "ratio_pct": 28.123,
+          "latency_us": 5375.4
         }
       ],
       "summary": {
         "migrated": {
           "n": 6,
           "ratio_pct": [
-            15.281,
-            28.164
+            15.81,
+            28.123
           ],
           "meeting": 0
         },
         "optimized": {
           "n": 6,
           "ratio_pct": [
-            11.91,
-            24.44
+            9.92,
+            60.02
           ],
-          "meeting": 0
+          "meeting": 0,
+          "note": "5 个 full-pipeline shape + 1 个 stats-only shape；达标数只计可横比的 full-pipeline shape",
+          "meeting_note": "large-spatial 60.02% 为 stats kernel only，19-op 达标口径不计入，仍记 0/6",
+          "ratio_scope": "5 个 full-pipeline shape + 1 个 stats-only shape"
         }
       },
-      "optimized": [],
+      "optimized": [
+        {
+          "label": "resnet-stage1-float16",
+          "latency_us": 11.4,
+          "ratio_pct": 12.65,
+          "kernel": "main"
+        },
+        {
+          "label": "resnet-stage1-bfloat16",
+          "latency_us": 11.28,
+          "ratio_pct": 13.8,
+          "kernel": "main"
+        },
+        {
+          "label": "resnet-stage2-float16",
+          "latency_us": 15.34,
+          "ratio_pct": 9.92,
+          "kernel": "main"
+        },
+        {
+          "label": "resnet-stage3-float16",
+          "latency_us": 20.14,
+          "ratio_pct": 12.01,
+          "kernel": "main"
+        },
+        {
+          "label": "resnet-stage3-float32",
+          "latency_us": 20.02,
+          "ratio_pct": 16.62,
+          "kernel": "main"
+        },
+        {
+          "label": "large-spatial-float16",
+          "latency_us": 511.14,
+          "ratio_pct": 60.02,
+          "kernel": "stats",
+          "stats_only": true
+        }
+      ],
       "correctness": "12/12",
       "effective_kernel": "perf_opt",
-      "note": "subid 去双计，与优化前不可比"
+      "note": "R11：x_hat 消去 + 静态 full-tile + tiling bN=2/bS=4096/splits=4；large-spatial stats 1091.74→511.14µs（−53.2%），全 pipeline 估算 −24.9%。large-spatial 60.02% 为 stats kernel only，其他 5 个 shape 为 full pipeline；subid 去双计使 ratio 不可横比，19-op 达标口径仍记 0/6。",
+      "stats_only": {
+        "label": "large-spatial-float16",
+        "ratio_pct": 60.02,
+        "latency_us": 511.14,
+        "kernel": "stats",
+        "note": "stats kernel only；full pipeline 估算 ~1756µs（stats 511.14 + apply 1234.37 + finalize 10.71）"
+      }
     },
     "GLADecodeOp": {
       "operator": "GLADecodeOp",
@@ -1322,8 +1462,8 @@
         "optimized": {
           "n": 1,
           "ratio_pct": [
-            0.357,
-            0.357
+            0.375,
+            0.375
           ],
           "meeting": 0
         },
@@ -1351,11 +1491,11 @@
       "migrated_source": {
         "kind": "op_level_roofline",
         "path": "examples/TileOPs/reports/optimize/GatedDeltaNetPrefillFwdOp/OPTIMIZE_REPORT.md §3",
-        "basis": "per-kernel msprof Task Duration 汇总 + op-level roofline（eval_roofline）；**不是 msprof op 的 ratio**，与其它行不可横比。迁移态由 per-head H1×16 重建（估算），非直测。"
+        "basis": "per-kernel msprof Task Duration 汇总（R6 K2 后 7875.3µs）+ op-level roofline（eval_roofline）；**不是 msprof op 的 ratio**，与其它行不可横比。迁移态由 per-head H1×16 重建（估算）。"
       },
       "correctness": "10/10",
       "effective_kernel": "K1+K2 split+K6 batched",
-      "perf_note": "S=4096,H=16,K=128：110195.1 → 8264.4 µs（−92.5%，约 13.3×）；墙钟 4383 → 998 ms（4.4×）；瓶颈 vec_p_main 占 62%。K5/CP 与小 shape fallback 待续。"
+      "perf_note": "R6 K2 persistent（−43.8%）+ R7 host 向量化 + R8 K6 graph + R9 K2 graph：逐 kernel 8264.4→7875.3µs（SOL 0.357→0.375）；墙钟 4373.8→11.0ms（397×）。K5/CP 与小 shape fallback 待续。"
     }
   }
 }
