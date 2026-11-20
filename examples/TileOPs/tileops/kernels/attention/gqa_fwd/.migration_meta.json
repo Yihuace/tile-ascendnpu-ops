@@ -1,0 +1,34 @@
+{
+  "op_name": "GroupedQueryAttentionPrefillPagedWithKVCacheFwdOp",
+  "op_slug": "gqa_fwd",
+  "family": "attention",
+  "gpu_repo_root": "/tmp/tops/TileOPs-main",
+  "kernel_class_name": "GQAPrefillPagedKernel",
+  "op_class_name": "GQAPrefillPagedWithKVCacheFwdOp",
+  "test_path": "tests/ops/test_gqa_fwd.py",
+  "test_slug": "gqa_fwd",
+  "bench_path": "benchmarks/ops/bench_gqa_fwd.py",
+  "bench_slug": "gqa_fwd",
+  "wrapper_path": "tileops/kernels/attention/gqa_fwd/gqa_fwd.py",
+  "extracted_file": "tileops/kernels/attention/gqa_fwd/_grouped_query_attention_prefill_paged_with_k_v_cache_fwd_kernels.py",
+  "extracted_functions": [
+    "_gqa_prefill_paged_with_kv_cache_fwd_kernel"
+  ],
+  "algorithm_redesigned": true,
+  "redesign_reason": "the GPU kernel is a fused Cube+Vector attention that CANNOT be compiled here: the compiler's auto-sync-injection pass emits hivm.hir.sync_block_set[...] syn_instr_mode = <INTRA_BLOCK_SYNCHRONIZATION>, which the installed wheel's NPU IR parser rejects, and stripping the attribute crashes the compiler (five routes exhausted). syn_instr_mode describes CROSS-ENGINE sync, so the port uses single-engine kernels: (host) paged gather + dequant + head repeat + causal mask, then Cube S=Q@K^T, Vector P=softmax(S+mask), Cube O=P@V",
+  "architecture_constraints": [
+    "T.gemm REQUIRES initC=True; without it the GEMM accumulates into an uninitialised L0C and the algebra is wrong (measured: I@Kt gave max_err 2.05, versus 0.0 with initC=True)",
+    "T.copy does not cast element types; an fp16 tile must be loaded into an fp16 buffer and widened with an explicit T.vcast",
+    "the softmax mask must be a large FINITE negative (-1e4), not -inf: vexp on -1.7e38 produced inf/NaN and poisoned whole rows (measured: softmax error 1.2e-1 with -inf versus 2.4e-4 with -1e4)"
+  ],
+  "measured_numerics": {
+    "qk_identity_I@Kt": "max_err 0.0 (exact)",
+    "qk_random": "rel 2.8e-4",
+    "softmax_with_causal_mask": "2.4e-4",
+    "end_to_end_causal": "rel 4.6e-4",
+    "end_to_end_non_causal": "rel 6.5e-4"
+  },
+  "workload_scale_deviation": "the delivered NPU op runs one (batch, head) pair at a time through the single-engine kernels, so the GPU manifest's production shapes (total_q 8192, cache 32768, dim 256) are not runnable in reasonable time; manifest workloads are sized to what the delivered op completes",
+  "performance_note": "the decomposition is correct but NOT fused: the score matrix round-trips through GM, so it is slower than the GPU original. Kernel tuning was not part of this stage.",
+  "created_at": "2026-10-19T00:00:00Z"
+}

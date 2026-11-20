@@ -1,0 +1,244 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_deepseek_dsa_decode.py::test_dsa_decode_bench",
+  "expanded_from": "tileops.manifest.load_workloads('DeepSeekSparseAttentionDecodeWithKVCacheFwdOp') -> _DSA_DECODE_BENCH_PARAMS",
+  "kernel_file": "examples/TileOPs/tileops/kernels/attention/deepseek_dsa_decode/deepseek_dsa_decode_kernel/_sparse_mla_kernel.py",
+  "target_kernel_name": "main_mix_aic",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_deepseek_dsa_decode.py::test_dsa_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/deepseek_dsa_decode/deepseek_dsa_decode_kernel/_sparse_mla_kernel.py::_sparse_mla_kernel::main",
+      "target_kernel_name": "main_mix_aic",
+      "workload_id": "dsa-decode-smoke-float16",
+      "label": "dsa-decode-smoke",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          128,
+          128,
+          576
+        ],
+        "kv": [
+          1,
+          256,
+          1,
+          576
+        ],
+        "indices": [
+          1,
+          128,
+          1,
+          256
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "heads": 128,
+        "seq_len_q": 128,
+        "seq_len_kv": 256,
+        "dim": 512,
+        "dim_tail": 64,
+        "topk": 256,
+        "stride_kv": 1,
+        "heads_kv": 1,
+        "q_start_index_s": 128,
+        "sm_scale": null
+      },
+      "kind": "smoke",
+      "reason": "manifest workload id/label carries the standalone `smoke` token -> performance tuning excluded by rule; used only for precision regression",
+      "precision_pass": true,
+      "tuning_status": "excluded_smoke",
+      "tuning_note": "precision-only; also used in round 2 as a low-cost form-screening platform (baseline 9045.26 us, p_ubpar 9049.30, p_ubrow 8978.83, diagnostic p_contig 501.15). Smoke data never participates in winner selection."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_deepseek_dsa_decode.py::test_dsa_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/deepseek_dsa_decode/deepseek_dsa_decode_kernel/_sparse_mla_kernel.py::_sparse_mla_kernel::main",
+      "target_kernel_name": "main_mix_aic",
+      "workload_id": "dsa-decode-smoke-bfloat16",
+      "label": "dsa-decode-smoke",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          128,
+          128,
+          576
+        ],
+        "kv": [
+          1,
+          256,
+          1,
+          576
+        ],
+        "indices": [
+          1,
+          128,
+          1,
+          256
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 1,
+        "heads": 128,
+        "seq_len_q": 128,
+        "seq_len_kv": 256,
+        "dim": 512,
+        "dim_tail": 64,
+        "topk": 256,
+        "stride_kv": 1,
+        "heads_kv": 1,
+        "q_start_index_s": 128,
+        "sm_scale": null
+      },
+      "kind": "smoke",
+      "reason": "manifest workload id/label carries the standalone `smoke` token -> performance tuning excluded by rule; used only for precision regression (bf16 path)",
+      "precision_pass": true,
+      "tuning_status": "excluded_smoke",
+      "tuning_note": "precision-only; also used in round 2 as a low-cost form-screening platform (baseline 9045.26 us, p_ubpar 9049.30, p_ubrow 8978.83, diagnostic p_contig 501.15). Smoke data never participates in winner selection."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_deepseek_dsa_decode.py::test_dsa_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/deepseek_dsa_decode/deepseek_dsa_decode_kernel/_sparse_mla_kernel.py::_sparse_mla_kernel::main",
+      "target_kernel_name": "main_mix_aic",
+      "workload_id": "single-batch-mainstream",
+      "label": "single-batch-mainstream",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          1024,
+          128,
+          576
+        ],
+        "kv": [
+          1,
+          2048,
+          1,
+          576
+        ],
+        "indices": [
+          1,
+          1024,
+          1,
+          2048
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "heads": 128,
+        "seq_len_q": 1024,
+        "seq_len_kv": 2048,
+        "dim": 512,
+        "dim_tail": 64,
+        "topk": 2048,
+        "stride_kv": 1,
+        "heads_kv": 1,
+        "q_start_index_s": 1024,
+        "sm_scale": null
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; largest measured load (566.5 ms baseline) -> ranked first",
+      "tuning_status": "no_gain",
+      "tuning_note": "round 2 (this run): baseline 566606.00 us / final 566916.62 us (+0.05% = noise). New in-contract branches p_ubpar (+0.04%) and p_ubrow (-0.74%) on the smoke screening shape show the per-row gather cost is independent of destination domain; diagnostic p_contig (math invalid) = 26525.50 us => 21.36x, so the Ratio ceiling with a free gather is 1994.7/26525.5 = 7.52%.",
+      "baseline_us": 566606.0
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_deepseek_dsa_decode.py::test_dsa_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/deepseek_dsa_decode/deepseek_dsa_decode_kernel/_sparse_mla_kernel.py::_sparse_mla_kernel::main",
+      "target_kernel_name": "main_mix_aic",
+      "workload_id": "longer-kv-lower-topk",
+      "label": "longer-kv-lower-topk",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          512,
+          128,
+          576
+        ],
+        "kv": [
+          1,
+          4096,
+          1,
+          576
+        ],
+        "indices": [
+          1,
+          512,
+          1,
+          1024
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "heads": 128,
+        "seq_len_q": 512,
+        "seq_len_kv": 4096,
+        "dim": 512,
+        "dim_tail": 64,
+        "topk": 1024,
+        "stride_kv": 1,
+        "heads_kv": 1,
+        "q_start_index_s": 512,
+        "sm_scale": null
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; second largest measured load (141.8 ms baseline)",
+      "tuning_status": "no_gain",
+      "tuning_note": "round 2: baseline 142398.31 us / final 141835.34 us (-0.40% = noise); zero-gather floor (diagnostic) 6828.78 us => 20.85x, Ratio ceiling 7.31%.",
+      "baseline_us": 142398.31
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_deepseek_dsa_decode.py::test_dsa_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/deepseek_dsa_decode/deepseek_dsa_decode_kernel/_sparse_mla_kernel.py::_sparse_mla_kernel::main",
+      "target_kernel_name": "main_mix_aic",
+      "workload_id": "long-kv-low-topk",
+      "label": "long-kv-low-topk",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          256,
+          128,
+          576
+        ],
+        "kv": [
+          1,
+          8192,
+          1,
+          576
+        ],
+        "indices": [
+          1,
+          256,
+          1,
+          512
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "heads": 128,
+        "seq_len_q": 256,
+        "seq_len_kv": 8192,
+        "dim": 512,
+        "dim_tail": 64,
+        "topk": 512,
+        "stride_kv": 1,
+        "heads_kv": 1,
+        "q_start_index_s": 256,
+        "sm_scale": null
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; smallest measured load (35.6 ms baseline), used as the cheap tune-workload A/B target for the surviving candidates",
+      "tuning_status": "no_gain",
+      "tuning_note": "round 2: baseline 35687.42 us / final 35692.38 us (+0.01% = noise); zero-gather floor (diagnostic) 1793.82 us => 19.90x, Ratio ceiling 6.96%.",
+      "baseline_us": 35687.42
+    }
+  ],
+  "recollected": "2026-11-01 (toolchain tilelang 0.1.2+63c8a2e6)"
+}

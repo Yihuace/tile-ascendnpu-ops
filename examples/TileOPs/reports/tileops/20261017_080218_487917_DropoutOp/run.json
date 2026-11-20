@@ -1,0 +1,754 @@
+{
+  "schema_version": 2,
+  "operator": "DropoutOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261017_080218_487917_DropoutOp",
+    "generated_at": "2026-10-17T08:16:23.675656+08:00",
+    "project_root": "/home/developer/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "90fb7ae37f0be5e908d6317eb2b1e09aeb1ddc4b",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_dropout.py",
+    "benchmark_file": "benchmarks/ops/bench_dropout.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_dropout.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_dropout.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-17T08:16:23.675656+08:00",
+      "evaluation_scope": "DropoutOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261017_080218_487917_DropoutOp",
+      "git_commit": "90fb7ae37f0be5e908d6317eb2b1e09aeb1ddc4b",
+      "correctness_target": "tests/ops/test_dropout.py",
+      "benchmark_target": "benchmarks/ops/bench_dropout.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 28,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 28,
+    "passed_cases": 28,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 6,
+    "benchmark_failed": 0,
+    "case_count": 6,
+    "msprof_case_count": 6,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_statistical_rate[4000000-dtype0-0.5]",
+        "name": "test_dropout_statistical_rate[4000000-dtype0-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 47.382,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_statistical_rate[4000000-dtype1-0.5]",
+        "name": "test_dropout_statistical_rate[4000000-dtype1-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 18.789,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_statistical_rate[4000000-dtype2-0.5]",
+        "name": "test_dropout_statistical_rate[4000000-dtype2-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 18.89,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_statistical_rate[4000000-dtype3-0.1]",
+        "name": "test_dropout_statistical_rate[4000000-dtype3-0.1]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.477,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_statistical_rate[4000000-dtype4-0.3]",
+        "name": "test_dropout_statistical_rate[4000000-dtype4-0.3]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.272,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_scale_factor[1000000-dtype0-0.5]",
+        "name": "test_dropout_scale_factor[1000000-dtype0-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.344,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_scale_factor[1000000-dtype1-0.5]",
+        "name": "test_dropout_scale_factor[1000000-dtype1-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.279,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_scale_factor[1000000-dtype2-0.5]",
+        "name": "test_dropout_scale_factor[1000000-dtype2-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.234,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_scale_factor[1000000-dtype3-0.1]",
+        "name": "test_dropout_scale_factor[1000000-dtype3-0.1]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.248,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_scale_factor[1000000-dtype4-0.3]",
+        "name": "test_dropout_scale_factor[1000000-dtype4-0.3]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.402,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_deterministic_replay[1000000-dtype0-0.5]",
+        "name": "test_dropout_deterministic_replay[1000000-dtype0-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.389,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_deterministic_replay[1000000-dtype1-0.3]",
+        "name": "test_dropout_deterministic_replay[1000000-dtype1-0.3]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.21,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_different_seeds[1000000-dtype0-0.5]",
+        "name": "test_dropout_different_seeds[1000000-dtype0-0.5]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 6.737,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_different_seeds[1000000-dtype1-0.3]",
+        "name": "test_dropout_different_seeds[1000000-dtype1-0.3]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 6.458,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_p0_identity[1000000-dtype0]",
+        "name": "test_dropout_p0_identity[1000000-dtype0]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 0.01,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_p0_identity[1000000-dtype1]",
+        "name": "test_dropout_p0_identity[1000000-dtype1]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_p1_all_zeros[1000000-dtype0]",
+        "name": "test_dropout_p1_all_zeros[1000000-dtype0]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 0.006,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_p1_all_zeros[1000000-dtype1]",
+        "name": "test_dropout_p1_all_zeros[1000000-dtype1]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_training_false[1000000-dtype0]",
+        "name": "test_dropout_training_false[1000000-dtype0]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_training_false[1000000-dtype1]",
+        "name": "test_dropout_training_false[1000000-dtype1]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_preserves_shape[1000000-dtype0]",
+        "name": "test_dropout_preserves_shape[1000000-dtype0]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.267,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_preserves_shape[1000000-dtype1]",
+        "name": "test_dropout_preserves_shape[1000000-dtype1]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_custom_config_p0_identity[8192-dtype0-512]",
+        "name": "test_dropout_custom_config_p0_identity[8192-dtype0-512]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.333,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_custom_config_p0_identity[8192-dtype1-128]",
+        "name": "test_dropout_custom_config_p0_identity[8192-dtype1-128]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.312,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_custom_config_p0_identity[65536-dtype2-1024]",
+        "name": "test_dropout_custom_config_p0_identity[65536-dtype2-1024]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.237,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_custom_config_correctness[8192-dtype0-512]",
+        "name": "test_dropout_custom_config_correctness[8192-dtype0-512]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.272,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_custom_config_correctness[8192-dtype1-128]",
+        "name": "test_dropout_custom_config_correctness[8192-dtype1-128]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.252,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_dropout::test_dropout_custom_config_correctness[65536-dtype2-1024]",
+        "name": "test_dropout_custom_config_correctness[65536-dtype2-1024]",
+        "classname": "tests.ops.test_dropout",
+        "time_s": 3.31,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_dropout::test_dropout_bench[smoke-dropout-1m-float32]",
+        "name": "test_dropout_bench[smoke-dropout-1m-float32]",
+        "classname": "benchmarks.ops.bench_dropout",
+        "time_s": 131.996,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DropoutOp",
+          "op_module": "tileops.ops.regularization.dropout",
+          "tileops_latency_us": "16.1800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_dropout::test_dropout_bench[smoke-dropout-1m-float16]",
+        "name": "test_dropout_bench[smoke-dropout-1m-float16]",
+        "classname": "benchmarks.ops.bench_dropout",
+        "time_s": 105.046,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DropoutOp",
+          "op_module": "tileops.ops.regularization.dropout",
+          "tileops_latency_us": "11.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_dropout::test_dropout_bench[smoke-dropout-1m-bfloat16]",
+        "name": "test_dropout_bench[smoke-dropout-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_dropout",
+        "time_s": 105.714,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DropoutOp",
+          "op_module": "tileops.ops.regularization.dropout",
+          "tileops_latency_us": "11.9000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_dropout::test_dropout_bench[tokens-1k-hidden-4k-fp16-float16]",
+        "name": "test_dropout_bench[tokens-1k-hidden-4k-fp16-float16]",
+        "classname": "benchmarks.ops.bench_dropout",
+        "time_s": 105.852,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DropoutOp",
+          "op_module": "tileops.ops.regularization.dropout",
+          "tileops_latency_us": "35.8800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_dropout::test_dropout_bench[tokens-1k-hidden-10k-bf16-bfloat16]",
+        "name": "test_dropout_bench[tokens-1k-hidden-10k-bf16-bfloat16]",
+        "classname": "benchmarks.ops.bench_dropout",
+        "time_s": 104.63,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DropoutOp",
+          "op_module": "tileops.ops.regularization.dropout",
+          "tileops_latency_us": "92.7600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_dropout::test_dropout_bench[tokens-1k-hidden-4k-fp32-float32]",
+        "name": "test_dropout_bench[tokens-1k-hidden-4k-fp32-float32]",
+        "classname": "benchmarks.ops.bench_dropout",
+        "time_s": 106.155,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DropoutOp",
+          "op_module": "tileops.ops.regularization.dropout",
+          "tileops_latency_us": "56.3000"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "DropoutOp",
+        "case_id": "DropoutOp-298c2f27c958",
+        "label": "smoke-dropout-1m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {
+            "p": 0.5,
+            "training": true
+          },
+          "shape": [
+            1024,
+            1024
+          ]
+        },
+        "config": {
+          "block_size": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 16.18,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 26.3521,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 3.7225427627563477,
+        "performance_tops": 0.9650155901908875,
+        "computility_tops": 3.661999464035034,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/artifacts/msprof/main_neuplzru",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 16.18,
+          "max_latency_us": 16.18,
+          "min_latency_us": 16.18,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DropoutOp",
+        "case_id": "DropoutOp-238989e1379f",
+        "label": "smoke-dropout-1m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "p": 0.5,
+            "training": true
+          },
+          "shape": [
+            1024,
+            1024
+          ]
+        },
+        "config": {
+          "block_size": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 11.04,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 36.0819,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 7.396643161773682,
+        "performance_tops": 1.4051477909088135,
+        "computility_tops": 3.8943262100219727,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/artifacts/msprof/main_muy7f816",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 11.04,
+          "max_latency_us": 11.04,
+          "min_latency_us": 11.04,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DropoutOp",
+        "case_id": "DropoutOp-e5c916c64f0b",
+        "label": "smoke-dropout-1m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "p": 0.5,
+            "training": true
+          },
+          "shape": [
+            1024,
+            1024
+          ]
+        },
+        "config": {
+          "block_size": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 11.9,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 39.211,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 8.39658260345459,
+        "performance_tops": 1.4798306226730347,
+        "computility_tops": 3.774017333984375,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/artifacts/msprof/main_fs4io9ny",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 11.9,
+          "max_latency_us": 11.9,
+          "min_latency_us": 11.9,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DropoutOp",
+        "case_id": "DropoutOp-cd3ceea71c7c",
+        "label": "tokens-1k-hidden-4k-fp16",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "p": 0.5,
+            "training": true
+          },
+          "shape": [
+            1024,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 35.880001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 44.041599999999995,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 7.345255374908447,
+        "performance_tops": 1.7173190116882324,
+        "computility_tops": 3.8993146419525146,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/artifacts/msprof/main_3qpyfj3c",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 35.880001,
+          "max_latency_us": 35.880001,
+          "min_latency_us": 35.880001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DropoutOp",
+        "case_id": "DropoutOp-a85d36b496c9",
+        "label": "tokens-1k-hidden-10k-bf16",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "p": 0.5,
+            "training": true
+          },
+          "shape": [
+            1024,
+            10240
+          ]
+        },
+        "config": {
+          "block_size": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 92.760002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 49.8772,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 8.33497142791748,
+        "performance_tops": 1.8844122886657715,
+        "computility_tops": 3.778102159500122,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/artifacts/msprof/main_l82qmx_4",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 92.760002,
+          "max_latency_us": 92.760002,
+          "min_latency_us": 92.760002,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DropoutOp",
+        "case_id": "DropoutOp-14a697d655af",
+        "label": "tokens-1k-hidden-4k-fp32",
+        "params": {
+          "dtype": "float32",
+          "op_params": {
+            "p": 0.5,
+            "training": true
+          },
+          "shape": [
+            1024,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 56.299999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 30.157099999999996,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 3.707979440689087,
+        "performance_tops": 1.1049742698669434,
+        "computility_tops": 3.664060592651367,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261017_080218_487917_DropoutOp/artifacts/msprof/main_nl6sntj6",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 56.299999,
+          "max_latency_us": 56.299999,
+          "min_latency_us": 56.299999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "DropoutOp",
+      "family": "regularization",
+      "cases": 28,
+      "passed": 28,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 6,
+      "ratio_range": {
+        "min": 26.3521,
+        "max": 49.8772
+      }
+    }
+  ],
+  "warnings": [
+    "DropoutOp/DropoutOp-a2d97090703b: missing tileops candidate record",
+    "DropoutOp/DropoutOp-b4bd76ea5cf8: missing tileops candidate record",
+    "DropoutOp/DropoutOp-1098851143a0: missing tileops candidate record",
+    "DropoutOp/DropoutOp-880534da4c5b: missing tileops candidate record",
+    "DropoutOp/DropoutOp-433f1d70eeb7: missing tileops candidate record",
+    "DropoutOp/DropoutOp-0fa1737438f2: missing tileops candidate record"
+  ]
+}

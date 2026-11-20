@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-08T02:44:03.107592+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-78a67f644b76",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-8b-long-w1024",
+      "params": {
+        "batch": 4,
+        "dim": 128,
+        "dtype": "bfloat16",
+        "heads": 32,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seqlens_k": [
+          2048,
+          2048,
+          2048,
+          2048
+        ],
+        "seqlens_q": [
+          2048,
+          2048,
+          2048,
+          2048
+        ],
+        "wl": 1024,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 2266.02587890625,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.4350280761719,
+        "Perf(TOps/s)": 73.6116943359375,
+        "Ratio(%)": 24.5835,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_fhts9p67",
+        "latency_us": 1787.255737,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 1787.255737,
+          "max_latency_us": 1787.255737,
+          "min_latency_us": 1787.255737,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

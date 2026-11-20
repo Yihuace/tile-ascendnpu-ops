@@ -1,0 +1,562 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-27T09:52:51.924658+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-a31cdd4b3fea",
+      "config": {
+        "block_n": 128
+      },
+      "label": "smoke-k3-s1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 8,
+        "c_in_g": 8,
+        "c_out": 16,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          8,
+          128
+        ],
+        "kernel_size": 3,
+        "l_in": 128,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          16,
+          8,
+          3
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 145.60000610351562,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.051478385925293,
+        "Perf(TOps/s)": 0.009750235825777054,
+        "Ratio(%)": 0.2407,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_1gr75p04",
+        "latency_us": 38.228409,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 38.228409,
+          "max_latency_us": 38.228409,
+          "min_latency_us": 38.228409,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-e7a544160ae8",
+      "config": {
+        "block_n": 128
+      },
+      "label": "whisper-conv1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 80,
+        "c_in_g": 80,
+        "c_out": 1280,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          80,
+          3000
+        ],
+        "kernel_size": 3,
+        "l_in": 3000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 11400.61328125,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.049765110015869,
+        "Perf(TOps/s)": 0.11737655103206635,
+        "Ratio(%)": 2.8984,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_d21817bj",
+        "latency_us": 59178.480469,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 59178.480469,
+          "max_latency_us": 59178.480469,
+          "min_latency_us": 59178.480469,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-a89da48c34d9",
+      "config": {
+        "block_n": 128
+      },
+      "label": "whisper-conv1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 80,
+        "c_in_g": 80,
+        "c_out": 1280,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          80,
+          3000
+        ],
+        "kernel_size": 3,
+        "l_in": 3000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          1280,
+          80,
+          3
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 11406.33203125,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.050320148468018,
+        "Perf(TOps/s)": 0.11720839887857437,
+        "Ratio(%)": 2.8937999999999997,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_hpc9i79g",
+        "latency_us": 59330.476562,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 59330.476562,
+          "max_latency_us": 59330.476562,
+          "min_latency_us": 59330.476562,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-1cf36f6683ad",
+      "config": {
+        "block_n": 128
+      },
+      "label": "wav2vec2-layer1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 512,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          16000
+        ],
+        "kernel_size": 10,
+        "l_in": 16000,
+        "n": 1,
+        "padding": 0,
+        "stride": 5,
+        "use_bias": true,
+        "weight_shape": [
+          512,
+          1,
+          10
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1260.6468505859375,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.046283721923828,
+        "Perf(TOps/s)": 0.10928385704755783,
+        "Ratio(%)": 2.7008,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_2bo_7iy0",
+        "latency_us": 1141.371094,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 1141.371094,
+          "max_latency_us": 1141.371094,
+          "min_latency_us": 1141.371094,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-b8beacae1f97",
+      "config": {
+        "block_n": 128
+      },
+      "label": "wav2vec2-layer1-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 512,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          16000
+        ],
+        "kernel_size": 10,
+        "l_in": 16000,
+        "n": 1,
+        "padding": 0,
+        "stride": 5,
+        "use_bias": true,
+        "weight_shape": [
+          512,
+          1,
+          10
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 1293.7645263671875,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.0589494705200195,
+        "Perf(TOps/s)": 0.10990492254495621,
+        "Ratio(%)": 2.7077,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_zbo7ryin",
+        "latency_us": 1164.736206,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 1164.736206,
+          "max_latency_us": 1164.736206,
+          "min_latency_us": 1164.736206,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-8c3e294f1b5e",
+      "config": {
+        "block_n": 128
+      },
+      "label": "encodec-init-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 32,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          24000
+        ],
+        "kernel_size": 7,
+        "l_in": 24000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          32,
+          1,
+          7
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 837.8779907226562,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.099934101104736,
+        "Perf(TOps/s)": 0.07782477885484695,
+        "Ratio(%)": 1.8981999999999999,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_eb1ekyq4",
+        "latency_us": 519.534302,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 519.534302,
+          "max_latency_us": 519.534302,
+          "min_latency_us": 519.534302,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-cb6f6afa8b0b",
+      "config": {
+        "block_n": 128
+      },
+      "label": "encodec-init-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 1,
+        "c_in_g": 1,
+        "c_out": 32,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          1,
+          24000
+        ],
+        "kernel_size": 7,
+        "l_in": 24000,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          32,
+          1,
+          7
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 869.7930908203125,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.116588592529297,
+        "Perf(TOps/s)": 0.07496695220470428,
+        "Ratio(%)": 1.8211000000000002,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic__chmzofs",
+        "latency_us": 559.883179,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 559.883179,
+          "max_latency_us": 559.883179,
+          "min_latency_us": 559.883179,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-234fd39410b7",
+      "config": {
+        "block_n": 128
+      },
+      "label": "encodec-deep-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 128,
+        "c_in_g": 128,
+        "c_out": 256,
+        "dilation": 1,
+        "dtype": "float16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          128,
+          600
+        ],
+        "kernel_size": 10,
+        "l_in": 600,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          256,
+          128,
+          10
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 5069.515625,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.227928638458252,
+        "Perf(TOps/s)": 0.0967562273144722,
+        "Ratio(%)": 2.2885,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_cmw6_ylm",
+        "latency_us": 14533.038086,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 14533.038086,
+          "max_latency_us": 14533.038086,
+          "min_latency_us": 14533.038086,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "Conv1dBiasFwdOp",
+      "case_id": "Conv1dBiasFwdOp-59fa0b12065e",
+      "config": {
+        "block_n": 128
+      },
+      "label": "encodec-deep-bias",
+      "params": {
+        "@py_assert1": null,
+        "@py_assert2": null,
+        "c_in": 128,
+        "c_in_g": 128,
+        "c_out": 256,
+        "dilation": 1,
+        "dtype": "bfloat16",
+        "groups": 1,
+        "input_shape": [
+          1,
+          128,
+          600
+        ],
+        "kernel_size": 10,
+        "l_in": 600,
+        "n": 1,
+        "padding": 0,
+        "stride": 1,
+        "use_bias": true,
+        "weight_shape": [
+          256,
+          128,
+          10
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 5066.02099609375,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.228009223937988,
+        "Perf(TOps/s)": 0.09594754129648209,
+        "Ratio(%)": 2.2693000000000003,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261027_094816_102558_Conv1dBiasFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_zk14244q",
+        "latency_us": 14658.944336,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 14658.944336,
+          "max_latency_us": 14658.944336,
+          "min_latency_us": 14658.944336,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

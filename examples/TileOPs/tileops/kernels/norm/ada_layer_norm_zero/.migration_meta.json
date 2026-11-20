@@ -1,0 +1,23 @@
+{
+  "op_name": "AdaLayerNormFwdOp|AdaLayerNormZeroFwdOp",
+  "op_slug": "ada_layer_norm",
+  "family": "norm",
+  "gpu_repo_root": "/tmp/tops/TileOPs-main",
+  "kernel_class_name": "AdaLayerNormKernel",
+  "op_class_name": "AdaLayerNormFwdOp",
+  "covers_ops": [
+    "AdaLayerNormFwdOp",
+    "AdaLayerNormZeroFwdOp"
+  ],
+  "test_path": "tests/ops/test_ada_layer_norm.py",
+  "test_slug": "ada_layer_norm",
+  "bench_path": "benchmarks/ops/bench_ada_layer_norm.py",
+  "bench_slug": "ada_layer_norm",
+  "wrapper_path": "tileops/kernels/norm/ada_layer_norm/ada_layer_norm.py",
+  "extracted_file": "tileops/kernels/norm/ada_layer_norm/_ada_layer_norm_fwd_kernels.py",
+  "extracted_file_note": "pattern B: ONE kernel class (AdaLayerNormKernel) shared by two manifest ops (AdaLayerNormFwdOp and AdaLayerNormZeroFwdOp -- both map to kernel_map {'ada_layer_norm': 'AdaLayerNormKernel'}); the per-op extraction produced two BYTE-IDENTICAL files (_ada_layer_norm_fwd_kernels.py and _ada_layer_norm_zero_fwd_kernels.py, sha256 ae3dc679b480e8d4). The single extracted function is _ada_layer_norm_kernel(M, N, eps, dtype, has_gate=False, use_cp_async=False) -- has_gate is the only switch between the two ops.",
+  "extracted_functions": [
+    "_ada_layer_norm_kernel"
+  ],
+  "created_at": "2026-10-16T02:50:00Z"
+}

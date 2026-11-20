@@ -1,0 +1,755 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-23T17:11:06.701798+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-d27d208fc64c",
+      "label": "smoke",
+      "params": {
+        "M": 16,
+        "N": 128,
+        "dtype": "float32"
+      },
+      "result": {
+        "AI(Ops/Byte)": 25.054264068603516,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.390641689300537,
+        "Perf(TOps/s)": 0.1863495409488678,
+        "Ratio(%)": 4.2442,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_170331_791988_GeluTanhAndMulFwdOp/artifacts/msprof/main_lc6f0y7g",
+        "latency_us": 2.22,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 2.22,
+          "max_latency_us": 2.22,
+          "min_latency_us": 2.22,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.042442,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.054921,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.042442,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.042442,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.042442,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.042442,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.042442,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.042442,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.042442,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.042442,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.042442,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-43e35b2a94f2",
+      "label": "smoke",
+      "params": {
+        "M": 16,
+        "N": 128,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 121.21212005615234,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.430768966674805,
+        "Perf(TOps/s)": 0.22260870039463043,
+        "Ratio(%)": 5.0242,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_170331_791988_GeluTanhAndMulFwdOp/artifacts/msprof/main_wulhsnvb",
+        "latency_us": 2.3,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 2.3,
+          "max_latency_us": 2.3,
+          "min_latency_us": 2.3,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.050242,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.063634,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.050242,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.050242,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.050242,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.050242,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.050242,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.050242,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.050242,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.050242,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.050242,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-9c90c357a1f0",
+      "label": "llama-8b-ffn-prefill",
+      "params": {
+        "M": 2048,
+        "N": 14336,
+        "dtype": "float16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.454329252243042,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.587102890014648,
+        "Perf(TOps/s)": 2.092655658721924,
+        "Ratio(%)": 45.6204,
+        "advice": "latency bound:compute caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_170331_791988_GeluTanhAndMulFwdOp/artifacts/msprof/main_ijiqrmrq",
+        "latency_us": 197.320007,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 197.320007,
+          "max_latency_us": 197.320007,
+          "min_latency_us": 197.320007,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.456204,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.649657,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.456204,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.456204,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.456204,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.456204,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.456204,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.456204,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.456204,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.456204,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.456204,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-4b61a9968042",
+      "label": "llama-8b-ffn-prefill",
+      "params": {
+        "M": 2048,
+        "N": 14336,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.63615083694458,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.588484287261963,
+        "Perf(TOps/s)": 2.187354326248169,
+        "Ratio(%)": 47.6705,
+        "advice": "latency bound:compute caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_170331_791988_GeluTanhAndMulFwdOp/artifacts/msprof/main_puwv664s",
+        "latency_us": 202.199997,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 202.199997,
+          "max_latency_us": 202.199997,
+          "min_latency_us": 202.199997,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.476705,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.655632,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.476705,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.476705,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.476705,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.476705,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.476705,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.476705,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.476705,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.476705,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.476705,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-79c0520cd36b",
+      "label": "llama-8b-ffn-decode",
+      "params": {
+        "M": 1,
+        "N": 14336,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.897550106048584,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.430768966674805,
+        "Perf(TOps/s)": 0.10566038638353348,
+        "Ratio(%)": 2.3847,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_170331_791988_GeluTanhAndMulFwdOp/artifacts/msprof/main_rf1c31lg",
+        "latency_us": 2.12,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 2.12,
+          "max_latency_us": 2.12,
+          "min_latency_us": 2.12,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.023847,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.031338,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.023847,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.023847,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.023847,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.023847,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.023847,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.023847,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.023847,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.023847,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.023847,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-8d0b8f361439",
+      "label": "qwen3-8b-swiglu-b32",
+      "params": {
+        "M": 32,
+        "N": 12288,
+        "dtype": "float16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.544633388519287,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.550337314605713,
+        "Perf(TOps/s)": 0.9781895279884338,
+        "Ratio(%)": 21.4971,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_170331_791988_GeluTanhAndMulFwdOp/artifacts/msprof/main_eeec8hm6",
+        "latency_us": 5.7,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 5.7,
+          "max_latency_us": 5.7,
+          "min_latency_us": 5.7,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.214971,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.302891,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.214971,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.214971,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.214971,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.214971,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.214971,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.214971,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.214971,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.214971,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.214971,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-4c768422b395",
+      "label": "qwen3-8b-swiglu-b32",
+      "params": {
+        "M": 32,
+        "N": 12288,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.7946131229400635,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.554091453552246,
+        "Perf(TOps/s)": 1.036266565322876,
+        "Ratio(%)": 22.7546,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_170331_791988_GeluTanhAndMulFwdOp/artifacts/msprof/main_c_2a7zi2",
+        "latency_us": 5.76,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 5.76,
+          "max_latency_us": 5.76,
+          "min_latency_us": 5.76,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.227546,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.309916,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.227546,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.227546,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.227546,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.227546,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.227546,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.227546,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.227546,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.227546,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.227546,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    }
+  ]
+}

@@ -1,0 +1,573 @@
+# reduction.yaml -- manifest entries for the 'reduction' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+LogSumExpFwdOp:
+  ref_api: "torch.logsumexp"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      dim: {type: "int | list[int] | tuple[int, ...]", default: -1}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+    - "isinstance(dim, int) or len(dim) > 0"
+    - "isinstance(dim, int) or len({d % x.ndim for d in dim}) == len(dim)"
+    - "output.ndim == (x.ndim if keepdim else x.ndim - (1 if isinstance(dim, int) else len({d % x.ndim for d in dim})))"
+
+  workloads:
+    # Attention weight matrices
+  - {x_shape: [32, 32, 4096], dtypes: [float16, bfloat16], label: "attn-weights-4k"}
+  - {x_shape: [32, 32, 32768], dtypes: [bfloat16], label: "attn-weights-32k"}
+    # LM head logits
+  - {x_shape: [4, 102400], dtypes: [float16, bfloat16], label: "lm-head-logits"}
+  - {x_shape: [4, 128, 4096], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+    flops: "4 * M * N"
+    bytes: "(M * N + M) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/reduction/logsumexp/logsumexp.py
+    kernel_map:
+      logsumexp_fwd: LogSumExpKernel
+    op: tileops/ops/reduction/softmax.py
+    test: tests/ops/test_softmax.py
+    bench: benchmarks/ops/bench_softmax.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# reduction -- argmax (output dtype: int64)
+# ---------------------------------------------------------------------------
+
+ArgmaxFwdOp:
+  ref_api: "torch.argmax"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "int64"}
+    params:
+      dim: {type: "int | None", default: null}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "dim is None or -x.ndim <= dim < x.ndim"
+    - "output.ndim == (x.ndim if keepdim else (x.ndim - 1 if dim is not None else 0))"
+    - "dim is None or not keepdim or all(output.shape[i] == 1 for i in range(x.ndim))"
+    - "dim is None or not keepdim or all(output.shape[i] == (1 if i == dim % x.ndim else x.shape[i]) for i in range(x.ndim))"
+    - "dim is None or keepdim or all(output.shape[i] == (x.shape[i] if i < dim % x.ndim else x.shape[i + 1]) for i in range(output.ndim))"
+
+  workloads:
+    # Smoke case (small shape, all supported dtypes)
+  - {x_shape: [32, 256], dtypes: [float16, bfloat16, float32], dim: -1, label: "smoke-argmax"}
+    # LM head argmax (batch, vocab_size) -- greedy decoding
+  - {x_shape: [4, 102400], dtypes: [float16, bfloat16], dim: -1, label: "lm-head-argmax"}
+    # Hidden state argmax
+  - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], dim: -1, label: "hidden-state-argmax"}
+    # Non-last-axis sentinel; ArgmaxFwdOp and ArgminFwdOp share ArgreduceKernel,
+    # so one op carries it.
+  - {x_shape: [4, 128, 4096], dtypes: [float16], dim: 0, label: "3d-non-last-axis-argmax"}
+
+  roofline:
+    vars:
+      M: "1 if dim is None else product(x.shape[:dim % x.ndim]) * product(x.shape[dim % x.ndim + 1:])"
+      N: "product(x.shape) if dim is None else x.shape[dim % x.ndim]"
+    # N-1 comparisons per output element
+    flops: "M * N"
+    # Read x (elem_bytes) + write output (8 bytes for int64)
+    bytes: "M * N * elem_bytes + M * 8"
+
+  source:
+    kernel: tileops/kernels/reduction/argmax/argmax.py
+    kernel_map:
+      argreduce: ArgreduceKernel
+    op: tileops/ops/reduction/argmax.py
+    test: tests/ops/test_argmax.py
+    bench: benchmarks/ops/bench_argmax.py
+    bench_manifest_driven: true
+
+ArgminFwdOp:
+  ref_api: "torch.argmin"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "int64"}
+    params:
+      dim: {type: "int | None", default: null}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "dim is None or -x.ndim <= dim < x.ndim"
+    - "output.ndim == (x.ndim if keepdim else (x.ndim - 1 if dim is not None else 0))"
+    - "dim is not None or not keepdim or all(output.shape[i] == 1 for i in range(x.ndim))"
+    - "dim is None or not keepdim or all(output.shape[i] == (1 if i == dim % x.ndim else x.shape[i]) for i in range(x.ndim))"
+    - "dim is None or keepdim or all(output.shape[i] == (x.shape[i] if i < dim % x.ndim else x.shape[i + 1]) for i in range(output.ndim))"
+
+  workloads:
+    # Smoke case (small shape, all supported dtypes)
+  - {x_shape: [32, 256], dtypes: [float16, bfloat16, float32], dim: -1, label: "smoke-argmin"}
+    # LM head argmin (batch, vocab_size)
+  - {x_shape: [4, 102400], dtypes: [float16, bfloat16], dim: -1, label: "lm-head-argmin"}
+    # Hidden state argmin
+  - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], dim: -1, label: "hidden-state-argmin"}
+    # Non-aligned reduction width (tail handling; N % DEFAULT_ALIGNMENT != 0)
+  - {x_shape: [256, 300], dtypes: [float16, bfloat16], dim: -1, label: "non-aligned-argmin"}
+
+  roofline:
+    vars:
+      M: "1 if dim is None else product(x.shape[:dim % x.ndim]) * product(x.shape[dim % x.ndim + 1:])"
+      N: "product(x.shape) if dim is None else x.shape[dim % x.ndim]"
+    # N-1 comparisons per output element
+    flops: "M * N"
+    # Read x (elem_bytes) + write output (8 bytes for int64)
+    bytes: "M * N * elem_bytes + M * 8"
+
+  # GPU source paths (shared with ArgmaxFwdOp):
+  #   kernel: tileops/kernels/reduction/argreduce.py (kernel_map argreduce: ArgreduceKernel)
+  #   op:     tileops/ops/reduction/argreduce.py
+  #   test:   tests/ops/test_argreduce.py  (argmax + argmin share one file)
+  #   bench:  benchmarks/ops/bench_argreduce.py
+  # NPU paths below are per-op: the argmin migration unit only ports its own
+  # Test classes / fixtures / bench function.
+  source:
+    kernel: tileops/kernels/reduction/argmin/argmin.py
+    kernel_map:
+      argreduce: ArgreduceKernel
+    op: tileops/ops/reduction/argmin.py
+    test: tests/ops/test_argmin.py
+    bench: benchmarks/ops/bench_argmin.py
+    bench_manifest_driven: true
+
+
+AllFwdOp:
+  ref_api: "torch.all"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32 | bool | int32 | int64 | complex64 | complex128"}
+    outputs:
+      output: {dtype: "bool"}
+    params:
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: null}
+      keepdim: {type: bool, default: false}
+    # PyTorch: torch.all(x, dim=()) / dim=[] is a no-op (returns x.shape),
+    # unlike sum/mean/amax. Only dim=None triggers full reduction; empty
+    # list/tuple yields an empty reduction set.
+    shape_rules:
+    - "dim is None or all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+    - "isinstance(dim, (int, type(None))) or len({d % x.ndim for d in dim}) == len(dim)"
+    - "output.ndim == (x.ndim if keepdim else x.ndim - len({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))))"
+    - "not keepdim or all(output.shape[i] == (1 if i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))) else x.shape[i]) for i in range(x.ndim))"
+    - "keepdim or all(output.shape[k] == x.shape[[i for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim)))][k]] for k in range(output.ndim))"
+
+  workloads:
+    # Smoke case (small shape; covers the bool/float dtypes that all drives)
+  - {x_shape: [32, 256], dtypes: [bool, float16, float32], dim: -1, label: "smoke-all"}
+    # Mask validation (batch, seq_len)
+  - {x_shape: [32, 4096], dtypes: [bool], label: "mask-validation-4k"}
+  - {x_shape: [32, 32768], dtypes: [bool], label: "mask-validation-32k"}
+  - {x_shape: [4, 128, 4096], dtypes: [bool], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))))"
+    # N-1 logical AND per output element
+    flops: "M * N"
+    # Read x (elem_bytes) + write output (1 byte for bool)
+    bytes: "M * N * elem_bytes + M"
+
+  # GPU source paths (shared with AnyFwdOp / CountNonzeroFwdOp):
+  #   kernel: tileops/kernels/reduction/logical_reduce.py (kernel_map logical_reduce: LogicalReduceKernel)
+  #   op:     tileops/ops/reduction/logical_reduce.py
+  #   test:   tests/ops/test_logical_reduce.py  (any + all + count_nonzero share one file)
+  #   bench:  benchmarks/ops/bench_logical_reduce.py
+  # NPU paths below are per-op: the all migration unit only ports its own Op
+  # class / Test classes / fixtures / bench function, and only the baseline
+  # TileLang factory (the N-tiled factory is out of scope).
+  source:
+    kernel: tileops/kernels/reduction/all/all.py
+    kernel_map:
+      logical_reduce: LogicalReduceKernel
+    op: tileops/ops/reduction/all.py
+    test: tests/ops/test_all.py
+    bench: benchmarks/ops/bench_all.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# reduction -- any (output dtype: bool)
+# ---------------------------------------------------------------------------
+
+
+AnyFwdOp:
+  ref_api: "torch.any"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32 | bool | int32 | int64 | complex64 | complex128"}
+    outputs:
+      output: {dtype: "bool"}
+    params:
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: null}
+      keepdim: {type: bool, default: false}
+    # PyTorch: torch.any(x, dim=()) / dim=[] is a no-op (returns x.shape),
+    # unlike sum/mean/amax. Only dim=None triggers full reduction; empty
+    # list/tuple yields an empty reduction set.
+    shape_rules:
+    - "dim is None or all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+    - "isinstance(dim, (int, type(None))) or len({d % x.ndim for d in dim}) == len(dim)"
+    - "output.ndim == (x.ndim if keepdim else x.ndim - len({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))))"
+    - "not keepdim or all(output.shape[i] == (1 if i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))) else x.shape[i]) for i in range(x.ndim))"
+    - "keepdim or all(output.shape[k] == x.shape[[i for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim)))][k]] for k in range(output.ndim))"
+
+  workloads:
+    # Smoke case (small shape; covers the bool/float dtypes that any drives)
+  - {x_shape: [32, 256], dtypes: [bool, float16, float32], dim: -1, label: "smoke-any"}
+    # Mask validation (batch, seq_len)
+  - {x_shape: [32, 4096], dtypes: [bool], label: "mask-validation-4k"}
+  - {x_shape: [32, 32768], dtypes: [bool], label: "mask-validation-32k"}
+  - {x_shape: [4, 128, 4096], dtypes: [bool], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) else set(range(x.ndim))))"
+    # N-1 logical OR per output element
+    flops: "M * N"
+    # Read x (elem_bytes) + write output (1 byte for bool)
+    bytes: "M * N * elem_bytes + M"
+
+  # GPU source paths (shared with AllFwdOp / CountNonzeroFwdOp):
+  #   kernel: tileops/kernels/reduction/logical_reduce.py (kernel_map logical_reduce: LogicalReduceKernel)
+  #   op:     tileops/ops/reduction/logical_reduce.py
+  #   test:   tests/ops/test_logical_reduce.py  (any + all + count_nonzero share one file)
+  #   bench:  benchmarks/ops/bench_logical_reduce.py
+  # NPU paths below are per-op: the any migration unit only ports its own Op
+  # class / Test classes / fixtures / bench function, and only the baseline
+  # TileLang factory (the N-tiled factory is out of scope).
+  source:
+    kernel: tileops/kernels/reduction/any/any.py
+    kernel_map:
+      logical_reduce: LogicalReduceKernel
+    op: tileops/ops/reduction/any.py
+    test: tests/ops/test_any.py
+    bench: benchmarks/ops/bench_any.py
+    bench_manifest_driven: true
+
+
+CountNonzeroFwdOp:
+  ref_api: "torch.count_nonzero"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32 | bool | int32 | int64 | complex64 | complex128"}
+    outputs:
+      output: {dtype: "int64"}
+    params:
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: null}
+    shape_rules:
+    - "dim is None or all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+    - "output.ndim == x.ndim - len({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim)))"
+    - "output.shape == tuple(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+    - "isinstance(dim, (int, type(None))) or len({d % x.ndim for d in dim}) == len(dim)"
+
+  workloads:
+    # Smoke case (small shape, all float dtypes)
+  - {x_shape: [32, 256], dtypes: [float16, bfloat16, float32], dim: -1, label: "smoke-count-nonzero"}
+    # Sparsity analysis (batch, hidden_dim)
+  - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], dim: -1, label: "sparsity-hidden"}
+    # Sparse attention mask (reduction width kept within the baseline
+    # single-tile column budget; the long-row tiled factory is out of scope)
+  - {x_shape: [32, 16384], dtypes: [float16], dim: -1, label: "sparsity-seq"}
+  - {x_shape: [4, 128, 4096], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+    # Compare + conditional add per element
+    flops: "2 * M * N"
+    # Read x (elem_bytes) + write output (8 bytes for int64)
+    bytes: "M * N * elem_bytes + M * 8"
+
+  # GPU source paths (shared with AllFwdOp / AnyFwdOp):
+  #   kernel: tileops/kernels/reduction/logical_reduce.py (kernel_map logical_reduce: LogicalReduceKernel)
+  #   op:     tileops/ops/reduction/logical_reduce.py
+  #   test:   tests/ops/test_logical_reduce.py  (any + all + count_nonzero share one file)
+  #   bench:  benchmarks/ops/bench_logical_reduce.py
+  # NPU paths below are per-op: the count_nonzero migration unit only ports its
+  # own Op class / Test classes / fixtures / bench function, and only the
+  # baseline TileLang factory (the N-tiled factory is out of scope).
+  source:
+    kernel: tileops/kernels/reduction/count_nonzero/count_nonzero.py
+    kernel_map:
+      logical_reduce: LogicalReduceKernel
+    op: tileops/ops/reduction/count_nonzero.py
+    test: tests/ops/test_count_nonzero.py
+    bench: benchmarks/ops/bench_count_nonzero.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# reduction -- all (output dtype: bool)
+# ---------------------------------------------------------------------------
+
+AmaxFwdOp:
+  ref_api: "torch.amax"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: null}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "dim is None or all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+    - "isinstance(dim, (int, type(None))) or len({d % x.ndim for d in dim}) == len(dim)"
+    - "output.ndim == (x.ndim if keepdim else x.ndim - len({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+    - "not keepdim or all(output.shape[i] == (1 if i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))) else x.shape[i]) for i in range(x.ndim))"
+    - "keepdim or all(output.shape[k] == x.shape[[i for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim)))][k]] for k in range(output.ndim))"
+
+  workloads:
+    # Smoke case (small shape, all supported dtypes)
+  - {x_shape: [32, 256], dtypes: [float16, bfloat16, float32], label: "smoke-amax"}
+    # Hidden state reduction (Llama-3.1-8B)
+  - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "hidden-state-reduce"}
+    # Long sequence reduction (exercises the tiled reduce path: N > 32512)
+  - {x_shape: [64, 32768], dtypes: [bfloat16], label: "long-seq-reduce"}
+  - {x_shape: [4, 128, 4096], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+    # N-1 comparisons per output element
+    flops: "M * N"
+    # Read x + write output
+    bytes: "(M * N + M) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/reduction/amax/amax.py
+    kernel_map:
+      reduce: ReduceKernel
+    op: tileops/ops/reduction/amax.py
+    test: tests/ops/test_amax.py
+    bench: benchmarks/ops/bench_amax.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# reduction -- amin
+# ---------------------------------------------------------------------------
+
+AminFwdOp:
+  ref_api: "torch.amin"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: null}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "dim is None or all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+    - "isinstance(dim, (int, type(None))) or len({d % x.ndim for d in dim}) == len(dim)"
+    - "output.ndim == (x.ndim if keepdim else x.ndim - len({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+    - "not keepdim or all(output.shape[i] == (1 if i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))) else x.shape[i]) for i in range(x.ndim))"
+    - "keepdim or all(output.shape[k] == x.shape[[i for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim)))][k]] for k in range(output.ndim))"
+
+  workloads:
+    # Smoke case (small shape, all supported dtypes)
+  - {x_shape: [32, 256], dtypes: [float16, bfloat16, float32], label: "smoke-amin"}
+    # Hidden state reduction (Llama-3.1-8B)
+  - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "hidden-state-reduce"}
+    # Long sequence reduction (exercises the tiled reduce path: N > 32512)
+  - {x_shape: [64, 32768], dtypes: [bfloat16], label: "long-seq-reduce"}
+  - {x_shape: [4, 128, 4096], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim} if isinstance(dim, (list, tuple)) and len(dim) > 0 else set(range(x.ndim))))"
+    # N-1 comparisons per output element
+    flops: "M * N"
+    # Read x + write output
+    bytes: "(M * N + M) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/reduction/amin/amin.py
+    kernel_map:
+      reduce: ReduceKernel
+    op: tileops/ops/reduction/amin.py
+    test: tests/ops/test_amin.py
+    bench: benchmarks/ops/bench_amin.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# reduction -- vector norms (l1 / l2 / inf), ported from the GPU manifest
+# reduction.yaml (L1NormFwdOp / L2NormFwdOp / InfNormFwdOp).
+#
+# All three share ONE kernel family
+# (tileops/kernels/reduction/vector_norm/) and are distinguished by op_kind.
+#
+# NOTE (deliberate NPU deviation): the GPU manifest leaves ``dim`` at its
+# ``None`` (= full reduction) default.  The NPU port defaults it to ``-1``
+# (reduce the last dim), matching the in-repo reduction convention established
+# by ``LogSumExpFwdOp``.  ``dim=None`` still works through
+# ``_ReduceOpBase``'s flatten path, but it is not the exercised default.
+#
+# NOTE (scope): only the single-tile kernel is migrated.  For an ``N`` that
+# does not fit in UB even with ``block_m = 1`` the kernel raises
+# ``NotImplementedError`` naming the missing tiled variant -- the workloads
+# below are chosen to fit.
+# ---------------------------------------------------------------------------
+
+L1NormFwdOp:
+  ref_api: "torch.linalg.vector_norm"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      ord: {type: "int | float", default: 1}
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: -1}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "ord == 1"
+    - "all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+
+  workloads:
+    - {x_shape: [32, 512], dtypes: [float32, float16, bfloat16], label: "smoke-small"}
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "hidden-state-l1"}
+    - {x_shape: [64, 8192], dtypes: [bfloat16], label: "long-row-l1"}
+    - {x_shape: [4, 128, 512], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+    flops: "2 * M * N"
+    bytes: "(M * N + M) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/reduction/vector_norm/vector_norm.py
+    kernel_map:
+      vector_norm: VectorNormKernel
+    op: tileops/ops/reduction/vector_norm.py
+    test: tests/ops/test_vector_norm.py
+    bench: benchmarks/ops/bench_vector_norm.py
+    bench_manifest_driven: true
+
+
+L2NormFwdOp:
+  ref_api: "torch.linalg.vector_norm"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      ord: {type: "int | float", default: 2}
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: -1}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "ord == 2"
+    - "all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+
+  workloads:
+    - {x_shape: [32, 512], dtypes: [float32, float16, bfloat16], label: "smoke-small"}
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "hidden-state-l2"}
+    - {x_shape: [64, 8192], dtypes: [bfloat16], label: "long-row-l2"}
+    - {x_shape: [4, 128, 512], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+    flops: "2 * M * N + M"
+    bytes: "(M * N + M) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/reduction/vector_norm/vector_norm.py
+    kernel_map:
+      vector_norm: VectorNormKernel
+    op: tileops/ops/reduction/vector_norm.py
+    test: tests/ops/test_vector_norm.py
+    bench: benchmarks/ops/bench_vector_norm.py
+    bench_manifest_driven: true
+
+
+InfNormFwdOp:
+  ref_api: "torch.linalg.vector_norm"
+  family: reduction
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      ord: {type: "int | float", default: .inf}
+      dim: {type: "int | list[int] | tuple[int, ...] | None", default: -1}
+      keepdim: {type: bool, default: false}
+    shape_rules:
+    - "ord == float('inf')"
+    - "all(-x.ndim <= d < x.ndim for d in ([dim] if isinstance(dim, int) else dim))"
+
+  workloads:
+    - {x_shape: [32, 512], dtypes: [float32, float16, bfloat16], label: "smoke-small"}
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "hidden-state-inf"}
+    - {x_shape: [64, 8192], dtypes: [bfloat16], label: "long-row-inf"}
+    - {x_shape: [4, 128, 512], dtypes: [float16], dim: [0, 2], label: "3d-multidim-reduce"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[i] for i in range(x.ndim) if i not in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+      N: "product(x.shape[i] for i in ({dim % x.ndim} if isinstance(dim, int) else {d % x.ndim for d in dim}))"
+    flops: "2 * M * N"
+    bytes: "(M * N + M) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/reduction/vector_norm/vector_norm.py
+    kernel_map:
+      vector_norm: VectorNormKernel
+    op: tileops/ops/reduction/vector_norm.py
+    test: tests/ops/test_vector_norm.py
+    bench: benchmarks/ops/bench_vector_norm.py
+    bench_manifest_driven: true

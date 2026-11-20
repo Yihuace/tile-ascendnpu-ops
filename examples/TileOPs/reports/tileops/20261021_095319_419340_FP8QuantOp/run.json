@@ -1,0 +1,403 @@
+{
+  "schema_version": 2,
+  "operator": "FP8QuantOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261021_095319_419340_FP8QuantOp",
+    "generated_at": "2026-10-21T09:54:40.152163+00:00",
+    "project_root": "/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "19315978eaa21e1f926cd483d4e6f3236a33115b",
+    "python": "3.10.12",
+    "platform": "Linux-5.10.0-216.0.0.115.oe2203sp4.aarch64-aarch64-with-glibc2.35",
+    "test_file": "tests/ops/test_fp8_quant.py",
+    "benchmark_file": "benchmarks/ops/bench_fp8_quant.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/workspace/venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_fp8_quant.py",
+        "-sv",
+        "--junitxml=/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/workspace/venv/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_fp8_quant.py",
+        "-sv",
+        "--junitxml=/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-21T09:54:40.152163+00:00",
+      "evaluation_scope": "FP8QuantOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261021_095319_419340_FP8QuantOp",
+      "git_commit": "19315978eaa21e1f926cd483d4e6f3236a33115b",
+      "correctness_target": "tests/ops/test_fp8_quant.py",
+      "benchmark_target": "benchmarks/ops/bench_fp8_quant.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "26.1.1",
+      "pytorch": "2.9.0",
+      "pytorch_npu": "2.9.0.post8",
+      "tilelang": null,
+      "python": "3.10.12",
+      "os": "Linux-5.10.0-216.0.0.115.oe2203sp4.aarch64-aarch64-with-glibc2.35",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 8,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 8,
+    "passed_cases": 8,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 3,
+    "benchmark_failed": 0,
+    "case_count": 3,
+    "msprof_case_count": 3,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[smoke-256-d64-fp32]",
+        "name": "test_fp8_quant_op[smoke-256-d64-fp32]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 1.497,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[smoke-256-d64-fp16]",
+        "name": "test_fp8_quant_op[smoke-256-d64-fp16]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 0.13,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "3.20e+01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[smoke-256-d64-bf16]",
+        "name": "test_fp8_quant_op[smoke-256-d64-bf16]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 0.123,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "3.20e+01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[kv-index-8k-d64-fp16]",
+        "name": "test_fp8_quant_op[kv-index-8k-d64-fp16]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 0.473,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "3.20e+01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[kv-index-8k-d64-bf16]",
+        "name": "test_fp8_quant_op[kv-index-8k-d64-bf16]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 0.603,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "3.20e+01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[kv-index-4k-d128-fp32]",
+        "name": "test_fp8_quant_op[kv-index-4k-d128-fp32]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 0.296,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "3.20e+01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[kv-index-16k-d32-fp32]",
+        "name": "test_fp8_quant_op[kv-index-16k-d32-fp32]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 0.314,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "1.60e+01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_quant::test_fp8_quant_op[kv-index-1k-g4-d64-fp16]",
+        "name": "test_fp8_quant_op[kv-index-1k-g4-d64-fp16]",
+        "classname": "tests.ops.test_fp8_quant",
+        "time_s": 0.4,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "max_abs_err": "3.20e+01"
+        }
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_fp8_quant::test_fp8_quant_bench[kv-index-8k-d64-fp16]",
+        "name": "test_fp8_quant_bench[kv-index-8k-d64-fp16]",
+        "classname": "benchmarks.ops.bench_fp8_quant",
+        "time_s": 18.717,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "tileops_latency_us": "8.4400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fp8_quant::test_fp8_quant_bench[kv-index-8k-d64-bf16]",
+        "name": "test_fp8_quant_bench[kv-index-8k-d64-bf16]",
+        "classname": "benchmarks.ops.bench_fp8_quant",
+        "time_s": 17.583,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "tileops_latency_us": "8.5200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fp8_quant::test_fp8_quant_bench[kv-index-4k-d128-fp32]",
+        "name": "test_fp8_quant_bench[kv-index-4k-d128-fp32]",
+        "classname": "benchmarks.ops.bench_fp8_quant",
+        "time_s": 16.093,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8QuantOp",
+          "op_module": "tileops.ops.quantization.fp8_quant",
+          "tileops_latency_us": "8.1800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "FP8QuantOp",
+        "case_id": "FP8QuantOp-4c687630db6d",
+        "label": "kv-index-8k-d64-fp16",
+        "params": {
+          "batch": 1,
+          "in_dtype": "float16",
+          "index_dim": 64,
+          "kv_group": 1,
+          "seq_len_kv": 8192
+        },
+        "config": {
+          "block_m": 32,
+          "num_stages": 0
+        },
+        "tag": "tileops",
+        "latency_us": 8.44,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 29.037200000000002,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 12.97986125946045,
+        "performance_tops": 1.612800121307373,
+        "computility_tops": 5.5542521476745605,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/artifacts/msprof/_fp8_quant_fwd_main_on_awffs",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_fp8_quant_fwd_main"
+          ],
+          "kernel_name_attempts": [
+            "_fp8_quant_fwd_main"
+          ],
+          "kernel_name_requested": "_fp8_quant_fwd_main",
+          "kernel_name_resolved": "_fp8_quant_fwd_main",
+          "latency_us": 8.44,
+          "max_latency_us": 8.44,
+          "min_latency_us": 8.44,
+          "op_name": "_fp8_quant_fwd_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FP8QuantOp",
+        "case_id": "FP8QuantOp-4dbb552d2470",
+        "label": "kv-index-8k-d64-bf16",
+        "params": {
+          "batch": 1,
+          "in_dtype": "bfloat16",
+          "index_dim": 64,
+          "kv_group": 1,
+          "seq_len_kv": 8192
+        },
+        "config": {
+          "block_m": 32,
+          "num_stages": 0
+        },
+        "tag": "tileops",
+        "latency_us": 8.52,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 28.7646,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 12.97986125946045,
+        "performance_tops": 1.59765625,
+        "computility_tops": 5.5542521476745605,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/artifacts/msprof/_fp8_quant_fwd_main_i_c9iawp",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_fp8_quant_fwd_main"
+          ],
+          "kernel_name_attempts": [
+            "_fp8_quant_fwd_main"
+          ],
+          "kernel_name_requested": "_fp8_quant_fwd_main",
+          "kernel_name_resolved": "_fp8_quant_fwd_main",
+          "latency_us": 8.52,
+          "max_latency_us": 8.52,
+          "min_latency_us": 8.52,
+          "op_name": "_fp8_quant_fwd_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FP8QuantOp",
+        "case_id": "FP8QuantOp-fb0372c349e2",
+        "label": "kv-index-4k-d128-fp32",
+        "params": {
+          "batch": 1,
+          "in_dtype": "float32",
+          "index_dim": 128,
+          "kv_group": 1,
+          "seq_len_kv": 4096
+        },
+        "config": {
+          "block_m": 32,
+          "num_stages": 0
+        },
+        "tag": "tileops",
+        "latency_us": 8.18,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 28.692400000000003,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 6.224717617034912,
+        "performance_tops": 1.5959627628326416,
+        "computility_tops": 5.562321662902832,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_095319_419340_FP8QuantOp/artifacts/msprof/_fp8_quant_fwd_main_jqfq_07d",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_fp8_quant_fwd_main"
+          ],
+          "kernel_name_attempts": [
+            "_fp8_quant_fwd_main"
+          ],
+          "kernel_name_requested": "_fp8_quant_fwd_main",
+          "kernel_name_resolved": "_fp8_quant_fwd_main",
+          "latency_us": 8.18,
+          "max_latency_us": 8.18,
+          "min_latency_us": 8.18,
+          "op_name": "_fp8_quant_fwd_main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "FP8QuantOp",
+      "family": "quantization",
+      "cases": 8,
+      "passed": 8,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 26.0,
+      "max_abs_err": 32.0,
+      "performance_cases": 3,
+      "ratio_range": {
+        "min": 28.692400000000003,
+        "max": 29.037200000000002
+      }
+    }
+  ],
+  "warnings": []
+}

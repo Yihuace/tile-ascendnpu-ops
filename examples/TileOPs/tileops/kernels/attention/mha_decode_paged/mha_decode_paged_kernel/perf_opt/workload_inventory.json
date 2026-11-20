@@ -1,0 +1,209 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py::_mha_decode_split_kernel::split_partial",
+  "benchmark_source": "benchmarks/ops/bench_mha_decode_paged.py::test_mha_decode_paged_bench",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_mha_decode_paged.py::test_mha_decode_paged_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py::_mha_decode_split_kernel::split_partial",
+      "kernel_file": "tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py",
+      "workload_id": "single-token-page128::float16",
+      "label": "single-token-page128",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "q": [
+          1,
+          1,
+          16,
+          128
+        ],
+        "k": [
+          512,
+          16,
+          128
+        ],
+        "v": [
+          512,
+          16,
+          128
+        ],
+        "real_seqlen_kv": [
+          1
+        ],
+        "block_table": [
+          1,
+          4
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "page_size": 128,
+        "is_causal": false,
+        "num_split": 4,
+        "num_stages": 2,
+        "block_M": 128,
+        "block_N": 64
+      },
+      "kind": "tune",
+      "reason": "DESIGN calls this shape the smoke representative, but the migrated benchmark marks no case smoke/skip and profiles this shape for performance (official report lists 4 perf shapes) -> classified tune per signal-registry §5 ('不得仅凭 shape 或参数化顺序判定 smoke').",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_mha_decode_paged.py::test_mha_decode_paged_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py::_mha_decode_split_kernel::split_partial",
+      "kernel_file": "tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py",
+      "workload_id": "batch2-page256::float16",
+      "label": "batch2-page256",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "q": [
+          2,
+          1,
+          8,
+          64
+        ],
+        "k": [
+          1024,
+          8,
+          64
+        ],
+        "v": [
+          1024,
+          8,
+          64
+        ],
+        "real_seqlen_kv": [
+          2
+        ],
+        "block_table": [
+          2,
+          4
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "page_size": 256,
+        "is_causal": false,
+        "num_split": 4,
+        "num_stages": 2,
+        "block_M": 128,
+        "block_N": 64
+      },
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_mha_decode_paged.py::test_mha_decode_paged_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py::_mha_decode_split_kernel::split_partial",
+      "kernel_file": "tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py",
+      "workload_id": "longer-cache::float16",
+      "label": "longer-cache",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "q": [
+          1,
+          1,
+          8,
+          64
+        ],
+        "k": [
+          1024,
+          8,
+          64
+        ],
+        "v": [
+          1024,
+          8,
+          64
+        ],
+        "real_seqlen_kv": [
+          1
+        ],
+        "block_table": [
+          1,
+          4
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "page_size": 256,
+        "is_causal": false,
+        "num_split": 4,
+        "num_stages": 2,
+        "block_M": 128,
+        "block_N": 64
+      },
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_mha_decode_paged.py::test_mha_decode_paged_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py::_mha_decode_split_kernel::split_partial",
+      "kernel_file": "tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_split_kernel.py",
+      "workload_id": "shorter-cache::float16",
+      "label": "shorter-cache",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "q": [
+          1,
+          1,
+          8,
+          64
+        ],
+        "k": [
+          512,
+          8,
+          64
+        ],
+        "v": [
+          512,
+          8,
+          64
+        ],
+        "real_seqlen_kv": [
+          1
+        ],
+        "block_table": [
+          1,
+          2
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "page_size": 256,
+        "is_causal": false,
+        "num_split": 4,
+        "num_stages": 2,
+        "block_M": 128,
+        "block_N": 64
+      },
+      "kind": "tune",
+      "reason": "",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_mha_decode_paged.py::test_mha_decode_paged_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_no_split_kernel.py::_mha_decode_no_split_kernel::main",
+      "kernel_file": "tileops/kernels/attention/mha_decode_paged/mha_decode_paged_kernel/_mha_decode_no_split_kernel.py",
+      "workload_id": "no-split-kernel-no-benchmark-coverage",
+      "label": "no-split",
+      "marks": [
+        "skip"
+      ],
+      "shape": {},
+      "dtype": "float16",
+      "params": {},
+      "kind": "skipped",
+      "reason": "All four benchmark cases have real_kv >= num_split*block_N (256) and are dispatched to the split path by MHADecodePagedKernel.forward, so the no-split kernel has no benchmark workload (no perf coverage, unmodified -> no_gain)."
+    }
+  ]
+}

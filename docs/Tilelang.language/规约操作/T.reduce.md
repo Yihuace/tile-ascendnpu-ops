@@ -1,0 +1,81 @@
+# Tilelang.language.reduce
+
+## 1. OP概述
+
+简介：`tilelang.language.reduce` 对张量在指定维度上进行聚合运算（如 `sum`、`max`、`min` 等），将多个元素压缩为更少元素或标量的操作。
+
+```python
+T.reduce(src, dst, dims=1, reduce_mode="sum", clear=True, size=[m,n])
+T.reduce_max(src, dst, dims=0, clear = False)
+T.reduce_min(src, dst, dims=0, clear = False)
+T.reduce_sum(src, dst, dims=0, clear = False)
+```
+
+## 2. OP规格
+
+### 2.1 参数说明
+
+| 参数名          | 类型           | 说明                                                                                |
+| --------------- | -------------- | ----------------------------------------------------------------------------------- |
+| `src`         | `tensor`     | 输入tensor                                                                          |
+| `dst`         | `tensor`     | 输出tensor                                                                          |
+| `dims`        | `list/tuple` | 需要reduce的维度                                                                    |
+| `reduce_mode` | `str`        | reduce操作类型(`sum`、`max`、`min`、`abssum`、`absmax`)                   |
+| `clear`       | `bool`       | 是否在reduce前对目标张量进行初始化（`clear=False` 的使用约束见 2.3 特殊限制说明） |
+| `size`        | `list`       | 控制 reduce 实际参与计算的数据范围                                                  |
+
+### 2.2 支持规格
+
+#### 2.2.1 DataType支持
+
+|        | uint8 | int8 | uint16 | int16 | uint32 | int32 | uint64 | int64 | fp16 | fp32 | bf16 | bool/int1 |
+| ------ | ----- | ---- | ------ | ----- | ------ | ----- | ------ | ----- | ---- | ---- | ---- | --------- |
+| Ascend | ×    | ×   | √     | √    | √     | √    | √     | √    | √   | √   | ×   | ×        |
+
+#### 2.2.2 Shape支持
+
+1. Rank 一致性：src与dst 的张量阶数（rank）必须相同；
+2. Reduce 兼容性：src与dst有且仅有一个维度的 shape 不同，且在该维度上，dst的尺寸必须为 1
+   示例：
+   ✅ 合法：
+   src: (M, N, K) → dst: (M, 1, K)
+   src: (M, N, K) → dst: (1, N, K)
+   ❌ 非法：
+   src: (M, N, K) → dst: (M, N, K)（无维度为 1，无法reduce）
+   src: (M, N, K) → dst: (M, 1, L)（两个维度不同，违反“仅一个维度不同”）
+
+### 2.3 特殊限制说明
+
+`clear=False` 表示在 dst 现有值上累加，调用方必须先初始化 dst（例如先用 `T.reduce_abssum` 等写入初始值）；对未初始化 buffer 使用 `clear=False` 不会报错，但会产生静默数值错误
+
+### 2.4 使用方法
+
+以下示例实现了对输入矩阵沿第 1 维执行  sum 归约，最终得到形状为 (M,1) 的结果。
+
+```python
+@tilelang.jit(target="npuir")
+def reduce(M, N, dtype="float16"):
+    BLOCK_SIZE = 1
+
+    @T.prim_func
+    def main(
+        A: T.Tensor((M, N), dtype),
+        B: T.Tensor((M, 1), dtype),
+    ):
+
+        with T.Kernel(BLOCK_SIZE, is_npu=True) as (cid, _):
+            a = T.alloc_shared((M, N), dtype)
+            b = T.alloc_shared((M, 1), dtype)
+            T.copy(A, a)
+
+            # b 未初始化，此处必须 clear=True（clear=False 会在未初始化内存上累加）
+            T.reduce(a, b, dims=[1], reduce_mode="sum", clear=True)
+
+            T.copy(b, B)
+
+    return main
+```
+
+## 3. Tilelang Op到Ascend NPU IR Op的转换
+
+**tilelang::reduceOp**将被转换为hivm::VReduceOp

@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-08T02:34:29.278791+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-4e0b9ce1a8e8",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "gqa-sw-varlen-fwd-smoke",
+      "params": {
+        "batch": 2,
+        "dim": 64,
+        "dtype": "bfloat16",
+        "heads": 8,
+        "heads_kv": 2,
+        "is_causal": true,
+        "seqlens_k": [
+          128,
+          128
+        ],
+        "seqlens_q": [
+          128,
+          128
+        ],
+        "wl": -1,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 656.4556884765625,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.2716979980469,
+        "Perf(TOps/s)": 1.4847439527511597,
+        "Ratio(%)": 0.4961,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_3iow1d7_",
+        "latency_us": 58.121162,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 58.121162,
+          "max_latency_us": 58.121162,
+          "min_latency_us": 58.121162,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

@@ -1,0 +1,599 @@
+{
+  "schema_version": 2,
+  "operator": "BatchNormBwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261117_140629_142480_BatchNormBwdOp",
+    "generated_at": "2026-11-17T14:10:26.835147+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": null,
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_batch_norm_bwd.py",
+    "benchmark_file": "benchmarks/ops/bench_batch_norm_bwd.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_batch_norm_bwd.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_batch_norm_bwd.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-17T14:10:26.835147+08:00",
+      "evaluation_scope": "BatchNormBwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261117_140629_142480_BatchNormBwdOp",
+      "git_commit": null,
+      "correctness_target": "tests/ops/test_batch_norm_bwd.py",
+      "benchmark_target": "benchmarks/ops/bench_batch_norm_bwd.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 12,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 12,
+    "passed_cases": 12,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 6,
+    "benchmark_failed": 0,
+    "case_count": 6,
+    "msprof_case_count": 6,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[32-64-spatial0-dtype0]",
+        "name": "test_batch_norm_bwd[32-64-spatial0-dtype0]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 1.831,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "3.81e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[32-64-spatial1-dtype1]",
+        "name": "test_batch_norm_bwd[32-64-spatial1-dtype1]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.299,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[32-64-spatial2-dtype2]",
+        "name": "test_batch_norm_bwd[32-64-spatial2-dtype2]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.286,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.91e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[8-64-spatial3-dtype3]",
+        "name": "test_batch_norm_bwd[8-64-spatial3-dtype3]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.293,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[4-128-spatial4-dtype4]",
+        "name": "test_batch_norm_bwd[4-128-spatial4-dtype4]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.292,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[8-64-spatial5-dtype5]",
+        "name": "test_batch_norm_bwd[8-64-spatial5-dtype5]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.295,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[4-256-spatial6-dtype6]",
+        "name": "test_batch_norm_bwd[4-256-spatial6-dtype6]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.315,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "3.05e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[4-64-spatial7-dtype7]",
+        "name": "test_batch_norm_bwd[4-64-spatial7-dtype7]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.332,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_matches_torch",
+        "name": "test_batch_norm_bwd_matches_torch",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.295,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_eval_roofline",
+        "name": "test_batch_norm_bwd_eval_roofline",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.265,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_rejects_bad_dtype",
+        "name": "test_batch_norm_bwd_rejects_bad_dtype",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.012,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_rejects_bad_shape",
+        "name": "test_batch_norm_bwd_rejects_bad_shape",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage1-float16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage1-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 25.282,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "6.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage1-bfloat16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage1-bfloat16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 26.954,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "8.0200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage2-float16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage2-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 28.509,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "9.8000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage3-float16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage3-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 28.104,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "10.3200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage3-float32]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage3-float32]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 23.867,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "14.7600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[large-spatial-float16]",
+        "name": "test_batch_norm_bwd_bench[large-spatial-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 64.543,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "371.6400"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-895ee3e30b19",
+        "label": "resnet-stage1",
+        "params": {
+          "c": 64,
+          "dtype": "float16",
+          "n": 8,
+          "s": 1024
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 6.78,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 17.6794,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.2933855056762695,
+        "performance_tops": 0.7095504403114319,
+        "computility_tops": 5.7945356369018555,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/artifacts/msprof/main_b2x3bu_6",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 6.78,
+          "max_latency_us": 6.78,
+          "min_latency_us": 6.78,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-48e2ace7d023",
+        "label": "resnet-stage1",
+        "params": {
+          "c": 64,
+          "dtype": "bfloat16",
+          "n": 8,
+          "s": 1024
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 8.02,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 19.407,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.963143825531006,
+        "performance_tops": 0.7750223875045776,
+        "computility_tops": 3.9935121536254883,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/artifacts/msprof/main_3oz2z8k3",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 8.02,
+          "max_latency_us": 8.02,
+          "min_latency_us": 8.02,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-ece726b899de",
+        "label": "resnet-stage2",
+        "params": {
+          "c": 128,
+          "dtype": "float16",
+          "n": 4,
+          "s": 1024
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 9.8,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 12.231300000000001,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.338296413421631,
+        "performance_tops": 0.5005061626434326,
+        "computility_tops": 5.671202659606934,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/artifacts/msprof/main_bs0_o4uv",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 9.8,
+          "max_latency_us": 9.8,
+          "min_latency_us": 9.8,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-c512e3f28888",
+        "label": "resnet-stage3",
+        "params": {
+          "c": 256,
+          "dtype": "float16",
+          "n": 4,
+          "s": 784
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 10.32,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 17.6046,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.47868275642395,
+        "performance_tops": 0.7636341452598572,
+        "computility_tops": 5.796529293060303,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/artifacts/msprof/main_bue148bo",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 10.32,
+          "max_latency_us": 10.32,
+          "min_latency_us": 10.32,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-63a1ec85548e",
+        "label": "resnet-stage3",
+        "params": {
+          "c": 256,
+          "dtype": "float32",
+          "n": 4,
+          "s": 784
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 14.76,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 24.868100000000002,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.2552458047866821,
+        "performance_tops": 0.5462720394134521,
+        "computility_tops": 3.637068271636963,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/artifacts/msprof/main_zwkfv8o3",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 14.76,
+          "max_latency_us": 14.76,
+          "min_latency_us": 14.76,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-20ebc8b7ce60",
+        "label": "large-spatial",
+        "params": {
+          "c": 128,
+          "dtype": "float16",
+          "n": 4,
+          "s": 262144
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 371.640015,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 82.5489,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.3002924919128418,
+        "performance_tops": 1.8784092664718628,
+        "computility_tops": 4.542733669281006,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_140629_142480_BatchNormBwdOp/artifacts/msprof/stats_mix_aic_af4upism",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "stats_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "stats"
+          ],
+          "kernel_name_requested": "stats",
+          "kernel_name_resolved": "stats",
+          "kernel_names": null,
+          "latency_us": 371.640015,
+          "max_latency_us": 371.640015,
+          "min_latency_us": 371.640015,
+          "multi_launch": false,
+          "op_name": "stats_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "BatchNormBwdOp",
+      "family": "norm",
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.004340691111111111,
+      "max_abs_err": 0.0156,
+      "performance_cases": 6,
+      "ratio_range": {
+        "min": 12.231300000000001,
+        "max": 82.5489
+      }
+    }
+  ],
+  "warnings": []
+}

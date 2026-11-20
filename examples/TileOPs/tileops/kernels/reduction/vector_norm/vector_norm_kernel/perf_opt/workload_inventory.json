@@ -1,0 +1,481 @@
+{
+  "op": "L1NormFwdOp|L2NormFwdOp|InfNormFwdOp",
+  "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+  "target_kernel_name": "main",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L1NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l1-smoke-small-float32",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "float32",
+      "params": {
+        "op": "L1NormFwdOp",
+        "op_kind": "l1",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L1NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l1-smoke-small-float16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "L1NormFwdOp",
+        "op_kind": "l1",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L1NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l1-smoke-small-bfloat16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "L1NormFwdOp",
+        "op_kind": "l1",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L1NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l1-hidden-state-l1-float16",
+      "label": "hidden-state-l1",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "L1NormFwdOp",
+        "op_kind": "l1",
+        "m": 2048,
+        "n": 4096,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L1NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l1-hidden-state-l1-bfloat16",
+      "label": "hidden-state-l1",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "L1NormFwdOp",
+        "op_kind": "l1",
+        "m": 2048,
+        "n": 4096,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L1NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l1-long-row-l1-bfloat16",
+      "label": "long-row-l1",
+      "marks": [],
+      "shape": [
+        64,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "L1NormFwdOp",
+        "op_kind": "l1",
+        "m": 64,
+        "n": 8192,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L1NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l1-3d-multidim-reduce-float16",
+      "label": "3d-multidim-reduce",
+      "marks": [],
+      "shape": [
+        4,
+        128,
+        512
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "L1NormFwdOp",
+        "op_kind": "l1",
+        "m": 128,
+        "n": 2048,
+        "dim": [
+          0,
+          2
+        ]
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L2NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l2-smoke-small-float32",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "float32",
+      "params": {
+        "op": "L2NormFwdOp",
+        "op_kind": "l2",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L2NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l2-smoke-small-float16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "L2NormFwdOp",
+        "op_kind": "l2",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L2NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l2-smoke-small-bfloat16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "L2NormFwdOp",
+        "op_kind": "l2",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L2NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l2-hidden-state-l2-float16",
+      "label": "hidden-state-l2",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "L2NormFwdOp",
+        "op_kind": "l2",
+        "m": 2048,
+        "n": 4096,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L2NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l2-hidden-state-l2-bfloat16",
+      "label": "hidden-state-l2",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "L2NormFwdOp",
+        "op_kind": "l2",
+        "m": 2048,
+        "n": 4096,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L2NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l2-long-row-l2-bfloat16",
+      "label": "long-row-l2",
+      "marks": [],
+      "shape": [
+        64,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "L2NormFwdOp",
+        "op_kind": "l2",
+        "m": 64,
+        "n": 8192,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::L2NormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "l2-3d-multidim-reduce-float16",
+      "label": "3d-multidim-reduce",
+      "marks": [],
+      "shape": [
+        4,
+        128,
+        512
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "L2NormFwdOp",
+        "op_kind": "l2",
+        "m": 128,
+        "n": 2048,
+        "dim": [
+          0,
+          2
+        ]
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::InfNormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "inf-smoke-small-float32",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "float32",
+      "params": {
+        "op": "InfNormFwdOp",
+        "op_kind": "inf",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::InfNormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "inf-smoke-small-float16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "InfNormFwdOp",
+        "op_kind": "inf",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::InfNormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "inf-smoke-small-bfloat16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        32,
+        512
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "InfNormFwdOp",
+        "op_kind": "inf",
+        "m": 32,
+        "n": 512,
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::InfNormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "inf-hidden-state-inf-float16",
+      "label": "hidden-state-inf",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "InfNormFwdOp",
+        "op_kind": "inf",
+        "m": 2048,
+        "n": 4096,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::InfNormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "inf-hidden-state-inf-bfloat16",
+      "label": "hidden-state-inf",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "InfNormFwdOp",
+        "op_kind": "inf",
+        "m": 2048,
+        "n": 4096,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::InfNormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "inf-long-row-inf-bfloat16",
+      "label": "long-row-inf",
+      "marks": [],
+      "shape": [
+        64,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "op": "InfNormFwdOp",
+        "op_kind": "inf",
+        "m": 64,
+        "n": 8192,
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_vector_norm.py::InfNormFwdOp",
+      "kernel_id": "tileops/kernels/reduction/vector_norm/vector_norm_kernel/_vector_norm_kernel.py::_vector_norm_kernel::main",
+      "workload_id": "inf-3d-multidim-reduce-float16",
+      "label": "3d-multidim-reduce",
+      "marks": [],
+      "shape": [
+        4,
+        128,
+        512
+      ],
+      "dtype": "float16",
+      "params": {
+        "op": "InfNormFwdOp",
+        "op_kind": "inf",
+        "m": 128,
+        "n": 2048,
+        "dim": [
+          0,
+          2
+        ]
+      },
+      "kind": "tune",
+      "reason": "winner = grid=min(num_cores,total_blocks) 的 grid-stride + num_cores=48,已核内合并;12 条 tune workload 非回退(final 与受控 2x2 复测)",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

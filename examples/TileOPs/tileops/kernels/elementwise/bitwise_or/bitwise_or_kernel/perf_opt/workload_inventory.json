@@ -1,0 +1,287 @@
+{
+ "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+ "target_kernel_name": "main",
+ "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench",
+ "workloads": [
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "smoke-1k-int32",
+   "label": "smoke-1k",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "input_shape": [
+     1024
+    ],
+    "other_shape": [
+     1024
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "block_size": 2048
+   },
+   "kind": "smoke",
+   "reason": "pytest.mark.smoke (idx==0 and dtype int32); label carries the smoke token; precision regression only",
+   "tuning_status": "smoke_precision_only",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench",
+   "precision_pass": true
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "smoke-1k-bool",
+   "label": "smoke-1k",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     1024
+    ],
+    "other_shape": [
+     1024
+    ]
+   },
+   "dtype": "bool",
+   "params": {
+    "block_size": 4096
+   },
+   "kind": "smoke",
+   "reason": "label carries the independent 'smoke' token -> smoke per profile-collection.md; the 'full' mark conflicts and is recorded here (full-vs-smoke conflict)",
+   "tuning_status": "smoke_precision_only",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench",
+   "precision_pass": true
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "hidden-state-prefill-bool",
+   "label": "hidden-state-prefill",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     2048,
+     4096
+    ],
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "dtype": "bool",
+   "params": {
+    "block_size": 4096
+   },
+   "kind": "tune",
+   "reason": "round 8: static-extent 1-D chunks (exact decomposition) 14.02->13.46 us",
+   "tuning_status": "winner_merged",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "hidden-state-prefill-int32",
+   "label": "hidden-state-prefill",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     2048,
+     4096
+    ],
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "block_size": 2048
+   },
+   "kind": "tune",
+   "reason": "round 8: static-extent 1-D chunks (exact decomposition); re-measured 48.5/60.3 us across two post-freeze runs (session drift)",
+   "tuning_status": "winner_merged",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "hidden-state-prefill-int64",
+   "label": "hidden-state-prefill",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     2048,
+     4096
+    ],
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "dtype": "int64",
+   "params": {
+    "block_size": 2048
+   },
+   "kind": "tune",
+   "reason": "round 8: int64 packing is deliberately NOT applied to the flat full-last-dim form — packed int32 measured 128.5 us vs 126.4 us int64 at block_size 4096 and 7168 alike, and the reported ratio regresses 61.4->58.0 %",
+   "tuning_status": "no_gain",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "cnn-feat-broadcast-bool",
+   "label": "cnn-feat-broadcast",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     16,
+     256,
+     56,
+     56
+    ],
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "dtype": "bool",
+   "params": {
+    "block_size": 4096
+   },
+   "kind": "tune",
+   "reason": "round 7 bool int32 packing kept; round 8 unchanged (12.2-13.3 us across session states)",
+   "tuning_status": "no_gain",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "cnn-feat-broadcast-int32",
+   "label": "cnn-feat-broadcast",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     16,
+     256,
+     56,
+     56
+    ],
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "block_size": 2048
+   },
+   "kind": "tune",
+   "reason": "round 7 r_blk=8 / native col broadcast kept; round 8 unchanged",
+   "tuning_status": "winner_merged",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "cnn-feat-broadcast-int64",
+   "label": "cnn-feat-broadcast",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     16,
+     256,
+     56,
+     56
+    ],
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "dtype": "int64",
+   "params": {
+    "block_size": 2048
+   },
+   "kind": "tune",
+   "reason": "round 8: host-side int64 -> two int32 word packing on the channel-broadcast form (folded pair tile, K=392 positions per DMA row); Task Duration 195.6->135.1 us (and) and the reported ratio 35.77->49.09 %",
+   "tuning_status": "winner_merged",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "row-broadcast-int32",
+   "label": "row-broadcast",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     4096,
+     4096
+    ],
+    "other_shape": [
+     1,
+     4096
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "block_size": 2048
+   },
+   "kind": "tune",
+   "reason": "round 8 unchanged (2-D row tile)",
+   "tuning_status": "winner_merged",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  },
+  {
+   "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_or/bitwise_or_kernel/bitwise_or_fwd_kernel.py::bitwise_or_fwd_kernel::main",
+   "target_kernel_name": "main",
+   "workload_id": "row-broadcast-int64",
+   "label": "row-broadcast",
+   "marks": [
+    "full"
+   ],
+   "shape": {
+    "input_shape": [
+     4096,
+     4096
+    ],
+    "other_shape": [
+     1,
+     4096
+    ]
+   },
+   "dtype": "int64",
+   "params": {
+    "block_size": 2048
+   },
+   "kind": "tune",
+   "reason": "round 8: int64 packing is deliberately NOT applied to the full-last-dim form — packed int32 measured 167.9 us (vs 168.9 us int64) but the L2 read-miss counter drops 180->134 MB, i.e. the reported ratio regresses 59.2->44.4 %",
+   "tuning_status": "no_gain",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_or.py::test_bitwise_or_manifest_bench"
+  }
+ ],
+ "final_candidate": "bitwise_or_fwd_kernel.py",
+ "final_candidate_sha256": "395790ff16ba64d21a8eab23ea307c5464735e2acd31270c458761cebcf411cf",
+ "roofline_metric": "roofline_ratio.py (GM read-only numerator; see opt_log.md Final Summary)"
+}

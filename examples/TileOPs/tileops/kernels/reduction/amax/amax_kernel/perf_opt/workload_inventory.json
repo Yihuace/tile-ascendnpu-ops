@@ -1,0 +1,157 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main",
+  "kernel_ids": [
+    "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main",
+    "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel_tiled::main"
+  ],
+  "target_kernel_name": "main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+  "workloads": [
+    {
+      "workload_id": "smoke-amax-float16",
+      "label": "smoke-amax",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        32,
+        256
+      ],
+      "dtype": "float16",
+      "params": {
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "manifest smoke-amax (32,256) fp16 -- excluded from perf tuning (-m 'not smoke'); L0/L1 + final precision regression only",
+      "precision_pass": true,
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main"
+    },
+    {
+      "workload_id": "smoke-amax-bfloat16",
+      "label": "smoke-amax",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        32,
+        256
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "manifest smoke-amax (32,256) bf16 -- excluded from perf tuning (-m 'not smoke'); precision regression only",
+      "precision_pass": true,
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main"
+    },
+    {
+      "workload_id": "smoke-amax-float32",
+      "label": "smoke-amax",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        32,
+        256
+      ],
+      "dtype": "float32",
+      "params": {
+        "dim": -1
+      },
+      "kind": "smoke",
+      "reason": "manifest smoke-amax (32,256) fp32 -- excluded from perf tuning (-m 'not smoke'); precision regression only",
+      "precision_pass": true,
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main"
+    },
+    {
+      "workload_id": "hidden-state-reduce-float16",
+      "label": "hidden-state-reduce",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "manifest hidden-state-reduce (Llama-3.1-8B) fp16, dim=-1; resident path block_m=4",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main"
+    },
+    {
+      "workload_id": "hidden-state-reduce-bfloat16",
+      "label": "hidden-state-reduce",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "manifest hidden-state-reduce bf16, dim=-1; resident path block_m=4 (bf16 goes through the fp32 vcast work buffer)",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main"
+    },
+    {
+      "workload_id": "3d-multidim-reduce-float16",
+      "label": "3d-multidim-reduce",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        4,
+        128,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "dim": [
+          0,
+          2
+        ]
+      },
+      "kind": "tune",
+      "reason": "manifest 3d-multidim-reduce (4,128,4096) fp16 dim=[0,2]; op permutes/reshapes to (M=128,N=16384); resident path wrapper block_m=1 promoted to 2 in-kernel",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel::main"
+    },
+    {
+      "workload_id": "long-seq-reduce-bfloat16",
+      "label": "long-seq-reduce",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        64,
+        32768
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "dim": -1
+      },
+      "kind": "tune",
+      "reason": "manifest long-seq-reduce (64,32768) bf16 dim=-1; streaming/tiled path, wrapper tile_n=16384 clamped to 8192 in-kernel (fixes the integrated crash); see opt_log S0",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_amax.py::test_amax_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/reduction/amax/amax_kernel/perf_opt/_simple_reduce_kernel.py::_simple_reduce_kernel_tiled::main"
+    }
+  ],
+  "artifact_note": "Round 8: the deliverable module is perf_opt/AmaxFwdOp.py (holds the real @T.prim_func bodies); perf_opt/_simple_reduce_kernel.py is now an import alias that re-exports the same factory objects, and perf_opt/_simple_reduce_kernel_tiled.py keeps its name. kernel_id strings below keep the historical module path as a stable workload identifier; phase=final records carry artifact_path=AmaxFwdOp.py.",
+  "tuning_round": 8
+}

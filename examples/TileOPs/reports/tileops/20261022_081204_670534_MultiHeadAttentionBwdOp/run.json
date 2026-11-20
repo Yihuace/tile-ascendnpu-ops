@@ -1,0 +1,680 @@
+{
+  "schema_version": 2,
+  "operator": "MultiHeadAttentionBwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261022_081204_670534_MultiHeadAttentionBwdOp",
+    "generated_at": "2026-10-22T08:15:09.397132+00:00",
+    "project_root": "/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "16f1ee4578a66e9123bb32783956e272df17ecad",
+    "python": "3.10.12",
+    "platform": "Linux-5.10.0-216.0.0.115.oe2203sp4.aarch64-aarch64-with-glibc2.35",
+    "test_file": "tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/perf_opt/bwd_only/test_mha_bwd_only.py",
+    "benchmark_file": "tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/perf_opt/bwd_only/bench_mha_bwd_only.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/workspace/venv/bin/python",
+        "-m",
+        "pytest",
+        "tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/perf_opt/bwd_only/test_mha_bwd_only.py",
+        "-sv",
+        "--junitxml=/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/pytest/correctness.xml",
+        "-k",
+        "not mha-bwd-smoke"
+      ],
+      "benchmark": [
+        "/workspace/venv/bin/python",
+        "-m",
+        "pytest",
+        "tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/perf_opt/bwd_only/bench_mha_bwd_only.py",
+        "-sv",
+        "--junitxml=/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/pytest/benchmark.xml",
+        "-k",
+        "not mha-bwd-smoke",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-22T08:15:09.397132+00:00",
+      "evaluation_scope": "MultiHeadAttentionBwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261022_081204_670534_MultiHeadAttentionBwdOp",
+      "git_commit": "16f1ee4578a66e9123bb32783956e272df17ecad",
+      "correctness_target": "tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/perf_opt/bwd_only/test_mha_bwd_only.py",
+      "benchmark_target": "tileops/kernels/attention/multi_head_attention/multi_head_attention_kernel/perf_opt/bwd_only/bench_mha_bwd_only.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "26.1.1",
+      "pytorch": "2.9.0",
+      "pytorch_npu": "2.9.0.post8",
+      "tilelang": null,
+      "python": "3.10.12",
+      "os": "Linux-5.10.0-216.0.0.115.oe2203sp4.aarch64-aarch64-with-glibc2.35",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 6,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 6,
+    "passed_cases": 6,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 8,
+    "benchmark_failed": 0,
+    "case_count": 8,
+    "msprof_case_count": 8,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only::test_mha_bwd[smoke-bwd-fp16]",
+        "name": "test_mha_bwd[smoke-bwd-fp16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only",
+        "time_s": 2.367,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "max_abs_err": "2.44e-04"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only::test_mha_bwd[smoke-bwd-bf16]",
+        "name": "test_mha_bwd[smoke-bwd-bf16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only",
+        "time_s": 0.604,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only::test_mha_bwd[full-bwd-fp16-large]",
+        "name": "test_mha_bwd[full-bwd-fp16-large]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only",
+        "time_s": 0.979,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only::test_mha_bwd[full-bwd-bf16]",
+        "name": "test_mha_bwd[full-bwd-bf16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only",
+        "time_s": 0.567,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only::test_mha_bwd_eval_roofline",
+        "name": "test_mha_bwd_eval_roofline",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only",
+        "time_s": 0.078,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only::test_mha_bwd_rejects_legacy_kernel_map_keys",
+        "name": "test_mha_bwd_rejects_legacy_kernel_map_keys",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.test_mha_bwd_only",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-8b-short-float16]",
+        "name": "test_mha_bwd_bench[llama-3.1-8b-short-float16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 20.224,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "30.9200",
+          "tileops_op_wall_us": "2382.3600"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-8b-short-bfloat16]",
+        "name": "test_mha_bwd_bench[llama-3.1-8b-short-bfloat16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 18.453,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "30.2600",
+          "tileops_op_wall_us": "2516.2940"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-8b-long-float16]",
+        "name": "test_mha_bwd_bench[llama-3.1-8b-long-float16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 20.372,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "59.6800",
+          "tileops_op_wall_us": "12068.2901"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-8b-long-bfloat16]",
+        "name": "test_mha_bwd_bench[llama-3.1-8b-long-bfloat16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 19.454,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "58.2800",
+          "tileops_op_wall_us": "12121.5758"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-70b-short-float16]",
+        "name": "test_mha_bwd_bench[llama-3.1-70b-short-float16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 17.758,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "32.6400",
+          "tileops_op_wall_us": "2302.4760"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-70b-short-bfloat16]",
+        "name": "test_mha_bwd_bench[llama-3.1-70b-short-bfloat16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 19.59,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "32.0800",
+          "tileops_op_wall_us": "2325.9880"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-70b-long-float16]",
+        "name": "test_mha_bwd_bench[llama-3.1-70b-long-float16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 19.033,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "81.9200",
+          "tileops_op_wall_us": "12760.1100"
+        }
+      },
+      {
+        "nodeid": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only::test_mha_bwd_bench[llama-3.1-70b-long-bfloat16]",
+        "name": "test_mha_bwd_bench[llama-3.1-70b-long-bfloat16]",
+        "classname": "tileops.kernels.attention.multi_head_attention.multi_head_attention_kernel.perf_opt.bwd_only.bench_mha_bwd_only",
+        "time_s": 19.014,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionBwdOp",
+          "op_module": "tileops.ops.attention.multi_head_attention",
+          "tileops_latency_us": "72.1800",
+          "tileops_op_wall_us": "12959.0142"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-b2d550c4312e",
+        "label": "llama-3.1-8b-short",
+        "params": {
+          "batch": 4,
+          "causal": true,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 32,
+          "seq_len": 512
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 30.92,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 31.006,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.2580699920654297,
+        "performance_tops": 1.225239872932434,
+        "computility_tops": 4.962421894073486,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_et7ngwqp",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 30.92,
+          "max_latency_us": 30.92,
+          "min_latency_us": 30.92,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-20cd7123aff8",
+        "label": "llama-3.1-8b-short",
+        "params": {
+          "batch": 4,
+          "causal": true,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 32,
+          "seq_len": 512
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 30.26,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 31.6823,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.2580699920654297,
+        "performance_tops": 1.251963496208191,
+        "computility_tops": 4.962421894073486,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_r9ul8fil",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 30.26,
+          "max_latency_us": 30.26,
+          "min_latency_us": 30.26,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-60dd80fb6116",
+        "label": "llama-3.1-8b-long",
+        "params": {
+          "batch": 2,
+          "causal": true,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 32,
+          "seq_len": 2048
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 59.68,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 32.128099999999996,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.257941246032715,
+        "performance_tops": 1.269507646560669,
+        "computility_tops": 4.9626617431640625,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_rxd953ou",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 59.68,
+          "max_latency_us": 59.68,
+          "min_latency_us": 59.68,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-b71ffded0474",
+        "label": "llama-3.1-8b-long",
+        "params": {
+          "batch": 2,
+          "causal": true,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 32,
+          "seq_len": 2048
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 58.279999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 32.899899999999995,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.257941246032715,
+        "performance_tops": 1.3000038862228394,
+        "computility_tops": 4.9626617431640625,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_1no2msqi",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 58.279999,
+          "max_latency_us": 58.279999,
+          "min_latency_us": 58.279999,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-fe9610b28efb",
+        "label": "llama-3.1-70b-short",
+        "params": {
+          "batch": 2,
+          "causal": true,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 64,
+          "seq_len": 512
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 32.639999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 29.3721,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.2580699920654297,
+        "performance_tops": 1.1606745719909668,
+        "computility_tops": 4.962421894073486,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_8yqsgr4_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 32.639999,
+          "max_latency_us": 32.639999,
+          "min_latency_us": 32.639999,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-ac19635ed7e8",
+        "label": "llama-3.1-70b-short",
+        "params": {
+          "batch": 2,
+          "causal": true,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 64,
+          "seq_len": 512
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 32.080002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 29.8848,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.2580699920654297,
+        "performance_tops": 1.1809356212615967,
+        "computility_tops": 4.962421894073486,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_hpyg44bd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 32.080002,
+          "max_latency_us": 32.080002,
+          "min_latency_us": 32.080002,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-6c09828d5793",
+        "label": "llama-3.1-70b-long",
+        "params": {
+          "batch": 1,
+          "causal": true,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 64,
+          "seq_len": 2048
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 81.919998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 23.4058,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.257941246032715,
+        "performance_tops": 0.9248562455177307,
+        "computility_tops": 4.9626617431640625,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_bvvsh17n",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 81.919998,
+          "max_latency_us": 81.919998,
+          "min_latency_us": 81.919998,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionBwdOp",
+        "case_id": "MultiHeadAttentionBwdOp-54e2781d65a4",
+        "label": "llama-3.1-70b-long",
+        "params": {
+          "batch": 1,
+          "causal": true,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 64,
+          "seq_len": 2048
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 32,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 72.18,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 26.5642,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.257941246032715,
+        "performance_tops": 1.0496567487716675,
+        "computility_tops": 4.9626617431640625,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_081204_670534_MultiHeadAttentionBwdOp/artifacts/msprof/flash_bwd_prep_gwx4c99_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_attempts": [
+            "flash_bwd_prep"
+          ],
+          "kernel_name_requested": "flash_bwd_prep",
+          "kernel_name_resolved": "flash_bwd_prep",
+          "latency_us": 72.18,
+          "max_latency_us": 72.18,
+          "min_latency_us": 72.18,
+          "op_name": "flash_bwd_prep",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "MultiHeadAttentionBwdOp",
+      "family": "attention",
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.001158,
+      "max_abs_err": 0.00195,
+      "performance_cases": 8,
+      "ratio_range": {
+        "min": 23.4058,
+        "max": 32.899899999999995
+      }
+    }
+  ],
+  "warnings": [
+    "bwd-only, NON-MANIFEST entry: o/lse are produced by torch SDPA (fp32), not by the NPU fwd kernel. MultiHeadAttentionFwdOp is EXCLUDED because of the external compiler block (bishengir-compile SIGSEGV in convert-hfusion-to-hivm; perf_opt/REPORT_BLOCKER.md + perf_opt/issue_bishengir_hfusion_hivm/). This report is NOT a formal acceptance: formal status remains BLOCKED_ENVIRONMENT.",
+    "msprof captured a single device kernel only (flash_bwd_prep). The op total is measured with NPU events around one op(...) call and recorded as op_wall_us (benchmark.json); 8/8 tune cases, see OP_WALL.md. op_wall includes host launch gaps and is not comparable with the device-only -47.8% figure (perf_records.jsonl)."
+  ]
+}

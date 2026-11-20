@@ -1,0 +1,334 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+  "target_kernel_name": "main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+  "workloads": [
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float32",
+      "label": "smoke-1k",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "smoke",
+      "reason": "smoke case (idx==0 fp32); precision regression only, not performance-tuned",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "smoke",
+      "reason": "smoke case; precision regression only, not performance-tuned (benchmark 'full' mark conflicts with the independent smoke token)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-bfloat16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "smoke",
+      "reason": "smoke case; precision regression only, not performance-tuned (benchmark 'full' mark conflicts with the independent smoke token)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-float16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "per-dtype block_size; 1-D path byte-identical in round 6 (control A/B 25.64->26.28 us = noise band); final-record dip to 73.33 % is session state",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-bfloat16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "per-dtype block_size; 1-D path byte-identical in round 6 (control A/B tie) -> 66.67 %",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-float32",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "per-dtype block_size; 1-D path byte-identical in round 6 (control A/B +0.3 %) -> 76.24 %",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "broadcast class (per-row scalar b); round 6 (adopted): broadcast-group-major task order + predicated GM scalar load removes the per-tile copy->vbrc->vcmp stall -> 34.36->23.42 us A/B (+31.8 %), ratio 35.35 %->61.52 % (now >=60 %)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-bfloat16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "broadcast class (per-row scalar b); round 6 (adopted): same col-stall fix -> 35.40->31.93 us A/B (+9.8 %), ratio 36.48 %->44.83 %; still Vector-bound on bf16 vcmp/vcast (vec_ratio 0.68, mte2 active BW 52.7 GB/s)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float32",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "broadcast class (per-row scalar b); round 4 real-footprint budget r_blk 2->4 (A/B -7.8 %) + round 6 col-stall fix 40.40->38.85 us (+3.8 %) -> 74.34 % (no regression)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float32",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "outer-broadcast-operand hoist + block_size; round 6 row-path control A/B tie (53.43->52.67 us, within noise) -> unchanged at 71.85 %",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "outer-broadcast-operand hoist + block_size; round 6 row-path control A/B tie (27.18->27.17 us) -> unchanged at 66.98 %",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/gt/gt_kernel/gt_fwd_kernel.py::gt_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-bfloat16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "outer-broadcast-operand hoist + block_size; round 6 row-path control A/B tie (34.13->34.20 us, -0.2 %) -> unchanged at 54.62 % (Vector-bound: bf16 vcmp/vcast throughput)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gt.py::test_gt_manifest_bench",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

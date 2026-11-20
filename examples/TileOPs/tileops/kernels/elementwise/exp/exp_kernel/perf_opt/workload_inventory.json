@@ -1,0 +1,184 @@
+{
+  "op": "ExpFwdOp",
+  "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+  "target_kernel_name": "main",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=8192/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=8192/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=8192/nc=192 已核内合并;该 workload 另存在 Stage 3 既有 fp32 精度缺口(vexp 相对误差 1.4947e-4 > 自声明 rtol=1e-5,Stage 3 原文件同样失败),见 opt_log 的 A/B 证据",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "elementwise-64m-float16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 67108864
+      },
+      "kind": "tune",
+      "reason": "winner bs=8192/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "elementwise-64m-bfloat16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 67108864
+      },
+      "kind": "tune",
+      "reason": "winner bs=8192/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "elementwise-256m-float16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 268435456
+      },
+      "kind": "tune",
+      "reason": "winner bs=8192/nc=192 已核内合并;Stage 3 结构下该规模因 Block Dim=131072 越栅格上限无法启动,改写后可运行(基线取 bs=6144 可启动配置)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_exp.py::test_exp_bench",
+      "kernel_id": "tileops/kernels/elementwise/exp/exp_kernel/exp_fwd_kernel.py::exp_fwd_kernel::main",
+      "workload_id": "elementwise-256m-bfloat16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 268435456
+      },
+      "kind": "tune",
+      "reason": "winner bs=8192/nc=192 已核内合并;Stage 3 结构下该规模因 Block Dim=131072 越栅格上限无法启动,改写后可运行(基线取 bs=6144 可启动配置)",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

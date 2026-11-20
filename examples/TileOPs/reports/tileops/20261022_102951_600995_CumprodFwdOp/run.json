@@ -1,0 +1,699 @@
+{
+  "schema_version": 2,
+  "operator": "CumprodFwdOp",
+  "status": "partial",
+  "metadata": {
+    "run_id": "20261022_102951_600995_CumprodFwdOp",
+    "generated_at": "2026-10-22T10:34:23.237595+08:00",
+    "project_root": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "147b71bcf2f0d4b613eaf815fc0cd45dc22b4048",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_cumulative.py",
+    "benchmark_file": "benchmarks/ops/bench_cumulative.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_cumulative.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_102951_600995_CumprodFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_cumulative.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_102951_600995_CumprodFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-22T10:34:23.237595+08:00",
+      "evaluation_scope": "CumprodFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261022_102951_600995_CumprodFwdOp",
+      "git_commit": "147b71bcf2f0d4b613eaf815fc0cd45dc22b4048",
+      "correctness_target": "tests/ops/test_cumulative.py",
+      "benchmark_target": "benchmarks/ops/bench_cumulative.py"
+    },
+    "environment": {
+      "npu": "Ascend910_9362 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.5",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 20,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 20,
+    "passed_cases": 20,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": false,
+    "benchmark_tests": 8,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 5
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_102951_600995_CumprodFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 20,
+    "passed": 20,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[128-512-dtype0]",
+        "name": "test_cumprod_op[128-512-dtype0]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 1.331,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "4.77e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[128-512-dtype1]",
+        "name": "test_cumprod_op[128-512-dtype1]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.187,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[128-512-dtype2]",
+        "name": "test_cumprod_op[128-512-dtype2]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.183,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[256-4096-dtype3]",
+        "name": "test_cumprod_op[256-4096-dtype3]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.183,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[256-4096-dtype4]",
+        "name": "test_cumprod_op[256-4096-dtype4]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.184,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[128-300-dtype5]",
+        "name": "test_cumprod_op[128-300-dtype5]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.162,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[128-300-dtype6]",
+        "name": "test_cumprod_op[128-300-dtype6]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.159,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_op[129-512-dtype7]",
+        "name": "test_cumprod_op[129-512-dtype7]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.178,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_non_contiguous[128-512-dtype0]",
+        "name": "test_cumprod_non_contiguous[128-512-dtype0]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.007,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_non_contiguous[128-512-dtype1]",
+        "name": "test_cumprod_non_contiguous[128-512-dtype1]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.008,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_3d[2-64-512-dtype0]",
+        "name": "test_cumprod_3d[2-64-512-dtype0]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.005,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_3d[2-64-512-dtype1]",
+        "name": "test_cumprod_3d[2-64-512-dtype1]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.006,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_4d[2-4-8-512-dtype0]",
+        "name": "test_cumprod_4d[2-4-8-512-dtype0]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.178,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_4d[2-4-8-512-dtype1]",
+        "name": "test_cumprod_4d[2-4-8-512-dtype1]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.179,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_1d[512-dtype0]",
+        "name": "test_cumprod_1d[512-dtype0]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.176,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_1d[512-dtype1]",
+        "name": "test_cumprod_1d[512-dtype1]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.005,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_1d[512-dtype2]",
+        "name": "test_cumprod_1d[512-dtype2]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.005,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_dim_axis1[2-512-256-dtype0]",
+        "name": "test_cumprod_dim_axis1[2-512-256-dtype0]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.181,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_dim_axis1[2-512-256-dtype1]",
+        "name": "test_cumprod_dim_axis1[2-512-256-dtype1]",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.178,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cumulative::test_cumprod_dynamic_shape_kernel_cache",
+        "name": "test_cumprod_dynamic_shape_kernel_cache",
+        "classname": "tests.ops.test_cumulative",
+        "time_s": 0.127,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_102951_600995_CumprodFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[smoke-cumprod-float16]",
+        "name": "test_cumprod_bench[smoke-cumprod-float16]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 18.389,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "7.1399"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[smoke-cumprod-bfloat16]",
+        "name": "test_cumprod_bench[smoke-cumprod-bfloat16]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 17.223,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "7.2999"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[smoke-cumprod-float32]",
+        "name": "test_cumprod_bench[smoke-cumprod-float32]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 18.214,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "6.5399"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[hidden-state-scan-float16]",
+        "name": "test_cumprod_bench[hidden-state-scan-float16]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 69.68,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "185.1363"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[hidden-state-scan-bfloat16]",
+        "name": "test_cumprod_bench[hidden-state-scan-bfloat16]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 64.94,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "185.9563"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[long-seq-scan-bfloat16]",
+        "name": "test_cumprod_bench[long-seq-scan-bfloat16]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 22.284,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "73.1785"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[non-aligned-cumprod-float16]",
+        "name": "test_cumprod_bench[non-aligned-cumprod-float16]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 18.603,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "9.6398"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cumulative::test_cumprod_bench[non-aligned-cumprod-bfloat16]",
+        "name": "test_cumprod_bench[non-aligned-cumprod-bfloat16]",
+        "classname": "benchmarks.ops.bench_cumulative",
+        "time_s": 17.552,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CumprodFwdOp",
+          "op_module": "tileops.ops.scan.cumprod",
+          "tileops_latency_us": "10.3998"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_102951_600995_CumprodFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "CumprodFwdOp",
+        "case_id": "CumprodFwdOp-d5050a3c4cca",
+        "label": "hidden-state-scan",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 16,
+          "block_n": 128
+        },
+        "tag": "tileops",
+        "latency_us": 185.136292,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 2 distinct ops",
+        "roofline_utilization_percent": 12.2354,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.18124178483600611,
+        "bandwidth_utilization_percent": 10.068988046444783,
+        "arithmetic_intensity_ops_per_byte": 2.7158989906311035,
+        "performance_tops": 0.5076186060905457,
+        "computility_tops": 4.148777961730957,
+        "artifact_dir": "/tmp/opencode/msprof-out-cumprod",
+        "msprof": {
+          "captured_op_count": 2,
+          "captured_op_names": [
+            "main",
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 185.136292,
+          "max_latency_us": 449.411011,
+          "min_latency_us": 14.03972,
+          "op_name": "main",
+          "sample_count": 3
+        }
+      },
+      {
+        "operator": "CumprodFwdOp",
+        "case_id": "CumprodFwdOp-e72fbf1d554a",
+        "label": "hidden-state-scan",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 16,
+          "block_n": 128
+        },
+        "tag": "tileops",
+        "latency_us": 185.956284,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 2 distinct ops",
+        "roofline_utilization_percent": 13.2494,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.18044258187047876,
+        "bandwidth_utilization_percent": 10.024587881693265,
+        "arithmetic_intensity_ops_per_byte": 2.9583115577697754,
+        "performance_tops": 0.5504908561706543,
+        "computility_tops": 4.154841423034668,
+        "artifact_dir": "/tmp/opencode/msprof-out-cumprod",
+        "msprof": {
+          "captured_op_count": 2,
+          "captured_op_names": [
+            "main",
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 185.956284,
+          "max_latency_us": 447.771057,
+          "min_latency_us": 13.919722,
+          "op_name": "main",
+          "sample_count": 3
+        }
+      },
+      {
+        "operator": "CumprodFwdOp",
+        "case_id": "CumprodFwdOp-5524ce71b00c",
+        "label": "long-seq-scan",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            64,
+            32768
+          ]
+        },
+        "config": {
+          "block_m": 2,
+          "block_n": 128
+        },
+        "tag": "tileops",
+        "latency_us": 73.178535,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 2 distinct ops",
+        "roofline_utilization_percent": 9.9648,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.11463208439469307,
+        "bandwidth_utilization_percent": 6.368449133038504,
+        "arithmetic_intensity_ops_per_byte": 3.527324676513672,
+        "performance_tops": 0.4110634922981262,
+        "computility_tops": 4.12514066696167,
+        "artifact_dir": "/tmp/opencode/msprof-out-cumprod",
+        "msprof": {
+          "captured_op_count": 2,
+          "captured_op_names": [
+            "main",
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 73.178535,
+          "max_latency_us": 127.137459,
+          "min_latency_us": 4.599908,
+          "op_name": "main",
+          "sample_count": 4
+        }
+      },
+      {
+        "operator": "CumprodFwdOp",
+        "case_id": "CumprodFwdOp-b56215dc606f",
+        "label": "non-aligned-cumprod",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            512,
+            300
+          ]
+        },
+        "config": {
+          "block_m": 16,
+          "block_n": 128
+        },
+        "tag": "tileops",
+        "latency_us": 9.639807,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 2 distinct ops",
+        "roofline_utilization_percent": 6.212199999999999,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.06373571587066008,
+        "bandwidth_utilization_percent": 3.5408731039255605,
+        "arithmetic_intensity_ops_per_byte": 2.981520175933838,
+        "performance_tops": 0.23848097026348114,
+        "computility_tops": 3.8388850688934326,
+        "artifact_dir": "/tmp/opencode/msprof-out-cumprod",
+        "msprof": {
+          "captured_op_count": 2,
+          "captured_op_names": [
+            "main",
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 9.639807,
+          "max_latency_us": 18.459631,
+          "min_latency_us": 8.399832,
+          "op_name": "main",
+          "sample_count": 3
+        }
+      },
+      {
+        "operator": "CumprodFwdOp",
+        "case_id": "CumprodFwdOp-5109eaf34008",
+        "label": "non-aligned-cumprod",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            512,
+            300
+          ]
+        },
+        "config": {
+          "block_m": 16,
+          "block_n": 128
+        },
+        "tag": "tileops",
+        "latency_us": 10.399792,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 2 distinct ops",
+        "roofline_utilization_percent": 6.990200000000001,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.05907810463901587,
+        "bandwidth_utilization_percent": 3.2821169243897703,
+        "arithmetic_intensity_ops_per_byte": 3.2253763675689697,
+        "performance_tops": 0.2702099084854126,
+        "computility_tops": 3.8655307292938232,
+        "artifact_dir": "/tmp/opencode/msprof-out-cumprod",
+        "msprof": {
+          "captured_op_count": 2,
+          "captured_op_names": [
+            "main",
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 10.399792,
+          "max_latency_us": 18.47963,
+          "min_latency_us": 8.019839,
+          "op_name": "main",
+          "sample_count": 3
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "CumprodFwdOp",
+      "family": "scan",
+      "cases": 20,
+      "passed": 20,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0017103096250000002,
+      "max_abs_err": 0.00391,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 6.212199999999999,
+        "max": 13.2494
+      }
+    }
+  ],
+  "warnings": [
+    "CumprodFwdOp/CumprodFwdOp-d5050a3c4cca: invalid tileops profile: unfiltered capture contains 2 distinct ops",
+    "CumprodFwdOp/CumprodFwdOp-e72fbf1d554a: invalid tileops profile: unfiltered capture contains 2 distinct ops",
+    "CumprodFwdOp/CumprodFwdOp-5524ce71b00c: invalid tileops profile: unfiltered capture contains 2 distinct ops",
+    "CumprodFwdOp/CumprodFwdOp-b56215dc606f: invalid tileops profile: unfiltered capture contains 2 distinct ops",
+    "CumprodFwdOp/CumprodFwdOp-5109eaf34008: invalid tileops profile: unfiltered capture contains 2 distinct ops",
+    "correctness passed, but the benchmark stage did not produce valid records"
+  ]
+}

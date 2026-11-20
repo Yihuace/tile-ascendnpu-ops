@@ -1,0 +1,27 @@
+{
+  "op_name": "VectorNormKernel",
+  "op_slug": "vector_norm",
+  "family": "reduction",
+  "gpu_repo_root": "/tmp/tops/TileOPs-main",
+  "kernel_class_name": "VectorNormKernel",
+  "op_class_name": "L1NormFwdOp|L2NormFwdOp|InfNormFwdOp",
+  "covers_ops": [
+    "L1NormFwdOp",
+    "L2NormFwdOp",
+    "InfNormFwdOp"
+  ],
+  "test_path": "tests/ops/test_vector_norm.py",
+  "test_slug": "vector_norm",
+  "bench_path": "benchmarks/ops/bench_vector_norm.py",
+  "bench_slug": "vector_norm",
+  "wrapper_path": "tileops/kernels/reduction/vector_norm/vector_norm.py",
+  "extracted_file": "tileops/kernels/reduction/vector_norm/_inf_norm_fwd_kernels.py",
+  "extracted_file_note": "pattern B: one kernel class (VectorNormKernel) shared by three ops; the per-op extraction produced three BYTE-IDENTICAL files (_inf_/_l1_/_l2_norm_fwd_kernels.py, sha256 43bc1c942960d233) -- this is the canonical copy",
+  "extracted_functions": [
+    "_vector_norm_kernel"
+  ],
+  "extracted_functions_deferred": {
+    "_vector_norm_kernel_tiled": "GPU 侧确有该分块变体(容量退路),但 manifest 的 4 个 workload 在 block_m=1 下均可容纳(见 DESIGN.md 4.3),该分支在本任务范围内永不被触发;交付无法验证的代码路径违背'不得把未验证当已验证'的纪律,故本次仅交付已验证的单 tile 版。既有 NPU 侧实现仍保留分块版。详见 examples/vector_norm/vector_norm_kernel/RETROSPECTIVE.md 的 Stage 3 章节。"
+  },
+  "created_at": "2026-10-15T15:30:00Z"
+}

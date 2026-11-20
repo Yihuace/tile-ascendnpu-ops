@@ -1,0 +1,68 @@
+# regularization.yaml -- manifest entries for the 'regularization' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+#
+# Ported from TileOPs ``tileops/manifest/regularization.yaml`` -- the
+# DropoutOp entry.  ``signature`` / ``shape_rules`` / ``workloads`` are copied
+# from the GPU entry (a small smoke workload is prepended per the NPU manifest
+# workload contract).  The GPU entry used func mode
+# (``tileops.perf.formulas.dropout_roofline``); the NPU project has no
+# tileops.perf module, so the same formula is expressed inline below
+# (``DropoutOp.eval_roofline`` implements it too).
+#
+# NOTE: Dropout generates a random mask (RNG).  Whether TileLang RNG is
+# available under ``target="npuir"`` is an open question for the Stage 1
+# design review -- the manifest therefore records ``status: spec-only``.
+#
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+DropoutOp:
+  ref_api: "torch.nn.functional.dropout"
+  family: regularization
+  status: spec-only
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      p: {type: float, default: 0.5}
+      seed: {type: int, default: 0}
+      training: {type: bool, default: true}
+    shape_rules:
+    - "input.numel() > 0"
+    - "0.0 <= p <= 1.0"
+
+  workloads:
+  # Smoke: small 2-D token/hidden tile (NPU manifest workload contract: the
+  # first workload is the smoke case).  p=0.5 / training=true exercises the
+  # normal kernel path across all three float dtypes.
+  - {input_shape: [1024, 1024], p: 0.5, training: true, dtypes: [float32, float16, bfloat16], label: "smoke-dropout-1m"}
+  # Full: GPU manifest release-facing roofline workloads.
+  # Normal kernel path. p=0, p=1, and training=false are short-circuit paths
+  # and are tested separately from release-facing roofline workloads.
+  - {input_shape: [1024, 4096], p: 0.5, training: true, dtypes: [float16], label: "tokens-1k-hidden-4k-fp16"}
+  - {input_shape: [1024, 10240], p: 0.5, training: true, dtypes: [bfloat16], label: "tokens-1k-hidden-10k-bf16"}
+  - {input_shape: [1024, 4096], p: 0.5, training: true, dtypes: [float32], label: "tokens-1k-hidden-4k-fp32"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.dropout_roofline``:
+  #   training=True and 0 < p < 1:  flops = N,       bytes = 2 * N * elem_bytes
+  #   p == 0 or training=False:     flops = 0,       bytes = 2 * N * elem_bytes
+  #   p == 1:                       flops = 0,       bytes = N * elem_bytes
+  # where N = product(input.shape) and elem_bytes is the input dtype width.
+  roofline:
+    vars:
+      N: "product(input.shape)"
+      elem_bytes: "2 (float16/bf16) / 4 (float32)"
+    flops: "N if (training and p != 0.0 and p != 1.0) else 0"
+    bytes: "N * elem_bytes if (training and p == 1.0) else 2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/regularization/dropout/dropout.py
+    kernel_map:
+      dropout: DropoutKernel
+    op: tileops/ops/regularization/dropout.py
+    test: tests/ops/test_dropout.py
+    bench: benchmarks/ops/bench_dropout.py
+    bench_manifest_driven: true

@@ -1,0 +1,518 @@
+{
+ "workloads": [
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-8b-short-w256-fp16",
+   "label": "llama-3.1-8b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "k": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "batch": 4,
+    "seq": 512,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 4,
+    "seq": 512,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-8b-short-w256-bf16",
+   "label": "llama-3.1-8b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "k": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "batch": 4,
+    "seq": 512,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 4,
+    "seq": 512,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-8b-long-w1024-fp16",
+   "label": "llama-3.1-8b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "k": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "batch": 2,
+    "seq": 2048,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 2,
+    "seq": 2048,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-8b-long-w1024-bf16",
+   "label": "llama-3.1-8b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "k": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "batch": 2,
+    "seq": 2048,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 2,
+    "seq": 2048,
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-70b-short-w256-fp16",
+   "label": "llama-3.1-70b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "k": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "batch": 2,
+    "seq": 512,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 2,
+    "seq": 512,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-70b-short-w256-bf16",
+   "label": "llama-3.1-70b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "k": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "batch": 2,
+    "seq": 512,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 2,
+    "seq": 512,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-70b-long-w1024-fp16",
+   "label": "llama-3.1-70b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "k": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "batch": 1,
+    "seq": 2048,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 1,
+    "seq": 2048,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "llama-3.1-70b-long-w1024-bf16",
+   "label": "llama-3.1-70b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "k": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "batch": 1,
+    "seq": 2048,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 1,
+    "seq": 2048,
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "reason": "tune workload from the migrated benchmark (examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench); baseline and the single merged final record are measured with msprof op (Task Duration median of 20); G=2 head-group batching merged into perf_opt/_gqa_sw_fwd_kernel.py (Round 18b).",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "gqa-sw-fwd-smoke-s512-h8-kv2-d64-fp16",
+   "label": "gqa-sw-fwd-smoke-s512-h8-kv2-d64",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "q": [
+     2,
+     512,
+     8,
+     64
+    ],
+    "k": [
+     2,
+     512,
+     2,
+     64
+    ],
+    "v": [
+     2,
+     512,
+     2,
+     64
+    ],
+    "batch": 2,
+    "seq": 512,
+    "heads": 8,
+    "heads_kv": 2,
+    "dim": 64
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 2,
+    "seq": 512,
+    "heads": 8,
+    "heads_kv": 2,
+    "dim": 64,
+    "is_causal": true,
+    "window_size_left": -1,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "smoke",
+   "reason": "label token `smoke` (standalone `-`-separated word): precision-only regression at every merge and at the end; no performance record, no winner selection (opt_log.md section 1).",
+   "precision_pass": true
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window.py::test_gqa_sliding_window_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window/grouped_query_attention_sliding_window_kernel/_gqa_sw_fwd_kernel.py::_gqa_sw_fwd_kernel::_gqa_sw_fwd_main",
+   "workload_id": "gqa-sw-fwd-smoke-s512-h8-kv2-d64-bf16",
+   "label": "gqa-sw-fwd-smoke-s512-h8-kv2-d64",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "q": [
+     2,
+     512,
+     8,
+     64
+    ],
+    "k": [
+     2,
+     512,
+     2,
+     64
+    ],
+    "v": [
+     2,
+     512,
+     2,
+     64
+    ],
+    "batch": 2,
+    "seq": 512,
+    "heads": 8,
+    "heads_kv": 2,
+    "dim": 64
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 2,
+    "seq": 512,
+    "heads": 8,
+    "heads_kv": 2,
+    "dim": 64,
+    "is_causal": true,
+    "window_size_left": -1,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "smoke",
+   "reason": "label token `smoke` (standalone `-`-separated word): precision-only regression at every merge and at the end; no performance record, no winner selection (opt_log.md section 1).",
+   "precision_pass": true
+  }
+ ]
+}

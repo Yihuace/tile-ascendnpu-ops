@@ -1,0 +1,334 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+  "target_kernel_name": "main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+  "workloads": [
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float32",
+      "label": "smoke-1k",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "smoke",
+      "reason": "smoke case (idx==0 fp32); precision regression only, not performance-tuned",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "smoke",
+      "reason": "smoke case; precision regression only, not performance-tuned (benchmark 'full' mark conflicts with the independent smoke token)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-bfloat16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "smoke",
+      "reason": "smoke case; precision regression only, not performance-tuned (benchmark 'full' mark conflicts with the independent smoke token)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-float16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "per-dtype block_size tuned from the shipped 1024; flat same-shape stream is MTE2-bound and wants the largest UB-fitting tile",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-bfloat16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "per-dtype block_size tuned from the shipped 1024; flat same-shape stream is MTE2-bound and wants the largest UB-fitting tile",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-float32",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "per-dtype block_size tuned from the shipped 1024; flat same-shape stream is MTE2-bound and wants the largest UB-fitting tile",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "broadcast class (per-row scalar b); <=1 round per the task plan",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-bfloat16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "broadcast class (per-row scalar b); <=1 round per the task plan",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float32",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "broadcast class (per-row scalar b); <=1 round per the task plan",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float32",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "outer-broadcast-operand hoist + block_size; validated 2-D-tile alternative per DESIGN 1.6.3 adjudication",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "outer-broadcast-operand hoist + block_size; validated 2-D-tile alternative per DESIGN 1.6.3 adjudication",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/ge/ge_kernel/ge_fwd_kernel.py::ge_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-bfloat16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 1024
+      },
+      "kind": "tune",
+      "reason": "outer-broadcast-operand hoist + block_size; validated 2-D-tile alternative per DESIGN 1.6.3 adjudication",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_ge.py::test_ge_manifest_bench",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

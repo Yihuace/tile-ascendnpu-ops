@@ -1,0 +1,334 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+  "target_kernel_name": "main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+  "workloads": [
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float32",
+      "label": "smoke-1k",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "max_shape": [
+          1024
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 2048
+      },
+      "kind": "smoke",
+      "reason": "manifest idx 0, pytest.mark.smoke (fp32); precision regression only, not performance-tuned",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "max_shape": [
+          1024
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "smoke",
+      "reason": "same manifest entry / shape as the idx-0 smoke case (its fp16 sibling); precision-only (benchmark 'full' mark conflicts with the independent smoke label)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-bfloat16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "max_shape": [
+          1024
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "smoke",
+      "reason": "same manifest entry / shape as the idx-0 smoke case (its bf16 sibling); precision-only (benchmark 'full' mark conflicts with the independent smoke label)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "elementwise-16M-float16",
+      "label": "elementwise-16M",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "max_shape": [
+          4096,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "flat same-shape stream; shipped K11 block_size (4096) retained as winner (larger tiles are UB-capped for fp32 and within noise for fp16)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "elementwise-16M-bfloat16",
+      "label": "elementwise-16M",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "max_shape": [
+          4096,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "flat same-shape stream; shipped K11 block_size (4096) retained; bf16 vmin path is partly Vector-bound (vec_ratio ~0.55)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "elementwise-16M-float32",
+      "label": "elementwise-16M",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "max_shape": [
+          4096,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 8192
+      },
+      "kind": "tune",
+      "reason": "flat same-shape stream; MTE2/bandwidth-bound. Round-1 block_size scan (4096/6144/8192/9216) picked 8192 (UB cap 9637); interleaved A/B vs the shipped 2048 confirms the winner (-10.5%, verdict B_better). Residual gap to the 60% report ratio is device MTE2/HBM bandwidth degradation at this footprint, not a tiling parameter",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "max_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "broadcast label; the Op layer materialises the bound (_expand_flat) so the benchmark dispatches the same-shape flat path (read traffic = 2N*E). Shipped block_size 4096 retained",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-bfloat16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "max_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "broadcast label; Op layer materialises the bound -> same-shape flat path. Shipped block_size 4096 retained",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float32",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "max_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 8192
+      },
+      "kind": "tune",
+      "reason": "broadcast label; Op layer materialises the bound -> same-shape flat path. fp32 block_size 8192 (round-1 winner) reaches >=60% report ratio",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float32",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "max_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 8192
+      },
+      "kind": "tune",
+      "reason": "broadcast label; Op layer materialises the bound -> same-shape flat path. fp32 block_size 8192; interleaved A/B vs shipped 2048 confirms the winner (-8.5%, verdict B_better). Residual gap to 60% is the same device bandwidth limit as elementwise-16M-float32",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "max_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "broadcast label; same-shape flat path. Shipped block_size 4096 retained",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp_max/clamp_max_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-bfloat16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "max_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "broadcast label; same-shape flat path. Shipped block_size 4096 retained (the -2.4% final-vs-baseline delta is run-to-run bimodality of the partly Vector-bound bf16 path; the config is identical to baseline)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_clamp_max.py::test_clamp_max_bench",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-float32' contains the standalone smoke token 'smoke'; excluded from perf tuning, used for precision regression only ; final precision regression PASS (L0/L1/L2/Boundary all pass, fp32 max_rel 2.22e-6 < rtol 1e-5)",
+      "target_kernel_name": "main",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-float16' contains the standalone smoke token 'smoke'; excluded from perf tuning, used for precision regression only ; final precision regression PASS (L0/L1/L2/Boundary all pass, fp32 max_rel 2.22e-6 < rtol 1e-5)",
+      "target_kernel_name": "main",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-bfloat16' contains the standalone smoke token 'smoke'; excluded from perf tuning, used for precision regression only ; final precision regression PASS (L0/L1/L2/Boundary all pass, fp32 max_rel 2.22e-6 < rtol 1e-5)",
+      "target_kernel_name": "main",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged",
+      "reason": "winner r1_deg2mm (minimax deg-2 small branch T=0.05 + per-dtype block_size f16=7168) merged into perf_opt/expm1_fwd_kernel.py; 194.27 -> 86.23 us (2.25x, -55.6%)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "tune",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged",
+      "reason": "winner r1_deg2mm (minimax deg-2 small branch T=0.05 + per-dtype block_size bf16=7168) merged into perf_opt/expm1_fwd_kernel.py; 194.55 -> 86.14 us (2.26x, -55.7%)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {},
+      "kind": "tune",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged",
+      "reason": "winner r1_deg2mm (minimax deg-2 small branch T=0.05 + per-dtype block_size f32=8192) merged into perf_opt/expm1_fwd_kernel.py; 221.67 -> 103.20 us (2.15x, -53.4%)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "elementwise-64m-float16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged",
+      "reason": "winner r1_deg2mm merged into perf_opt/expm1_fwd_kernel.py; 770.46 -> 339.75 us (2.27x, -55.9%)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "elementwise-64m-bfloat16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "tune",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged",
+      "reason": "winner r1_deg2mm merged into perf_opt/expm1_fwd_kernel.py; 767.61 -> 337.86 us (2.27x, -56.0%)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "elementwise-256m-float16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged",
+      "reason": "winner r1_deg2mm merged into perf_opt/expm1_fwd_kernel.py; 3072.71 -> 1389.16 us (2.21x, -54.8%)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_expm1_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/expm1/expm1_kernel/expm1_fwd_kernel.py::expm1_fwd_kernel::main",
+      "workload_id": "elementwise-256m-bfloat16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "tune",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged",
+      "reason": "winner r1_deg2mm merged into perf_opt/expm1_fwd_kernel.py; 3072.61 -> 1391.81 us (2.21x, -54.7%)"
+    }
+  ]
+}

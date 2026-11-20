@@ -1,0 +1,256 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+  "target_kernel_name": "main",
+  "manifest": "examples/TileOPs/tileops/manifest/elementwise.yaml::ClampFwdOp",
+  "bench_entry": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+  "note": "Classification follows the pytest case-id `smoke` token (Stage 4 class rule) with the pytest marks as corroboration: `_workloads_to_clamp_params` marks only (idx==0 and float16) as smoke, but all three `smoke-1m-*` ids carry the independent smoke token -> smoke. Tune set = the 7 full manifest workloads (elementwise-16m/64m/256m x dtypes); no skipped cases.",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1024,
+        1024
+      ],
+      "n_total": 1048576,
+      "dtype": "float16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "smoke",
+      "reason": "benchmark mark is `full` for this case (only idx==0 float16 is marked smoke) but the case id carries the independent `smoke` token -> classified smoke by the Stage 4 class rule (pytest case id token), excluded from performance tuning and used only for precision regression; measured baseline/final kernel latencies are kept in opt_log.md as smoke reference data (audit copy: logs/audit/perf_records_full_pre_reclassify.jsonl). Final precision regression (`perf_opt/_make_clamp_tensor_kernel.py --level all`): L0/L1/L2/Boundary all PASS, max_diff=0.0 (all three dtypes).",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        1024,
+        1024
+      ],
+      "n_total": 1048576,
+      "dtype": "float32",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "smoke",
+      "reason": "benchmark mark is `full` for this case (only idx==0 float16 is marked smoke) but the case id carries the independent `smoke` token -> classified smoke by the Stage 4 class rule (pytest case id token), excluded from performance tuning and used only for precision regression; measured baseline/final kernel latencies are kept in opt_log.md as smoke reference data (audit copy: logs/audit/perf_records_full_pre_reclassify.jsonl). Final precision regression (`perf_opt/_make_clamp_tensor_kernel.py --level all`): L0/L1/L2/Boundary all PASS, max_diff=0.0 (all three dtypes).",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        1024,
+        1024
+      ],
+      "n_total": 1048576,
+      "dtype": "bfloat16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "smoke",
+      "reason": "benchmark mark is `full` for this case (only idx==0 float16 is marked smoke) but the case id carries the independent `smoke` token -> classified smoke by the Stage 4 class rule (pytest case id token), excluded from performance tuning and used only for precision regression; measured baseline/final kernel latencies are kept in opt_log.md as smoke reference data (audit copy: logs/audit/perf_records_full_pre_reclassify.jsonl). Final precision regression (`perf_opt/_make_clamp_tensor_kernel.py --level all`): L0/L1/L2/Boundary all PASS, max_diff=0.0 (all three dtypes).",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "float16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype TUNED_BLOCK_SIZE {fp32 8192, fp16 16384, bf16 10240} + UB-live-set-freed structure: fp32 in-place / fp16 native domain / bf16 in-place fp32 transit + compile-time tile-wave shape guard). Winner per interleaved A/B protocol (ab/*/verdict.json): 16m-f16 -3.32%, 64m-f16 -4.38%, 16m-f32 -4.52% (all 5/5 consistent, B_better); 16m-bf16 -2.29% -> tie (below the 3% noise threshold). Final full regression: L0 40 + L1 26 + L2 4 + Boundary 9 = 79/79 PASS, max_diff = 0.0 for all three dtypes."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "bfloat16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype TUNED_BLOCK_SIZE {fp32 8192, fp16 16384, bf16 10240} + UB-live-set-freed structure: fp32 in-place / fp16 native domain / bf16 in-place fp32 transit + compile-time tile-wave shape guard). Winner per interleaved A/B protocol (ab/*/verdict.json): 16m-f16 -3.32%, 64m-f16 -4.38%, 16m-f32 -4.52% (all 5/5 consistent, B_better); 16m-bf16 -2.29% -> tie (below the 3% noise threshold). Final full regression: L0 40 + L1 26 + L2 4 + Boundary 9 = 79/79 PASS, max_diff = 0.0 for all three dtypes."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "float32",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype TUNED_BLOCK_SIZE {fp32 8192, fp16 16384, bf16 10240} + UB-live-set-freed structure: fp32 in-place / fp16 native domain / bf16 in-place fp32 transit + compile-time tile-wave shape guard). Winner per interleaved A/B protocol (ab/*/verdict.json): 16m-f16 -3.32%, 64m-f16 -4.38%, 16m-f32 -4.52% (all 5/5 consistent, B_better); 16m-bf16 -2.29% -> tie (below the 3% noise threshold). Final full regression: L0 40 + L1 26 + L2 4 + Boundary 9 = 79/79 PASS, max_diff = 0.0 for all three dtypes."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "elementwise-64m-float16",
+      "label": "elementwise-64m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        8192,
+        8192
+      ],
+      "n_total": 67108864,
+      "dtype": "float16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype TUNED_BLOCK_SIZE {fp32 8192, fp16 16384, bf16 10240} + UB-live-set-freed structure: fp32 in-place / fp16 native domain / bf16 in-place fp32 transit + compile-time tile-wave shape guard). Winner per interleaved A/B protocol (ab/*/verdict.json): 16m-f16 -3.32%, 64m-f16 -4.38%, 16m-f32 -4.52% (all 5/5 consistent, B_better); 16m-bf16 -2.29% -> tie (below the 3% noise threshold). Final full regression: L0 40 + L1 26 + L2 4 + Boundary 9 = 79/79 PASS, max_diff = 0.0 for all three dtypes."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "elementwise-64m-bfloat16",
+      "label": "elementwise-64m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        8192,
+        8192
+      ],
+      "n_total": 67108864,
+      "dtype": "bfloat16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype TUNED_BLOCK_SIZE {fp32 8192, fp16 16384, bf16 10240} + UB-live-set-freed structure: fp32 in-place / fp16 native domain / bf16 in-place fp32 transit + compile-time tile-wave shape guard). Winner per interleaved A/B protocol (ab/*/verdict.json): 16m-f16 -3.32%, 64m-f16 -4.38%, 16m-f32 -4.52% (all 5/5 consistent, B_better); 16m-bf16 -2.29% -> tie (below the 3% noise threshold). Final full regression: L0 40 + L1 26 + L2 4 + Boundary 9 = 79/79 PASS, max_diff = 0.0 for all three dtypes."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "elementwise-256m-float16",
+      "label": "elementwise-256m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16384,
+        16384
+      ],
+      "n_total": 268435456,
+      "dtype": "float16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype TUNED_BLOCK_SIZE {fp32 8192, fp16 16384, bf16 10240} + UB-live-set-freed structure: fp32 in-place / fp16 native domain / bf16 in-place fp32 transit + compile-time tile-wave shape guard). Winner per interleaved A/B protocol (ab/*/verdict.json): 16m-f16 -3.32%, 64m-f16 -4.38%, 16m-f32 -4.52% (all 5/5 consistent, B_better); 16m-bf16 -2.29% -> tie (below the 3% noise threshold). Final full regression: L0 40 + L1 26 + L2 4 + Boundary 9 = 79/79 PASS, max_diff = 0.0 for all three dtypes."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_clamp_tensor_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/clamp/clamp_kernel/_make_clamp_tensor_kernel.py::_make_clamp_tensor_kernel::main",
+      "workload_id": "elementwise-256m-bfloat16",
+      "label": "elementwise-256m",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        16384,
+        16384
+      ],
+      "n_total": 268435456,
+      "dtype": "bfloat16",
+      "params": {
+        "has_min": true,
+        "has_max": true
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype TUNED_BLOCK_SIZE {fp32 8192, fp16 16384, bf16 10240} + UB-live-set-freed structure: fp32 in-place / fp16 native domain / bf16 in-place fp32 transit + compile-time tile-wave shape guard). Winner per interleaved A/B protocol (ab/*/verdict.json): 16m-f16 -3.32%, 64m-f16 -4.38%, 16m-f32 -4.52% (all 5/5 consistent, B_better); 16m-bf16 -2.29% -> tie (below the 3% noise threshold). Final full regression: L0 40 + L1 26 + L2 4 + Boundary 9 = 79/79 PASS, max_diff = 0.0 for all three dtypes."
+    }
+  ],
+  "tuning_summary": {
+    "final_candidate_id": "final_merged",
+    "final_artifact": "perf_opt/_make_clamp_tensor_kernel.py",
+    "final_artifact_sha256": "5c4696229a6b16e1f198d9cf1a4ef15d01281871f542c1d8f9e91e3093a3a997",
+    "primary_metric": "msprof_op_task_duration_us",
+    "baseline_latency_us": {
+      "elementwise-16m-bfloat16": 71.55,
+      "elementwise-16m-float16": 70.78,
+      "elementwise-16m-float32": 157.41,
+      "elementwise-256m-bfloat16": 1738.51,
+      "elementwise-256m-float16": 1747.84,
+      "elementwise-64m-bfloat16": 382.11,
+      "elementwise-64m-float16": 386.69
+    },
+    "final_latency_us": {
+      "elementwise-16m-bfloat16": 69.98,
+      "elementwise-16m-float16": 68.15,
+      "elementwise-16m-float32": 156.35,
+      "elementwise-256m-bfloat16": 1716.98,
+      "elementwise-256m-float16": 1700.34,
+      "elementwise-64m-bfloat16": 377.58,
+      "elementwise-64m-float16": 371.18
+    },
+    "stop_reason": "success",
+    "note": "Single-run final values differ from the interleaved A/B merged medians by up to ~5% (same-code cross-run bimodality); the A/B protocol is the authoritative winner judgement (see opt_log.md). perf_records.jsonl correction: the round-4 `final` rows (pre guard-floor-fix build of the same path, sha 958ef672...) were re-tagged phase=`merged`/candidate_id=`final_merged_pre_guardfix` and the smoke workload rows were moved out, after the class rule was aligned with the gate's smoke-token rule; the untouched original file is archived at logs/audit/perf_records_full_pre_reclassify.jsonl."
+  }
+}

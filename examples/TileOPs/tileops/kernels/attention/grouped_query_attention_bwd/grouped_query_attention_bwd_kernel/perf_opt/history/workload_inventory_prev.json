@@ -1,0 +1,638 @@
+{
+ "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+ "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+ "workloads": [
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "gqa-bwd-smoke-float16",
+   "label": "gqa-bwd-smoke",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "q": [
+     1,
+     128,
+     8,
+     64
+    ],
+    "k": [
+     1,
+     128,
+     2,
+     64
+    ],
+    "v": [
+     1,
+     128,
+     2,
+     64
+    ],
+    "o": [
+     1,
+     128,
+     8,
+     64
+    ],
+    "do": [
+     1,
+     128,
+     8,
+     64
+    ],
+    "lse": [
+     1,
+     8,
+     128
+    ],
+    "dq": [
+     1,
+     128,
+     8,
+     64
+    ],
+    "dk": [
+     1,
+     128,
+     2,
+     64
+    ],
+    "dv": [
+     1,
+     128,
+     2,
+     64
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 2
+   },
+   "kind": "smoke",
+   "reason": "workload label 'gqa-bwd-smoke' carries an independent smoke token -> excluded from performance tuning, used only for the final precision regression",
+   "precision_pass": true
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-8b-short-float16",
+   "label": "llama-3.1-8b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "k": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "o": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "do": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "lse": [
+     4,
+     32,
+     512
+    ],
+    "dq": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "dk": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "dv": [
+     4,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-8b-short-bfloat16",
+   "label": "llama-3.1-8b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "k": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "o": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "do": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "lse": [
+     4,
+     32,
+     512
+    ],
+    "dq": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "dk": [
+     4,
+     512,
+     8,
+     128
+    ],
+    "dv": [
+     4,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-8b-long-float16",
+   "label": "llama-3.1-8b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "k": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "o": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "do": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "lse": [
+     2,
+     32,
+     2048
+    ],
+    "dq": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "dk": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "dv": [
+     2,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-8b-long-bfloat16",
+   "label": "llama-3.1-8b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "k": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "o": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "do": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "lse": [
+     2,
+     32,
+     2048
+    ],
+    "dq": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "dk": [
+     2,
+     2048,
+     8,
+     128
+    ],
+    "dv": [
+     2,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-70b-short-float16",
+   "label": "llama-3.1-70b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "k": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "o": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "do": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "lse": [
+     2,
+     64,
+     512
+    ],
+    "dq": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "dk": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "dv": [
+     2,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-70b-short-bfloat16",
+   "label": "llama-3.1-70b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "k": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "v": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "o": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "do": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "lse": [
+     2,
+     64,
+     512
+    ],
+    "dq": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "dk": [
+     2,
+     512,
+     8,
+     128
+    ],
+    "dv": [
+     2,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-70b-long-float16",
+   "label": "llama-3.1-70b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "k": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "o": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "do": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "lse": [
+     1,
+     64,
+     2048
+    ],
+    "dq": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "dk": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "dv": [
+     1,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+   "workload_id": "llama-3.1-70b-long-bfloat16",
+   "label": "llama-3.1-70b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "k": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "v": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "o": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "do": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "lse": [
+     1,
+     64,
+     2048
+    ],
+    "dq": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "dk": [
+     1,
+     2048,
+     8,
+     128
+    ],
+    "dv": [
+     1,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "heads_kv": 8
+   },
+   "kind": "tune",
+   "reason": "manifest workload from test_gqa_bwd_bench, tuned",
+   "tuning_status": "winner_merged"
+  }
+ ]
+}

@@ -1,0 +1,81 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+  "expanded_from": "tileops.manifest.load_workloads('FP8LightningIndexerOp') -> _indexer_params() (deduped on shape keys); clean_logits_ consumes the Logits buffer of every case with clean_logits=True, so its input shape is (batch, seq_len, seq_len_kv, kv_group) fp32",
+  "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+  "target_kernel_name": "clean_logits_kernel",
+  "window_distribution": "benchmark-faithful: FP8LightningIndexerWorkload.generate_random_cu_seqlens (cp_size=1, cp_rank=0, kv_stride=1, average_q_len=512) -> segment-wise causal windows; measured visible fraction 4.00% (s4k) / 4.10% (s8k). The Stage 4 Round 0 aux baseline used an all-full window (ks=0, ke=seq_len_kv), i.e. an empty complement; this task re-measured the baseline on the real window distribution.",
+  "workloads": [
+    {
+      "workload_id": "clean-logits-smoke-s1k-g1",
+      "label": "clean-logits-smoke-s1k-g1",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "batch": 1,
+        "seq_len": 1024,
+        "seq_len_kv": 1024,
+        "kv_group": 1
+      },
+      "dtype": "float32",
+      "params": {
+        "clean_logits": true,
+        "heads": 8,
+        "index_dim": 64
+      },
+      "kind": "smoke",
+      "reason": "pytest.mark.smoke (first manifest param, b1/s1k/h8/d64/skv1k/g1): precision-only regression for the aux kernel, no performance tuning. Covered by L0-1/L0-2 (full + random window) in perf_opt/clean_logits_.py.",
+      "precision_pass": true
+    },
+    {
+      "workload_id": "clean-logits-s8k-g1",
+      "label": "clean-logits-s8k-g1",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "batch": 1,
+        "seq_len": 8192,
+        "seq_len_kv": 8192,
+        "kv_group": 1
+      },
+      "dtype": "float32",
+      "params": {
+        "clean_logits": true,
+        "heads": 32,
+        "index_dim": 64
+      },
+      "kind": "tune",
+      "reason": "pytest.mark.full; largest tune workload (b1/s8k/h32/d64/skv8k/g1) and highest measured baseline (110.8 ms on the real causal window distribution).",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "workload_id": "clean-logits-s4k-g1",
+      "label": "clean-logits-s4k-g1",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "batch": 1,
+        "seq_len": 4096,
+        "seq_len_kv": 8192,
+        "kv_group": 1
+      },
+      "dtype": "float32",
+      "params": {
+        "clean_logits": true,
+        "heads": 32,
+        "index_dim": 64
+      },
+      "kind": "tune",
+      "reason": "pytest.mark.full; second tune workload (b1/s4k/h32/d64/skv8k/g1) used for the fast iteration loop, winner re-verified on s8k.",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

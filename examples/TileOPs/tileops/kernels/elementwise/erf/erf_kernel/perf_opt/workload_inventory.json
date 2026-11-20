@@ -1,0 +1,177 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-<dtype>' carries the standalone smoke token; excluded from perf tuning, used for precision regression only",
+      "target_kernel_name": "main",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-<dtype>' carries the standalone smoke token; excluded from perf tuning, used for precision regression only",
+      "target_kernel_name": "main",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-<dtype>' carries the standalone smoke token; excluded from perf tuning, used for precision regression only",
+      "target_kernel_name": "main",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner rA_final (per-dtype approximation budget: Q degree 4 for float32, degree 1 for float16/bfloat16 -> 8 v-ops instead of 14; block_size unchanged) merged into perf_opt/erf_fwd_kernel.py; 107.35 -> 71.53 us (-33.4%)",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner rA_final (per-dtype approximation budget: Q degree 4 for float32, degree 1 for float16/bfloat16 -> 8 v-ops instead of 14; block_size unchanged) merged into perf_opt/erf_fwd_kernel.py; 109.38 -> 73.64 us (-32.7%)",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner rA_final (per-dtype approximation budget: Q degree 4 for float32, degree 1 for float16/bfloat16 -> 8 v-ops instead of 14; block_size unchanged) merged into perf_opt/erf_fwd_kernel.py; 101.90 -> 101.70 us (-0.2%, Q degree unchanged at 4)",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "elementwise-64m-float16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner rA_final (per-dtype approximation budget: Q degree 4 for float32, degree 1 for float16/bfloat16 -> 8 v-ops instead of 14; block_size unchanged) merged into perf_opt/erf_fwd_kernel.py; 419.81 -> 276.77 us (-34.1%)",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "elementwise-64m-bfloat16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner rA_final (per-dtype approximation budget: Q degree 4 for float32, degree 1 for float16/bfloat16 -> 8 v-ops instead of 14; block_size unchanged) merged into perf_opt/erf_fwd_kernel.py; 427.93 -> 284.48 us (-33.5%)",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "elementwise-256m-float16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "float16",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner rA_final (per-dtype approximation budget: Q degree 4 for float32, degree 1 for float16/bfloat16 -> 8 v-ops instead of 14; block_size unchanged) merged into perf_opt/erf_fwd_kernel.py; 1670.57 -> 1099.04 us (-34.2%)",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_erf.py::test_erf_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/erf/erf_kernel/erf_fwd_kernel.py::erf_fwd_kernel::main",
+      "workload_id": "elementwise-256m-bfloat16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "bfloat16",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner rA_final (per-dtype approximation budget: Q degree 4 for float32, degree 1 for float16/bfloat16 -> 8 v-ops instead of 14; block_size unchanged) merged into perf_opt/erf_fwd_kernel.py; 1702.99 -> 1130.14 us (-33.6%)",
+      "target_kernel_name": "main",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-18T10:58:49.503603+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-1cfee34e3f1d",
+      "config": {
+        "block_N": 64,
+        "block_heads": 32,
+        "num_stages": 2
+      },
+      "label": "dsa-decode-smoke",
+      "params": {
+        "batch": 1,
+        "dim": 512,
+        "dim_tail": 64,
+        "dtype": "float16",
+        "heads": 128,
+        "heads_kv": 1,
+        "q_start_index_s": 128,
+        "seq_len_kv": 256,
+        "seq_len_q": 128,
+        "sm_scale": null,
+        "stride_kv": 1,
+        "topk": 256
+      },
+      "result": {
+        "AI(Ops/Byte)": 625.2283935546875,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.3018798828125,
+        "Perf(TOps/s)": 1.0454965829849243,
+        "Ratio(%)": 0.3493,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_vemq5zo0",
+        "latency_us": 8961.160156,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 8961.160156,
+          "max_latency_us": 8961.160156,
+          "min_latency_us": 8961.160156,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-7f3a2e900bb0",
+      "config": {
+        "block_N": 64,
+        "block_heads": 32,
+        "num_stages": 2
+      },
+      "label": "dsa-decode-smoke",
+      "params": {
+        "batch": 1,
+        "dim": 512,
+        "dim_tail": 64,
+        "dtype": "bfloat16",
+        "heads": 128,
+        "heads_kv": 1,
+        "q_start_index_s": 128,
+        "seq_len_kv": 256,
+        "seq_len_q": 128,
+        "sm_scale": null,
+        "stride_kv": 1,
+        "topk": 256
+      },
+      "result": {
+        "AI(Ops/Byte)": 626.8917846679688,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.321533203125,
+        "Perf(TOps/s)": 1.042944312095642,
+        "Ratio(%)": 0.3484,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_fjymly38",
+        "latency_us": 9007.219727,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 9007.219727,
+          "max_latency_us": 9007.219727,
+          "min_latency_us": 9007.219727,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-44fb56d4b6cf",
+      "config": {
+        "block_N": 64,
+        "block_heads": 32,
+        "num_stages": 2
+      },
+      "label": "single-batch-mainstream",
+      "params": {
+        "batch": 1,
+        "dim": 512,
+        "dim_tail": 64,
+        "dtype": "float16",
+        "heads": 128,
+        "heads_kv": 1,
+        "q_start_index_s": 1024,
+        "seq_len_kv": 2048,
+        "seq_len_q": 1024,
+        "sm_scale": null,
+        "stride_kv": 1,
+        "topk": 2048
+      },
+      "result": {
+        "AI(Ops/Byte)": 607.0603637695312,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.4310607910156,
+        "Perf(TOps/s)": 1.0523697137832642,
+        "Ratio(%)": 0.3515,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_w6rypi7b",
+        "latency_us": 567489.5625,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 567489.5625,
+          "max_latency_us": 567489.5625,
+          "min_latency_us": 567489.5625,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-ff6005a32b9c",
+      "config": {
+        "block_N": 64,
+        "block_heads": 32,
+        "num_stages": 2
+      },
+      "label": "longer-kv-lower-topk",
+      "params": {
+        "batch": 1,
+        "dim": 512,
+        "dim_tail": 64,
+        "dtype": "float16",
+        "heads": 128,
+        "heads_kv": 1,
+        "q_start_index_s": 512,
+        "seq_len_kv": 4096,
+        "seq_len_q": 512,
+        "sm_scale": null,
+        "stride_kv": 1,
+        "topk": 1024
+      },
+      "result": {
+        "AI(Ops/Byte)": 370.8240661621094,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.40924072265625,
+        "Perf(TOps/s)": 1.0507827997207642,
+        "Ratio(%)": 0.35100000000000003,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_cehp7wdu",
+        "latency_us": 142168.15625,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 142168.15625,
+          "max_latency_us": 142168.15625,
+          "min_latency_us": 142168.15625,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-05724dff0d7f",
+      "config": {
+        "block_N": 64,
+        "block_heads": 32,
+        "num_stages": 2
+      },
+      "label": "long-kv-low-topk",
+      "params": {
+        "batch": 1,
+        "dim": 512,
+        "dim_tail": 64,
+        "dtype": "float16",
+        "heads": 128,
+        "heads_kv": 1,
+        "q_start_index_s": 256,
+        "seq_len_kv": 8192,
+        "seq_len_q": 256,
+        "sm_scale": null,
+        "stride_kv": 1,
+        "topk": 512
+      },
+      "result": {
+        "AI(Ops/Byte)": 345.06732177734375,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.369384765625,
+        "Perf(TOps/s)": 1.048362135887146,
+        "Ratio(%)": 0.3502,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_0sqs6wep",
+        "latency_us": 35664.960938,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 35664.960938,
+          "max_latency_us": 35664.960938,
+          "min_latency_us": 35664.960938,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

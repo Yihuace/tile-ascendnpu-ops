@@ -1,0 +1,3038 @@
+{
+  "schema_version": 2,
+  "operator": "MaxPool1dFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261021_113734_848293_MaxPool1dFwdOp",
+    "generated_at": "2026-10-21T11:51:22.660805+00:00",
+    "project_root": "/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "f947fb18c3022f05bca04af74d2f8222eb3980e7",
+    "python": "3.10.12",
+    "platform": "Linux-5.10.0-216.0.0.115.oe2203sp4.aarch64-aarch64-with-glibc2.35",
+    "test_file": "tests/ops/test_pool.py",
+    "benchmark_file": "benchmarks/ops/bench_pool.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/workspace/venv/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_pool.py",
+        "-sv",
+        "--junitxml=/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/workspace/venv/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_pool.py",
+        "-sv",
+        "--junitxml=/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-21T11:51:22.660805+00:00",
+      "evaluation_scope": "MaxPool1dFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261021_113734_848293_MaxPool1dFwdOp",
+      "git_commit": "f947fb18c3022f05bca04af74d2f8222eb3980e7",
+      "correctness_target": "tests/ops/test_pool.py",
+      "benchmark_target": "benchmarks/ops/bench_pool.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "26.1.1",
+      "pytorch": "2.9.0",
+      "pytorch_npu": "2.9.0.post8",
+      "tilelang": null,
+      "python": "3.10.12",
+      "os": "Linux-5.10.0-216.0.0.115.oe2203sp4.aarch64-aarch64-with-glibc2.35",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 75,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 75,
+    "passed_cases": 75,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 36,
+    "benchmark_failed": 0,
+    "case_count": 24,
+    "msprof_case_count": 24,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 75,
+    "passed": 75,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_avg_pool2d[smoke-spp-6x6-fp16]",
+        "name": "test_adaptive_avg_pool2d[smoke-spp-6x6-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 4.084,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_avg_pool2d[smoke-asymmetric-bf16]",
+        "name": "test_adaptive_avg_pool2d[smoke-asymmetric-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.274,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_avg_pool2d[full-nondiv-fp16]",
+        "name": "test_adaptive_avg_pool2d[full-nondiv-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.4,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_avg_pool2d[full-partial-none-fp16]",
+        "name": "test_adaptive_avg_pool2d[full-partial-none-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.316,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_avg_pool2d[full-scalar-output-size-bf16]",
+        "name": "test_adaptive_avg_pool2d[full-scalar-output-size-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.418,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_avg_pool2d[full-all-none-identity-fp16]",
+        "name": "test_adaptive_avg_pool2d[full-all-none-identity-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 1.843,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d[smoke-spp-6x6-fp16]",
+        "name": "test_adaptive_max_pool2d[smoke-spp-6x6-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.386,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d[smoke-asymmetric-bf16]",
+        "name": "test_adaptive_max_pool2d[smoke-asymmetric-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.407,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d[full-nondiv-fp16]",
+        "name": "test_adaptive_max_pool2d[full-nondiv-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.52,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d[full-partial-none-fp16]",
+        "name": "test_adaptive_max_pool2d[full-partial-none-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.467,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_pool2d_accepts_chw",
+        "name": "test_adaptive_pool2d_accepts_chw",
+        "classname": "tests.ops.test_pool",
+        "time_s": 4.907,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d_indices[smoke-spp-6x6-fp16]",
+        "name": "test_adaptive_max_pool2d_indices[smoke-spp-6x6-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 5.477,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d_indices[smoke-asymmetric-bf16]",
+        "name": "test_adaptive_max_pool2d_indices[smoke-asymmetric-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 5.429,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d_indices[full-nondiv-fp16]",
+        "name": "test_adaptive_max_pool2d_indices[full-nondiv-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 3.202,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d_indices[full-partial-none-fp16]",
+        "name": "test_adaptive_max_pool2d_indices[full-partial-none-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 3.009,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d_indices_accepts_chw",
+        "name": "test_adaptive_max_pool2d_indices_accepts_chw",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.992,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_adaptive_max_pool2d_indices_nan_window",
+        "name": "test_adaptive_max_pool2d_indices_nan_window",
+        "classname": "tests.ops.test_pool",
+        "time_s": 3.784,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d[smoke-3x3-s2-p1-fp32]",
+        "name": "test_max_pool2d[smoke-3x3-s2-p1-fp32]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.722,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d[smoke-3x3-s2-p1-fp16]",
+        "name": "test_max_pool2d[smoke-3x3-s2-p1-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.506,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d[smoke-3x3-s2-p1-bf16]",
+        "name": "test_max_pool2d[smoke-3x3-s2-p1-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.547,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d[full-default-stride-dilation-fp16]",
+        "name": "test_max_pool2d[full-default-stride-dilation-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.517,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d[full-nonsquare-ceil-fp16]",
+        "name": "test_max_pool2d[full-nonsquare-ceil-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.55,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d[full-noncontiguous-3x3-fp16]",
+        "name": "test_max_pool2d[full-noncontiguous-3x3-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.084,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d[full-nonsquare-ceil-bf16]",
+        "name": "test_max_pool2d[full-nonsquare-ceil-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.651,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_dynamic_shape_kernel_cache_and_roofline",
+        "name": "test_max_pool2d_dynamic_shape_kernel_cache_and_roofline",
+        "classname": "tests.ops.test_pool",
+        "time_s": 5.369,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_infer_output_shapes_snapshot",
+        "name": "test_max_pool2d_infer_output_shapes_snapshot",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_params[2d-stride-type]",
+        "name": "test_max_pool2d_rejects_invalid_params[2d-stride-type]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_params[2d-kernel-size-contents]",
+        "name": "test_max_pool2d_rejects_invalid_params[2d-kernel-size-contents]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_params[2d-zero-stride]",
+        "name": "test_max_pool2d_rejects_invalid_params[2d-zero-stride]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_params[2d-zero-dilation]",
+        "name": "test_max_pool2d_rejects_invalid_params[2d-zero-dilation]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_params[2d-padding-too-large]",
+        "name": "test_max_pool2d_rejects_invalid_params[2d-padding-too-large]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_params[2d-padding-negative]",
+        "name": "test_max_pool2d_rejects_invalid_params[2d-padding-negative]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_params[2d-ceil-mode-type]",
+        "name": "test_max_pool2d_rejects_invalid_params[2d-ceil-mode-type]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_input[2d-wrong-rank-input]",
+        "name": "test_max_pool2d_rejects_invalid_input[2d-wrong-rank-input]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_input[2d-unsupported-dtype]",
+        "name": "test_max_pool2d_rejects_invalid_input[2d-unsupported-dtype]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool2d_rejects_invalid_input[2d-non-positive-output-size]",
+        "name": "test_max_pool2d_rejects_invalid_input[2d-non-positive-output-size]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d[smoke-k3-s2-p1-fp32]",
+        "name": "test_max_pool1d[smoke-k3-s2-p1-fp32]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.094,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d[smoke-k3-s2-p1-fp16]",
+        "name": "test_max_pool1d[smoke-k3-s2-p1-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.092,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d[smoke-k3-s2-p1-bf16]",
+        "name": "test_max_pool1d[smoke-k3-s2-p1-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.092,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d[full-default-stride-dilation-fp16]",
+        "name": "test_max_pool1d[full-default-stride-dilation-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.097,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d[full-ceil-k5-s3-p2-fp16]",
+        "name": "test_max_pool1d[full-ceil-k5-s3-p2-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.091,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d[full-noncontiguous-k3-fp16]",
+        "name": "test_max_pool1d[full-noncontiguous-k3-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.084,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d[full-ceil-k5-s3-p2-bf16]",
+        "name": "test_max_pool1d[full-ceil-k5-s3-p2-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.091,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_dynamic_shape_kernel_cache_and_roofline",
+        "name": "test_max_pool1d_dynamic_shape_kernel_cache_and_roofline",
+        "classname": "tests.ops.test_pool",
+        "time_s": 4.836,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_infer_output_shapes_snapshot",
+        "name": "test_max_pool1d_infer_output_shapes_snapshot",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_eval_roofline_snapshot",
+        "name": "test_max_pool1d_eval_roofline_snapshot",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.437,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_params[1d-kernel-size-type]",
+        "name": "test_max_pool1d_rejects_invalid_params[1d-kernel-size-type]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_params[1d-zero-stride]",
+        "name": "test_max_pool1d_rejects_invalid_params[1d-zero-stride]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_params[1d-zero-dilation]",
+        "name": "test_max_pool1d_rejects_invalid_params[1d-zero-dilation]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_params[1d-padding-too-large]",
+        "name": "test_max_pool1d_rejects_invalid_params[1d-padding-too-large]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_params[1d-padding-negative]",
+        "name": "test_max_pool1d_rejects_invalid_params[1d-padding-negative]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_params[1d-ceil-mode-type]",
+        "name": "test_max_pool1d_rejects_invalid_params[1d-ceil-mode-type]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_input[1d-wrong-rank-input]",
+        "name": "test_max_pool1d_rejects_invalid_input[1d-wrong-rank-input]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_input[1d-unsupported-dtype]",
+        "name": "test_max_pool1d_rejects_invalid_input[1d-unsupported-dtype]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_rejects_invalid_input[1d-non-positive-output-size]",
+        "name": "test_max_pool1d_rejects_invalid_input[1d-non-positive-output-size]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices[smoke-k3-s2-p1-fp32]",
+        "name": "test_max_pool1d_indices[smoke-k3-s2-p1-fp32]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 5.44,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices[smoke-k3-s2-p1-fp16]",
+        "name": "test_max_pool1d_indices[smoke-k3-s2-p1-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.811,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices[smoke-k3-s2-p1-bf16]",
+        "name": "test_max_pool1d_indices[smoke-k3-s2-p1-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.887,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices[full-default-stride-dilation-fp16]",
+        "name": "test_max_pool1d_indices[full-default-stride-dilation-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 3.295,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices[full-ceil-k5-s3-p2-fp16]",
+        "name": "test_max_pool1d_indices[full-ceil-k5-s3-p2-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 3.053,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices[full-noncontiguous-k3-fp16]",
+        "name": "test_max_pool1d_indices[full-noncontiguous-k3-fp16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.168,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices[full-ceil-k5-s3-p2-bf16]",
+        "name": "test_max_pool1d_indices[full-ceil-k5-s3-p2-bf16]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.953,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_dynamic_shape_kernel_cache_and_roofline",
+        "name": "test_max_pool1d_indices_dynamic_shape_kernel_cache_and_roofline",
+        "classname": "tests.ops.test_pool",
+        "time_s": 6.012,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_infer_output_shapes_snapshot",
+        "name": "test_max_pool1d_indices_infer_output_shapes_snapshot",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_eval_roofline_snapshot",
+        "name": "test_max_pool1d_indices_eval_roofline_snapshot",
+        "classname": "tests.ops.test_pool",
+        "time_s": 3.113,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_nan_window",
+        "name": "test_max_pool1d_indices_nan_window",
+        "classname": "tests.ops.test_pool",
+        "time_s": 2.917,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_params[1d-kernel-size-type]",
+        "name": "test_max_pool1d_indices_rejects_invalid_params[1d-kernel-size-type]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_params[1d-zero-stride]",
+        "name": "test_max_pool1d_indices_rejects_invalid_params[1d-zero-stride]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_params[1d-zero-dilation]",
+        "name": "test_max_pool1d_indices_rejects_invalid_params[1d-zero-dilation]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_params[1d-padding-too-large]",
+        "name": "test_max_pool1d_indices_rejects_invalid_params[1d-padding-too-large]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_params[1d-padding-negative]",
+        "name": "test_max_pool1d_indices_rejects_invalid_params[1d-padding-negative]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_params[1d-ceil-mode-type]",
+        "name": "test_max_pool1d_indices_rejects_invalid_params[1d-ceil-mode-type]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_input[1d-wrong-rank-input]",
+        "name": "test_max_pool1d_indices_rejects_invalid_input[1d-wrong-rank-input]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_input[1d-unsupported-dtype]",
+        "name": "test_max_pool1d_indices_rejects_invalid_input[1d-unsupported-dtype]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_pool::test_max_pool1d_indices_rejects_invalid_input[1d-non-positive-output-size]",
+        "name": "test_max_pool1d_indices_rejects_invalid_input[1d-non-positive-output-size]",
+        "classname": "tests.ops.test_pool",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 36,
+    "passed": 36,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_avg_pool2d_bench[smoke-1x8x4x4-2x2-float16]",
+        "name": "test_adaptive_avg_pool2d_bench[smoke-1x8x4x4-2x2-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.919,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "tileops_latency_us": "3.6400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_avg_pool2d_bench[resnet-global-float16]",
+        "name": "test_adaptive_avg_pool2d_bench[resnet-global-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.027,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "tileops_latency_us": "14.9400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_avg_pool2d_bench[spp-6x6-float16]",
+        "name": "test_adaptive_avg_pool2d_bench[spp-6x6-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 18.444,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "tileops_latency_us": "15.6200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_avg_pool2d_bench[nondiv-7x7-bfloat16]",
+        "name": "test_adaptive_avg_pool2d_bench[nondiv-7x7-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 18.943,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveAvgPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_avg_pool2d",
+          "tileops_latency_us": "13.7400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_bench[smoke-1x8x4x4-2x2-float16]",
+        "name": "test_adaptive_max_pool2d_bench[smoke-1x8x4x4-2x2-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 18.805,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "tileops_latency_us": "4.2600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_bench[global-1x1-float16]",
+        "name": "test_adaptive_max_pool2d_bench[global-1x1-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.977,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "tileops_latency_us": "17.9000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_bench[spp-6x6-float16]",
+        "name": "test_adaptive_max_pool2d_bench[spp-6x6-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 18.91,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "tileops_latency_us": "17.3800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_bench[nondiv-7x7-bfloat16]",
+        "name": "test_adaptive_max_pool2d_bench[nondiv-7x7-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.99,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d",
+          "tileops_latency_us": "15.4400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_indices_bench[smoke-1x8x4x4-2x2-float16]",
+        "name": "test_adaptive_max_pool2d_indices_bench[smoke-1x8x4x4-2x2-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.143,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "tileops_latency_us": "6.3400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_indices_bench[global-1x1-float16]",
+        "name": "test_adaptive_max_pool2d_indices_bench[global-1x1-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.021,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "tileops_latency_us": "85.2000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_indices_bench[spp-6x6-float16]",
+        "name": "test_adaptive_max_pool2d_indices_bench[spp-6x6-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.066,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "tileops_latency_us": "77.9000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_adaptive_max_pool2d_indices_bench[nondiv-7x7-bfloat16]",
+        "name": "test_adaptive_max_pool2d_indices_bench[nondiv-7x7-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.639,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaptiveMaxPool2dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.adaptive_max_pool2d_with_indices",
+          "tileops_latency_us": "71.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[smoke-1x8x16x16-k3s2p1-float16]",
+        "name": "test_max_pool2d_bench[smoke-1x8x16x16-k3s2p1-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.711,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "4.7000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[smoke-1x8x16x16-k3s2p1-bfloat16]",
+        "name": "test_max_pool2d_bench[smoke-1x8x16x16-k3s2p1-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 18.52,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "5.1200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[smoke-1x8x16x16-k3s2p1-float32]",
+        "name": "test_max_pool2d_bench[smoke-1x8x16x16-k3s2p1-float32]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 17.295,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "2.3600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[resnet-stem-float16]",
+        "name": "test_max_pool2d_bench[resnet-stem-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.526,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "126.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[resnet-stem-bfloat16]",
+        "name": "test_max_pool2d_bench[resnet-stem-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.391,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "111.5600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[resnet-stem-float32]",
+        "name": "test_max_pool2d_bench[resnet-stem-float32]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.288,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "148.1400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[vgg-block-float16]",
+        "name": "test_max_pool2d_bench[vgg-block-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "37.9400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[vgg-block-bfloat16]",
+        "name": "test_max_pool2d_bench[vgg-block-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.02,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "37.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[vgg-block-float32]",
+        "name": "test_max_pool2d_bench[vgg-block-float32]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 18.63,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "41.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[alexnet-ceil-float16]",
+        "name": "test_max_pool2d_bench[alexnet-ceil-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.039,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "40.5200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[alexnet-ceil-bfloat16]",
+        "name": "test_max_pool2d_bench[alexnet-ceil-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.397,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "41.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool2d_bench[alexnet-ceil-float32]",
+        "name": "test_max_pool2d_bench[alexnet-ceil-float32]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.831,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool2dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool2d",
+          "tileops_latency_us": "65.7200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_bench[smoke-1x8x32-k3s2p1-float16]",
+        "name": "test_max_pool1d_bench[smoke-1x8x32-k3s2p1-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 16.295,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "tileops_latency_us": "3.4800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_bench[smoke-1x8x32-k3s2p1-bfloat16]",
+        "name": "test_max_pool1d_bench[smoke-1x8x32-k3s2p1-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.651,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "tileops_latency_us": "3.5000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_bench[smoke-1x8x32-k3s2p1-float32]",
+        "name": "test_max_pool1d_bench[smoke-1x8x32-k3s2p1-float32]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 17.557,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "tileops_latency_us": "3.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_bench[sincnet-speaker-local-float16]",
+        "name": "test_max_pool1d_bench[sincnet-speaker-local-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 16.22,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "tileops_latency_us": "62.5400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_bench[textcnn-global-float16]",
+        "name": "test_max_pool1d_bench[textcnn-global-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 16.232,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "tileops_latency_us": "9.2000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_bench[ecg-cnn-dilated-bfloat16]",
+        "name": "test_max_pool1d_bench[ecg-cnn-dilated-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 17.47,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d",
+          "tileops_latency_us": "37.4200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_indices_bench[smoke-1x8x32-k3s2p1-float16]",
+        "name": "test_max_pool1d_indices_bench[smoke-1x8x32-k3s2p1-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.828,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "tileops_latency_us": "8.2800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_indices_bench[smoke-1x8x32-k3s2p1-bfloat16]",
+        "name": "test_max_pool1d_indices_bench[smoke-1x8x32-k3s2p1-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.052,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "tileops_latency_us": "8.2400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_indices_bench[smoke-1x8x32-k3s2p1-float32]",
+        "name": "test_max_pool1d_indices_bench[smoke-1x8x32-k3s2p1-float32]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 17.506,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "tileops_latency_us": "8.2800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_indices_bench[sincnet-speaker-local-float16]",
+        "name": "test_max_pool1d_indices_bench[sincnet-speaker-local-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.332,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "tileops_latency_us": "420.1400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_indices_bench[textcnn-global-float16]",
+        "name": "test_max_pool1d_indices_bench[textcnn-global-float16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 20.306,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "tileops_latency_us": "15.5400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_pool::test_max_pool1d_indices_bench[ecg-cnn-dilated-bfloat16]",
+        "name": "test_max_pool1d_indices_bench[ecg-cnn-dilated-bfloat16]",
+        "classname": "benchmarks.ops.bench_pool",
+        "time_s": 19.11,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MaxPool1dIndicesFwdOp",
+          "op_module": "tileops.ops.pool.max_pool1d_with_indices",
+          "tileops_latency_us": "76.0600"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "AdaptiveAvgPool2dFwdOp",
+        "case_id": "AdaptiveAvgPool2dFwdOp-c10635588b25",
+        "label": "resnet-global",
+        "params": {
+          "c_in": 2048,
+          "dtype": "float16",
+          "h_in": 7,
+          "n": 8,
+          "op_params": {
+            "output_size": [
+              1,
+              1
+            ]
+          },
+          "output_size": [
+            1,
+            1
+          ],
+          "shape": [
+            8,
+            2048,
+            7,
+            7
+          ],
+          "w_in": 7
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 14.94,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 1.5358,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 5.397513389587402,
+        "performance_tops": 0.14506666362285614,
+        "computility_tops": 10.515182495117188,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_3xqn2xrl",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 14.94,
+          "max_latency_us": 14.94,
+          "min_latency_us": 14.94,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveAvgPool2dFwdOp",
+        "case_id": "AdaptiveAvgPool2dFwdOp-a6520194c4a8",
+        "label": "spp-6x6",
+        "params": {
+          "c_in": 128,
+          "dtype": "float16",
+          "h_in": 56,
+          "n": 2,
+          "op_params": {
+            "output_size": [
+              6,
+              6
+            ]
+          },
+          "output_size": [
+            6,
+            6
+          ],
+          "shape": [
+            2,
+            128,
+            56,
+            56
+          ],
+          "w_in": 56
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 15.62,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 5.1536,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 8.93592643737793,
+        "performance_tops": 0.229711651802063,
+        "computility_tops": 4.45726203918457,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_tfamrn1z",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.62,
+          "max_latency_us": 15.62,
+          "min_latency_us": 15.62,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveAvgPool2dFwdOp",
+        "case_id": "AdaptiveAvgPool2dFwdOp-aebe9678408d",
+        "label": "nondiv-7x7",
+        "params": {
+          "c_in": 64,
+          "dtype": "bfloat16",
+          "h_in": 55,
+          "n": 2,
+          "op_params": {
+            "output_size": [
+              7,
+              7
+            ]
+          },
+          "output_size": [
+            7,
+            7
+          ],
+          "shape": [
+            2,
+            64,
+            55,
+            57
+          ],
+          "w_in": 57
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 13.74,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 5.6804,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 17.836519241333008,
+        "performance_tops": 0.26070916652679443,
+        "computility_tops": 4.589632034301758,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_7fu7xuag",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 13.74,
+          "max_latency_us": 13.74,
+          "min_latency_us": 13.74,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveMaxPool2dFwdOp",
+        "case_id": "AdaptiveMaxPool2dFwdOp-c10635588b25",
+        "label": "global-1x1",
+        "params": {
+          "c_in": 2048,
+          "dtype": "float16",
+          "h_in": 7,
+          "n": 8,
+          "op_params": {
+            "output_size": [
+              1,
+              1
+            ]
+          },
+          "output_size": [
+            1,
+            1
+          ],
+          "shape": [
+            8,
+            2048,
+            7,
+            7
+          ],
+          "w_in": 7
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 17.9,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 3.3664,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 16.043354034423828,
+        "performance_tops": 0.35988739132881165,
+        "computility_tops": 10.690446853637695,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_09klbsny",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 17.9,
+          "max_latency_us": 17.9,
+          "min_latency_us": 17.9,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveMaxPool2dFwdOp",
+        "case_id": "AdaptiveMaxPool2dFwdOp-a6520194c4a8",
+        "label": "spp-6x6",
+        "params": {
+          "c_in": 128,
+          "dtype": "float16",
+          "h_in": 56,
+          "n": 2,
+          "op_params": {
+            "output_size": [
+              6,
+              6
+            ]
+          },
+          "output_size": [
+            6,
+            6
+          ],
+          "shape": [
+            2,
+            128,
+            56,
+            56
+          ],
+          "w_in": 56
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 17.379999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 11.9326,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 22.12177276611328,
+        "performance_tops": 0.5110868215560913,
+        "computility_tops": 4.283106803894043,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_mj9r8a63",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 17.379999,
+          "max_latency_us": 17.379999,
+          "min_latency_us": 17.379999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveMaxPool2dFwdOp",
+        "case_id": "AdaptiveMaxPool2dFwdOp-aebe9678408d",
+        "label": "nondiv-7x7",
+        "params": {
+          "c_in": 64,
+          "dtype": "bfloat16",
+          "h_in": 55,
+          "n": 2,
+          "op_params": {
+            "output_size": [
+              7,
+              7
+            ]
+          },
+          "output_size": [
+            7,
+            7
+          ],
+          "shape": [
+            2,
+            64,
+            55,
+            57
+          ],
+          "w_in": 57
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 15.44,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 11.182599999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 37.114723205566406,
+        "performance_tops": 0.48276060819625854,
+        "computility_tops": 4.3170599937438965,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_9zlnivf_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.44,
+          "max_latency_us": 15.44,
+          "min_latency_us": 15.44,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveMaxPool2dIndicesFwdOp",
+        "case_id": "AdaptiveMaxPool2dIndicesFwdOp-c10635588b25",
+        "label": "global-1x1",
+        "params": {
+          "c_in": 2048,
+          "dtype": "float16",
+          "h_in": 7,
+          "n": 8,
+          "op_params": {
+            "output_size": [
+              1,
+              1
+            ]
+          },
+          "output_size": [
+            1,
+            1
+          ],
+          "shape": [
+            8,
+            2048,
+            7,
+            7
+          ],
+          "w_in": 7
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 85.199997,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 2.4813,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 25.35161018371582,
+        "performance_tops": 0.11947868764400482,
+        "computility_tops": 4.815149784088135,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_8r03r7mj",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 85.199997,
+          "max_latency_us": 85.199997,
+          "min_latency_us": 85.199997,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveMaxPool2dIndicesFwdOp",
+        "case_id": "AdaptiveMaxPool2dIndicesFwdOp-a6520194c4a8",
+        "label": "spp-6x6",
+        "params": {
+          "c_in": 128,
+          "dtype": "float16",
+          "h_in": 56,
+          "n": 2,
+          "op_params": {
+            "output_size": [
+              6,
+              6
+            ]
+          },
+          "output_size": [
+            6,
+            6
+          ],
+          "shape": [
+            2,
+            128,
+            56,
+            56
+          ],
+          "w_in": 56
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 77.900002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 7.0732,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 57.29550552368164,
+        "performance_tops": 0.2953299880027771,
+        "computility_tops": 4.175355434417725,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_g4iv2ozc",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 77.900002,
+          "max_latency_us": 77.900002,
+          "min_latency_us": 77.900002,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaptiveMaxPool2dIndicesFwdOp",
+        "case_id": "AdaptiveMaxPool2dIndicesFwdOp-aebe9678408d",
+        "label": "nondiv-7x7",
+        "params": {
+          "c_in": 64,
+          "dtype": "bfloat16",
+          "h_in": 55,
+          "n": 2,
+          "op_params": {
+            "output_size": [
+              7,
+              7
+            ]
+          },
+          "output_size": [
+            7,
+            7
+          ],
+          "shape": [
+            2,
+            64,
+            55,
+            57
+          ],
+          "w_in": 57
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 71.82,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 6.270199999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 93.99808502197266,
+        "performance_tops": 0.2628491222858429,
+        "computility_tops": 4.1920318603515625,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_cppu8qt_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 71.82,
+          "max_latency_us": 71.82,
+          "min_latency_us": 71.82,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-a76baf99d325",
+        "label": "resnet-stem",
+        "params": {
+          "c_in": 64,
+          "ceil_mode": false,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "float16",
+          "h_in": 112,
+          "kernel_size": [
+            3,
+            3
+          ],
+          "n": 32,
+          "op_params": {
+            "kernel_size": [
+              3,
+              3
+            ],
+            "padding": [
+              1,
+              1
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            1,
+            1
+          ],
+          "shape": [
+            32,
+            64,
+            112,
+            112
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 112
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 126.779999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 27.1411,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 10.761173248291016,
+        "performance_tops": 1.0903079509735107,
+        "computility_tops": 4.017189025878906,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_1_txe3_g",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 126.779999,
+          "max_latency_us": 126.779999,
+          "min_latency_us": 126.779999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-33a56738ad2e",
+        "label": "resnet-stem",
+        "params": {
+          "c_in": 64,
+          "ceil_mode": false,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "bfloat16",
+          "h_in": 112,
+          "kernel_size": [
+            3,
+            3
+          ],
+          "n": 32,
+          "op_params": {
+            "kernel_size": [
+              3,
+              3
+            ],
+            "padding": [
+              1,
+              1
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            1,
+            1
+          ],
+          "shape": [
+            32,
+            64,
+            112,
+            112
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 112
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 111.559998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 31.4378,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 11.133698463439941,
+        "performance_tops": 1.2819504737854004,
+        "computility_tops": 4.077732563018799,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_vabfu2d0",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 111.559998,
+          "max_latency_us": 111.559998,
+          "min_latency_us": 111.559998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-30e4543381de",
+        "label": "resnet-stem",
+        "params": {
+          "c_in": 64,
+          "ceil_mode": false,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "h_in": 112,
+          "kernel_size": [
+            3,
+            3
+          ],
+          "n": 32,
+          "op_params": {
+            "kernel_size": [
+              3,
+              3
+            ],
+            "padding": [
+              1,
+              1
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            1,
+            1
+          ],
+          "shape": [
+            32,
+            64,
+            112,
+            112
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 112
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 148.139999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 27.8132,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.5598104000091553,
+        "performance_tops": 0.96291184425354,
+        "computility_tops": 3.46207332611084,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_zylka9vi",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 148.139999,
+          "max_latency_us": 148.139999,
+          "min_latency_us": 148.139999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-6064a0d12fed",
+        "label": "vgg-block",
+        "params": {
+          "c_in": 128,
+          "ceil_mode": false,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "float16",
+          "h_in": 56,
+          "kernel_size": [
+            2,
+            2
+          ],
+          "n": 16,
+          "op_params": {
+            "kernel_size": [
+              2,
+              2
+            ],
+            "padding": [
+              0,
+              0
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            0,
+            0
+          ],
+          "shape": [
+            16,
+            128,
+            56,
+            56
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 56
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 37.939999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 13.783500000000002,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 6.002152442932129,
+        "performance_tops": 0.5080459713935852,
+        "computility_tops": 3.685910224914551,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_tl49k6ts",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 37.939999,
+          "max_latency_us": 37.939999,
+          "min_latency_us": 37.939999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-8a4e443ecac9",
+        "label": "vgg-block",
+        "params": {
+          "c_in": 128,
+          "ceil_mode": false,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "bfloat16",
+          "h_in": 56,
+          "kernel_size": [
+            2,
+            2
+          ],
+          "n": 16,
+          "op_params": {
+            "kernel_size": [
+              2,
+              2
+            ],
+            "padding": [
+              0,
+              0
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            0,
+            0
+          ],
+          "shape": [
+            16,
+            128,
+            56,
+            56
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 56
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 37.459999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 25.8602,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 11.05424690246582,
+        "performance_tops": 0.947664737701416,
+        "computility_tops": 3.664571523666382,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_m3x7gr5m",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 37.459999,
+          "max_latency_us": 37.459999,
+          "min_latency_us": 37.459999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-f7732f6a6ebe",
+        "label": "vgg-block",
+        "params": {
+          "c_in": 128,
+          "ceil_mode": false,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "h_in": 56,
+          "kernel_size": [
+            2,
+            2
+          ],
+          "n": 16,
+          "op_params": {
+            "kernel_size": [
+              2,
+              2
+            ],
+            "padding": [
+              0,
+              0
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            0,
+            0
+          ],
+          "shape": [
+            16,
+            128,
+            56,
+            56
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 56
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 41.82,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 24.7795,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 4.960918426513672,
+        "performance_tops": 0.7618907690048218,
+        "computility_tops": 3.0746846199035645,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_ouya2bkh",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 41.82,
+          "max_latency_us": 41.82,
+          "min_latency_us": 41.82,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-b9bc4f41141a",
+        "label": "alexnet-ceil",
+        "params": {
+          "c_in": 64,
+          "ceil_mode": true,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "float16",
+          "h_in": 55,
+          "kernel_size": [
+            3,
+            3
+          ],
+          "n": 32,
+          "op_params": {
+            "ceil_mode": true,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "padding": [
+              0,
+              0
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            0,
+            0
+          ],
+          "shape": [
+            32,
+            64,
+            55,
+            55
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 55
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 40.52,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 14.807500000000001,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 8.72889518737793,
+        "performance_tops": 0.6673184037208557,
+        "computility_tops": 4.506624221801758,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_8kb0umlo",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 40.52,
+          "max_latency_us": 40.52,
+          "min_latency_us": 40.52,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-c20f8675af3a",
+        "label": "alexnet-ceil",
+        "params": {
+          "c_in": 64,
+          "ceil_mode": true,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "bfloat16",
+          "h_in": 55,
+          "kernel_size": [
+            3,
+            3
+          ],
+          "n": 32,
+          "op_params": {
+            "ceil_mode": true,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "padding": [
+              0,
+              0
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            0,
+            0
+          ],
+          "shape": [
+            32,
+            64,
+            55,
+            55
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 55
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 41.459999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 27.8944,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 14.394942283630371,
+        "performance_tops": 1.075533390045166,
+        "computility_tops": 3.855738639831543,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_t2uk7tyd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 41.459999,
+          "max_latency_us": 41.459999,
+          "min_latency_us": 41.459999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool2dFwdOp",
+        "case_id": "MaxPool2dFwdOp-95f67e7e47bd",
+        "label": "alexnet-ceil",
+        "params": {
+          "c_in": 64,
+          "ceil_mode": true,
+          "dilation": [
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "h_in": 55,
+          "kernel_size": [
+            3,
+            3
+          ],
+          "n": 32,
+          "op_params": {
+            "ceil_mode": true,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "padding": [
+              0,
+              0
+            ],
+            "stride": [
+              2,
+              2
+            ]
+          },
+          "padding": [
+            0,
+            0
+          ],
+          "shape": [
+            32,
+            64,
+            55,
+            55
+          ],
+          "stride": [
+            2,
+            2
+          ],
+          "w_in": 55
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 65.720001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 18.0091,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 6.406479358673096,
+        "performance_tops": 0.6039294004440308,
+        "computility_tops": 3.3534750938415527,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_ao1ev9cl",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 65.720001,
+          "max_latency_us": 65.720001,
+          "min_latency_us": 65.720001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool1dFwdOp",
+        "case_id": "MaxPool1dFwdOp-249820b3a879",
+        "label": "sincnet-speaker-local",
+        "params": {
+          "c_in": 80,
+          "ceil_mode": false,
+          "dilation": [
+            1
+          ],
+          "dtype": "float16",
+          "kernel_size": [
+            3
+          ],
+          "l_in": 4096,
+          "n": 32,
+          "op_params": {
+            "kernel_size": 3,
+            "padding": 0,
+            "stride": 3
+          },
+          "padding": [
+            0
+          ],
+          "shape": [
+            32,
+            80,
+            4096
+          ],
+          "stride": [
+            3
+          ]
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 62.540001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 16.6785,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 8.618669509887695,
+        "performance_tops": 1.1268093585968018,
+        "computility_tops": 6.756054878234863,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_ujhm55__",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 62.540001,
+          "max_latency_us": 62.540001,
+          "min_latency_us": 62.540001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool1dFwdOp",
+        "case_id": "MaxPool1dFwdOp-1fbf5125ff9c",
+        "label": "textcnn-global",
+        "params": {
+          "c_in": 256,
+          "ceil_mode": false,
+          "dilation": [
+            1
+          ],
+          "dtype": "float16",
+          "kernel_size": [
+            128
+          ],
+          "l_in": 128,
+          "n": 64,
+          "op_params": {
+            "kernel_size": 128,
+            "padding": 0,
+            "stride": 1
+          },
+          "padding": [
+            0
+          ],
+          "shape": [
+            64,
+            256,
+            128
+          ],
+          "stride": [
+            1
+          ]
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 9.2,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 26.0524,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.0221550464630127,
+        "performance_tops": 0.9219339489936829,
+        "computility_tops": 5.501041889190674,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_jx9qwz5_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 9.2,
+          "max_latency_us": 9.2,
+          "min_latency_us": 9.2,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool1dFwdOp",
+        "case_id": "MaxPool1dFwdOp-34ee5665590a",
+        "label": "ecg-cnn-dilated",
+        "params": {
+          "c_in": 128,
+          "ceil_mode": true,
+          "dilation": [
+            2
+          ],
+          "dtype": "bfloat16",
+          "kernel_size": [
+            5
+          ],
+          "l_in": 2048,
+          "n": 16,
+          "op_params": {
+            "ceil_mode": true,
+            "dilation": 2,
+            "kernel_size": 5,
+            "padding": 2,
+            "stride": 2
+          },
+          "padding": [
+            2
+          ],
+          "shape": [
+            16,
+            128,
+            2048
+          ],
+          "stride": [
+            2
+          ]
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 37.419998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 27.819300000000002,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 15.830578804016113,
+        "performance_tops": 1.2350118160247803,
+        "computility_tops": 4.439398765563965,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_1v6f355c",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 37.419998,
+          "max_latency_us": 37.419998,
+          "min_latency_us": 37.419998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool1dIndicesFwdOp",
+        "case_id": "MaxPool1dIndicesFwdOp-249820b3a879",
+        "label": "sincnet-speaker-local",
+        "params": {
+          "c_in": 80,
+          "ceil_mode": false,
+          "dilation": [
+            1
+          ],
+          "dtype": "float16",
+          "kernel_size": [
+            3
+          ],
+          "l_in": 4096,
+          "n": 32,
+          "op_params": {
+            "kernel_size": 3,
+            "padding": 0,
+            "stride": 3
+          },
+          "padding": [
+            0
+          ],
+          "shape": [
+            32,
+            80,
+            4096
+          ],
+          "stride": [
+            3
+          ]
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 420.140015,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 14.1684,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 46.28539276123047,
+        "performance_tops": 0.5776042938232422,
+        "computility_tops": 4.076714038848877,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_o30_wv50",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 420.140015,
+          "max_latency_us": 420.140015,
+          "min_latency_us": 420.140015,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool1dIndicesFwdOp",
+        "case_id": "MaxPool1dIndicesFwdOp-1fbf5125ff9c",
+        "label": "textcnn-global",
+        "params": {
+          "c_in": 256,
+          "ceil_mode": false,
+          "dilation": [
+            1
+          ],
+          "dtype": "float16",
+          "kernel_size": [
+            128
+          ],
+          "l_in": 128,
+          "n": 64,
+          "op_params": {
+            "kernel_size": 128,
+            "padding": 0,
+            "stride": 1
+          },
+          "padding": [
+            0
+          ],
+          "shape": [
+            64,
+            256,
+            128
+          ],
+          "stride": [
+            1
+          ]
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 15.54,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 21.419,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 4.334462642669678,
+        "performance_tops": 1.169923186302185,
+        "computility_tops": 5.462072372436523,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_6e4lw597",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.54,
+          "max_latency_us": 15.54,
+          "min_latency_us": 15.54,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "MaxPool1dIndicesFwdOp",
+        "case_id": "MaxPool1dIndicesFwdOp-34ee5665590a",
+        "label": "ecg-cnn-dilated",
+        "params": {
+          "c_in": 128,
+          "ceil_mode": true,
+          "dilation": [
+            2
+          ],
+          "dtype": "bfloat16",
+          "kernel_size": [
+            5
+          ],
+          "l_in": 2048,
+          "n": 16,
+          "op_params": {
+            "ceil_mode": true,
+            "dilation": 2,
+            "kernel_size": 5,
+            "padding": 2,
+            "stride": 2
+          },
+          "padding": [
+            2
+          ],
+          "shape": [
+            16,
+            128,
+            2048
+          ],
+          "stride": [
+            2
+          ]
+        },
+        "config": {
+          "block_m": 256
+        },
+        "tag": "tileops",
+        "latency_us": 76.059998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 28.5576,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 49.376625061035156,
+        "performance_tops": 1.3615120649337769,
+        "computility_tops": 4.76759672164917,
+        "artifact_dir": "/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_113734_848293_MaxPool1dFwdOp/artifacts/msprof/main_8vw3w_uy",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 76.059998,
+          "max_latency_us": 76.059998,
+          "min_latency_us": 76.059998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "MaxPool1dFwdOp",
+      "family": "pool",
+      "cases": 47,
+      "passed": 47,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 3,
+      "ratio_range": {
+        "min": 16.6785,
+        "max": 27.819300000000002
+      }
+    }
+  ],
+  "warnings": []
+}

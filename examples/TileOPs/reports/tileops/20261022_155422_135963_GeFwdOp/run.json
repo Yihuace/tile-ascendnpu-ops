@@ -1,0 +1,893 @@
+{
+  "schema_version": 2,
+  "operator": "GeFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261022_155422_135963_GeFwdOp",
+    "generated_at": "2026-10-22T16:10:44.814559+08:00",
+    "project_root": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "a79a1316be3962aec3c034a50b2b510275347fe2",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_ge.py",
+    "benchmark_file": "benchmarks/ops/bench_ge.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3.11",
+        "-m",
+        "pytest",
+        "tests/ops/test_ge.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_155422_135963_GeFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3.11",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_ge.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_155422_135963_GeFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-22T16:10:44.814559+08:00",
+      "evaluation_scope": "GeFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261022_155422_135963_GeFwdOp",
+      "git_commit": "a79a1316be3962aec3c034a50b2b510275347fe2",
+      "correctness_target": "tests/ops/test_ge.py",
+      "benchmark_target": "benchmarks/ops/bench_ge.py"
+    },
+    "environment": {
+      "npu": "Ascend910_9362 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.5",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 18,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 18,
+    "passed_cases": 18,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 11,
+    "benchmark_failed": 0,
+    "case_count": 9,
+    "msprof_case_count": 9,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_155422_135963_GeFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 18,
+    "passed": 18,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_op[4096-dtype0]",
+        "name": "test_ge_op[4096-dtype0]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 24.734,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_op[4096-dtype1]",
+        "name": "test_ge_op[4096-dtype1]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.776,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_op[4096-dtype2]",
+        "name": "test_ge_op[4096-dtype2]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.955,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_op[16384-dtype3]",
+        "name": "test_ge_op[16384-dtype3]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 24.027,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_broadcast[a_shape0-b_shape0]",
+        "name": "test_ge_broadcast[a_shape0-b_shape0]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.834,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_broadcast[a_shape1-b_shape1]",
+        "name": "test_ge_broadcast[a_shape1-b_shape1]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 16.685,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_broadcast[a_shape2-b_shape2]",
+        "name": "test_ge_broadcast[a_shape2-b_shape2]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.892,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_edge_case[4096-dtype0]",
+        "name": "test_ge_edge_case[4096-dtype0]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 0.061,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_integer_dtype[dtype0]",
+        "name": "test_ge_integer_dtype[dtype0]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.96,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_integer_dtype[dtype1]",
+        "name": "test_ge_integer_dtype[dtype1]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 1.431,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_integer_dtype[dtype2]",
+        "name": "test_ge_integer_dtype[dtype2]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.834,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_integer_dtype[dtype3]",
+        "name": "test_ge_integer_dtype[dtype3]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.958,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_integer_dtype[dtype4]",
+        "name": "test_ge_integer_dtype[dtype4]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 8.742,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_bool_dtype",
+        "name": "test_ge_bool_dtype",
+        "classname": "tests.ops.test_ge",
+        "time_s": 0.062,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_rejects_unsupported_dtype[dtype0]",
+        "name": "test_ge_rejects_unsupported_dtype[dtype0]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_rejects_unsupported_dtype[dtype1]",
+        "name": "test_ge_rejects_unsupported_dtype[dtype1]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_rejects_unsupported_dtype[dtype2]",
+        "name": "test_ge_rejects_unsupported_dtype[dtype2]",
+        "classname": "tests.ops.test_ge",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ge::test_ge_eval_roofline",
+        "name": "test_ge_eval_roofline",
+        "classname": "tests.ops.test_ge",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_155422_135963_GeFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[smoke-1k-float16]",
+        "name": "test_ge_manifest_bench[smoke-1k-float16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 76.899,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "2.0800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[smoke-1k-bfloat16]",
+        "name": "test_ge_manifest_bench[smoke-1k-bfloat16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 75.241,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "2.3200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[hidden-state-prefill-float16]",
+        "name": "test_ge_manifest_bench[hidden-state-prefill-float16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 76.121,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "25.7000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[hidden-state-prefill-bfloat16]",
+        "name": "test_ge_manifest_bench[hidden-state-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 76.152,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "28.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[hidden-state-prefill-float32]",
+        "name": "test_ge_manifest_bench[hidden-state-prefill-float32]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 75.049,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "50.2400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[cnn-feat-broadcast-float16]",
+        "name": "test_ge_manifest_bench[cnn-feat-broadcast-float16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 76.832,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "23.2600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[cnn-feat-broadcast-bfloat16]",
+        "name": "test_ge_manifest_bench[cnn-feat-broadcast-bfloat16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 76.117,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "31.8800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[cnn-feat-broadcast-float32]",
+        "name": "test_ge_manifest_bench[cnn-feat-broadcast-float32]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 78.037,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "38.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[row-broadcast-float32]",
+        "name": "test_ge_manifest_bench[row-broadcast-float32]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 77.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "50.1000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[row-broadcast-float16]",
+        "name": "test_ge_manifest_bench[row-broadcast-float16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 74.893,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "29.5000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ge::test_ge_manifest_bench[row-broadcast-bfloat16]",
+        "name": "test_ge_manifest_bench[row-broadcast-bfloat16]",
+        "classname": "benchmarks.ops.bench_ge",
+        "time_s": 61.01,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GeFwdOp",
+          "op_module": "tileops.ops.elementwise.ge",
+          "tileops_latency_us": "34.1000"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_155422_135963_GeFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-048e33c168d7",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 25.700001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 72.5347,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.6320248392208234,
+        "bandwidth_utilization_percent": 90.66804662337907,
+        "arithmetic_intensity_ops_per_byte": 0.7540178298950195,
+        "performance_tops": 0.9844644069671631,
+        "computility_tops": 8.314985275268555,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 25.700001,
+          "max_latency_us": 25.700001,
+          "min_latency_us": 25.700001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-56593c85d006",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 28.780001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 64.7721,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.4573675657620722,
+        "bandwidth_utilization_percent": 80.96486476455956,
+        "arithmetic_intensity_ops_per_byte": 1.129992961883545,
+        "performance_tops": 1.3174571990966797,
+        "computility_tops": 5.393376350402832,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 28.780001,
+          "max_latency_us": 28.780001,
+          "min_latency_us": 28.780001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-646e3566b0c7",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 50.240002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.2093,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.5027362459101814,
+        "bandwidth_utilization_percent": 83.48534699501008,
+        "arithmetic_intensity_ops_per_byte": 0.3164628744125366,
+        "performance_tops": 0.4227209985256195,
+        "computility_tops": 6.840109825134277,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 50.240002,
+          "max_latency_us": 50.240002,
+          "min_latency_us": 50.240002,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-555fe1f9e237",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 23.26,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.360400000000006,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.6567360275150471,
+        "bandwidth_utilization_percent": 92.04089041750262,
+        "arithmetic_intensity_ops_per_byte": 1.635337233543396,
+        "performance_tops": 1.8062087297439575,
+        "computility_tops": 6.767596244812012,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 23.26,
+          "max_latency_us": 23.26,
+          "min_latency_us": 23.26,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-4387e82f63ab",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 31.879998999999998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 44.7692,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.208772936285224,
+        "bandwidth_utilization_percent": 67.15405201584578,
+        "arithmetic_intensity_ops_per_byte": 2.389106512069702,
+        "performance_tops": 1.9252517223358154,
+        "computility_tops": 4.9755377769470215,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 31.879999,
+          "max_latency_us": 31.879999,
+          "min_latency_us": 31.879999,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-2f6937084cce",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 38.459999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.21940000000001,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.6699507454485374,
+        "bandwidth_utilization_percent": 92.77504141380763,
+        "arithmetic_intensity_ops_per_byte": 0.75389564037323,
+        "performance_tops": 1.0071662664413452,
+        "computility_tops": 5.032342433929443,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 38.459999,
+          "max_latency_us": 38.459999,
+          "min_latency_us": 38.459999,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-b7f8e341cebe",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 50.099998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.4349,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.6746999470938104,
+        "bandwidth_utilization_percent": 93.03888594965613,
+        "arithmetic_intensity_ops_per_byte": 0.631287693977356,
+        "performance_tops": 0.8458169102668762,
+        "computility_tops": 6.876285552978516,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 50.099998,
+          "max_latency_us": 50.099998,
+          "min_latency_us": 50.099998,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-1ec0756d1fa7",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 29.5,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.206700000000005,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.7064352542372883,
+        "bandwidth_utilization_percent": 94.80195856873823,
+        "arithmetic_intensity_ops_per_byte": 1.5095820426940918,
+        "performance_tops": 1.717482328414917,
+        "computility_tops": 8.284128189086914,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 29.5,
+          "max_latency_us": 29.5,
+          "min_latency_us": 29.5,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GeFwdOp",
+        "case_id": "GeFwdOp-332e940aadcc",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 34.099998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 54.6803,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.476241728811832,
+        "bandwidth_utilization_percent": 82.01342937843509,
+        "arithmetic_intensity_ops_per_byte": 2.262286901473999,
+        "performance_tops": 2.226644515991211,
+        "computility_tops": 5.38283109664917,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 34.099998,
+          "max_latency_us": 34.099998,
+          "min_latency_us": 34.099998,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "GeFwdOp",
+      "family": "elementwise",
+      "cases": 18,
+      "passed": 18,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 9,
+      "ratio_range": {
+        "min": 44.7692,
+        "max": 74.4349
+      }
+    }
+  ],
+  "warnings": []
+}

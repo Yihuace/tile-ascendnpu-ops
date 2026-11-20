@@ -1,0 +1,78 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/alibi/alibi_kernel/_make_alibi_kernel.py::_make_alibi_kernel::main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_alibi_bench",
+  "target_kernel_name": "main",
+  "manifest": "examples/TileOPs/tileops/manifest/elementwise.yaml::AlibiFwdOp",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_alibi_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/alibi/alibi_kernel/_make_alibi_kernel.py::_make_alibi_kernel::main",
+      "workload_id": "llama-prefill-2k-fp16",
+      "label": "llama-prefill-2k-fp16",
+      "marks": ["smoke"],
+      "shape": [32, 2048, 2048],
+      "dtype": "float16",
+      "params": {"seq_len": 2048, "num_heads": 32},
+      "kind": "smoke",
+      "reason": "first manifest workload -> pytest.mark.smoke (bench_independent_elementwise.py::_generative_params i==0) -> excluded from performance tuning, used only for precision regression. L0-manifest-2k-fp16 PASS max_diff=3.906250e-03 (identical to baseline) and `python perf_opt/_make_alibi_kernel.py --level all` PASS (32/32 cases). Context-only msprof (not a tune record): baseline 542.62us -> final 130.63us.",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_alibi_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/alibi/alibi_kernel/_make_alibi_kernel.py::_make_alibi_kernel::main",
+      "workload_id": "llama-prefill-2k-bf16",
+      "label": "llama-prefill-2k-bf16",
+      "marks": ["full"],
+      "shape": [32, 2048, 2048],
+      "dtype": "bfloat16",
+      "params": {"seq_len": 2048, "num_heads": 32},
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "final candidate final_hoist (r1_hoist structure: tile-invariant hoisted relative ramp + per-tile (bi,1) row ramp + row-broadcast vsub/vabs): 552.9 -> 125.2us (-77.4%). Round-2 branch r2_vbrc tied (125.34us, -0.1%) and r2_scalarbrc regressed (136.83us, +9.3%); neither adopted (below/above the 3% noise threshold, no valid branch gain)."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_alibi_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/alibi/alibi_kernel/_make_alibi_kernel.py::_make_alibi_kernel::main",
+      "workload_id": "llama-prefill-4k-fp16",
+      "label": "llama-prefill-4k-fp16",
+      "marks": ["full"],
+      "shape": [32, 4096, 4096],
+      "dtype": "float16",
+      "params": {"seq_len": 4096, "num_heads": 32},
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "final candidate final_hoist: 2147.63 -> 671.7us (-68.7%); write-bound, within 5.4% of the measured pure UB->GM write floor (writeonly probe 637.5us for the same 1.074 GB output). Round-2 branches tied/regressed within noise."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_independent_elementwise.py::test_alibi_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/alibi/alibi_kernel/_make_alibi_kernel.py::_make_alibi_kernel::main",
+      "workload_id": "llama-prefill-4k-bf16",
+      "label": "llama-prefill-4k-bf16",
+      "marks": ["full"],
+      "shape": [32, 4096, 4096],
+      "dtype": "bfloat16",
+      "params": {"seq_len": 4096, "num_heads": 32},
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "final candidate final_hoist: 2192.06 -> 672.24us (-69.3%); write-bound (mte3_ratio 0.926). Round-2 branches tied/regressed within noise."
+    }
+  ],
+  "tuning_summary": {
+    "final_candidate_id": "final_hoist",
+    "final_artifact": "perf_opt/_make_alibi_kernel.py",
+    "final_artifact_sha256": "096cff434e037555df474cdec5ac61c1a9c707487191cbfaaeebdfe889445329",
+    "primary_metric": "msprof_op_task_duration_us",
+    "baseline_latency_us": {
+      "llama-prefill-2k-bf16": 552.9,
+      "llama-prefill-4k-fp16": 2147.63,
+      "llama-prefill-4k-bf16": 2192.0601
+    },
+    "final_latency_us": {
+      "llama-prefill-2k-bf16": 125.2,
+      "llama-prefill-4k-fp16": 671.7,
+      "llama-prefill-4k-bf16": 672.24
+    },
+    "stop_reason": "success",
+    "target": "best_effort (no numeric threshold given); all tune workloads improved and merged into one candidate, smoke precision pass, L0/L1/L2/Boundary 32/32 PASS with max_diff bit-identical to baseline"
+  }
+}

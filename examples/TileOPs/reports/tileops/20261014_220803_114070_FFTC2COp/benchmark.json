@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-14T22:11:03.741372+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "FFTC2COp",
+      "case_id": "FFTC2COp-8df20a2ae2fc",
+      "config": {
+        "block_size": 1024
+      },
+      "label": "fft-64-c64-smoke",
+      "params": {
+        "batch_shape": [],
+        "dtype": "complex64",
+        "n": 64,
+        "shape": [
+          64
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 0.10000000149011612,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 2.303999900817871,
+        "Perf(TOps/s)": 1.7827298506745137e-05,
+        "Ratio(%)": 0.0102,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/artifacts/msprof/main_kvst5pt9",
+        "latency_us": 7.18,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 7.18,
+          "max_latency_us": 7.18,
+          "min_latency_us": 7.18,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "FFTC2COp",
+      "case_id": "FFTC2COp-2399f4b212b8",
+      "config": {
+        "block_size": 1024
+      },
+      "label": "fft-64-c64-smoke",
+      "params": {
+        "batch_shape": [],
+        "dtype": "complex64",
+        "n": 64,
+        "result_bl": {
+          "bandwidth_tbs": 3.7955728622427433e-06,
+          "latency_us": 269.78799700737,
+          "prof_mode": "events",
+          "tflops": 7.1166991167051445e-06
+        },
+        "shape": [
+          64
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 3.7955728622427433e-06,
+        "latency_us": 269.78799700737,
+        "prof_mode": "events",
+        "tflops": 7.1166991167051445e-06
+      },
+      "tag": "torch-fft"
+    },
+    {
+      "operator": "FFTC2COp",
+      "case_id": "FFTC2COp-f60eb3b30f63",
+      "config": {
+        "block_size": 1024
+      },
+      "label": "fft-4k-c64-unbatched",
+      "params": {
+        "batch_shape": [],
+        "dtype": "complex64",
+        "n": 4096,
+        "shape": [
+          4096
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 0.09908536821603775,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 2.303999900817871,
+        "Perf(TOps/s)": 5.795486231363611e-06,
+        "Ratio(%)": 0.0033000000000000004,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/artifacts/msprof/main_gsoxfqmv",
+        "latency_us": 717.799988,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 717.799988,
+          "max_latency_us": 717.799988,
+          "min_latency_us": 717.799988,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "FFTC2COp",
+      "case_id": "FFTC2COp-45b7f253137e",
+      "config": {
+        "block_size": 1024
+      },
+      "label": "fft-4k-c64-unbatched",
+      "params": {
+        "batch_shape": [],
+        "dtype": "complex64",
+        "n": 4096,
+        "result_bl": {
+          "bandwidth_tbs": 0.00024032975117762247,
+          "latency_us": 272.69199788570404,
+          "prof_mode": "events",
+          "tflops": 0.0009012365669160843
+        },
+        "shape": [
+          4096
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.00024032975117762247,
+        "latency_us": 272.69199788570404,
+        "prof_mode": "events",
+        "tflops": 0.0009012365669160843
+      },
+      "tag": "torch-fft"
+    },
+    {
+      "operator": "FFTC2COp",
+      "case_id": "FFTC2COp-83259322437e",
+      "config": {
+        "block_size": 1024
+      },
+      "label": "fft-4k-c64-b64",
+      "params": {
+        "batch_shape": [
+          64
+        ],
+        "dtype": "complex64",
+        "n": 4096,
+        "shape": [
+          64,
+          4096
+        ]
+      },
+      "result": {
+        "AI(Ops/Byte)": 0.12645146250724792,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 2.303999900817871,
+        "Perf(TOps/s)": 0.00017788705008570105,
+        "Ratio(%)": 0.0804,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/artifacts/msprof/main_9o1wd2vh",
+        "latency_us": 1496.680054,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 1496.680054,
+          "max_latency_us": 1496.680054,
+          "min_latency_us": 1496.680054,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "FFTC2COp",
+      "case_id": "FFTC2COp-ae4a94f2c683",
+      "config": {
+        "block_size": 1024
+      },
+      "label": "fft-4k-c64-b64",
+      "params": {
+        "batch_shape": [
+          64
+        ],
+        "dtype": "complex64",
+        "n": 4096,
+        "result_bl": {
+          "bandwidth_tbs": 0.014441803097690498,
+          "latency_us": 290.42800068855286,
+          "prof_mode": "events",
+          "tflops": 0.054156761616339366
+        },
+        "shape": [
+          64,
+          4096
+        ]
+      },
+      "result": {
+        "bandwidth_tbs": 0.014441803097690498,
+        "latency_us": 290.42800068855286,
+        "prof_mode": "events",
+        "tflops": 0.054156761616339366
+      },
+      "tag": "torch-fft"
+    }
+  ]
+}

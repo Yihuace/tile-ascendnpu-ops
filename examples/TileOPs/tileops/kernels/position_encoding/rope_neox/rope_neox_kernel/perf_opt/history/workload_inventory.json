@@ -1,0 +1,161 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench | test_rope_longrope_bench | test_rope_llama31_bench (union, expanded from examples/TileOPs/tileops/manifest/position_encoding.yaml)",
+  "target_kernel_name": "main",
+  "note": "Shared-kernel tuning: _make_rope_neox_1d / _make_rope_neox_2d are byte-identical across RopeNeoxOp / RopeLongRopeOp / RopeLlama31Op (sha256 80f4493a... / 549f9d77...). Workloads identical across ops are deduped (same shape+dtype -> same kernel binary); workload_id keeps the manifest label of its first op source. | Split: gate 4 final-artifact reconciliation is single-file (`kernel_opt_py_path = perf_opt/_make_rope_neox_1d.py`), so this inventory lists the 1d kernel only; the 2d kernel tuning set lives in workload_inventory_2d.json (identical workload entries).",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-256-d64-smoke-float16",
+      "label": "neox-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "reason": "smoke workload (manifest label carries the standalone smoke token) -> accuracy regression only, no performance baseline/winner. Final `--level all` PASS (44/44 for 1d, 46/46 for 2d); L0-manifest fp16/bf16/fp32 all PASS max_diff=0.0.",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-256-d64-smoke-bfloat16",
+      "label": "neox-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "reason": "smoke workload (manifest label carries the standalone smoke token) -> accuracy regression only, no performance baseline/winner. Final `--level all` PASS (44/44 for 1d, 46/46 for 2d); L0-manifest fp16/bf16/fp32 all PASS max_diff=0.0.",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-256-d64-smoke-float32",
+      "label": "neox-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "float32",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "reason": "smoke workload (manifest label carries the standalone smoke token) -> accuracy regression only, no performance baseline/winner. Final `--level all` PASS (44/44 for 1d, 46/46 for 2d); L0-manifest fp16/bf16/fp32 all PASS max_diff=0.0.",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-2k-d64-fp16",
+      "label": "neox-1d-2k-d64-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        2048,
+        64
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 2048,
+        "head_dim": 64
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "winner merged: final_contig (tile balance 32->52 rows + contiguous full-row DMA with UB half split/merge). launch-overhead-bound at this size (aiv_time 1.76us of 3.58us task duration)."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-4k-d128-bf16",
+      "label": "neox-1d-4k-d128-bf16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        4096,
+        128
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 4096,
+        "head_dim": 128
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "winner merged: final_contig (52-row tiles, contiguous row DMA); MTE3 bottleneck removed."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_longrope_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "longrope-1d-8k-d128-bf16",
+      "label": "longrope-1d-8k-d128-bf16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        8192,
+        128
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 8192,
+        "head_dim": 128
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "winner merged: final_contig; vec_ratio 0.66 now the top pipe, read/write BW 1.64/2.82 TB/s."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_longrope_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "longrope-1d-2k-d128-fp16",
+      "label": "longrope-1d-2k-d128-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        2048,
+        128
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 2048,
+        "head_dim": 128
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "winner merged: final_contig; single iteration per core (40 balanced tiles)."
+    }
+  ]
+}

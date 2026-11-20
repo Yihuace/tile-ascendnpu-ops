@@ -1,0 +1,787 @@
+{
+  "schema_version": 2,
+  "operator": "BitwiseXorFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261021_164300_363709_BitwiseXorFwdOp",
+    "generated_at": "2026-10-21T16:50:17.381291+08:00",
+    "project_root": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "3d212b67b10f1c528ecaf74abc45b1bbf2423c47",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_bitwise_xor.py",
+    "benchmark_file": "benchmarks/ops/bench_bitwise_xor.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_bitwise_xor.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_164300_363709_BitwiseXorFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_bitwise_xor.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_164300_363709_BitwiseXorFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-21T16:50:17.381291+08:00",
+      "evaluation_scope": "BitwiseXorFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261021_164300_363709_BitwiseXorFwdOp",
+      "git_commit": "3d212b67b10f1c528ecaf74abc45b1bbf2423c47",
+      "correctness_target": "tests/ops/test_bitwise_xor.py",
+      "benchmark_target": "benchmarks/ops/bench_bitwise_xor.py"
+    },
+    "environment": {
+      "npu": "Ascend910_9362 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.5",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 14,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 14,
+    "passed_cases": 14,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 9,
+    "benchmark_failed": 0,
+    "case_count": 8,
+    "msprof_case_count": 8,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_164300_363709_BitwiseXorFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 14,
+    "passed": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_op[4096-dtype0]",
+        "name": "test_bitwise_xor_op[4096-dtype0]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 11.904,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_op[4096-dtype1]",
+        "name": "test_bitwise_xor_op[4096-dtype1]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 2.808,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_op[4096-dtype2]",
+        "name": "test_bitwise_xor_op[4096-dtype2]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 2.795,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_op[16384-dtype3]",
+        "name": "test_bitwise_xor_op[16384-dtype3]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 1.439,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_op[16384-dtype4]",
+        "name": "test_bitwise_xor_op[16384-dtype4]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 2.753,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_broadcast[a_shape0-b_shape0]",
+        "name": "test_bitwise_xor_broadcast[a_shape0-b_shape0]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 2.818,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_broadcast[a_shape1-b_shape1]",
+        "name": "test_bitwise_xor_broadcast[a_shape1-b_shape1]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 1.506,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_broadcast[a_shape2-b_shape2]",
+        "name": "test_bitwise_xor_broadcast[a_shape2-b_shape2]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 1.441,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_bool_fast_path[a_shape0-b_shape0]",
+        "name": "test_bitwise_xor_bool_fast_path[a_shape0-b_shape0]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 1.464,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_bool_fast_path[a_shape1-b_shape1]",
+        "name": "test_bitwise_xor_bool_fast_path[a_shape1-b_shape1]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 2.837,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_rejects_float_dtype[dtype0]",
+        "name": "test_bitwise_xor_rejects_float_dtype[dtype0]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_rejects_float_dtype[dtype1]",
+        "name": "test_bitwise_xor_rejects_float_dtype[dtype1]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_rejects_float_dtype[dtype2]",
+        "name": "test_bitwise_xor_rejects_float_dtype[dtype2]",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_bitwise_xor::test_bitwise_xor_eval_roofline",
+        "name": "test_bitwise_xor_eval_roofline",
+        "classname": "tests.ops.test_bitwise_xor",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_164300_363709_BitwiseXorFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[smoke-1k-bool]",
+        "name": "test_bitwise_xor_manifest_bench[smoke-1k-bool]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 50.092,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "2.2200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[hidden-state-prefill-bool]",
+        "name": "test_bitwise_xor_manifest_bench[hidden-state-prefill-bool]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 40.147,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "16.1997"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[hidden-state-prefill-int32]",
+        "name": "test_bitwise_xor_manifest_bench[hidden-state-prefill-int32]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 40.69,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "54.4589"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[hidden-state-prefill-int64]",
+        "name": "test_bitwise_xor_manifest_bench[hidden-state-prefill-int64]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 42.047,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "129.3974"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[cnn-feat-broadcast-bool]",
+        "name": "test_bitwise_xor_manifest_bench[cnn-feat-broadcast-bool]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 43.683,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "22.1996"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[cnn-feat-broadcast-int32]",
+        "name": "test_bitwise_xor_manifest_bench[cnn-feat-broadcast-int32]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 41.729,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "48.1590"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[cnn-feat-broadcast-int64]",
+        "name": "test_bitwise_xor_manifest_bench[cnn-feat-broadcast-int64]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 41.914,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "232.8553"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[row-broadcast-int32]",
+        "name": "test_bitwise_xor_manifest_bench[row-broadcast-int32]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 41.806,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "64.2987"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_bitwise_xor::test_bitwise_xor_manifest_bench[row-broadcast-int64]",
+        "name": "test_bitwise_xor_manifest_bench[row-broadcast-int64]",
+        "classname": "benchmarks.ops.bench_bitwise_xor",
+        "time_s": 42.009,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BitwiseXorFwdOp",
+          "op_module": "tileops.ops.elementwise.bitwise_xor",
+          "tileops_latency_us": "170.3166"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261021_164300_363709_BitwiseXorFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-a1ea44276463",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "bool",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 16.199677,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 57.53660000000001,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.5534768995702815,
+        "bandwidth_utilization_percent": 86.30427219834897,
+        "arithmetic_intensity_ops_per_byte": 0.2503032684326172,
+        "performance_tops": 0.2592288851737976,
+        "computility_tops": 2.111999988555908,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 16.199677,
+          "max_latency_us": 16.199677,
+          "min_latency_us": 16.199677,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-b7a0826f1809",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "int32",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 54.458912,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.53009999999999,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.848426498127616,
+        "bandwidth_utilization_percent": 102.69036100708976,
+        "arithmetic_intensity_ops_per_byte": 0.24622850120067596,
+        "performance_tops": 0.3081651031970978,
+        "computility_tops": 2.111999988555908,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 54.458912,
+          "max_latency_us": 54.458912,
+          "min_latency_us": 54.458912,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-a4e8e9ff6d24",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "int64",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 129.397415,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 62.351800000000004,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.5558780057545976,
+        "bandwidth_utilization_percent": 86.43766698636652,
+        "arithmetic_intensity_ops_per_byte": 0.23108361661434174,
+        "performance_tops": 0.25935256481170654,
+        "computility_tops": 2.111999988555908,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 129.397415,
+          "max_latency_us": 129.397415,
+          "min_latency_us": 129.397415,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-e4a6acfc1322",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "bool",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 22.199556,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 32.1461,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.1572469287223583,
+        "bandwidth_utilization_percent": 64.29149604013101,
+        "arithmetic_intensity_ops_per_byte": 1.769296646118164,
+        "performance_tops": 1.0237667560577393,
+        "computility_tops": 3.6797726154327393,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 22.199556,
+          "max_latency_us": 22.199556,
+          "min_latency_us": 22.199556,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-6d70fcadf041",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "int32",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 48.159039,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.0858,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 2.1337940734240983,
+        "bandwidth_utilization_percent": 118.54411519022767,
+        "arithmetic_intensity_ops_per_byte": 0.6102225184440613,
+        "performance_tops": 0.6709662675857544,
+        "computility_tops": 2.111999988555908,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 48.159039,
+          "max_latency_us": 48.159039,
+          "min_latency_us": 48.159039,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-cdf5ac065afe",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "int64",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 232.855347,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 29.1719,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.8826206769475644,
+        "bandwidth_utilization_percent": 49.03448205264247,
+        "arithmetic_intensity_ops_per_byte": 0.8265277147293091,
+        "performance_tops": 0.43400487303733826,
+        "computility_tops": 2.111999988555908,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 232.855347,
+          "max_latency_us": 232.855347,
+          "min_latency_us": 232.855347,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-c186e763ebdc",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "int32",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 64.298714,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.2166,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 2.0876640238870094,
+        "bandwidth_utilization_percent": 115.98133466038941,
+        "arithmetic_intensity_ops_per_byte": 0.47601446509361267,
+        "performance_tops": 0.5245199203491211,
+        "computility_tops": 2.111999988555908,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main2"
+          ],
+          "kernel_name_attempts": [
+            "main2"
+          ],
+          "kernel_name_requested": "main2",
+          "kernel_name_resolved": "main2",
+          "latency_us": 64.298714,
+          "max_latency_us": 64.298714,
+          "min_latency_us": 64.298714,
+          "op_name": "main2",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BitwiseXorFwdOp",
+        "case_id": "BitwiseXorFwdOp-4c8a9c520d4c",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "int64",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 170.316589,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 58.58989999999999,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.5762893419618687,
+        "bandwidth_utilization_percent": 87.57163010899271,
+        "arithmetic_intensity_ops_per_byte": 0.37364646792411804,
+        "performance_tops": 0.3940543234348297,
+        "computility_tops": 2.111999988555908,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 170.316589,
+          "max_latency_us": 170.316589,
+          "min_latency_us": 170.316589,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "BitwiseXorFwdOp",
+      "family": "elementwise",
+      "cases": 14,
+      "passed": 14,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 8,
+      "ratio_range": {
+        "min": 29.1719,
+        "max": 69.53009999999999
+      }
+    }
+  ],
+  "warnings": []
+}

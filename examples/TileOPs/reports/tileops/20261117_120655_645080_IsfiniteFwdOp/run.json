@@ -1,0 +1,577 @@
+{
+  "schema_version": 2,
+  "operator": "IsfiniteFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261117_120655_645080_IsfiniteFwdOp",
+    "generated_at": "2026-11-17T12:23:09.707766+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": null,
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_isfinite.py",
+    "benchmark_file": "benchmarks/ops/bench_isfinite.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_isfinite.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_isfinite.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-17T12:23:09.707766+08:00",
+      "evaluation_scope": "IsfiniteFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261117_120655_645080_IsfiniteFwdOp",
+      "git_commit": null,
+      "correctness_target": "tests/ops/test_isfinite.py",
+      "benchmark_target": "benchmarks/ops/bench_isfinite.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 9,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 9,
+    "passed_cases": 9,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_op[1048576-dtype0]",
+        "name": "test_isfinite_op[1048576-dtype0]",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 44.921,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_op[1048576-dtype1]",
+        "name": "test_isfinite_op[1048576-dtype1]",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 17.714,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_op[1048576-dtype2]",
+        "name": "test_isfinite_op[1048576-dtype2]",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 17.919,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_op[4000000-dtype3]",
+        "name": "test_isfinite_op[4000000-dtype3]",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 2.618,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_op[4000000-dtype4]",
+        "name": "test_isfinite_op[4000000-dtype4]",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 2.694,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_output_dtype_and_values",
+        "name": "test_isfinite_output_dtype_and_values",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 2.342,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_rejects_non_float_dtype",
+        "name": "test_isfinite_rejects_non_float_dtype",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_op_rejects_non_float_dtype",
+        "name": "test_isfinite_op_rejects_non_float_dtype",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isfinite::test_isfinite_eval_roofline",
+        "name": "test_isfinite_eval_roofline",
+        "classname": "tests.ops.test_isfinite",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[smoke-1m-float32]",
+        "name": "test_isfinite_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 113.311,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "6.4200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[smoke-1m-float16]",
+        "name": "test_isfinite_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 86.694,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "4.1800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[smoke-1m-bfloat16]",
+        "name": "test_isfinite_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 84.736,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "6.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[16m-float16]",
+        "name": "test_isfinite_bench[16m-float16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 85.443,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "25.8400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[16m-bfloat16]",
+        "name": "test_isfinite_bench[16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 84.615,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "46.4000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[16m-float32]",
+        "name": "test_isfinite_bench[16m-float32]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 85.753,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "48.4800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[256m-float16]",
+        "name": "test_isfinite_bench[256m-float16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 85.35,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "587.2200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[256m-bfloat16]",
+        "name": "test_isfinite_bench[256m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 86.336,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "744.3600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[16m-half-float16]",
+        "name": "test_isfinite_bench[16m-half-float16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 67.427,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "27.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isfinite::test_isfinite_bench[16m-half-bfloat16]",
+        "name": "test_isfinite_bench[16m-half-bfloat16]",
+        "classname": "benchmarks.ops.bench_isfinite",
+        "time_s": 70.806,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsfiniteFwdOp",
+          "op_module": "tileops.ops.elementwise.isfinite",
+          "tileops_latency_us": "45.9200"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "IsfiniteFwdOp",
+        "case_id": "IsfiniteFwdOp-948c5107d2c0",
+        "label": "16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 25.84,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.2029,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.01092529296875,
+        "performance_tops": 2.6112892627716064,
+        "computility_tops": 9.068097114562988,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/artifacts/msprof/main_v7gfikfw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 25.84,
+          "max_latency_us": 25.84,
+          "min_latency_us": 25.84,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsfiniteFwdOp",
+        "case_id": "IsfiniteFwdOp-d4c3fec3b359",
+        "label": "16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 46.400002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 41.3233,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.396139621734619,
+        "performance_tops": 1.7327888011932373,
+        "computility_tops": 5.406388759613037,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/artifacts/msprof/main_fexodema",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 46.400002,
+          "max_latency_us": 46.400002,
+          "min_latency_us": 46.400002,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsfiniteFwdOp",
+        "case_id": "IsfiniteFwdOp-e8fa45bea844",
+        "label": "16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 48.48,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 79.1006,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.8824179172515869,
+        "performance_tops": 1.2214969396591187,
+        "computility_tops": 6.355018138885498,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/artifacts/msprof/main_26uh052v",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 48.48,
+          "max_latency_us": 48.48,
+          "min_latency_us": 48.48,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsfiniteFwdOp",
+        "case_id": "IsfiniteFwdOp-45771d3e31b7",
+        "label": "256m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 587.219971,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 71.7908,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.4599272012710571,
+        "performance_tops": 1.8341641426086426,
+        "computility_tops": 9.131658554077148,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/artifacts/msprof/main_c7km0nrs",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 587.219971,
+          "max_latency_us": 587.219971,
+          "min_latency_us": 587.219971,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsfiniteFwdOp",
+        "case_id": "IsfiniteFwdOp-6c988651021b",
+        "label": "256m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 744.359985,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 56.6666,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.7376518249511719,
+        "performance_tops": 1.7231707572937012,
+        "computility_tops": 5.427831649780273,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_120655_645080_IsfiniteFwdOp/artifacts/msprof/main_hvqvhjqo",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 744.359985,
+          "max_latency_us": 744.359985,
+          "min_latency_us": 744.359985,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "IsfiniteFwdOp",
+      "family": "elementwise",
+      "cases": 9,
+      "passed": 9,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 41.3233,
+        "max": 79.1006
+      }
+    }
+  ],
+  "warnings": []
+}

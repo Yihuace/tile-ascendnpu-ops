@@ -1,0 +1,181 @@
+{
+  "note": "Auxiliary kernels of the 3-kernel pipeline (preprocess -> main -> postprocess). The gate-4 accounting object is the primary `_gqa_bwd_kernel` (perf_records.jsonl); these entries record the aux conclusion.",
+  "kernels": [
+    {
+      "kernel": "_flashattn_bwd_preprocess_kernel",
+      "perf_opt_artifact": "perf_opt/_flashattn_bwd_preprocess_kernel.py",
+      "equivalence_evidence": "diff vs Stage-3 baseline differs only in the docstring",
+      "measured_records": "history/perf_records_preprocess_prev.jsonl",
+      "workloads": [
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-short-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 34.56,
+          "final_us_prev_round": 34.51,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-short-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 34.98,
+          "final_us_prev_round": 34.83,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-long-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 61.02,
+          "final_us_prev_round": 61.14,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-long-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 60.98,
+          "final_us_prev_round": 60.89,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-short-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 35.49,
+          "final_us_prev_round": 35.76,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-short-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 35.7,
+          "final_us_prev_round": 35.79,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-long-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 65.84,
+          "final_us_prev_round": 65.92,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-long-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 65.89,
+          "final_us_prev_round": 66.0,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_preprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        }
+      ]
+    },
+    {
+      "kernel": "_flashattn_bwd_postprocess_kernel",
+      "perf_opt_artifact": "perf_opt/_flashattn_bwd_postprocess_kernel.py",
+      "equivalence_evidence": "diff vs Stage-3 baseline differs only in the docstring",
+      "measured_records": "history/perf_records_postprocess_prev.jsonl",
+      "workloads": [
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-short-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 24.64,
+          "final_us_prev_round": 24.24,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-short-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 24.35,
+          "final_us_prev_round": 24.45,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-long-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 47.0,
+          "final_us_prev_round": 47.07,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-8b-long-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 46.49,
+          "final_us_prev_round": 46.65,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-short-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 24.11,
+          "final_us_prev_round": 24.19,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-short-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 24.03,
+          "final_us_prev_round": 24.32,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-long-float16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 46.81,
+          "final_us_prev_round": 46.42,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        },
+        {
+          "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+          "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py",
+          "workload_id": "llama-3.1-70b-long-bfloat16",
+          "kind": "tune",
+          "tuning_status": "no_gain",
+          "baseline_us": 47.63,
+          "final_us_prev_round": 46.6,
+          "reason": "unchanged vs the Stage-3 baseline (impl byte-identical except docstring); measured on all 8 tune workloads in the previous Stage-4 session (history/perf_records_postprocess_prev.jsonl), delta within +-2.2% noise -> no gain. Not re-measured this session (no change, 16 x ~2 min profile cost); pipeline share of main kernel is 99.0-99.7%."
+        }
+      ]
+    }
+  ]
+}

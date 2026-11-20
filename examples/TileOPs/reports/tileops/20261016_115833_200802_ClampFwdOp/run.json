@@ -1,0 +1,1173 @@
+{
+  "schema_version": 2,
+  "operator": "ClampFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261016_115833_200802_ClampFwdOp",
+    "generated_at": "2026-10-16T12:22:14.985857+08:00",
+    "project_root": "/home/developer/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "f8e4950c2a578892265fabd277c0cc9705296b27",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_special_elementwise.py",
+    "benchmark_file": "benchmarks/ops/bench_independent_elementwise.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_special_elementwise.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_independent_elementwise.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-16T12:22:14.985857+08:00",
+      "evaluation_scope": "ClampFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261016_115833_200802_ClampFwdOp",
+      "git_commit": "f8e4950c2a578892265fabd277c0cc9705296b27",
+      "correctness_target": "tests/ops/test_special_elementwise.py",
+      "benchmark_target": "benchmarks/ops/bench_independent_elementwise.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 15,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 15,
+    "passed_cases": 15,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 14,
+    "benchmark_failed": 0,
+    "case_count": 14,
+    "msprof_case_count": 14,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 15,
+    "passed": 15,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_alibi[128-8-dtype0]",
+        "name": "test_alibi[128-8-dtype0]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 46.189,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_alibi[128-8-dtype1]",
+        "name": "test_alibi[128-8-dtype1]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 17.316,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor[input_shape0-min_shape0-max_shape0-dtype0]",
+        "name": "test_clamp_tensor[input_shape0-min_shape0-max_shape0-dtype0]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 17.393,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor[input_shape1-min_shape1-max_shape1-dtype1]",
+        "name": "test_clamp_tensor[input_shape1-min_shape1-max_shape1-dtype1]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 17.24,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor[input_shape2-min_shape2-max_shape2-dtype2]",
+        "name": "test_clamp_tensor[input_shape2-min_shape2-max_shape2-dtype2]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 17.591,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor[input_shape3-min_shape3-max_shape3-dtype3]",
+        "name": "test_clamp_tensor[input_shape3-min_shape3-max_shape3-dtype3]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 2.331,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor[input_shape4-min_shape4-max_shape4-dtype4]",
+        "name": "test_clamp_tensor[input_shape4-min_shape4-max_shape4-dtype4]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 0.078,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_min_only_tensor_parity",
+        "name": "test_clamp_min_only_tensor_parity",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 17.565,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_max_only_tensor_parity",
+        "name": "test_clamp_max_only_tensor_parity",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 2.242,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_both_none_rejected",
+        "name": "test_clamp_both_none_rejected",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_runtime_tensor_none_must_match_init",
+        "name": "test_clamp_runtime_tensor_none_must_match_init",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 0.007,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor_nan_propagation[dtype0]",
+        "name": "test_clamp_tensor_nan_propagation[dtype0]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 2.308,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor_nan_propagation[dtype1]",
+        "name": "test_clamp_tensor_nan_propagation[dtype1]",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 2.38,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor_rejects_non_float_dtype",
+        "name": "test_clamp_tensor_rejects_non_float_dtype",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_special_elementwise::test_clamp_tensor_eval_roofline",
+        "name": "test_clamp_tensor_eval_roofline",
+        "classname": "tests.ops.test_special_elementwise",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 14,
+    "passed": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_alibi_bench[llama-prefill-2k-fp16]",
+        "name": "test_alibi_bench[llama-prefill-2k-fp16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 114.215,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AlibiFwdOp",
+          "op_module": "tileops.ops.elementwise.alibi",
+          "tileops_latency_us": "130.6400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_alibi_bench[llama-prefill-2k-bf16]",
+        "name": "test_alibi_bench[llama-prefill-2k-bf16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 86.317,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AlibiFwdOp",
+          "op_module": "tileops.ops.elementwise.alibi",
+          "tileops_latency_us": "133.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_alibi_bench[llama-prefill-4k-fp16]",
+        "name": "test_alibi_bench[llama-prefill-4k-fp16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 85.537,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AlibiFwdOp",
+          "op_module": "tileops.ops.elementwise.alibi",
+          "tileops_latency_us": "668.5400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_alibi_bench[llama-prefill-4k-bf16]",
+        "name": "test_alibi_bench[llama-prefill-4k-bf16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 88.389,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AlibiFwdOp",
+          "op_module": "tileops.ops.elementwise.alibi",
+          "tileops_latency_us": "659.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[smoke-1m-float32]",
+        "name": "test_clamp_tensor_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 84.904,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "10.4000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[smoke-1m-float16]",
+        "name": "test_clamp_tensor_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 84.636,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "6.5600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[smoke-1m-bfloat16]",
+        "name": "test_clamp_tensor_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 84.656,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "6.9400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[elementwise-16m-float16]",
+        "name": "test_clamp_tensor_bench[elementwise-16m-float16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 87.245,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "68.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[elementwise-16m-bfloat16]",
+        "name": "test_clamp_tensor_bench[elementwise-16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 85.284,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "72.9800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[elementwise-16m-float32]",
+        "name": "test_clamp_tensor_bench[elementwise-16m-float32]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 88.04,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "156.7200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[elementwise-64m-float16]",
+        "name": "test_clamp_tensor_bench[elementwise-64m-float16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 88.746,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "367.1400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[elementwise-64m-bfloat16]",
+        "name": "test_clamp_tensor_bench[elementwise-64m-bfloat16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 85.78,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "377.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[elementwise-256m-float16]",
+        "name": "test_clamp_tensor_bench[elementwise-256m-float16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 89.863,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "1659.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_independent_elementwise::test_clamp_tensor_bench[elementwise-256m-bfloat16]",
+        "name": "test_clamp_tensor_bench[elementwise-256m-bfloat16]",
+        "classname": "benchmarks.ops.bench_independent_elementwise",
+        "time_s": 90.671,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp",
+          "tileops_latency_us": "1671.7400"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "AlibiFwdOp",
+        "case_id": "AlibiFwdOp-20598565e29a",
+        "label": "llama-prefill-2k-fp16",
+        "params": {
+          "dtype": "float16",
+          "num_heads": 32,
+          "seq_len": 2048
+        },
+        "config": {
+          "bi": null,
+          "bj": null
+        },
+        "tag": "tileops",
+        "latency_us": 130.639999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 29.3539,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.1662938594818115,
+        "performance_tops": 1.1128122806549072,
+        "computility_tops": 4.554029941558838,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_x3o9q5iw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 130.639999,
+          "max_latency_us": 130.639999,
+          "min_latency_us": 130.639999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AlibiFwdOp",
+        "case_id": "AlibiFwdOp-9edecc393fb4",
+        "label": "llama-prefill-2k-bf16",
+        "params": {
+          "dtype": "bfloat16",
+          "num_heads": 32,
+          "seq_len": 2048
+        },
+        "config": {
+          "bi": null,
+          "bj": null
+        },
+        "tag": "tileops",
+        "latency_us": 133.600006,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 45.6961,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 4.166289806365967,
+        "performance_tops": 2.092780828475952,
+        "computility_tops": 4.579778671264648,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_rnuhe28n",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 133.600006,
+          "max_latency_us": 133.600006,
+          "min_latency_us": 133.600006,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AlibiFwdOp",
+        "case_id": "AlibiFwdOp-1282399288b5",
+        "label": "llama-prefill-4k-fp16",
+        "params": {
+          "dtype": "float16",
+          "num_heads": 32,
+          "seq_len": 4096
+        },
+        "config": {
+          "bi": null,
+          "bj": null
+        },
+        "tag": "tileops",
+        "latency_us": 668.539978,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.5689,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.666318953037262,
+        "performance_tops": 0.8695170283317566,
+        "computility_tops": 4.555593490600586,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_etsirol2",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 668.539978,
+          "max_latency_us": 668.539978,
+          "min_latency_us": 668.539978,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AlibiFwdOp",
+        "case_id": "AlibiFwdOp-2b689ee4c47f",
+        "label": "llama-prefill-4k-bf16",
+        "params": {
+          "dtype": "bfloat16",
+          "num_heads": 32,
+          "seq_len": 4096
+        },
+        "config": {
+          "bi": null,
+          "bj": null
+        },
+        "tag": "tileops",
+        "latency_us": 659.820007,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 75.5544,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.2817034721374512,
+        "performance_tops": 1.6946710348129272,
+        "computility_tops": 4.580605983734131,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_arp5etdd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 659.820007,
+          "max_latency_us": 659.820007,
+          "min_latency_us": 659.820007,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-52989249abe1",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            1024,
+            1024
+          ],
+          "max_shape": [
+            1024,
+            1024
+          ],
+          "min_shape": [
+            1024,
+            1024
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 10.4,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.13759999999999,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.1670718640089035,
+        "performance_tops": 0.20214153826236725,
+        "computility_tops": 4.596804618835449,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_u0_jugsp",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 10.4,
+          "max_latency_us": 10.4,
+          "min_latency_us": 10.4,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-c13a1613d25e",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            1024,
+            1024
+          ],
+          "max_shape": [
+            1024,
+            1024
+          ],
+          "min_shape": [
+            1024,
+            1024
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 6.56,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 54.8047,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.3341403305530548,
+        "performance_tops": 0.32046830654144287,
+        "computility_tops": 9.149153709411621,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_b7cze2tx",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 6.56,
+          "max_latency_us": 6.56,
+          "min_latency_us": 6.56,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-1bcde2b236d7",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            1024,
+            1024
+          ],
+          "max_shape": [
+            1024,
+            1024
+          ],
+          "min_shape": [
+            1024,
+            1024
+          ]
+        },
+        "config": {
+          "block_size": 10240
+        },
+        "tag": "tileops",
+        "latency_us": 6.94,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 51.803900000000006,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.00177001953125,
+        "performance_tops": 0.9081728458404541,
+        "computility_tops": 4.604259490966797,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_2ay5998s",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 6.94,
+          "max_latency_us": 6.94,
+          "min_latency_us": 6.94,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-9370362097d0",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            4096,
+            4096
+          ],
+          "min_shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 68.599998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 83.8512,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.3333837687969208,
+        "performance_tops": 0.4892062842845917,
+        "computility_tops": 9.211784362792969,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_uuztn0_z",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 68.599998,
+          "max_latency_us": 68.599998,
+          "min_latency_us": 68.599998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-cf1c514db5a3",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            4096,
+            4096
+          ],
+          "min_shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 10240
+        },
+        "tag": "tileops",
+        "latency_us": 72.980003,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 78.8188,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.0004158020019531,
+        "performance_tops": 1.3799023628234863,
+        "computility_tops": 4.607766151428223,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_7em548bz",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 72.980003,
+          "max_latency_us": 72.980003,
+          "min_latency_us": 72.980003,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-df7123f21f35",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            4096,
+            4096
+          ],
+          "min_shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 156.720001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 79.5493,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.15382151305675507,
+        "performance_tops": 0.2141369879245758,
+        "computility_tops": 4.607296943664551,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_b1uw9mde",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 156.720001,
+          "max_latency_us": 156.720001,
+          "min_latency_us": 156.720001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-c4aca12afada",
+        "label": "elementwise-64m",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            8192,
+            8192
+          ],
+          "max_shape": [
+            8192,
+            8192
+          ],
+          "min_shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 367.140015,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 75.3802,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.2771399915218353,
+        "performance_tops": 0.36559033393859863,
+        "computility_tops": 9.214946746826172,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_x3jbsnw4",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 367.140015,
+          "max_latency_us": 367.140015,
+          "min_latency_us": 367.140015,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-776823ab4e9a",
+        "label": "elementwise-64m",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            8192,
+            8192
+          ],
+          "max_shape": [
+            8192,
+            8192
+          ],
+          "min_shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 10240
+        },
+        "tag": "tileops",
+        "latency_us": 377.040009,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 73.5904,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.8293095231056213,
+        "performance_tops": 1.0680110454559326,
+        "computility_tops": 4.607941627502441,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_znfbhwlq",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 377.040009,
+          "max_latency_us": 377.040009,
+          "min_latency_us": 377.040009,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-e905138012e8",
+        "label": "elementwise-256m",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            16384,
+            16384
+          ],
+          "max_shape": [
+            16384,
+            16384
+          ],
+          "min_shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 1659.459961,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 72.18130000000001,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.25612059235572815,
+        "performance_tops": 0.3235245645046234,
+        "computility_tops": 9.215736389160156,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_ks0d5nny",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 1659.459961,
+          "max_latency_us": 1659.459961,
+          "min_latency_us": 1659.459961,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampFwdOp",
+        "case_id": "ClampFwdOp-06899ac67d64",
+        "label": "elementwise-256m",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            16384,
+            16384
+          ],
+          "max_shape": [
+            16384,
+            16384
+          ],
+          "min_shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 10240
+        },
+        "tag": "tileops",
+        "latency_us": 1671.73999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 71.6511,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.7683743238449097,
+        "performance_tops": 0.9634600877761841,
+        "computility_tops": 4.607985019683838,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261016_115833_200802_ClampFwdOp/artifacts/msprof/main_ui9pgzh0",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 1671.73999,
+          "max_latency_us": 1671.73999,
+          "min_latency_us": 1671.73999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "ClampFwdOp",
+      "family": "elementwise",
+      "cases": 15,
+      "passed": 15,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 10,
+      "ratio_range": {
+        "min": 51.803900000000006,
+        "max": 83.8512
+      }
+    }
+  ],
+  "warnings": [
+    "AlibiFwdOp/AlibiFwdOp-06b6aa7f5bac: missing tileops candidate record",
+    "AlibiFwdOp/AlibiFwdOp-d7e12bbb50aa: missing tileops candidate record",
+    "AlibiFwdOp/AlibiFwdOp-72adcff99f7e: missing tileops candidate record",
+    "AlibiFwdOp/AlibiFwdOp-21b230887791: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-3800428ecbce: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-1255f123aa86: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-b0ea5273f702: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-58e182f00846: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-91d669d759e4: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-a39f3cf339d4: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-a109a398eaf9: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-4cb35ff72750: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-cfb7daf46e52: missing tileops candidate record",
+    "ClampFwdOp/ClampFwdOp-3602c4f14cbf: missing tileops candidate record"
+  ]
+}

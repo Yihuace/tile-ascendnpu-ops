@@ -1,0 +1,265 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_engram_decode.py::test_engram_decode_bench",
+  "scenario": "optimize",
+  "session": "round3 (2026-10-30)",
+  "kernel_id": "examples/TileOPs/tileops/kernels/sequence_modeling/engram_decode/engram_decode_kernel/_engram_decode_kernel.py::_engram_decode_kernel::main",
+  "target_kernel_name": "main",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_engram_decode.py::test_engram_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/sequence_modeling/engram_decode/engram_decode_kernel/_engram_decode_kernel.py::_engram_decode_kernel::main",
+      "workload_id": "decode-smoke-b1-dmem256-d256-fp16",
+      "label": "decode-smoke-b1-dmem256-d256-fp16",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "e_t": [
+          1,
+          256
+        ],
+        "h_t": [
+          1,
+          256
+        ],
+        "conv_state": [
+          1,
+          9,
+          256
+        ],
+        "W_K": [
+          256,
+          256
+        ],
+        "W_V": [
+          256,
+          256
+        ],
+        "rms_w_h": [
+          256
+        ],
+        "rms_w_v": [
+          256
+        ],
+        "conv_w": [
+          4,
+          256
+        ],
+        "y_t": [
+          1,
+          256
+        ],
+        "new_conv_state": [
+          1,
+          9,
+          256
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "d_mem": 256,
+        "d": 256,
+        "max_conv_len": 9,
+        "conv_kernel_size": 4,
+        "dilation": 3,
+        "eps": 1e-06
+      },
+      "kind": "smoke",
+      "reason": "manifest workload index 0 carries pytest.mark.smoke and an independent 'smoke' token in its label -> precision-only regression; no performance capture, no winner selection, no perf_records row. Final: `python perf_opt/_engram_decode_kernel.py --level all` L0 pass (y_maxdiff=2.441e-04).",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_engram_decode.py::test_engram_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/sequence_modeling/engram_decode/engram_decode_kernel/_engram_decode_kernel.py::_engram_decode_kernel::main",
+      "workload_id": "decode-b1-dmem512-d256-fp16",
+      "label": "decode-b1-dmem512-d256-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "e_t": [
+          1,
+          512
+        ],
+        "h_t": [
+          1,
+          256
+        ],
+        "conv_state": [
+          1,
+          12,
+          256
+        ],
+        "W_K": [
+          512,
+          256
+        ],
+        "W_V": [
+          512,
+          256
+        ],
+        "rms_w_h": [
+          256
+        ],
+        "rms_w_v": [
+          256
+        ],
+        "conv_w": [
+          4,
+          256
+        ],
+        "y_t": [
+          1,
+          256
+        ],
+        "new_conv_state": [
+          1,
+          12,
+          256
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "d_mem": 512,
+        "d": 256,
+        "max_conv_len": 12,
+        "conv_kernel_size": 4,
+        "dilation": 3,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "BK raised 16->32 (BK = TUNED_STAGE_ELEMS // d_padded) after verifying it is the largest mul+reduce staging tile the toolchain accepts; 28.361 -> 26.821 us. All other round-3 branches regressed or were neutral on this workload.",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_engram_decode.py::test_engram_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/sequence_modeling/engram_decode/engram_decode_kernel/_engram_decode_kernel.py::_engram_decode_kernel::main",
+      "workload_id": "decode-b4-dmem1024-d512-fp16",
+      "label": "decode-b4-dmem1024-d512-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "e_t": [
+          4,
+          1024
+        ],
+        "h_t": [
+          4,
+          512
+        ],
+        "conv_state": [
+          4,
+          20,
+          512
+        ],
+        "W_K": [
+          1024,
+          512
+        ],
+        "W_V": [
+          1024,
+          512
+        ],
+        "rms_w_h": [
+          512
+        ],
+        "rms_w_v": [
+          512
+        ],
+        "conv_w": [
+          4,
+          512
+        ],
+        "y_t": [
+          4,
+          512
+        ],
+        "new_conv_state": [
+          4,
+          20,
+          512
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 4,
+        "d_mem": 1024,
+        "d": 512,
+        "max_conv_len": 20,
+        "conv_kernel_size": 4,
+        "dilation": 5,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "d_padded=512 already sits at the 8192-fp32-element staging-tile cap with BK=16 so BK cannot grow; 11 single-point branches (BK=32 with UB reclamation / in-place product / K-V split / T.Pipelined / row-stride padding / f16 staging / 2x slab with chunked reduce / T.unroll FMA accumulate / e-from-UB) were all neutral or regressive (best verified 73.531 us vs baseline 73.591 us = noise). Duration stays vec + ~0.5*scalar.",
+      "tuning_status": "no_gain"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_engram_decode.py::test_engram_decode_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/sequence_modeling/engram_decode/engram_decode_kernel/_engram_decode_kernel.py::_engram_decode_kernel::main",
+      "workload_id": "decode-b8-dmem512-d256-bf16",
+      "label": "decode-b8-dmem512-d256-bf16",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "e_t": [
+          8,
+          512
+        ],
+        "h_t": [
+          8,
+          256
+        ],
+        "conv_state": [
+          8,
+          18,
+          256
+        ],
+        "W_K": [
+          512,
+          256
+        ],
+        "W_V": [
+          512,
+          256
+        ],
+        "rms_w_h": [
+          256
+        ],
+        "rms_w_v": [
+          256
+        ],
+        "conv_w": [
+          4,
+          256
+        ],
+        "y_t": [
+          8,
+          256
+        ],
+        "new_conv_state": [
+          8,
+          18,
+          256
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 8,
+        "d_mem": 512,
+        "d": 256,
+        "max_conv_len": 18,
+        "conv_kernel_size": 4,
+        "dilation": 3,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "same BK=32 change as decode-b1 (d_padded=256): 28.611 -> 26.801 us; bf16 keeps the fp32 reduce staging path (bf16 vreduce unsupported).",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

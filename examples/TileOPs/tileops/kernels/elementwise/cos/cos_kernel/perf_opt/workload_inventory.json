@@ -1,0 +1,184 @@
+{
+  "op": "CosFwdOp",
+  "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+  "target_kernel_name": "main",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=4096/nc=48 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=4096/nc=48 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=4096/nc=48 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "elementwise-64m-float16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 67108864
+      },
+      "kind": "tune",
+      "reason": "winner bs=4096/nc=48 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "elementwise-64m-bfloat16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 67108864
+      },
+      "kind": "tune",
+      "reason": "winner bs=4096/nc=48 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "elementwise-256m-float16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 268435456
+      },
+      "kind": "tune",
+      "reason": "winner bs=4096/nc=48 已核内合并;Stage 3 结构下该规模的 UB 与栅格约束互斥(bs<=4468 且 bs>=6144),交付默认不可启动,基线只能取窗口内的 bs=4200(栅格63914/UB180.5KB)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_cos.py::test_cos_bench",
+      "kernel_id": "tileops/kernels/elementwise/cos/cos_kernel/cos_fwd_kernel.py::cos_fwd_kernel::main",
+      "workload_id": "elementwise-256m-bfloat16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 268435456
+      },
+      "kind": "tune",
+      "reason": "winner bs=4096/nc=48 已核内合并;Stage 3 结构下该规模的 UB 与栅格约束互斥(bs<=4468 且 bs>=6144),交付默认不可启动,基线只能取窗口内的 bs=4200(栅格63914/UB180.5KB)",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

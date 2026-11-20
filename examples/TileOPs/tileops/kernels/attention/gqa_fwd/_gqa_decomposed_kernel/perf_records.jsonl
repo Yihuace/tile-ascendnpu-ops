@@ -1,0 +1,4 @@
+{"candidate_id": "baseline", "workload_id": "gqa-mid", "duration_us": 482340.0, "l0_pass": true, "note": "逐 (batch, head, 行块) 重建内核工厂,24 次 × 11 ms ≈ 264 ms 纯构建开销"}
+{"candidate_id": "r1_cache_factory", "workload_id": "gqa-mid", "duration_us": 118500.0, "l0_pass": true, "note": "工厂按形状缓存;创建仍需 11 ms,缓存命中后每次调用 0.11 ms"}
+{"candidate_id": "r2_hoist_tensors", "workload_id": "gqa-mid", "duration_us": 85400.0, "l0_pass": true, "note": "每 head 的 Kt/Vh 变换提到行块循环外(只依赖 head)"}
+{"candidate_id": "r3_drop_repeat_interleave", "workload_id": "gqa-mid", "duration_us": 71327.87, "l0_pass": true, "note": "head 映射改为 K[:, h//rep, :],删除 repeat_interleave 的大张量复制 ×2"}

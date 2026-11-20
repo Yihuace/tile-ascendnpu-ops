@@ -1,0 +1,130 @@
+{
+  "source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/_fp8_lightning_indexer_kernel.py::_fp8_lightning_indexer_kernel::_fp8_lightning_indexer_main",
+      "workload_id": "lightning-indexer-smoke-s1k-h8-d64",
+      "label": "lightning-indexer-smoke-s1k-h8-d64",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1,
+        1024,
+        8,
+        64,
+        1024,
+        1
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 1,
+        "seq_len": 1024,
+        "heads": 8,
+        "index_dim": 64,
+        "seq_len_kv": 1024,
+        "kv_group": 1,
+        "clean_logits": true
+      },
+      "kind": "smoke",
+      "reason": "pytest.mark.smoke (first parametrised case) -> precision regression only, no msprof performance capture",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/_fp8_lightning_indexer_kernel.py::_fp8_lightning_indexer_kernel::_fp8_lightning_indexer_main",
+      "workload_id": "lightning-indexer-bf16-s8k-h32-d64",
+      "label": "lightning-indexer-bf16-s8k-h32-d64",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        1,
+        8192,
+        32,
+        64,
+        8192,
+        1
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 1,
+        "seq_len": 8192,
+        "heads": 32,
+        "index_dim": 64,
+        "seq_len_kv": 8192,
+        "kv_group": 1,
+        "clean_logits": true
+      },
+      "kind": "tune",
+      "reason": "official benchmark Ratio(%) case; baseline 10893.0 us -> final 5482.1 us (Ratio 8.73% -> 17.17%)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/_fp8_lightning_indexer_kernel.py::_fp8_lightning_indexer_kernel::_fp8_lightning_indexer_main",
+      "workload_id": "lightning-indexer-bf16-s4k-h32-d64",
+      "label": "lightning-indexer-bf16-s4k-h32-d64",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        1,
+        4096,
+        32,
+        64,
+        8192,
+        1
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 1,
+        "seq_len": 4096,
+        "heads": 32,
+        "index_dim": 64,
+        "seq_len_kv": 8192,
+        "kv_group": 1,
+        "clean_logits": true
+      },
+      "kind": "tune",
+      "reason": "official benchmark Ratio(%) case; baseline 5449.5 us -> final 2832.3 us (Ratio 8.76% -> 16.57%)",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/_fp8_lightning_indexer_kernel.py::_fp8_lightning_indexer_kernel::_fp8_lightning_indexer_main",
+      "workload_id": "lightning-indexer-fp8-s8k-h32-d64",
+      "label": "lightning-indexer-fp8-s8k-h32-d64",
+      "marks": [
+        "skip"
+      ],
+      "shape": [
+        1,
+        8192,
+        32,
+        64,
+        8192,
+        1
+      ],
+      "dtype": "float8_e4m3fn",
+      "params": {
+        "batch": 1,
+        "seq_len": 8192,
+        "heads": 32,
+        "index_dim": 64,
+        "seq_len_kv": 8192,
+        "kv_group": 1,
+        "clean_logits": true
+      },
+      "kind": "skipped",
+      "reason": "manifest status=restricted (CG-2026-0022: npuir front-end has no T.float8_e4m3fn, codegen rejects e4m3_float8, torch_npu device cast fails) and the benchmark _indexer_params() dedups on shape only, so this row collapses into lightning-indexer-bf16-s8k-h32-d64; no real fp8 run was attempted and none is faked"
+    }
+  ],
+  "auxiliary_kernel": {
+    "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+    "status": "no_gain",
+    "reason": "not a gate-4 target this round; perf_opt/clean_logits_.py still carries the previous round's flat-complement rewrite (sha256 5264bce3d27c849b88ade85a600154637bdd48b721d17dfb1f93131555db4824, Stage 3 baseline was db9d614fc33aa42621b34e3bb357b00f7e2977dd5145b84e8b31db90fc43fca1); it was not modified, not re-tuned and produced no new records this round"
+  }
+}

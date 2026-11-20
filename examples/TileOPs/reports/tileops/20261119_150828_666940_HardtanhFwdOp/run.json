@@ -1,0 +1,556 @@
+{
+  "schema_version": 2,
+  "operator": "HardtanhFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261119_150828_666940_HardtanhFwdOp",
+    "generated_at": "2026-11-19T15:21:23.713796+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs",
+    "git_commit": "2cc7f79fec3fc13dfaad26f211575613f82c605b",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_hardtanh.py",
+    "benchmark_file": "benchmarks/ops/bench_hardtanh.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_hardtanh.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_hardtanh.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-19T15:21:23.713796+08:00",
+      "evaluation_scope": "HardtanhFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261119_150828_666940_HardtanhFwdOp",
+      "git_commit": "2cc7f79fec3fc13dfaad26f211575613f82c605b",
+      "correctness_target": "tests/ops/test_hardtanh.py",
+      "benchmark_target": "benchmarks/ops/bench_hardtanh.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.3.0-beta.1",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 8,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 8,
+    "passed_cases": 8,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 8,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh[1048576-dtype0]",
+        "name": "test_hardtanh[1048576-dtype0]",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 42.106,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh[1048576-dtype1]",
+        "name": "test_hardtanh[1048576-dtype1]",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 15.851,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh[1048576-dtype2]",
+        "name": "test_hardtanh[1048576-dtype2]",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 16.062,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh[4000000-dtype3]",
+        "name": "test_hardtanh[4000000-dtype3]",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 1.011,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh[4000000-dtype4]",
+        "name": "test_hardtanh[4000000-dtype4]",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 0.971,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh_rejects_non_float_dtype",
+        "name": "test_hardtanh_rejects_non_float_dtype",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh_eval_roofline",
+        "name": "test_hardtanh_eval_roofline",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_hardtanh::test_hardtanh_edge[4096-dtype0]",
+        "name": "test_hardtanh_edge[4096-dtype0]",
+        "classname": "tests.ops.test_hardtanh",
+        "time_s": 0.953,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[smoke-1m-float32]",
+        "name": "test_hardtanh_manifest_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 106.336,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "5.4200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[smoke-1m-float16]",
+        "name": "test_hardtanh_manifest_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 78.664,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "4.2200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[smoke-1m-bfloat16]",
+        "name": "test_hardtanh_manifest_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 79.725,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "4.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[mlp-hidden-float16]",
+        "name": "test_hardtanh_manifest_bench[mlp-hidden-float16]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 80.951,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "15.3200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[mlp-hidden-bfloat16]",
+        "name": "test_hardtanh_manifest_bench[mlp-hidden-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 78.655,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "15.6600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[elementwise-16m-float16]",
+        "name": "test_hardtanh_manifest_bench[elementwise-16m-float16]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 78.92,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "28.3800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[elementwise-16m-bfloat16]",
+        "name": "test_hardtanh_manifest_bench[elementwise-16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 79.869,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "27.7400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardtanh::test_hardtanh_manifest_bench[elementwise-16m-float32]",
+        "name": "test_hardtanh_manifest_bench[elementwise-16m-float32]",
+        "classname": "benchmarks.ops.bench_hardtanh",
+        "time_s": 80.875,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "47.0800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-38784cca412c",
+        "label": "mlp-hidden",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 24576
+        },
+        "tag": "tileops",
+        "latency_us": 15.32,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 62.5787,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.0034027099609375,
+        "performance_tops": 1.0988532304763794,
+        "computility_tops": 9.17602252960205,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/artifacts/msprof/main_j6olldgu",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 15.32,
+          "max_latency_us": 15.32,
+          "min_latency_us": 15.32,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-0c5f035cb580",
+        "label": "mlp-hidden",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 15.66,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.22,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.0012664794921875,
+        "performance_tops": 2.144057035446167,
+        "computility_tops": 4.607297420501709,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/artifacts/msprof/main_1y4p3cqm",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 15.66,
+          "max_latency_us": 15.66,
+          "min_latency_us": 15.66,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-948c5107d2c0",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 24576
+        },
+        "tag": "tileops",
+        "latency_us": 28.379999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 67.5618,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.0018634796142578,
+        "performance_tops": 1.1845345497131348,
+        "computility_tops": 9.1781005859375,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/artifacts/msprof/main_jhwl9bmp",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 28.379999,
+          "max_latency_us": 28.379999,
+          "min_latency_us": 28.379999,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-d4c3fec3b359",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 27.74,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.12049999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.0011215209960938,
+        "performance_tops": 2.420574903488159,
+        "computility_tops": 4.6076483726501465,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/artifacts/msprof/main_pbizkmhl",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 27.74,
+          "max_latency_us": 27.74,
+          "min_latency_us": 27.74,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-e8fa45bea844",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 47.080002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 81.4528,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.5000753402709961,
+        "performance_tops": 0.7128196954727173,
+        "computility_tops": 4.607296943664551,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_150828_666940_HardtanhFwdOp/artifacts/msprof/main_v24d6gw6",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 47.080002,
+          "max_latency_us": 47.080002,
+          "min_latency_us": 47.080002,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "HardtanhFwdOp",
+      "family": "elementwise",
+      "cases": 8,
+      "passed": 8,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 61.22,
+        "max": 81.4528
+      }
+    }
+  ],
+  "warnings": []
+}

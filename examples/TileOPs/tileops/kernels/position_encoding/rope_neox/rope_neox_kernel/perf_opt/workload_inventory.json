@@ -1,0 +1,161 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench | test_rope_longrope_bench | test_rope_llama31_bench (union, expanded from examples/TileOPs/tileops/manifest/position_encoding.yaml)",
+  "target_kernel_name": "main",
+  "note": "Round-4 controlled experiment on the 1d kernel (2d kernel unchanged: perf_opt/_make_rope_neox_2d.py sha256 ab22c0254b20fa7d83ea527f7e2b2aff5fe96ece243052869e676cc3cfa320e4, its records kept in perf_opt/history/). Baseline is re-measured from the r3 current best (perf_opt/_make_rope_neox_1d.py, sha256 c6098298...) in this session; the r3 records moved to history/perf_records_r3.jsonl and the r3 log to history/opt_log_r3.md. Round-4 outcome: no_gain -- r3 stays the merged winner (sha256 unchanged).",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-256-d64-smoke-float16",
+      "label": "neox-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "reason": "smoke workload (manifest label carries the standalone smoke token) -> accuracy regression only, no performance baseline/winner. Final artifact `--level all` PASS (44/44, 0 WARN), L0-manifest fp16/bf16/fp32 max_diff=0.0.",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-256-d64-smoke-bfloat16",
+      "label": "neox-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "reason": "smoke workload (manifest label carries the standalone smoke token) -> accuracy regression only, no performance baseline/winner. Final artifact `--level all` PASS (44/44, 0 WARN), L0-manifest fp16/bf16/fp32 max_diff=0.0.",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-256-d64-smoke-float32",
+      "label": "neox-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "float32",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "reason": "smoke workload (manifest label carries the standalone smoke token) -> accuracy regression only, no performance baseline/winner. Final artifact `--level all` PASS (44/44, 0 WARN), L0-manifest fp16/bf16/fp32 max_diff=0.0.",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-2k-d64-fp16",
+      "label": "neox-1d-2k-d64-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        2048,
+        64
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 2048,
+        "head_dim": 64
+      },
+      "kind": "tune",
+      "reason": "at the kernel floor (3.61 us vs the 3.52 us fixed floor probe = 1.03x); tiling (52 rows, 1 wave) and op sequence are byte-identical to the r3 baseline, and the r4_prefetch candidate takes the same compile-time iters==1 branch. Round-4 3-pair interleaved A/B vs r3 = tie (3.63 vs 3.57, -1.65%, direction inconsistent, p=1.0).",
+      "tuning_status": "no_gain"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_neox_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "neox-1d-4k-d128-bf16",
+      "label": "neox-1d-4k-d128-bf16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        4096,
+        128
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 4096,
+        "head_dim": 128
+      },
+      "kind": "tune",
+      "reason": "no per-shape structural gain left: tiling unchanged (52 rows, 2 waves, n_num=79 = optimal integer-wave fit at 40 cores); larger tile (69 rows) only helps 8k's 3-wave geometry. Round-4 candidates: r4_prefetch 4.76 us single-run looked like +2.7% but the 5-run interleaved A/B returned tie and was in fact 2.75% SLOWER (4.73 vs 4.86, 3/5 pairs slower, p=1.0) while aiv_time/vec_time regressed; r4_fuseup (fused cross-dtype cast copies) 5.10 us = -4.3% (rollback); r4_vcastslice blocked at compile time (R-8: v-op targets must be whole buffers). Final record 4.78 us on the unchanged r3 artifact.",
+      "tuning_status": "no_gain"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_longrope_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "longrope-1d-8k-d128-bf16",
+      "label": "longrope-1d-8k-d128-bf16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        8192,
+        128
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 8192,
+        "head_dim": 128
+      },
+      "kind": "tune",
+      "reason": "winner_merged: r3 (fp32 transit buffers 7->6 lets the tile grow to the UB clamp, 52->69 rows, waves 4->3; interleaved A/B vs r2 = B_better -3.45%). Round 4 re-verified it as the current best: baseline 6.41 us, final 6.32 us on the same sha; r4_prefetch = 5-run A/B tie (6.28 vs 6.24, p=1.0) with aiv_time 4.35->4.56 (a regression in the in-aiv part, the single-run +1.7% was noise); r4_fuseup = -13.7% (rollback).",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_longrope_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_neox/rope_neox_kernel/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "longrope-1d-2k-d128-fp16",
+      "label": "longrope-1d-2k-d128-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        2048,
+        128
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 2048,
+        "head_dim": 128
+      },
+      "kind": "tune",
+      "reason": "at the kernel floor (3.94 us vs 3.52 us fixed floor = 1.12x); tiling unchanged (52 rows, 1 wave, iters==1) and structurally identical to the r3 baseline; final re-measure 3.94 vs baseline 3.86 (-2.1%) on the SAME artifact, i.e. msprof run-to-run noise (the r4_prefetch candidate compiles the identical body here).",
+      "tuning_status": "no_gain"
+    }
+  ]
+}

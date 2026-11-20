@@ -1,0 +1,313 @@
+# norm.yaml -- manifest entries for the 'norm' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+# Ported from TileOPs ``tileops/manifest/normalization.yaml`` --
+# AdaLayerNormFwdOp entry only (the neighbouring AdaLayerNormZeroFwdOp and
+# the other norm entries are not migrated yet).
+#
+# Note: the GPU repo names the manifest file ``normalization.yaml`` while its
+# ops/kernels family directory is ``norm``; the NPU project keeps one name
+# (``norm``) for the manifest file, workload module, and package directories.
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+AdaLayerNormFwdOp:
+  ref_api: "none"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float32 | float16 | bfloat16"}
+      scale: {dtype: "same_as(x)"}
+      shift: {dtype: "same_as(x)"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      eps: {type: float, default: 1.0e-5}
+    shape_rules:
+      - "scale.shape == x.shape"
+      - "shift.shape == x.shape"
+      - "output.shape == x.shape"
+
+  workloads:
+    # Smoke: small DiT-style block (all three dtypes)
+    - {x_shape: [64, 1152], dtypes: [float32, float16, bfloat16], label: "smoke-dit"}
+    # Full: DiT-XL/2 (hidden_dim=1152)
+    - {x_shape: [1024, 1152], dtypes: [float16, bfloat16], label: "dit-xl-2"}
+    # Full: Llama-3.1-8B prefill (hidden_dim=4096)
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "llama-3.1-8b-prefill"}
+    # Full: Llama-3.1-8B decode
+    - {x_shape: [1, 4096], dtypes: [bfloat16], label: "llama-3.1-8b-decode"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[:-1])"
+      N: "x.shape[-1]"
+    # Per row: N mean + N variance + N normalize + N scale + N shift ≈ 5N
+    flops: "5 * M * N"
+    # Read x + read scale + read shift + write output = 4*M*N
+    bytes: "4 * M * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/ada_layer_norm/ada_layer_norm.py
+    kernel_map:
+      ada_layer_norm: AdaLayerNormKernel
+    op: tileops/ops/norm/ada_layer_norm.py
+    test: tests/ops/test_ada_layer_norm.py
+    bench: benchmarks/ops/bench_ada_layer_norm.py
+    bench_manifest_driven: true
+
+AdaLayerNormZeroFwdOp:
+  ref_api: "none"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float32 | float16 | bfloat16"}
+      scale: {dtype: "same_as(x)"}
+      shift: {dtype: "same_as(x)"}
+      gate: {dtype: "same_as(x)"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      eps: {type: float, default: 1.0e-5}
+    shape_rules:
+      - "scale.shape == x.shape"
+      - "shift.shape == x.shape"
+      - "gate.shape == x.shape"
+      - "output.shape == x.shape"
+
+  workloads:
+    # Smoke: small DiT-style block (all three dtypes)
+    - {x_shape: [64, 1152], dtypes: [float32, float16, bfloat16], label: "smoke-dit-zero"}
+    # Full: DiT-XL/2 (hidden_dim=1152)
+    - {x_shape: [1024, 1152], dtypes: [float16, bfloat16], label: "dit-xl-2"}
+    # Full: Llama-3.1-8B prefill (hidden_dim=4096)
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "llama-3.1-8b-prefill"}
+    # Full: Llama-3.1-8B decode
+    - {x_shape: [1, 4096], dtypes: [bfloat16], label: "llama-3.1-8b-decode"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[:-1])"
+      N: "x.shape[-1]"
+    # Per row: mean + variance + normalize + scale + shift + gate ≈ 6N
+    flops: "6 * M * N"
+    # Read x + scale + shift + gate + write output = 5*M*N
+    bytes: "5 * M * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/ada_layer_norm/ada_layer_norm.py
+    kernel_map:
+      ada_layer_norm: AdaLayerNormKernel
+    op: tileops/ops/norm/ada_layer_norm_zero.py
+    test: tests/ops/test_ada_layer_norm_zero.py
+    bench: benchmarks/ops/bench_ada_layer_norm.py
+    bench_manifest_driven: true
+
+GroupNormFwdOp:
+  ref_api: "torch.nn.functional.group_norm"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float32 | float16 | bfloat16"}
+      weight: {dtype: "same_as(x)"}
+      bias: {dtype: "same_as(x)"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+    params:
+      num_groups: {type: int}
+      eps: {type: float, default: 1.0e-5}
+    shape_rules:
+      - "weight.shape == (x.shape[1],)"
+      - "bias.shape == (x.shape[1],)"
+      - "x.shape[1] % num_groups == 0"
+      - "output.shape == x.shape"
+
+  workloads:
+    # Smoke: small CI-friendly shape (all three dtypes)
+    - {x_shape: [2, 32, 8, 8], num_groups: 8, dtypes: [float32, float16, bfloat16], label: "smoke-g8"}
+    # Full: typical CV shapes
+    - {x_shape: [8, 128, 32, 32], num_groups: 32, dtypes: [float16, bfloat16], label: "image-g32"}
+    - {x_shape: [4, 256, 28, 28], num_groups: 32, dtypes: [float16], label: "wider-channel-g32"}
+    - {x_shape: [4, 128, 30, 30], num_groups: 16, dtypes: [float16], label: "tail-spatial-g16"}
+
+  roofline:
+    vars:
+      N: "x.shape[0]"
+      C: "x.shape[1]"
+      spatial_size: "product(x.shape[2:])"
+    # Per element: subtract mean + square for var + normalize + scale + bias ≈ 5
+    flops: "5 * N * C * spatial_size"
+    # Read x + write output + read weight (C) + read bias (C)
+    bytes: "(2 * N * C * spatial_size + 2 * C) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/group_norm/group_norm.py
+    kernel_map:
+      group_norm: GroupNormKernel
+    op: tileops/ops/norm/group_norm.py
+    test: tests/ops/test_group_norm.py
+    bench: benchmarks/ops/bench_group_norm.py
+    bench_manifest_driven: true
+
+
+FusedAddLayerNormFwdOp:
+  ref_api: "flash_attn.ops.triton.layer_norm.layer_norm_fn"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float32 | float16 | bfloat16"}
+      residual: {dtype: "same_as(x)"}
+      weight: {dtype: "same_as(x)"}
+      bias: {dtype: "same_as(x)"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+      residual_out: {dtype: "same_as(x)"}
+    params:
+      eps: {type: float, default: 1.0e-5}
+    shape_rules:
+      - "residual.shape == x.shape"
+      - "weight.shape == x.shape[-1:]"
+      - "bias.shape == x.shape[-1:]"
+      - "output.shape == x.shape"
+      - "residual_out.shape == x.shape"
+
+  workloads:
+    # Smoke: small Llama-style block (all three dtypes)
+    - {x_shape: [64, 4096], dtypes: [float32, float16, bfloat16], label: "smoke-llama"}
+    # Full: Llama-8B prefill (hidden_dim=4096)
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "llama-8b-prefill"}
+    # Full: Llama-8B decode
+    - {x_shape: [1, 4096], dtypes: [bfloat16], label: "llama-8b-decode"}
+    # Full: Llama-70B prefill (hidden_dim=8192)
+    - {x_shape: [2048, 8192], dtypes: [float16, bfloat16], label: "llama-70b-prefill"}
+    # Full: Llama-70B decode
+    - {x_shape: [1, 8192], dtypes: [bfloat16], label: "llama-70b-decode"}
+    # Full: Llama-13B prefill (hidden_dim=5120) -- fp32
+    - {x_shape: [2048, 5120], dtypes: [float32], label: "llama-13b-prefill"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[:-1])"
+      N: "x.shape[-1]"
+    # The residual add (1), then an affine LayerNorm (7).
+    flops: "8 * M * N"
+    # Read x + read residual + write output + write residual_out (4*M*N),
+    # plus read weight + read bias (2*N).
+    bytes: "(4 * M * N + 2 * N) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm.py
+    kernel_map:
+      fused_add_layer_norm: FusedAddLayerNormKernel
+    op: tileops/ops/norm/fused_add_layer_norm.py
+    test: tests/ops/test_fused_add_layer_norm.py
+    bench: benchmarks/ops/bench_fused_add_layer_norm.py
+    bench_manifest_driven: true
+
+BatchNormBwdOp:
+  ref_api: "torch.ops.aten.native_batch_norm_backward.default"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      grad_out: {dtype: "float32 | float16 | bfloat16", shape: "[N, C, S]"}
+      x: {dtype: "same_as(grad_out)", shape: "[N, C, S]"}
+      weight: {dtype: float32, shape: "[C]"}
+      mean: {dtype: float32, shape: "[C]"}
+      rstd: {dtype: float32, shape: "[C]"}
+    outputs:
+      grad_x: {dtype: "same_as(grad_out)", shape: "[N, C, S]"}
+      grad_weight: {dtype: float32, shape: "[C]"}
+      grad_bias: {dtype: float32, shape: "[C]"}
+    shape_rules:
+    - "x.shape == grad_out.shape"
+    - "weight.shape == mean.shape == rstd.shape == (grad_out.shape[1],)"
+
+  workloads:
+    # Smoke: smallest robust shape (all three dtypes). The GPU entry's
+    # ``L: []`` (BatchNorm1d) flattens to S = 1.
+    - {x_shape: [32, 64, 1], dtypes: [float32, float16, bfloat16], label: "smoke-fc"}
+    # Full: ResNet stage 1 (B=8, C=64, 32x32)
+    - {x_shape: [8, 64, 1024], dtypes: [float16, bfloat16], label: "resnet-stage1"}
+    # Full: ResNet stage 2 (B=4, C=128, 32x32)
+    - {x_shape: [4, 128, 1024], dtypes: [float16], label: "resnet-stage2"}
+    # Full: ResNet stage 3 (B=4, C=256, 28x28), paired with an fp32 case
+    - {x_shape: [4, 256, 784], dtypes: [float16, float32], label: "resnet-stage3"}
+    # Full: long channel (B=4, C=128, 512x512) -- the split / tiled path
+    - {x_shape: [4, 128, 262144], dtypes: [float16], label: "large-spatial"}
+
+  roofline:
+    vars:
+      N: "x_shape[0]"
+      C: "x_shape[1]"
+      S: "x_shape[2]"
+    # x_hat (2), the grad_bias and grad_weight reductions (3), and grad_x from
+    # them (4) -- copied verbatim from the GPU entry (device-agnostic).
+    flops: "9 * N * C * S"
+    # Read grad_out + x (2*N*C*S) and weight/mean/rstd (3*C); write grad_x
+    # (N*C*S) and grad_weight/grad_bias (2*C).
+    bytes: "(3 * N * C * S + 5 * C) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py
+    kernel_map:
+      bwd_wide: BatchNormBwdWideKernel
+      bwd_split: BatchNormBwdSplitKernel
+      bwd_kernel: BatchNormBwdKernel
+    op: tileops/ops/norm/batch_norm_bwd.py
+    test: tests/ops/test_batch_norm_bwd.py
+    bench: benchmarks/ops/bench_batch_norm_bwd.py
+    bench_manifest_driven: false
+
+FusedAddRMSNormFwdOp:
+  ref_api: "none"
+  family: norm
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+      residual: {dtype: "same_as(x)"}
+      weight: {dtype: "same_as(x)"}
+    outputs:
+      output: {dtype: "same_as(x)"}
+      residual_out: {dtype: "same_as(x)"}
+    params:
+      eps: {type: float, default: 1.0e-6}
+    shape_rules:
+      - "residual.shape == x.shape"
+      - "weight.shape == (x.shape[-1],)"
+      - "output.shape == x.shape"
+      - "residual_out.shape == x.shape"
+
+  workloads:
+    - {x_shape: [64, 512], dtypes: [float32, float16, bfloat16], label: "smoke-small"}
+    - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "llama-3.1-8b-prefill"}
+    - {x_shape: [1, 4096], dtypes: [bfloat16], label: "llama-3.1-8b-decode"}
+    - {x_shape: [2048, 8192], dtypes: [float16, bfloat16], label: "llama-3.1-70b-prefill"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[:-1])"
+      N: "x.shape[-1]"
+    # add + square + sum + rsqrt + 2 multiplies per element
+    flops: "5 * M * N"
+    # Read x + residual (2*M*N) + weight (N) + write y + residual_out (2*M*N)
+    bytes: "(4 * M * N + N) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm.py
+    kernel_map:
+      fused_add_rms_norm: FusedAddRMSNormKernel
+    op: tileops/ops/norm/fused_add_rms_norm.py
+    test: tests/ops/test_fused_add_rms_norm.py
+    bench: benchmarks/ops/bench_fused_add_rms_norm.py
+    bench_manifest_driven: true

@@ -1,0 +1,251 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+  "target_kernel_name": "main",
+  "manifest": "examples/TileOPs/tileops/manifest/elementwise.yaml::HardtanhFwdOp",
+  "bench_entry": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "n_total": 1048576,
+      "dtype": "float32",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "pytest case id contains the independent 'smoke' token (smoke-1m) -> excluded from performance tuning, used only for precision regression; final precision regression (`perf_opt/_make_hardtanh_kernel.py --level all`) L0/L1/L2/Boundary all PASS, max_diff=0.0",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "n_total": 1048576,
+      "dtype": "float16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "pytest case id contains the independent 'smoke' token (smoke-1m) -> excluded from performance tuning, used only for precision regression; final precision regression (`perf_opt/_make_hardtanh_kernel.py --level all`) L0/L1/L2/Boundary all PASS, max_diff=0.0",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "n_total": 1048576,
+      "dtype": "bfloat16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "pytest case id contains the independent 'smoke' token (smoke-1m) -> excluded from performance tuning, used only for precision regression; final precision regression (`perf_opt/_make_hardtanh_kernel.py --level all`) L0/L1/L2/Boundary all PASS, max_diff=0.0",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "bounded-hidden-float16",
+      "label": "bounded-hidden",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "n_total": 8388608,
+      "dtype": "float16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {fp32 8192, fp16 24576, bf16 12288}; fp32 and fp16 static-bulk/dynamic-tail split; fp16 native clamp skipping the fp32 transit; bf16 keeps mandatory fp32 transit); all 7 tune workloads improved 60.4%-76.7%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "bounded-hidden-bfloat16",
+      "label": "bounded-hidden",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "n_total": 8388608,
+      "dtype": "bfloat16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {fp32 8192, fp16 24576, bf16 12288}; fp32 and fp16 static-bulk/dynamic-tail split; fp16 native clamp skipping the fp32 transit; bf16 keeps mandatory fp32 transit); all 7 tune workloads improved 60.4%-76.7%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "bounded-conv-feat-float16",
+      "label": "bounded-conv-feat",
+      "marks": [],
+      "shape": [
+        16,
+        256,
+        56,
+        56
+      ],
+      "n_total": 12845056,
+      "dtype": "float16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {fp32 8192, fp16 24576, bf16 12288}; fp32 and fp16 static-bulk/dynamic-tail split; fp16 native clamp skipping the fp32 transit; bf16 keeps mandatory fp32 transit); all 7 tune workloads improved 60.4%-76.7%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "bounded-conv-feat-bfloat16",
+      "label": "bounded-conv-feat",
+      "marks": [],
+      "shape": [
+        16,
+        256,
+        56,
+        56
+      ],
+      "n_total": 12845056,
+      "dtype": "bfloat16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {fp32 8192, fp16 24576, bf16 12288}; fp32 and fp16 static-bulk/dynamic-tail split; fp16 native clamp skipping the fp32 transit; bf16 keeps mandatory fp32 transit); all 7 tune workloads improved 60.4%-76.7%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "float16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {fp32 8192, fp16 24576, bf16 12288}; fp32 and fp16 static-bulk/dynamic-tail split; fp16 native clamp skipping the fp32 transit; bf16 keeps mandatory fp32 transit); all 7 tune workloads improved 60.4%-76.7%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "bfloat16",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {fp32 8192, fp16 24576, bf16 12288}; fp32 and fp16 static-bulk/dynamic-tail split; fp16 native clamp skipping the fp32 transit; bf16 keeps mandatory fp32 transit); all 7 tune workloads improved 60.4%-76.7%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_hardtanh_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/hardtanh/hardtanh_kernel/_make_hardtanh_kernel.py::_make_hardtanh_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "float32",
+      "params": {
+        "min_val": -1.0,
+        "max_val": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {fp32 8192, fp16 24576, bf16 12288}; fp32 and fp16 static-bulk/dynamic-tail split; fp16 native clamp skipping the fp32 transit; bf16 keeps mandatory fp32 transit); all 7 tune workloads improved 60.4%-76.7%, smoke precision pass (max_diff=0)"
+    }
+  ],
+  "tuning_summary": {
+    "final_candidate_id": "final_merged",
+    "final_artifact": "perf_opt/_make_hardtanh_kernel.py",
+    "final_artifact_sha256": "167dcdae16733a68f34f671cad2991cec72d6a2e0e505cef3124483e3489e7a8",
+    "primary_metric": "msprof_op_task_duration_us",
+    "baseline_latency_us": {
+      "bounded-hidden-float16": 39.19,
+      "bounded-hidden-bfloat16": 39.22,
+      "bounded-conv-feat-float16": 58.37,
+      "bounded-conv-feat-bfloat16": 57.82,
+      "elementwise-16m-float16": 75.39,
+      "elementwise-16m-bfloat16": 75.54,
+      "elementwise-16m-float32": 213.32
+    },
+    "final_latency_us": {
+      "bounded-hidden-float16": 15.51,
+      "bounded-hidden-bfloat16": 15.14,
+      "bounded-conv-feat-float16": 19.43,
+      "bounded-conv-feat-bfloat16": 22.29,
+      "elementwise-16m-float16": 25.44,
+      "elementwise-16m-bfloat16": 28.32,
+      "elementwise-16m-float32": 49.8
+    },
+    "stop_reason": "success"
+  }
+}

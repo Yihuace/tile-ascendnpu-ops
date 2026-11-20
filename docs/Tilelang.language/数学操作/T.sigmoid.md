@@ -1,0 +1,63 @@
+# Tilelang.language.vsigmoid
+
+## 1. OP概述
+
+简介：`tilelang.language.vsigmoid` 返回给定向量/变量的sigmoid计算结果
+
+```python
+T.vsigmoid(src, dst)
+```
+
+注：`T.sigmoid` 是 TIR 标量表达式函数（`tilelang/language/tir/op.py`），仅用于标量表达式；向量算子为 `T.vsigmoid`。
+
+## 2. OP规格
+
+### 2.1 参数说明
+
+| 参数名  | 类型  | 说明  |
+| ------------ | ------------ | ------------ |
+| `src` | `tensor` | 输入tensor  |
+| `dst` | `tensor` | 输出tensor  |
+
+### 2.2 支持规格
+
+#### 2.2.1 DataType支持
+
+|   | uint8 | int8 | uint16 | int16 | uint32 | int32 | uint64 | int64 | fp16 | fp32 | bf16 | bool/int1 |
+| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
+| Ascend | ×  | × |  × |  × | ×  | ×  | ×  | ×  | √  | √ |  ×  | ×  |
+
+#### 2.2.2 Shape支持
+
+结论：在shape方面，sigmoid无特殊要求；
+
+### 2.3 特殊限制说明
+
+无
+
+### 2.4 使用方法
+
+以下示例实现了一个形状为(M,N)的tensor的Sigmoid计算
+
+```python
+@tilelang.jit(target="npuir")
+def sigmoid_kernel(M, N, dtype):
+    BLOCK_SIZE = 1
+
+    @T.prim_func
+    def main(src: T.Tensor((M, N), dtype), dst: T.Tensor((M, N), dtype)):
+
+        with T.Kernel(BLOCK_SIZE, is_npu=True) as (cid, _):
+            src_ub = T.alloc_shared((M, N), dtype)
+            dst_ub = T.alloc_shared((M, N), dtype)
+
+            T.copy(src, src_ub)
+            T.vsigmoid(src_ub, dst_ub)
+            T.copy(dst_ub, dst)
+
+    return main
+```
+
+## 3. Tilelang Op到Ascend NPU IR Op的转换
+
+`tilelang::vsigmoid` Op 将被转换为 `hivm::VAdd` Op, `hivm::VSub` Op, `hivm::VExp` Op , `hivm::VDiv` Op

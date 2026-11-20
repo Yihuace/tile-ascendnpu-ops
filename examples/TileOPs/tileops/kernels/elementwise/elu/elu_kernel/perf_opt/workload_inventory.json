@@ -1,0 +1,200 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+  "target_kernel_name": "main",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "workload label token 'smoke-1m' is an independent smoke token -> excluded from performance tuning, used only for precision regression",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "workload label token 'smoke-1m' is an independent smoke token -> excluded from performance tuning, used only for precision regression",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "workload label token 'smoke-1m' is an independent smoke token -> excluded from performance tuning, used only for precision regression",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "mlp-hidden-float16",
+      "label": "mlp-hidden",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate r3_final merged (mask-free chain + per-dtype block_size + fp32 static-bulk); all tune workloads non-regressed, smoke precision pass"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "mlp-hidden-bfloat16",
+      "label": "mlp-hidden",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate r3_final merged (mask-free chain + per-dtype block_size + fp32 static-bulk); all tune workloads non-regressed, smoke precision pass"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "mlp-hidden-wide-float16",
+      "label": "mlp-hidden-wide",
+      "marks": [],
+      "shape": [
+        2048,
+        8192
+      ],
+      "dtype": "float16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate r3_final merged (mask-free chain + per-dtype block_size + fp32 static-bulk); all tune workloads non-regressed, smoke precision pass"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "mlp-hidden-wide-bfloat16",
+      "label": "mlp-hidden-wide",
+      "marks": [],
+      "shape": [
+        2048,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate r3_final merged (mask-free chain + per-dtype block_size + fp32 static-bulk); all tune workloads non-regressed, smoke precision pass"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate r3_final merged (mask-free chain + per-dtype block_size + fp32 static-bulk); all tune workloads non-regressed, smoke precision pass"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate r3_final merged (mask-free chain + per-dtype block_size + fp32 static-bulk); all tune workloads non-regressed, smoke precision pass"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_elu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/elu/elu_kernel/_make_elu_kernel.py::_make_elu_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {
+        "alpha": 1.0,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate r3_final merged (mask-free chain + per-dtype block_size + fp32 static-bulk); all tune workloads non-regressed, smoke precision pass"
+    }
+  ]
+}

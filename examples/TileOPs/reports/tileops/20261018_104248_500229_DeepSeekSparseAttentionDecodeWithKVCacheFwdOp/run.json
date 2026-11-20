@@ -1,0 +1,520 @@
+{
+  "schema_version": 2,
+  "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+    "generated_at": "2026-10-18T10:58:55.331952+08:00",
+    "project_root": "/home/developer/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "5a90b9918747fe9ed4870e6cd5c39760c68c33e8",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_deepseek_dsa_decode.py",
+    "benchmark_file": "benchmarks/ops/bench_deepseek_dsa_decode.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_deepseek_dsa_decode.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_deepseek_dsa_decode.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-18T10:58:55.331952+08:00",
+      "evaluation_scope": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "git_commit": "5a90b9918747fe9ed4870e6cd5c39760c68c33e8",
+      "correctness_target": "tests/ops/test_deepseek_dsa_decode.py",
+      "benchmark_target": "benchmarks/ops/bench_deepseek_dsa_decode.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 5,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 5,
+    "passed_cases": 5,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 5,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_deepseek_dsa_decode::test_sparse_mla_decode[1-128-128-256-512-64-256-1-1-128-None-dtype0]",
+        "name": "test_sparse_mla_decode[1-128-128-256-512-64-256-1-1-128-None-dtype0]",
+        "classname": "tests.ops.test_deepseek_dsa_decode",
+        "time_s": 51.604,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_deepseek_dsa_decode::test_sparse_mla_decode[1-128-64-512-512-64-256-1-1-64-None-dtype1]",
+        "name": "test_sparse_mla_decode[1-128-64-512-512-64-256-1-1-64-None-dtype1]",
+        "classname": "tests.ops.test_deepseek_dsa_decode",
+        "time_s": 21.889,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_deepseek_dsa_decode::test_sparse_mla_decode[full-fp16-mainstream]",
+        "name": "test_sparse_mla_decode[full-fp16-mainstream]",
+        "classname": "tests.ops.test_deepseek_dsa_decode",
+        "time_s": 7.764,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "max_abs_err": "2.44e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_deepseek_dsa_decode::test_sparse_mla_decode[full-fp16-longer-kv]",
+        "name": "test_sparse_mla_decode[full-fp16-longer-kv]",
+        "classname": "tests.ops.test_deepseek_dsa_decode",
+        "time_s": 7.05,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_deepseek_dsa_decode::test_sparse_mla_decode_eval_roofline",
+        "name": "test_sparse_mla_decode_eval_roofline",
+        "classname": "tests.ops.test_deepseek_dsa_decode",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_deepseek_dsa_decode::test_dsa_decode_bench[dsa-decode-smoke-float16]",
+        "name": "test_dsa_decode_bench[dsa-decode-smoke-float16]",
+        "classname": "benchmarks.ops.bench_deepseek_dsa_decode",
+        "time_s": 133.226,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "tileops_latency_us": "8961.1602"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_deepseek_dsa_decode::test_dsa_decode_bench[dsa-decode-smoke-bfloat16]",
+        "name": "test_dsa_decode_bench[dsa-decode-smoke-bfloat16]",
+        "classname": "benchmarks.ops.bench_deepseek_dsa_decode",
+        "time_s": 99.082,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "tileops_latency_us": "9007.2197"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_deepseek_dsa_decode::test_dsa_decode_bench[single-batch-mainstream-float16]",
+        "name": "test_dsa_decode_bench[single-batch-mainstream-float16]",
+        "classname": "benchmarks.ops.bench_deepseek_dsa_decode",
+        "time_s": 361.295,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "tileops_latency_us": "567489.5625"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_deepseek_dsa_decode::test_dsa_decode_bench[longer-kv-lower-topk-float16]",
+        "name": "test_dsa_decode_bench[longer-kv-lower-topk-float16]",
+        "classname": "benchmarks.ops.bench_deepseek_dsa_decode",
+        "time_s": 151.775,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "tileops_latency_us": "142168.1562"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_deepseek_dsa_decode::test_dsa_decode_bench[long-kv-low-topk-float16]",
+        "name": "test_dsa_decode_bench[long-kv-low-topk-float16]",
+        "classname": "benchmarks.ops.bench_deepseek_dsa_decode",
+        "time_s": 97.071,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.deepseek_dsa_decode",
+          "tileops_latency_us": "35664.9609"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+        "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-1cfee34e3f1d",
+        "label": "dsa-decode-smoke",
+        "params": {
+          "batch": 1,
+          "dim": 512,
+          "dim_tail": 64,
+          "dtype": "float16",
+          "heads": 128,
+          "heads_kv": 1,
+          "q_start_index_s": 128,
+          "seq_len_kv": 256,
+          "seq_len_q": 128,
+          "sm_scale": null,
+          "stride_kv": 1,
+          "topk": 256
+        },
+        "config": {
+          "block_N": 64,
+          "block_heads": 32,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 8961.160156,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.3493,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 625.2283935546875,
+        "performance_tops": 1.0454965829849243,
+        "computility_tops": 299.3018798828125,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_vemq5zo0",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 8961.160156,
+          "max_latency_us": 8961.160156,
+          "min_latency_us": 8961.160156,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+        "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-7f3a2e900bb0",
+        "label": "dsa-decode-smoke",
+        "params": {
+          "batch": 1,
+          "dim": 512,
+          "dim_tail": 64,
+          "dtype": "bfloat16",
+          "heads": 128,
+          "heads_kv": 1,
+          "q_start_index_s": 128,
+          "seq_len_kv": 256,
+          "seq_len_q": 128,
+          "sm_scale": null,
+          "stride_kv": 1,
+          "topk": 256
+        },
+        "config": {
+          "block_N": 64,
+          "block_heads": 32,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 9007.219727,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.3484,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 626.8917846679688,
+        "performance_tops": 1.042944312095642,
+        "computility_tops": 299.321533203125,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_fjymly38",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 9007.219727,
+          "max_latency_us": 9007.219727,
+          "min_latency_us": 9007.219727,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+        "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-44fb56d4b6cf",
+        "label": "single-batch-mainstream",
+        "params": {
+          "batch": 1,
+          "dim": 512,
+          "dim_tail": 64,
+          "dtype": "float16",
+          "heads": 128,
+          "heads_kv": 1,
+          "q_start_index_s": 1024,
+          "seq_len_kv": 2048,
+          "seq_len_q": 1024,
+          "sm_scale": null,
+          "stride_kv": 1,
+          "topk": 2048
+        },
+        "config": {
+          "block_N": 64,
+          "block_heads": 32,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 567489.5625,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.3515,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 607.0603637695312,
+        "performance_tops": 1.0523697137832642,
+        "computility_tops": 299.4310607910156,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_w6rypi7b",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 567489.5625,
+          "max_latency_us": 567489.5625,
+          "min_latency_us": 567489.5625,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+        "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-ff6005a32b9c",
+        "label": "longer-kv-lower-topk",
+        "params": {
+          "batch": 1,
+          "dim": 512,
+          "dim_tail": 64,
+          "dtype": "float16",
+          "heads": 128,
+          "heads_kv": 1,
+          "q_start_index_s": 512,
+          "seq_len_kv": 4096,
+          "seq_len_q": 512,
+          "sm_scale": null,
+          "stride_kv": 1,
+          "topk": 1024
+        },
+        "config": {
+          "block_N": 64,
+          "block_heads": 32,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 142168.15625,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.35100000000000003,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 370.8240661621094,
+        "performance_tops": 1.0507827997207642,
+        "computility_tops": 299.40924072265625,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_cehp7wdu",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 142168.15625,
+          "max_latency_us": 142168.15625,
+          "min_latency_us": 142168.15625,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+        "case_id": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp-05724dff0d7f",
+        "label": "long-kv-low-topk",
+        "params": {
+          "batch": 1,
+          "dim": 512,
+          "dim_tail": 64,
+          "dtype": "float16",
+          "heads": 128,
+          "heads_kv": 1,
+          "q_start_index_s": 256,
+          "seq_len_kv": 8192,
+          "seq_len_q": 256,
+          "sm_scale": null,
+          "stride_kv": 1,
+          "topk": 512
+        },
+        "config": {
+          "block_N": 64,
+          "block_heads": 32,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 35664.960938,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.3502,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 345.06732177734375,
+        "performance_tops": 1.048362135887146,
+        "computility_tops": 299.369384765625,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261018_104248_500229_DeepSeekSparseAttentionDecodeWithKVCacheFwdOp/artifacts/msprof/main_mix_aic_0sqs6wep",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 35664.960938,
+          "max_latency_us": 35664.960938,
+          "min_latency_us": 35664.960938,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "DeepSeekSparseAttentionDecodeWithKVCacheFwdOp",
+      "family": "attention",
+      "cases": 5,
+      "passed": 5,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0022575,
+      "max_abs_err": 0.00781,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 0.3484,
+        "max": 0.3515
+      }
+    }
+  ],
+  "warnings": []
+}

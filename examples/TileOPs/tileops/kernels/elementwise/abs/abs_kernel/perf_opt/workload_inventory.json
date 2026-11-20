@@ -1,0 +1,184 @@
+{
+  "op": "AbsFwdOp",
+  "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+  "target_kernel_name": "abs_fwd_kernel",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 1048576
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=16384/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=16384/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {
+        "n_total": 16777216
+      },
+      "kind": "tune",
+      "reason": "winner bs=16384/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "elementwise-64m-float16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 67108864
+      },
+      "kind": "tune",
+      "reason": "winner bs=16384/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "elementwise-64m-bfloat16",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [
+        8192,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 67108864
+      },
+      "kind": "tune",
+      "reason": "winner bs=16384/nc=192 已核内合并;全部 tune workload 非回退复测通过",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "elementwise-256m-float16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "float16",
+      "params": {
+        "n_total": 268435456
+      },
+      "kind": "tune",
+      "reason": "winner bs=16384/nc=192 已核内合并;Stage 3 结构下该规模因 Block Dim=131072 超发射上限而启动失败(OPS error 107000),改写后已可运行",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_abs.py::test_abs_bench",
+      "kernel_id": "tileops/kernels/elementwise/abs/abs_kernel/abs_fwd_kernel.py::abs_fwd_kernel::abs_fwd_kernel",
+      "workload_id": "elementwise-256m-bfloat16",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [
+        16384,
+        16384
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "n_total": 268435456
+      },
+      "kind": "tune",
+      "reason": "winner bs=16384/nc=192 已核内合并;Stage 3 结构下该规模因 Block Dim=131072 超发射上限而启动失败(OPS error 107000),改写后已可运行",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

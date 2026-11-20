@@ -1,0 +1,26 @@
+# NPU Benchmark Report
+Generated: 2026-11-03 12:20:04
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## HardswishFwdOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | AI(Ops/Byte) | Bandwidth(TB/s) | Computility(TOps/s) | Perf(TOps/s) | artifact_dir | msprof | prof_mode | op_params | config | dtype | shape |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| smoke-1m | 7.5400 | 31.7880 | 1.2514 | 1.7500 | 4.6026 | 0.6962 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_fr0vwtvq | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 7.54, 'max_latency_us': 7.54, 'min_latency_us': 7.54, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 4096} | float32 | [1048576] |
+| smoke-1m | 5.3200 | 26.5873 | 3.5537 | 1.7500 | 5.2693 | 1.4010 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_dbulr2ok | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 5.32, 'max_latency_us': 5.32, 'min_latency_us': 5.32, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 16384} | float16 | [1048576] |
+| smoke-1m | 5.5400 | 28.9009 | 3.5088 | 1.7500 | 4.5962 | 1.3283 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_mlhrffzw | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 5.54, 'max_latency_us': 5.54, 'min_latency_us': 5.54, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 8192} | bfloat16 | [1048576] |
+| mbv3-stage2 | 19.5200 | 64.4422 | 3.5042 | 1.7500 | 5.3674 | 3.4589 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_ei6nbe3k | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 19.52, 'max_latency_us': 19.52, 'min_latency_us': 19.52, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 16384} | float16 | [32, 96, 56, 56] |
+| mbv3-stage2 | 22.4800 | 65.3964 | 3.5079 | 1.7500 | 4.5976 | 3.0067 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_jvv21uta | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 22.48, 'max_latency_us': 22.48, 'min_latency_us': 22.48, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 8192} | bfloat16 | [32, 96, 56, 56] |
+| mbv3-stage3 | 11.7200 | 67.1739 | 3.5062 | 1.7500 | 5.3632 | 3.6027 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_k7ijr3p6 | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 11.72, 'max_latency_us': 11.72, 'min_latency_us': 11.72, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 10752} | float16 | [32, 240, 28, 28] |
+| mbv3-stage3 | 15.2800 | 60.1349 | 3.5080 | 1.7500 | 4.5975 | 2.7647 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_hqbrksqg | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 15.28, 'max_latency_us': 15.28, 'min_latency_us': 15.28, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 8192} | bfloat16 | [32, 240, 28, 28] |
+| fc-wide | 16.6200 | 65.9065 | 3.5042 | 1.7500 | 5.3673 | 3.5374 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_ye0oed29 | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 16.620001, 'max_latency_us': 16.620001, 'min_latency_us': 16.620001, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 16384} | float16 | [2048, 4096] |
+| fc-wide | 20.1400 | 63.5606 | 3.5079 | 1.7500 | 4.5976 | 2.9222 | /mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261103_120518_061190_HardswishFwdOp/artifacts/msprof/main_ve8l463b | {'captured_op_count': 1, 'captured_op_names': ['main'], 'kernel_name_attempts': ['main'], 'kernel_name_requested': 'main', 'kernel_name_resolved': 'main', 'latency_us': 20.139999, 'max_latency_us': 20.139999, 'min_latency_us': 20.139999, 'op_name': 'main', 'sample_count': 1} | msprof | {} | {'block_size': 8192} | bfloat16 | [2048, 4096] |

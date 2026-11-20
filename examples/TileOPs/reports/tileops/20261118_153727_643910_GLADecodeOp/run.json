@@ -1,0 +1,542 @@
+{
+  "schema_version": 2,
+  "operator": "GLADecodeOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261118_153727_643910_GLADecodeOp",
+    "generated_at": "2026-11-18T15:40:15.214289+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": null,
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_gla_decode.py",
+    "benchmark_file": "benchmarks/ops/bench_gla_decode.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_gla_decode.py",
+        "-sv",
+        "--junitxml=/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_gla_decode.py",
+        "-sv",
+        "--junitxml=/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-18T15:40:15.214289+08:00",
+      "evaluation_scope": "GLADecodeOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261118_153727_643910_GLADecodeOp",
+      "git_commit": null,
+      "correctness_target": "tests/ops/test_gla_decode.py",
+      "benchmark_target": "benchmarks/ops/bench_gla_decode.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.3.0-beta.1",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 12,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 12,
+    "passed_cases": 12,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 6,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[smoke-d64-fp16]",
+        "name": "test_gla_decode[smoke-d64-fp16]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 1.833,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[smoke-d64-bf16]",
+        "name": "test_gla_decode[smoke-d64-bf16]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.197,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[serving-b1-h8]",
+        "name": "test_gla_decode[serving-b1-h8]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.585,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[serving-b1-h32]",
+        "name": "test_gla_decode[serving-b1-h32]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.602,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[serving-b8-h32]",
+        "name": "test_gla_decode[serving-b8-h32]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.611,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[serving-b8-h64]",
+        "name": "test_gla_decode[serving-b8-h64]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.657,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[f32-untiled]",
+        "name": "test_gla_decode[f32-untiled]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.154,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[small-k16]",
+        "name": "test_gla_decode[small-k16]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.186,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[rect-d128x64]",
+        "name": "test_gla_decode[rect-d128x64]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.19,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[custom-scale]",
+        "name": "test_gla_decode[custom-scale]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.188,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode_default_scale",
+        "name": "test_gla_decode_default_scale",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode_eval_roofline",
+        "name": "test_gla_decode_eval_roofline",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[smoke-b2-h4-d64-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[smoke-b2-h4-d64-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 22.166,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "3.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b1-h8-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b1-h8-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 20.918,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "3.5000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b1-h32-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b1-h32-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 20.944,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "5.2400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b1-h64-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b1-h64-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 21.925,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "5.9600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b8-h32-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b8-h32-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 21.106,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "13.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b8-h64-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b8-h64-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 20.73,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "20.8200"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-624c6100e0dd",
+        "label": "serving-b1-h8",
+        "params": {
+          "B": 1,
+          "DK": 128,
+          "DV": 128,
+          "H": 8,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 3.5,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 4.3489,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.5785679817199707,
+        "performance_tops": 0.19624227285385132,
+        "computility_tops": 8.444851875305176,
+        "artifact_dir": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_8w2jyrhn",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_requested": "_gla_decode_algo1_1h_main",
+          "kernel_name_resolved": "_gla_decode_algo1_1h_main",
+          "kernel_names": null,
+          "latency_us": 3.5,
+          "max_latency_us": 3.5,
+          "min_latency_us": 3.5,
+          "multi_launch": false,
+          "op_name": "_gla_decode_algo1_1h_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-87e5c0c1bd86",
+        "label": "serving-b1-h32",
+        "params": {
+          "B": 1,
+          "DK": 128,
+          "DV": 128,
+          "H": 32,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 5.24,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 11.6149,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.5794975757598877,
+        "performance_tops": 0.5243115425109863,
+        "computility_tops": 8.444851875305176,
+        "artifact_dir": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_egdi35xn",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_requested": "_gla_decode_algo1_1h_main",
+          "kernel_name_resolved": "_gla_decode_algo1_1h_main",
+          "kernel_names": null,
+          "latency_us": 5.24,
+          "max_latency_us": 5.24,
+          "min_latency_us": 5.24,
+          "multi_launch": false,
+          "op_name": "_gla_decode_algo1_1h_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-a152dc16af7b",
+        "label": "serving-b1-h64",
+        "params": {
+          "B": 1,
+          "DK": 128,
+          "DV": 128,
+          "H": 64,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 5.96,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 20.4223,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.578691244125366,
+        "performance_tops": 0.9215999841690063,
+        "computility_tops": 8.453252792358398,
+        "artifact_dir": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_1qkw4glu",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_requested": "_gla_decode_algo1_1h_main",
+          "kernel_name_resolved": "_gla_decode_algo1_1h_main",
+          "kernel_names": null,
+          "latency_us": 5.96,
+          "max_latency_us": 5.96,
+          "min_latency_us": 5.96,
+          "multi_launch": false,
+          "op_name": "_gla_decode_algo1_1h_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-50d02b2e7b6d",
+        "label": "serving-b8-h32",
+        "params": {
+          "B": 8,
+          "DK": 128,
+          "DV": 128,
+          "H": 32,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 13.46,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 36.1698,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.58986496925354,
+        "performance_tops": 1.6393128633499146,
+        "computility_tops": 8.358011245727539,
+        "artifact_dir": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_68vv2crl",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_requested": "_gla_decode_algo1_1h_main",
+          "kernel_name_resolved": "_gla_decode_algo1_1h_main",
+          "kernel_names": null,
+          "latency_us": 13.46,
+          "max_latency_us": 13.46,
+          "min_latency_us": 13.46,
+          "multi_launch": false,
+          "op_name": "_gla_decode_algo1_1h_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-79b99814337f",
+        "label": "serving-b8-h64",
+        "params": {
+          "B": 8,
+          "DK": 128,
+          "DV": 128,
+          "H": 64,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 20.82,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 46.766799999999996,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.5897340774536133,
+        "performance_tops": 2.11948823928833,
+        "computility_tops": 8.359286308288574,
+        "artifact_dir": "/tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_r24sjomx",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_algo1_1h_main"
+          ],
+          "kernel_name_requested": "_gla_decode_algo1_1h_main",
+          "kernel_name_resolved": "_gla_decode_algo1_1h_main",
+          "kernel_names": null,
+          "latency_us": 20.82,
+          "max_latency_us": 20.82,
+          "min_latency_us": 20.82,
+          "multi_launch": false,
+          "op_name": "_gla_decode_algo1_1h_main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "GLADecodeOp",
+      "family": "linear_attention",
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 4.3489,
+        "max": 46.766799999999996
+      }
+    }
+  ],
+  "warnings": []
+}

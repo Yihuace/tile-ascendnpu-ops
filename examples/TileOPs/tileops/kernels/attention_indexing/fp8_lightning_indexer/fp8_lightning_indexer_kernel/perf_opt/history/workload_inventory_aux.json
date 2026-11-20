@@ -1,0 +1,57 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+  "expanded_from": "same benchmark cases as the primary kernel; each case with clean_logits=true also runs the clean_logits_ kernel unit",
+  "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+  "target_kernel_name": "clean_logits_kernel",
+  "note": "auxiliary kernel of FP8LightningIndexerOp. Not the gate-4 reconciliation object: its records live in perf_records_clean_logits.jsonl (primary records are in perf_records.jsonl), union preserved in perf_records_all.audit.jsonl.",
+  "workloads": [
+    {
+      "workload_id": "clean-logits-s8k-g1",
+      "label": "clean-logits-s8k-g1",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "batch": 1,
+        "seq_len": 8192,
+        "seq_len_kv": 8192,
+        "kv_group": 1
+      },
+      "dtype": "float32",
+      "params": {
+        "block_N": 256,
+        "G_MAX": 2,
+        "window": "full"
+      },
+      "kind": "tune",
+      "reason": "aux kernel of the largest full-mark bench case; window=full (cu_seqlen_ks=0, cu_seqlen_ke=seq_len_kv) as produced by FP8LightningIndexerWorkload.gen_inputs",
+      "tuning_status": "no_gain"
+    },
+    {
+      "workload_id": "clean-logits-s4k-g1",
+      "label": "clean-logits-s4k-g1",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer_kernel/clean_logits_.py::clean_logits_::clean_logits_kernel",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fp8_lightning_indexer.py::test_fp8_lightning_indexer_bench",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "batch": 1,
+        "seq_len": 4096,
+        "seq_len_kv": 8192,
+        "kv_group": 1
+      },
+      "dtype": "float32",
+      "params": {
+        "block_N": 256,
+        "G_MAX": 2,
+        "window": "full"
+      },
+      "kind": "tune",
+      "reason": "aux kernel of the second full-mark bench case; window=full as produced by the workload generator",
+      "tuning_status": "no_gain"
+    }
+  ]
+}

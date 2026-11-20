@@ -1,0 +1,848 @@
+{
+  "schema_version": 2,
+  "operator": "ClampMaxFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261015_135036_077346_ClampMaxFwdOp",
+    "generated_at": "2026-10-15T13:59:04.312804+08:00",
+    "project_root": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "2238099280b481491f96f99482c86246a09c8c68",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_clamp_max.py",
+    "benchmark_file": "benchmarks/ops/bench_clamp_max.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_clamp_max.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_clamp_max.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-15T13:59:04.312804+08:00",
+      "evaluation_scope": "ClampMaxFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261015_135036_077346_ClampMaxFwdOp",
+      "git_commit": "2238099280b481491f96f99482c86246a09c8c68",
+      "correctness_target": "tests/ops/test_clamp_max.py",
+      "benchmark_target": "benchmarks/ops/bench_clamp_max.py"
+    },
+    "environment": {
+      "npu": "Ascend910_9362 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.5",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 15,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 15,
+    "passed_cases": 15,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 11,
+    "benchmark_failed": 0,
+    "case_count": 9,
+    "msprof_case_count": 9,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 15,
+    "passed": 15,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_op[input_shape0-max_shape0-dtype0]",
+        "name": "test_clamp_max_op[input_shape0-max_shape0-dtype0]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 11.837,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_op[input_shape1-max_shape1-dtype1]",
+        "name": "test_clamp_max_op[input_shape1-max_shape1-dtype1]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 2.787,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_op[input_shape2-max_shape2-dtype2]",
+        "name": "test_clamp_max_op[input_shape2-max_shape2-dtype2]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 2.78,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_op[input_shape3-max_shape3-dtype3]",
+        "name": "test_clamp_max_op[input_shape3-max_shape3-dtype3]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 1.412,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_broadcast[input_shape0-max_shape0]",
+        "name": "test_clamp_max_broadcast[input_shape0-max_shape0]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 1.429,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_broadcast[input_shape1-max_shape1]",
+        "name": "test_clamp_max_broadcast[input_shape1-max_shape1]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 0.037,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_broadcast[input_shape2-max_shape2]",
+        "name": "test_clamp_max_broadcast[input_shape2-max_shape2]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 1.413,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_broadcast[input_shape3-max_shape3]",
+        "name": "test_clamp_max_broadcast[input_shape3-max_shape3]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 1.421,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_init_signature_pytorch_aligned",
+        "name": "test_clamp_max_init_signature_pytorch_aligned",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_nan_propagation[dtype0]",
+        "name": "test_clamp_max_nan_propagation[dtype0]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 1.412,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_nan_propagation[dtype1]",
+        "name": "test_clamp_max_nan_propagation[dtype1]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 1.413,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_rejects_unsupported_dtype[dtype0]",
+        "name": "test_clamp_max_rejects_unsupported_dtype[dtype0]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_rejects_unsupported_dtype[dtype1]",
+        "name": "test_clamp_max_rejects_unsupported_dtype[dtype1]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_rejects_unsupported_dtype[dtype2]",
+        "name": "test_clamp_max_rejects_unsupported_dtype[dtype2]",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_max::test_clamp_max_eval_roofline",
+        "name": "test_clamp_max_eval_roofline",
+        "classname": "tests.ops.test_clamp_max",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[smoke-1k-float16]",
+        "name": "test_clamp_max_bench[smoke-1k-float16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 50.17,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "2.1200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[smoke-1k-bfloat16]",
+        "name": "test_clamp_max_bench[smoke-1k-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 41.325,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "2.1000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[elementwise-16M-float16]",
+        "name": "test_clamp_max_bench[elementwise-16M-float16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 41.585,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "55.1389"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[elementwise-16M-bfloat16]",
+        "name": "test_clamp_max_bench[elementwise-16M-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 42.556,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "54.5789"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[elementwise-16M-float32]",
+        "name": "test_clamp_max_bench[elementwise-16M-float32]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 41.781,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "129.8774"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[cnn-feat-broadcast-float16]",
+        "name": "test_clamp_max_bench[cnn-feat-broadcast-float16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 41.433,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "45.9991"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[cnn-feat-broadcast-bfloat16]",
+        "name": "test_clamp_max_bench[cnn-feat-broadcast-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 42.521,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "41.2792"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[cnn-feat-broadcast-float32]",
+        "name": "test_clamp_max_bench[cnn-feat-broadcast-float32]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 41.472,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "93.6381"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[row-broadcast-float32]",
+        "name": "test_clamp_max_bench[row-broadcast-float32]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 39.826,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "128.1574"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[row-broadcast-float16]",
+        "name": "test_clamp_max_bench[row-broadcast-float16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 38.753,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "57.5988"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_max::test_clamp_max_bench[row-broadcast-bfloat16]",
+        "name": "test_clamp_max_bench[row-broadcast-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_max",
+        "time_s": 39.696,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMaxFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_max",
+          "tileops_latency_us": "60.3188"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-a04026d4ad4d",
+        "label": "elementwise-16M",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 55.138897,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 68.1444,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.24813725054264069,
+        "performance_tops": 0.30436474084854126,
+        "computility_tops": 8.440275192260742,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_512yrxmh",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 55.138897,
+          "max_latency_us": 55.138897,
+          "min_latency_us": 55.138897,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-786dd1842f2e",
+        "label": "elementwise-16M",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 54.578907,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 68.8435,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.9923219084739685,
+        "performance_tops": 1.2296688556671143,
+        "computility_tops": 4.223678112030029,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_cj877q6d",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 54.578907,
+          "max_latency_us": 54.578907,
+          "min_latency_us": 54.578907,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-77c7956dea0a",
+        "label": "elementwise-16M",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 129.877396,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.9157,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.11231525242328644,
+        "performance_tops": 0.1292167454957962,
+        "computility_tops": 4.222711563110352,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_9a3fk6me",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 129.877396,
+          "max_latency_us": 129.877396,
+          "min_latency_us": 129.877396,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-ee9264e7a5ea",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "max_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 45.999081,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.3212,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.2450970560312271,
+        "performance_tops": 0.2793572247028351,
+        "computility_tops": 8.43791389465332,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_8p52509a",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 45.999081,
+          "max_latency_us": 45.999081,
+          "min_latency_us": 45.999081,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-306a4fa4b9ce",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "max_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 41.279175,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.1502,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.0000971555709839,
+        "performance_tops": 1.2448248863220215,
+        "computility_tops": 4.223578929901123,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_etcof2rd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 41.279175,
+          "max_latency_us": 41.279175,
+          "min_latency_us": 41.279175,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-58f37449a0b9",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "max_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 93.63813,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.633799999999994,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.11981081962585449,
+        "performance_tops": 0.13723230361938477,
+        "computility_tops": 4.222317218780518,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_jql5uckw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 93.63813,
+          "max_latency_us": 93.63813,
+          "min_latency_us": 93.63813,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-a128efacbcbd",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 128.15744,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.424,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.11470495164394379,
+        "performance_tops": 0.130950927734375,
+        "computility_tops": 4.222711563110352,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_72q4r41s",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 128.15744,
+          "max_latency_us": 128.15744,
+          "min_latency_us": 128.15744,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-9f48c6be5b5d",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 57.598846,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 65.9373,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.24549084901809692,
+        "performance_tops": 0.2913658320903778,
+        "computility_tops": 8.440275192260742,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_0mr6pckl",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 57.598846,
+          "max_latency_us": 57.598846,
+          "min_latency_us": 57.598846,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMaxFwdOp",
+        "case_id": "ClampMaxFwdOp-a855c675c0dc",
+        "label": "row-broadcast",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            4096,
+            4096
+          ],
+          "max_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 60.318794,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.4534,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.9741654396057129,
+        "performance_tops": 1.112654685974121,
+        "computility_tops": 4.223678112030029,
+        "artifact_dir": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_135036_077346_ClampMaxFwdOp/artifacts/msprof/main_ejcoq8g2",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 60.318794,
+          "max_latency_us": 60.318794,
+          "min_latency_us": 60.318794,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "ClampMaxFwdOp",
+      "family": "elementwise",
+      "cases": 15,
+      "passed": 15,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 9,
+      "ratio_range": {
+        "min": 63.3212,
+        "max": 69.1502
+      }
+    }
+  ],
+  "warnings": []
+}

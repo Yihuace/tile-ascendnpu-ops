@@ -1,0 +1,99 @@
+{
+  "op": "TopkSelectorOp",
+  "kernel_id": "tileops/kernels/attention_indexing/topk_selector/_topk_selector_kernel/_topk_selector_kernel.py::count+select::main",
+  "target_kernel_name": "main",
+  "note": "Two kernels per op (count / select). `msprof op` profiles one kernel name at a time, so each workload is measured per kernel and the op latency is accounted as `n_count_launches * count_us + 1 * select_us` (see bench.py --mode).",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_topk_selector.py::TopkSelectorOp",
+      "kernel_id": "tileops/kernels/attention_indexing/topk_selector/_topk_selector_kernel/_topk_selector_kernel.py::count+select::main",
+      "workload_id": "smoke-256",
+      "label": "smoke-256",
+      "marks": [],
+      "shape": [
+        8,
+        256
+      ],
+      "dtype": "float32",
+      "params": {
+        "op": "TopkSelectorOp",
+        "m": 8,
+        "n": 256,
+        "k": 8,
+        "tile": null
+      },
+      "kind": "smoke",
+      "reason": "smoke case: correctness only, no perf collection (Stage 4 rule)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_topk_selector.py::TopkSelectorOp",
+      "kernel_id": "tileops/kernels/attention_indexing/topk_selector/_topk_selector_kernel/_topk_selector_kernel.py::count+select::main",
+      "workload_id": "topk-1024",
+      "label": "topk-1024",
+      "marks": [],
+      "shape": [
+        16,
+        1024
+      ],
+      "dtype": "float32",
+      "params": {
+        "op": "TopkSelectorOp",
+        "m": 16,
+        "n": 1024,
+        "k": 16,
+        "tile": null
+      },
+      "kind": "tune",
+      "reason": "",
+      "precision_pass": true,
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_topk_selector.py::TopkSelectorOp",
+      "kernel_id": "tileops/kernels/attention_indexing/topk_selector/_topk_selector_kernel/_topk_selector_kernel.py::count+select::main",
+      "workload_id": "topk-4096",
+      "label": "topk-4096",
+      "marks": [],
+      "shape": [
+        8,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {
+        "op": "TopkSelectorOp",
+        "m": 8,
+        "n": 4096,
+        "k": 64,
+        "tile": null
+      },
+      "kind": "tune",
+      "reason": "",
+      "precision_pass": true,
+      "tuning_status": "winner_merged"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_topk_selector.py::TopkSelectorOp",
+      "kernel_id": "tileops/kernels/attention_indexing/topk_selector/_topk_selector_kernel/_topk_selector_kernel.py::count+select::main",
+      "workload_id": "topk-8192-tiled",
+      "label": "topk-8192-tiled",
+      "marks": [],
+      "shape": [
+        8,
+        8192
+      ],
+      "dtype": "float32",
+      "params": {
+        "op": "TopkSelectorOp",
+        "m": 8,
+        "n": 8192,
+        "k": 64,
+        "tile": null
+      },
+      "kind": "tune",
+      "reason": "tile is auto-selected by the kernel (_auto_tile -> 2048), i.e. the streamed path",
+      "precision_pass": true,
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

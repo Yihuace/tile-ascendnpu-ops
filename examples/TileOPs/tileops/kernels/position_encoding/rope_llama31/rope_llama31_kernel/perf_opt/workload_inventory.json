@@ -1,0 +1,121 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope_llama31.py::test_rope_llama31_bench",
+  "target_kernel_name": "main",
+  "note": "Shared-kernel adoption: _make_rope_neox_{1d,2d} are byte-identical across RopeNeoxOp / RopeLongRopeOp / RopeLlama31Op; tuned once in rope_neox/perf_opt and adopted here. r3 adoption (2026-11-04) re-measured the adopted 1d artifact in THIS directory with its own msprof op runs (profiles/baseline/round0/r2_contig_796840bc*, profiles/final/round4/r3_adopt_c6098298*), so no measurement is borrowed from another op directory. kernel_id points at the perf_opt/ artifact that perf_records.jsonl reconciles against (r2-era records are archived at history/perf_records_r2_all_kernels.jsonl). | Split: 1d kernel only (gate 4 final-artifact reconciliation is single-file); the 2d kernel set lives in workload_inventory_2d.json.",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope_llama31.py::test_rope_llama31_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_llama31/rope_llama31_kernel/perf_opt/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "llama31-1d-256-d64-smoke-float16",
+      "label": "llama31-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "precision_pass": true,
+      "reason": "manifest smoke label -> accuracy only; adopted r3 1d kernel (sha256 c6098298) `--level all` 44/44 PASS, 0 WARN/FAIL"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope_llama31.py::test_rope_llama31_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_llama31/rope_llama31_kernel/perf_opt/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "llama31-1d-256-d64-smoke-bfloat16",
+      "label": "llama31-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "precision_pass": true,
+      "reason": "manifest smoke label -> accuracy only; adopted r3 1d kernel (sha256 c6098298) `--level all` 44/44 PASS, 0 WARN/FAIL"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope_llama31.py::test_rope_llama31_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_llama31/rope_llama31_kernel/perf_opt/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "llama31-1d-256-d64-smoke-float32",
+      "label": "llama31-1d-256-d64-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        256,
+        64
+      ],
+      "dtype": "float32",
+      "params": {
+        "layout": "1d",
+        "seq_len": 256,
+        "head_dim": 64
+      },
+      "kind": "smoke",
+      "precision_pass": true,
+      "reason": "manifest smoke label -> accuracy only; adopted r3 1d kernel (sha256 c6098298) `--level all` 44/44 PASS, 0 WARN/FAIL"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope_llama31.py::test_rope_llama31_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_llama31/rope_llama31_kernel/perf_opt/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "llama31-1d-8k-d128-bf16",
+      "label": "llama31-1d-8k-d128-bf16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        8192,
+        128
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "layout": "1d",
+        "shape": [
+          8192,
+          128
+        ]
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "winner_merged: adopted canonical r3 1d kernel (sha256 c6098298, byte-identical to rope_neox/perf_opt/_make_rope_neox_1d.py). fp32 transit buffers 7->6 lets the tile grow 52->69 rows (UB clamp), dropping the wave count 4->3. Re-measured here in 5 interleaved msprof runs: r2_contig 6.32 -> r3_adopt 6.11 us (+3.3%), r3 faster in 5/5 interleaved pairs."
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope_llama31.py::test_rope_llama31_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_llama31/rope_llama31_kernel/perf_opt/_make_rope_neox_1d.py::_make_rope_neox_1d::main",
+      "workload_id": "llama31-1d-2k-d128-fp16",
+      "label": "llama31-1d-2k-d128-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        2048,
+        128
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "1d",
+        "shape": [
+          2048,
+          128
+        ]
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "winner_merged: adopted canonical r3 1d kernel (sha256 c6098298). This shape's tiling and op sequence are byte-for-byte unchanged (52 rows, 1 wave), so it is a flat carry-over. Re-measured here in 5 interleaved msprof runs: r2_contig 3.96 -> r3_adopt 3.96 us (0.0%, inside the +-4% interleaved noise band)."
+    }
+  ]
+}

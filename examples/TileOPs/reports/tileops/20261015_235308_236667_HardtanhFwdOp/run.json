@@ -1,0 +1,2191 @@
+{
+  "schema_version": 2,
+  "operator": "HardtanhFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261015_235308_236667_HardtanhFwdOp",
+    "generated_at": "2026-10-16T00:21:43.485491+08:00",
+    "project_root": "/home/developer/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "cf91d889ce344b4feb4a13af00e9aa25a8de4c4d",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_activation.py",
+    "benchmark_file": "benchmarks/ops/bench_elementwise_manifest.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_activation.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_elementwise_manifest.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-16T00:21:43.485491+08:00",
+      "evaluation_scope": "HardtanhFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261015_235308_236667_HardtanhFwdOp",
+      "git_commit": "cf91d889ce344b4feb4a13af00e9aa25a8de4c4d",
+      "correctness_target": "tests/ops/test_activation.py",
+      "benchmark_target": "benchmarks/ops/bench_elementwise_manifest.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 24,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 24,
+    "passed_cases": 24,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 30,
+    "benchmark_failed": 0,
+    "case_count": 30,
+    "msprof_case_count": 30,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_activation::test_elu[1048576-dtype0]",
+        "name": "test_elu[1048576-dtype0]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 26.577,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_elu[1048576-dtype1]",
+        "name": "test_elu[1048576-dtype1]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 5.663,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_elu[1048576-dtype2]",
+        "name": "test_elu[1048576-dtype2]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 5.712,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_elu[4000000-dtype3]",
+        "name": "test_elu[4000000-dtype3]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.79,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_elu[4000000-dtype4]",
+        "name": "test_elu[4000000-dtype4]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.821,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_elu_rejects_non_float_dtype",
+        "name": "test_elu_rejects_non_float_dtype",
+        "classname": "tests.ops.test_activation",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_elu_eval_roofline",
+        "name": "test_elu_eval_roofline",
+        "classname": "tests.ops.test_activation",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_elu_edge[4096-dtype0]",
+        "name": "test_elu_edge[4096-dtype0]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.94,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu[1048576-dtype0]",
+        "name": "test_leaky_relu[1048576-dtype0]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.655,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu[1048576-dtype1]",
+        "name": "test_leaky_relu[1048576-dtype1]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.588,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu[1048576-dtype2]",
+        "name": "test_leaky_relu[1048576-dtype2]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.519,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu[4000000-dtype3]",
+        "name": "test_leaky_relu[4000000-dtype3]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.624,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu[4000000-dtype4]",
+        "name": "test_leaky_relu[4000000-dtype4]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.508,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu_rejects_non_float_dtype",
+        "name": "test_leaky_relu_rejects_non_float_dtype",
+        "classname": "tests.ops.test_activation",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu_eval_roofline",
+        "name": "test_leaky_relu_eval_roofline",
+        "classname": "tests.ops.test_activation",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_leaky_relu_edge[4096-dtype0]",
+        "name": "test_leaky_relu_edge[4096-dtype0]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.648,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh[1048576-dtype0]",
+        "name": "test_hardtanh[1048576-dtype0]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.579,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh[1048576-dtype1]",
+        "name": "test_hardtanh[1048576-dtype1]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.54,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh[1048576-dtype2]",
+        "name": "test_hardtanh[1048576-dtype2]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.541,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh[4000000-dtype3]",
+        "name": "test_hardtanh[4000000-dtype3]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.587,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh[4000000-dtype4]",
+        "name": "test_hardtanh[4000000-dtype4]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.557,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh_rejects_non_float_dtype",
+        "name": "test_hardtanh_rejects_non_float_dtype",
+        "classname": "tests.ops.test_activation",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh_eval_roofline",
+        "name": "test_hardtanh_eval_roofline",
+        "classname": "tests.ops.test_activation",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_activation::test_hardtanh_edge[4096-dtype0]",
+        "name": "test_hardtanh_edge[4096-dtype0]",
+        "classname": "tests.ops.test_activation",
+        "time_s": 2.571,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "max_abs_err": "0.00e+00"
+        }
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 30,
+    "passed": 30,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[smoke-1m-float32]",
+        "name": "test_elu_manifest_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 73.723,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "6.6200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[smoke-1m-float16]",
+        "name": "test_elu_manifest_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.311,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "5.8000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[smoke-1m-bfloat16]",
+        "name": "test_elu_manifest_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 55.679,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "6.2000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[mlp-hidden-float16]",
+        "name": "test_elu_manifest_bench[mlp-hidden-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.871,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "21.2200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[mlp-hidden-bfloat16]",
+        "name": "test_elu_manifest_bench[mlp-hidden-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.488,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "22.0600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[mlp-hidden-wide-float16]",
+        "name": "test_elu_manifest_bench[mlp-hidden-wide-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.75,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "38.8400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[mlp-hidden-wide-bfloat16]",
+        "name": "test_elu_manifest_bench[mlp-hidden-wide-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.82,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "41.3400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[elementwise-16m-float16]",
+        "name": "test_elu_manifest_bench[elementwise-16m-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 46.953,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "39.3000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[elementwise-16m-bfloat16]",
+        "name": "test_elu_manifest_bench[elementwise-16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 49.042,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "41.0800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_elu_manifest_bench[elementwise-16m-float32]",
+        "name": "test_elu_manifest_bench[elementwise-16m-float32]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.136,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EluFwdOp",
+          "op_module": "tileops.ops.elementwise.elu",
+          "tileops_latency_us": "49.9800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[smoke-1m-float32]",
+        "name": "test_leaky_relu_manifest_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 50.824,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "6.3200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[smoke-1m-float16]",
+        "name": "test_leaky_relu_manifest_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 51.534,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "4.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[smoke-1m-bfloat16]",
+        "name": "test_leaky_relu_manifest_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 51.262,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "4.7200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[gan-feat-float16]",
+        "name": "test_leaky_relu_manifest_bench[gan-feat-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.643,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "27.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[gan-feat-bfloat16]",
+        "name": "test_leaky_relu_manifest_bench[gan-feat-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.503,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "29.9800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[gan-feat-deep-float16]",
+        "name": "test_leaky_relu_manifest_bench[gan-feat-deep-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.596,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "16.1400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[gan-feat-deep-bfloat16]",
+        "name": "test_leaky_relu_manifest_bench[gan-feat-deep-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 52.363,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "15.7600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[elementwise-16m-float16]",
+        "name": "test_leaky_relu_manifest_bench[elementwise-16m-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 48.058,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "27.3000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[elementwise-16m-bfloat16]",
+        "name": "test_leaky_relu_manifest_bench[elementwise-16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 49.029,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "28.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_leaky_relu_manifest_bench[elementwise-16m-float32]",
+        "name": "test_leaky_relu_manifest_bench[elementwise-16m-float32]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.525,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "LeakyReluFwdOp",
+          "op_module": "tileops.ops.elementwise.leaky_relu",
+          "tileops_latency_us": "48.1600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[smoke-1m-float32]",
+        "name": "test_hardtanh_manifest_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 50.549,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "6.0600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[smoke-1m-float16]",
+        "name": "test_hardtanh_manifest_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.347,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "4.0000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[smoke-1m-bfloat16]",
+        "name": "test_hardtanh_manifest_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 54.647,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "4.9000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[bounded-hidden-float16]",
+        "name": "test_hardtanh_manifest_bench[bounded-hidden-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 52.461,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "13.5000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[bounded-hidden-bfloat16]",
+        "name": "test_hardtanh_manifest_bench[bounded-hidden-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 52.845,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "14.7600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[bounded-conv-feat-float16]",
+        "name": "test_hardtanh_manifest_bench[bounded-conv-feat-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.486,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "19.5800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[bounded-conv-feat-bfloat16]",
+        "name": "test_hardtanh_manifest_bench[bounded-conv-feat-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.534,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "21.7000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[elementwise-16m-float16]",
+        "name": "test_hardtanh_manifest_bench[elementwise-16m-float16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.555,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "25.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[elementwise-16m-bfloat16]",
+        "name": "test_hardtanh_manifest_bench[elementwise-16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 53.583,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "26.5800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_elementwise_manifest::test_hardtanh_manifest_bench[elementwise-16m-float32]",
+        "name": "test_hardtanh_manifest_bench[elementwise-16m-float32]",
+        "classname": "benchmarks.ops.bench_elementwise_manifest",
+        "time_s": 52.498,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardtanhFwdOp",
+          "op_module": "tileops.ops.elementwise.hardtanh",
+          "tileops_latency_us": "48.8800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-cb4b74075e37",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 6.62,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 36.2057,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5011749267578125,
+        "performance_tops": 0.9511443972587585,
+        "computility_tops": 4.604255676269531,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_d3_cmb39",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 6.62,
+          "max_latency_us": 6.62,
+          "min_latency_us": 6.62,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-c0568102da1a",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 5.8,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 27.7165,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 3.529569625854492,
+        "performance_tops": 1.276292324066162,
+        "computility_tops": 4.6048150062561035,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_j0y5n6pj",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 5.8,
+          "max_latency_us": 5.8,
+          "min_latency_us": 5.8,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-4223e27ec498",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 6.2,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 29.6272,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 4.033445358276367,
+        "performance_tops": 1.364397406578064,
+        "computility_tops": 4.605212211608887,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_48x75q50",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 6.2,
+          "max_latency_us": 6.2,
+          "min_latency_us": 6.2,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-38784cca412c",
+        "label": "mlp-hidden",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 21.219999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 60.0922,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 3.5019874572753906,
+        "performance_tops": 2.7688052654266357,
+        "computility_tops": 4.607598781585693,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_9hxktdv6",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 21.219999,
+          "max_latency_us": 21.219999,
+          "min_latency_us": 21.219999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-0c5f035cb580",
+        "label": "mlp-hidden",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 22.059999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 66.06020000000001,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 4.002227783203125,
+        "performance_tops": 3.043823719024658,
+        "computility_tops": 4.6076483726501465,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_6ve147ve",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 22.059999,
+          "max_latency_us": 22.059999,
+          "min_latency_us": 22.059999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-6f5ab1f5ae23",
+        "label": "mlp-hidden-wide",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            2048,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 38.84,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 65.6563,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 3.5018482208251953,
+        "performance_tops": 3.02530837059021,
+        "computility_tops": 4.607799053192139,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_j5nfvvj3",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 38.84,
+          "max_latency_us": 38.84,
+          "min_latency_us": 38.84,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-3797394ba6f7",
+        "label": "mlp-hidden-wide",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            2048,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 41.34,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 70.4972,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 4.0020904541015625,
+        "performance_tops": 3.2483885288238525,
+        "computility_tops": 4.607824802398682,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main__vqhb6l_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 41.34,
+          "max_latency_us": 41.34,
+          "min_latency_us": 41.34,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-948c5107d2c0",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 39.299999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 64.8878,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 3.5018482208251953,
+        "performance_tops": 2.9898977279663086,
+        "computility_tops": 4.607799053192139,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main__t9oh_dz",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 39.299999,
+          "max_latency_us": 39.299999,
+          "min_latency_us": 39.299999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-d4c3fec3b359",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 41.080002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 70.9434,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 4.0020904541015625,
+        "performance_tops": 3.2689478397369385,
+        "computility_tops": 4.607824802398682,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_l4wji2xc",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 41.080002,
+          "max_latency_us": 41.080002,
+          "min_latency_us": 41.080002,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EluFwdOp",
+        "case_id": "EluFwdOp-e8fa45bea844",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 49.98,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 76.72670000000001,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5000734329223633,
+        "performance_tops": 2.014173984527588,
+        "computility_tops": 4.6077656745910645,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_4tv1uj8z",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 49.98,
+          "max_latency_us": 49.98,
+          "min_latency_us": 49.98,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-cb4b74075e37",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 6.32,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 37.9243,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.5058134198188782,
+        "performance_tops": 0.33569619059562683,
+        "computility_tops": 4.590551853179932,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_0a1mbapi",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 6.32,
+          "max_latency_us": 6.32,
+          "min_latency_us": 6.32,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-c0568102da1a",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 4.78,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 25.072100000000002,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5140677690505981,
+        "performance_tops": 0.6643146276473999,
+        "computility_tops": 4.600582122802734,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_hr0_0s1y",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 4.78,
+          "max_latency_us": 4.78,
+          "min_latency_us": 4.78,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-4223e27ec498",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 4.72,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 25.390800000000002,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.0179431438446045,
+        "performance_tops": 0.8966508507728577,
+        "computility_tops": 4.6024322509765625,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_x4vmmurj",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 4.72,
+          "max_latency_us": 4.72,
+          "min_latency_us": 4.72,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-55b31d174302",
+        "label": "gan-feat",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16,
+            256,
+            64,
+            64
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 27.459999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.8253,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5008792877197266,
+        "performance_tops": 1.8339892625808716,
+        "computility_tops": 4.607531547546387,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_gj4l5uwu",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 27.459999,
+          "max_latency_us": 27.459999,
+          "min_latency_us": 27.459999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-53b504586d2a",
+        "label": "gan-feat",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16,
+            256,
+            64,
+            64
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 29.98,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.956100000000006,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.0011215209960938,
+        "performance_tops": 2.239718198776245,
+        "computility_tops": 4.6076483726501465,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_pv82bpn0",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 29.98,
+          "max_latency_us": 29.98,
+          "min_latency_us": 29.98,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-d0241e58468f",
+        "label": "gan-feat-deep",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16,
+            512,
+            32,
+            32
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 16.139999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 59.3993,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5010261535644531,
+        "performance_tops": 1.5602995157241821,
+        "computility_tops": 4.607062816619873,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_nz9bsx_4",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 16.139999,
+          "max_latency_us": 16.139999,
+          "min_latency_us": 16.139999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-fa595e331233",
+        "label": "gan-feat-deep",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16,
+            512,
+            32,
+            32
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 15.76,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 60.831599999999995,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.0012664794921875,
+        "performance_tops": 2.1304526329040527,
+        "computility_tops": 4.607297420501709,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_x9hcymxh",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 15.76,
+          "max_latency_us": 15.76,
+          "min_latency_us": 15.76,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-948c5107d2c0",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 27.299999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 70.2346,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5008792877197266,
+        "performance_tops": 1.8447378873825073,
+        "computility_tops": 4.607531547546387,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_tv5hb5bd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 27.299999,
+          "max_latency_us": 27.299999,
+          "min_latency_us": 27.299999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-d4c3fec3b359",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 28.82,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 66.5303,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.0011215209960938,
+        "performance_tops": 2.329866409301758,
+        "computility_tops": 4.6076483726501465,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_gnzet6h6",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 28.82,
+          "max_latency_us": 28.82,
+          "min_latency_us": 28.82,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "LeakyReluFwdOp",
+        "case_id": "LeakyReluFwdOp-e8fa45bea844",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 48.16,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 79.6262,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.5015840530395508,
+        "performance_tops": 0.6989368796348572,
+        "computility_tops": 4.595714569091797,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_os7fgjb_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 48.16,
+          "max_latency_us": 48.16,
+          "min_latency_us": 48.16,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-cb4b74075e37",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 6.06,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 39.5515,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.5025481581687927,
+        "performance_tops": 0.3478389382362366,
+        "computility_tops": 4.584615230560303,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_3nkfkj_5",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 6.06,
+          "max_latency_us": 6.06,
+          "min_latency_us": 6.06,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-c0568102da1a",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 24576
+        },
+        "tag": "tileops",
+        "latency_us": 4.0,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 29.961100000000002,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.0102838277816772,
+        "performance_tops": 0.5297119617462158,
+        "computility_tops": 9.147204399108887,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_sa0s4f8w",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 4.0,
+          "max_latency_us": 4.0,
+          "min_latency_us": 4.0,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-4223e27ec498",
+        "label": "smoke-1m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            1048576
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 4.9,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 24.458099999999998,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.0179431438446045,
+        "performance_tops": 0.8637126684188843,
+        "computility_tops": 4.6024322509765625,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_ojva0rqq",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 4.9,
+          "max_latency_us": 4.9,
+          "min_latency_us": 4.9,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-38784cca412c",
+        "label": "bounded-hidden",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 24576
+        },
+        "tag": "tileops",
+        "latency_us": 13.5,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 71.01520000000001,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.0034027099609375,
+        "performance_tops": 1.246994972229004,
+        "computility_tops": 9.17602252960205,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_9hcart6k",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 13.5,
+          "max_latency_us": 13.5,
+          "min_latency_us": 13.5,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-0c5f035cb580",
+        "label": "bounded-hidden",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 14.76,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 64.9529,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.0012664794921875,
+        "performance_tops": 2.274792432785034,
+        "computility_tops": 4.607297420501709,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_4lla3g92",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 14.76,
+          "max_latency_us": 14.76,
+          "min_latency_us": 14.76,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-ad872092e545",
+        "label": "bounded-conv-feat",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16,
+            256,
+            56,
+            56
+          ]
+        },
+        "config": {
+          "block_size": 24576
+        },
+        "tag": "tileops",
+        "latency_us": 19.58,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.9752,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.00203537940979,
+        "performance_tops": 1.3147358894348145,
+        "computility_tops": 9.177462577819824,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_stck4ipm",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 19.58,
+          "max_latency_us": 19.58,
+          "min_latency_us": 19.58,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-63ca9f71d70b",
+        "label": "bounded-conv-feat",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16,
+            256,
+            56,
+            56
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 21.700001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 67.6504,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.00146484375,
+        "performance_tops": 2.3694982528686523,
+        "computility_tops": 4.607541084289551,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_o0nm6aou",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 21.700001,
+          "max_latency_us": 21.700001,
+          "min_latency_us": 21.700001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-948c5107d2c0",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 24576
+        },
+        "tag": "tileops",
+        "latency_us": 25.6,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.8986,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.0018634796142578,
+        "performance_tops": 1.3131674528121948,
+        "computility_tops": 9.1781005859375,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_5l4rypxw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 25.6,
+          "max_latency_us": 25.6,
+          "min_latency_us": 25.6,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-d4c3fec3b359",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 26.58,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 72.1371,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 2.0011215209960938,
+        "performance_tops": 2.5262134075164795,
+        "computility_tops": 4.6076483726501465,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_v5iz8y6a",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 26.58,
+          "max_latency_us": 26.58,
+          "min_latency_us": 26.58,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardtanhFwdOp",
+        "case_id": "HardtanhFwdOp-e8fa45bea844",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 48.880001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 78.4533,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.5000753402709961,
+        "performance_tops": 0.6865701675415039,
+        "computility_tops": 4.607296943664551,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_235308_236667_HardtanhFwdOp/artifacts/msprof/main_ifn01e5c",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 48.880001,
+          "max_latency_us": 48.880001,
+          "min_latency_us": 48.880001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "HardtanhFwdOp",
+      "family": "elementwise",
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 10,
+      "ratio_range": {
+        "min": 24.458099999999998,
+        "max": 78.4533
+      }
+    }
+  ],
+  "warnings": [
+    "EluFwdOp/EluFwdOp-6d5215d9b069: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-e742d1f472ff: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-c76693ca7157: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-54ce5ca74486: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-97bebc3bc5ee: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-0cc872f295a9: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-295448b24fd1: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-36a1cd4baa11: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-8adf02b9b756: missing tileops candidate record",
+    "EluFwdOp/EluFwdOp-927dc5963e40: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-f44cf9834ffd: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-6b48ec7231f6: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-21321cdbdc38: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-6be4b94245b1: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-18ffc010ed48: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-f2a247f21583: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-e2ab320b5e9e: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-ea54725d3904: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-c141b5df0376: missing tileops candidate record",
+    "LeakyReluFwdOp/LeakyReluFwdOp-c4bb6382daf3: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-7d1c965936fa: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-a9b7f6419af5: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-43c1dbe05fdf: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-e3ed2a6baba0: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-44051ab42ccc: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-470e4ffc4d0c: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-517231bd39e4: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-4ebb2bbb7f7e: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-ff256d6f1282: missing tileops candidate record",
+    "HardtanhFwdOp/HardtanhFwdOp-fda6d963b54c: missing tileops candidate record"
+  ]
+}

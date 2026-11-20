@@ -1,0 +1,116 @@
+TopkSelectorOp:
+  ref_api: "torch.topk"
+  family: attention_indexing
+  status: implemented
+  torch_compile_fullgraph: false
+
+  signature:
+    inputs:
+      input:
+        # Counting runs in the fp32 domain inside the kernel.
+        dtype: float32
+    outputs:
+      indices:
+        dtype: int32
+    params:
+      k:
+        type: int
+        default: 16
+    shape_rules:
+      - indices.shape == [input.shape[0], k]
+
+  workloads:
+    # Smoke: tiny, exercises the full host-bisection + select path.
+    - {input_shape: [8, 256], k: 8, dtypes: [float32], label: "smoke-256"}
+    # Row-major mid-size case.
+    - {input_shape: [16, 1024], k: 16, dtypes: [float32], label: "topk-1024"}
+    # Larger rows, still whole-row resident in UB.
+    - {input_shape: [8, 4096], k: 64, dtypes: [float32], label: "topk-4096"}
+    # Streamed path: the row is processed in pieces (tile < N).
+    - {input_shape: [8, 8192], k: 64, dtypes: [float32], label: "topk-8192-tiled"}
+
+  # Roofline: the host bisection issues `rounds` counting passes, each comparing
+  # every element once; memory is read x (fp32) + write k indices (int32).
+  roofline:
+    vars:
+      M: "input.shape[0]"
+      N: "input.shape[1]"
+    flops: "rounds * M * N"
+    bytes: "4 * M * N + 4 * M * k"
+
+  source:
+    kernel: tileops/kernels/attention_indexing/topk_selector/topk_selector.py
+    kernel_map:
+      topk_selector: TopkSelectorKernel
+    op: tileops/ops/attention_indexing/topk_selector.py
+    test: tests/ops/test_topk_selector.py
+    bench: benchmarks/ops/bench_topk_selector.py
+    bench_manifest_driven: true
+
+FP8LightningIndexerOp:
+  ref_api: "none"
+  family: attention_indexing
+  status: implemented
+
+  signature:
+    inputs:
+      index_q: {dtype: "bfloat16 | float8_e4m3fn", shape: "[batch, seq_len, heads, index_dim]"}
+      index_k: {dtype: "bfloat16 | float8_e4m3fn", shape: "[batch, seq_len_kv, kv_group, index_dim]"}
+      weights: {dtype: "float32", shape: "[seq_len, heads]"}
+      cu_seqlen_ks: {dtype: "int32", shape: "[seq_len]"}
+      cu_seqlen_ke: {dtype: "int32", shape: "[seq_len]"}
+      index_k_scale: {dtype: "float32", shape: "[batch, seq_len_kv, kv_group]", optional: true}
+    outputs:
+      logits: {dtype: "float32", shape: "[batch, seq_len, seq_len_kv, kv_group]"}
+    params:
+      clean_logits: {type: bool, default: true}
+      config: {type: "dict | None", default: null}
+    dtype_combos:
+    - {index_q: float8_e4m3fn, index_k: float8_e4m3fn, weights: float32, cu_seqlen_ks: int32, cu_seqlen_ke: int32, index_k_scale: float32}
+    shape_rules:
+    - "index_q.ndim == 4 and index_k.ndim == 4"
+    - "index_q.shape[0] == index_k.shape[0]"
+    - "index_q.shape[3] == index_k.shape[3]"
+    - "index_q.shape[2] % index_k.shape[2] == 0"
+    - "weights.shape == (index_q.shape[1], index_q.shape[2])"
+    - "cu_seqlen_ks.shape == (index_q.shape[1],)"
+    - "cu_seqlen_ke.shape == (index_q.shape[1],)"
+    - "index_k_scale.shape == (index_q.shape[0], index_k.shape[1], index_k.shape[2])"
+
+  workloads:
+    # Smoke: small robust shape (fast critical path; bf16 index, quantized in-op).
+  - {batch: 1, seq_len: 1024, heads: 8, index_dim: 64, seq_len_kv: 1024, kv_group: 1, clean_logits: true, dtypes: [bfloat16], label: "lightning-indexer-smoke-s1k-h8-d64"}
+    # Full: GPU manifest release-facing workloads (bf16 + fp8 share one shape;
+    # the fp8 case only switches the index dtypes -- quantization happens in-op).
+  - {batch: 1, seq_len: 8192, heads: 32, index_dim: 64, seq_len_kv: 8192, kv_group: 1, clean_logits: true, dtypes: [bfloat16], label: "lightning-indexer-bf16-s8k-h32-d64"}
+  - {batch: 1, seq_len: 8192, heads: 32, index_dim: 64, seq_len_kv: 8192, kv_group: 1, clean_logits: true, dtypes: [float8_e4m3fn], label: "lightning-indexer-fp8-s8k-h32-d64"}  # status: restricted -- npuir has no fp8 path (CG-2026-0022); the NPU kernel delivers the bf16 carrier + optional fp32 index_k_scale contract instead.
+  - {batch: 1, seq_len: 4096, heads: 32, index_dim: 64, seq_len_kv: 8192, kv_group: 1, clean_logits: true, dtypes: [bfloat16], label: "lightning-indexer-bf16-s4k-h32-d64"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.fp8_lightning_indexer_roofline``:
+  #   scores  = batch * seq_len * seq_len_kv * kv_group
+  #   q_elems = batch * seq_len * heads * index_dim
+  #   k_elems = batch * seq_len_kv * kv_group * index_dim
+  #   index_elem = 2 (bf16; the op does not retain the observed input dtype,
+  #                so the conservative bf16 default is kept)
+  #   flops = 2 * scores * index_dim
+  #   bytes = (q_elems + k_elems) * index_elem + batch*seq_len_kv*kv_group*4
+  #           + seq_len*heads*4 + 2*seq_len*4 + scores*4
+  roofline:
+    vars:
+      scores: "batch * seq_len * seq_len_kv * kv_group"
+      q_elems: "batch * seq_len * heads * index_dim"
+      k_elems: "batch * seq_len_kv * kv_group * index_dim"
+      index_elem: "2 (bfloat16; op retains no observed input dtype)"
+    flops: "2 * scores * index_dim"
+    bytes: "(q_elems + k_elems) * index_elem + batch * seq_len_kv * kv_group * 4 + seq_len * heads * 4 + 2 * seq_len * 4 + scores * 4"
+
+  source:
+    kernel: tileops/kernels/attention_indexing/fp8_lightning_indexer/fp8_lightning_indexer.py
+    kernel_map:
+      # K5: the GPU tensor-core path is CUDA-SM90 specific; NPU collapses to the
+      # single fp8 index kernel (the NPU kernel component re-targets it to NPUIR).
+      fp8_lightning_indexer_kernel: FP8LightningIndexerKernel
+    op: tileops/ops/attention_indexing/fp8_lightning_indexer.py
+    test: tests/ops/test_fp8_lightning_indexer.py
+    bench: benchmarks/ops/bench_fp8_lightning_indexer.py
+    bench_manifest_driven: true

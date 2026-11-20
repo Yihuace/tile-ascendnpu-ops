@@ -1,0 +1,477 @@
+{
+  "schema_version": 2,
+  "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+  "status": "partial",
+  "metadata": {
+    "run_id": "20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+    "generated_at": "2026-10-15T07:47:41.739893+08:00",
+    "project_root": "/home/developer/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "75e21fe37e8acccc29e6162aa89da8324d2d12d0",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_mha_decode_paged.py",
+    "benchmark_file": "benchmarks/ops/bench_mha_decode_paged.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_mha_decode_paged.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_mha_decode_paged.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-15T07:47:41.739893+08:00",
+      "evaluation_scope": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+      "git_commit": "75e21fe37e8acccc29e6162aa89da8324d2d12d0",
+      "correctness_target": "tests/ops/test_mha_decode_paged.py",
+      "benchmark_target": "benchmarks/ops/bench_mha_decode_paged.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 5,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 5,
+    "passed_cases": 5,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": false,
+    "benchmark_tests": 4,
+    "benchmark_failed": 0,
+    "case_count": 4,
+    "msprof_case_count": 4,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 4
+  },
+  "correctness": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_mha_decode_paged::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0]",
+        "name": "test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0]",
+        "classname": "tests.ops.test_mha_decode_paged",
+        "time_s": 12.046,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "max_abs_err": "2.44e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_mha_decode_paged::test_mha_decode_paged_op[1-8-1-1024-64-256-False-dtype1]",
+        "name": "test_mha_decode_paged_op[1-8-1-1024-64-256-False-dtype1]",
+        "classname": "tests.ops.test_mha_decode_paged",
+        "time_s": 0.715,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "max_abs_err": "9.77e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_mha_decode_paged::test_mha_decode_paged_op[2-8-1-1024-64-256-False-dtype2]",
+        "name": "test_mha_decode_paged_op[2-8-1-1024-64-256-False-dtype2]",
+        "classname": "tests.ops.test_mha_decode_paged",
+        "time_s": 9.535,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "max_abs_err": "6.10e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_mha_decode_paged::test_mha_decode_paged_op[1-8-1-512-64-256-False-dtype3]",
+        "name": "test_mha_decode_paged_op[1-8-1-512-64-256-False-dtype3]",
+        "classname": "tests.ops.test_mha_decode_paged",
+        "time_s": 9.278,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_mha_decode_paged::test_mha_decode_paged_eval_roofline",
+        "name": "test_mha_decode_paged_eval_roofline",
+        "classname": "tests.ops.test_mha_decode_paged",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_mha_decode_paged::test_mha_decode_paged_bench[single-token-page128-float16]",
+        "name": "test_mha_decode_paged_bench[single-token-page128-float16]",
+        "classname": "benchmarks.ops.bench_mha_decode_paged",
+        "time_s": 30.22,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "tileops_latency_us": "2.5200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_mha_decode_paged::test_mha_decode_paged_bench[batch2-page256-float16]",
+        "name": "test_mha_decode_paged_bench[batch2-page256-float16]",
+        "classname": "benchmarks.ops.bench_mha_decode_paged",
+        "time_s": 30.122,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "tileops_latency_us": "2.3800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_mha_decode_paged::test_mha_decode_paged_bench[longer-cache-float16]",
+        "name": "test_mha_decode_paged_bench[longer-cache-float16]",
+        "classname": "benchmarks.ops.bench_mha_decode_paged",
+        "time_s": 30.616,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "tileops_latency_us": "2.3200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_mha_decode_paged::test_mha_decode_paged_bench[shorter-cache-float16]",
+        "name": "test_mha_decode_paged_bench[shorter-cache-float16]",
+        "classname": "benchmarks.ops.bench_mha_decode_paged",
+        "time_s": 29.982,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+          "op_module": "tileops.ops.attention.mha_decode_paged",
+          "tileops_latency_us": "1.8200"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+        "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-3a63069a7739",
+        "label": "single-token-page128",
+        "params": {
+          "batch": 1,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 16,
+          "is_causal": false,
+          "page_size": 128,
+          "seqlen_kv": 512,
+          "seqlen_q": 1
+        },
+        "config": {
+          "block_M": 128,
+          "block_N": 64,
+          "num_split": 4,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 2.52,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 8 distinct ops",
+        "roofline_utilization_percent": 0.0174,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.2916666567325592,
+        "performance_tops": 8.888888987712562e-05,
+        "computility_tops": 2.303999900817871,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000_n7oob4ha",
+        "msprof": {
+          "captured_op_count": 8,
+          "captured_op_names": [
+            "Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000",
+            "Cast_e87590d11ccda8b259ab6b1ea7212319_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_223000000",
+            "ReduceMax_cdb713eb67f49462c2984ac3ae6c0f4c_high_performance_1000500_mix_aiv",
+            "ZerosLike_5c5e58e043224cccf51a06108010ae13_high_performance_210000000",
+            "combine",
+            "split_partial_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            null
+          ],
+          "kernel_name_requested": null,
+          "kernel_name_resolved": null,
+          "latency_us": 2.52,
+          "max_latency_us": 158.779999,
+          "min_latency_us": 1.36,
+          "op_name": "Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000",
+          "sample_count": 9
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+        "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-e227385bc4ce",
+        "label": "batch2-page256",
+        "params": {
+          "batch": 2,
+          "dim": 64,
+          "dtype": "float16",
+          "heads": 8,
+          "is_causal": false,
+          "page_size": 256,
+          "seqlen_kv": 1024,
+          "seqlen_q": 1
+        },
+        "config": {
+          "block_M": 128,
+          "block_N": 64,
+          "num_split": 4,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 2.38,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 9 distinct ops",
+        "roofline_utilization_percent": 0.0123,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.4375,
+        "performance_tops": 9.411764767719433e-05,
+        "computility_tops": 2.303999900817871,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/BroadcastTo_c71434db8135ff9089d65053721e3417_high_performance_232000000_08k82yx9",
+        "msprof": {
+          "captured_op_count": 9,
+          "captured_op_names": [
+            "BroadcastTo_c71434db8135ff9089d65053721e3417_high_performance_232000000",
+            "Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000",
+            "Cast_e87590d11ccda8b259ab6b1ea7212319_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_223000000",
+            "ReduceMax_cdb713eb67f49462c2984ac3ae6c0f4c_high_performance_50000400_mix_aiv",
+            "ViewCopy_f9503aba4b049bd0a00ec9dd64dc915a_high_performance__kernel0",
+            "ZerosLike_5c5e58e043224cccf51a06108010ae13_high_performance_210000000",
+            "split_partial_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            null
+          ],
+          "kernel_name_requested": null,
+          "kernel_name_resolved": null,
+          "latency_us": 2.38,
+          "max_latency_us": 293.339996,
+          "min_latency_us": 1.12,
+          "op_name": "BroadcastTo_c71434db8135ff9089d65053721e3417_high_performance_232000000",
+          "sample_count": 10
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+        "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-886077985f85",
+        "label": "longer-cache",
+        "params": {
+          "batch": 1,
+          "dim": 64,
+          "dtype": "float16",
+          "heads": 8,
+          "is_causal": false,
+          "page_size": 256,
+          "seqlen_kv": 1024,
+          "seqlen_q": 1
+        },
+        "config": {
+          "block_M": 128,
+          "block_N": 64,
+          "num_split": 4,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 2.32,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 8 distinct ops",
+        "roofline_utilization_percent": 0.0126,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.4375,
+        "performance_tops": 9.655172470957041e-05,
+        "computility_tops": 2.303999900817871,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000_uz5n5yap",
+        "msprof": {
+          "captured_op_count": 8,
+          "captured_op_names": [
+            "Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000",
+            "Cast_e87590d11ccda8b259ab6b1ea7212319_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_223000000",
+            "ReduceMax_cdb713eb67f49462c2984ac3ae6c0f4c_high_performance_1000500_mix_aiv",
+            "ZerosLike_5c5e58e043224cccf51a06108010ae13_high_performance_210000000",
+            "combine",
+            "split_partial_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            null
+          ],
+          "kernel_name_requested": null,
+          "kernel_name_resolved": null,
+          "latency_us": 2.32,
+          "max_latency_us": 150.740005,
+          "min_latency_us": 1.38,
+          "op_name": "Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000",
+          "sample_count": 9
+        }
+      },
+      {
+        "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+        "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-5d2b4d56f611",
+        "label": "shorter-cache",
+        "params": {
+          "batch": 1,
+          "dim": 64,
+          "dtype": "float16",
+          "heads": 8,
+          "is_causal": false,
+          "page_size": 256,
+          "seqlen_kv": 512,
+          "seqlen_q": 1
+        },
+        "config": {
+          "block_M": 128,
+          "block_N": 64,
+          "num_split": 4,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 1.82,
+        "prof_mode": "msprof",
+        "profiler_valid": false,
+        "invalid_reason": "unfiltered capture contains 8 distinct ops",
+        "roofline_utilization_percent": 0.0161,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.4375,
+        "performance_tops": 0.00012307692668400705,
+        "computility_tops": 2.303999900817871,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_074433_562940_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000_0kw2m4qk",
+        "msprof": {
+          "captured_op_count": 8,
+          "captured_op_names": [
+            "Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000",
+            "Cast_e87590d11ccda8b259ab6b1ea7212319_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_210000000",
+            "Fill_1fbc7ee619b707282bbfd034093621df_high_performance_223000000",
+            "ReduceMax_cdb713eb67f49462c2984ac3ae6c0f4c_high_performance_1000500_mix_aiv",
+            "ZerosLike_5c5e58e043224cccf51a06108010ae13_high_performance_210000000",
+            "combine",
+            "split_partial_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            null
+          ],
+          "kernel_name_requested": null,
+          "kernel_name_resolved": null,
+          "latency_us": 1.82,
+          "max_latency_us": 78.099998,
+          "min_latency_us": 1.36,
+          "op_name": "Cast_39a266ce9a8d7d9ead33f6686e936b72_high_performance_210000000",
+          "sample_count": 9
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+      "family": "attention",
+      "cases": 5,
+      "passed": 5,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.000351,
+      "max_abs_err": 0.000977,
+      "performance_cases": 4,
+      "ratio_range": {
+        "min": 0.0123,
+        "max": 0.0174
+      }
+    }
+  ],
+  "warnings": [
+    "MultiHeadAttentionDecodePagedWithKVCacheFwdOp/MultiHeadAttentionDecodePagedWithKVCacheFwdOp-3a63069a7739: invalid tileops profile: unfiltered capture contains 8 distinct ops",
+    "MultiHeadAttentionDecodePagedWithKVCacheFwdOp/MultiHeadAttentionDecodePagedWithKVCacheFwdOp-e227385bc4ce: invalid tileops profile: unfiltered capture contains 9 distinct ops",
+    "MultiHeadAttentionDecodePagedWithKVCacheFwdOp/MultiHeadAttentionDecodePagedWithKVCacheFwdOp-886077985f85: invalid tileops profile: unfiltered capture contains 8 distinct ops",
+    "MultiHeadAttentionDecodePagedWithKVCacheFwdOp/MultiHeadAttentionDecodePagedWithKVCacheFwdOp-5d2b4d56f611: invalid tileops profile: unfiltered capture contains 8 distinct ops",
+    "correctness passed, but the benchmark stage did not produce valid records"
+  ]
+}

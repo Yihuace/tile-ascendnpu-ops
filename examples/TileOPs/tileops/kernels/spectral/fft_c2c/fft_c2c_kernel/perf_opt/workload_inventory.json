@@ -1,0 +1,59 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fft.py::test_fft_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/spectral/fft_c2c/fft_c2c_kernel/_fft_c2c_kernel.py::_fft_c2c_kernel::main",
+      "workload_id": "fft-64-c64-smoke-complex64",
+      "label": "fft-64-c64-smoke",
+      "marks": ["smoke"],
+      "shape": [64],
+      "dtype": "complex64",
+      "params": {"n": 64, "batch": 1},
+      "kind": "smoke",
+      "reason": "manifest label 'fft-64-c64-smoke' carries the standalone smoke token; excluded from perf tuning, used for precision regression only",
+      "precision_pass": true,
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fft.py::test_fft_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/spectral/fft_c2c/fft_c2c_kernel/_fft_c2c_kernel.py::_fft_c2c_kernel::main",
+      "workload_id": "fft-4k-c64-unbatched-complex64",
+      "label": "fft-4k-c64-unbatched",
+      "marks": [],
+      "shape": [4096],
+      "dtype": "complex64",
+      "params": {"n": 4096, "batch": 1},
+      "kind": "tune",
+      "reason": "no valid candidate: both structural vectorisation routes (per-stage buffer views, TIR kVectorized loops) and every shared-buffer aliasing form were refuted on the current toolchain (opt_log.md Round 1); current best stays at the unchanged Stage 3 kernel, baseline 717.68 us -> final 719.53 us (within msprof noise), aiv_vec_ratio unchanged at 1.2e-4",
+      "tuning_status": "no_gain",
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fft.py::test_fft_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/spectral/fft_c2c/fft_c2c_kernel/_fft_c2c_kernel.py::_fft_c2c_kernel::main",
+      "workload_id": "fft-4k-c64-b64-complex64",
+      "label": "fft-4k-c64-b64",
+      "marks": [],
+      "shape": [64, 4096],
+      "dtype": "complex64",
+      "params": {"n": 4096, "batch": 64},
+      "kind": "tune",
+      "reason": "no valid candidate: same blocked structural finding as fft-4k-c64-unbatched-complex64; current best stays at the unchanged Stage 3 kernel, baseline 1498.32 us -> final 1497.34 us (within msprof noise), aiv_vec_ratio unchanged at 1.2e-4",
+      "tuning_status": "no_gain",
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fft.py::test_fft_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/spectral/fft_c2c/fft_c2c_kernel/_fft_c2c_kernel.py::_fft_c2c_kernel::main",
+      "workload_id": "fft-4k-c128-b64-complex128",
+      "label": "fft-4k-c128-b64",
+      "marks": ["skip"],
+      "shape": [64, 4096],
+      "dtype": "complex128",
+      "params": {"n": 4096, "batch": 64},
+      "kind": "skipped",
+      "reason": "benchmark body calls pytest.xfail for complex128 (CG-2026-0019: npuir has no complex dtype and no fp64 vector elementwise ops). The case is excluded from the runnable set, so it has no perf baseline/final and no precision record; recorded as skipped so the exclusion is disclosed rather than silently dropped. Note on 'marks': the benchmark excludes this case through an imperative pytest.xfail() call in the test body, not through a pytest marker; 'skip' is used here as the classifier's skip signal.",
+      "target_kernel_name": "main"
+    }
+  ]
+}

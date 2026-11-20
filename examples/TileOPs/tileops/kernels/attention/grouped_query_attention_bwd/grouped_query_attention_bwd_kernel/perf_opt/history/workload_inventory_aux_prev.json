@@ -1,0 +1,531 @@
+{
+ "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+ "workloads": [
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "gqa-bwd-smoke-float16",
+   "label": "gqa-bwd-smoke",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "q": [
+     1,
+     128,
+     8,
+     64
+    ],
+    "kv": [
+     1,
+     128,
+     2,
+     64
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "smoke",
+   "reason": "smoke workload: precision regression only",
+   "precision_pass": true
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-8b-short-float16",
+   "label": "llama-3.1-8b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "kv": [
+     4,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-8b-short-bfloat16",
+   "label": "llama-3.1-8b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "kv": [
+     4,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-8b-long-float16",
+   "label": "llama-3.1-8b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "kv": [
+     2,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-8b-long-bfloat16",
+   "label": "llama-3.1-8b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "kv": [
+     2,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-70b-short-float16",
+   "label": "llama-3.1-70b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "kv": [
+     2,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-70b-short-bfloat16",
+   "label": "llama-3.1-70b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "kv": [
+     2,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-70b-long-float16",
+   "label": "llama-3.1-70b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "kv": [
+     1,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_preprocess_kernel.py::_flashattn_bwd_preprocess_kernel::flash_bwd_prep",
+   "workload_id": "llama-3.1-70b-long-bfloat16",
+   "label": "llama-3.1-70b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "kv": [
+     1,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "delta"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "gqa-bwd-smoke-float16",
+   "label": "gqa-bwd-smoke",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "q": [
+     1,
+     128,
+     8,
+     64
+    ],
+    "kv": [
+     1,
+     128,
+     2,
+     64
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "smoke",
+   "reason": "smoke workload: precision regression only",
+   "precision_pass": true
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-8b-short-float16",
+   "label": "llama-3.1-8b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "kv": [
+     4,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-8b-short-bfloat16",
+   "label": "llama-3.1-8b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     4,
+     512,
+     32,
+     128
+    ],
+    "kv": [
+     4,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-8b-long-float16",
+   "label": "llama-3.1-8b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "kv": [
+     2,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-8b-long-bfloat16",
+   "label": "llama-3.1-8b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     2048,
+     32,
+     128
+    ],
+    "kv": [
+     2,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-70b-short-float16",
+   "label": "llama-3.1-70b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "kv": [
+     2,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-70b-short-bfloat16",
+   "label": "llama-3.1-70b-short",
+   "marks": [],
+   "shape": {
+    "q": [
+     2,
+     512,
+     64,
+     128
+    ],
+    "kv": [
+     2,
+     512,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-70b-long-float16",
+   "label": "llama-3.1-70b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "kv": [
+     1,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "float16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_flashattn_bwd_postprocess_kernel.py::_flashattn_bwd_postprocess_kernel::flash_bwd_post",
+   "workload_id": "llama-3.1-70b-long-bfloat16",
+   "label": "llama-3.1-70b-long",
+   "marks": [],
+   "shape": {
+    "q": [
+     1,
+     2048,
+     64,
+     128
+    ],
+    "kv": [
+     1,
+     2048,
+     8,
+     128
+    ]
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "is_causal": true,
+    "role": "dq cast"
+   },
+   "kind": "tune",
+   "reason": "aux pipeline stage over the manifest workload set; measured baseline + perf_opt copy (implementation identical apart from the docstring) -- delta within the +-2.2% noise band, profile is MTE2/Vector-bound with cube idle, so no valid gain candidate -> no_gain",
+   "tuning_status": "no_gain"
+  }
+ ]
+}

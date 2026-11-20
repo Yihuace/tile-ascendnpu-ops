@@ -1,0 +1,418 @@
+{
+  "schema_version": 2,
+  "operator": "EngramDecodeOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261016_210815_236774_EngramDecodeOp",
+    "generated_at": "2026-10-16T21:13:55.896645+08:00",
+    "project_root": "/mnt/workspace/Agentkj/examples/TileOPs",
+    "git_commit": "76e45509964c313ceca43930cceff43c7820551c",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_engram_decode.py",
+    "benchmark_file": "benchmarks/ops/bench_engram_decode.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_engram_decode.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_engram_decode.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-16T21:13:55.896645+08:00",
+      "evaluation_scope": "EngramDecodeOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261016_210815_236774_EngramDecodeOp",
+      "git_commit": "76e45509964c313ceca43930cceff43c7820551c",
+      "correctness_target": "tests/ops/test_engram_decode.py",
+      "benchmark_target": "benchmarks/ops/bench_engram_decode.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 5,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 5,
+    "passed_cases": 5,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 4,
+    "benchmark_failed": 0,
+    "case_count": 4,
+    "msprof_case_count": 4,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_engram_decode::test_engram_decode[1-512-256-12-4-3-dtype0]",
+        "name": "test_engram_decode[1-512-256-12-4-3-dtype0]",
+        "classname": "tests.ops.test_engram_decode",
+        "time_s": 29.124,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_engram_decode::test_engram_decode[1-512-256-12-4-3-dtype1]",
+        "name": "test_engram_decode[1-512-256-12-4-3-dtype1]",
+        "classname": "tests.ops.test_engram_decode",
+        "time_s": 8.618,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_engram_decode::test_engram_decode[4-1024-512-20-4-5-dtype2]",
+        "name": "test_engram_decode[4-1024-512-20-4-5-dtype2]",
+        "classname": "tests.ops.test_engram_decode",
+        "time_s": 6.199,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_engram_decode::test_engram_decode[8-512-256-18-4-3-dtype3]",
+        "name": "test_engram_decode[8-512-256-18-4-3-dtype3]",
+        "classname": "tests.ops.test_engram_decode",
+        "time_s": 6.168,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_engram_decode::test_engram_decode_multi_step",
+        "name": "test_engram_decode_multi_step",
+        "classname": "tests.ops.test_engram_decode",
+        "time_s": 6.271,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_engram_decode::test_engram_decode_bench[decode-smoke-b1-dmem256-d256-fp16]",
+        "name": "test_engram_decode_bench[decode-smoke-b1-dmem256-d256-fp16]",
+        "classname": "benchmarks.ops.bench_engram_decode",
+        "time_s": 77.783,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "tileops_latency_us": "21.7000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_engram_decode::test_engram_decode_bench[decode-b1-dmem512-d256-fp16]",
+        "name": "test_engram_decode_bench[decode-b1-dmem512-d256-fp16]",
+        "classname": "benchmarks.ops.bench_engram_decode",
+        "time_s": 55.217,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "tileops_latency_us": "31.4800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_engram_decode::test_engram_decode_bench[decode-b4-dmem1024-d512-fp16]",
+        "name": "test_engram_decode_bench[decode-b4-dmem1024-d512-fp16]",
+        "classname": "benchmarks.ops.bench_engram_decode",
+        "time_s": 57.725,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "tileops_latency_us": "78.8000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_engram_decode::test_engram_decode_bench[decode-b8-dmem512-d256-bf16]",
+        "name": "test_engram_decode_bench[decode-b8-dmem512-d256-bf16]",
+        "classname": "benchmarks.ops.bench_engram_decode",
+        "time_s": 58.255,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "EngramDecodeOp",
+          "op_module": "tileops.ops.sequence_modeling.engram_decode",
+          "tileops_latency_us": "31.3800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "EngramDecodeOp",
+        "case_id": "EngramDecodeOp-03ed6e68ae6b",
+        "label": "decode-smoke-b1-dmem256-d256-fp16",
+        "params": {
+          "batch": 1,
+          "conv_kernel_size": 4,
+          "d": 256,
+          "d_mem": 256,
+          "dilation": 3,
+          "dtype": "float16",
+          "max_conv_len": 9
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 21.700001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.7172999999999999,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5421757698059082,
+        "performance_tops": 0.01935778558254242,
+        "computility_tops": 4.4464287757873535,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/artifacts/msprof/main_rlitnl4i",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 21.700001,
+          "max_latency_us": 21.700001,
+          "min_latency_us": 21.700001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EngramDecodeOp",
+        "case_id": "EngramDecodeOp-9823808e8f36",
+        "label": "decode-b1-dmem512-d256-fp16",
+        "params": {
+          "batch": 1,
+          "conv_kernel_size": 4,
+          "d": 256,
+          "d_mem": 512,
+          "dilation": 3,
+          "dtype": "float16",
+          "max_conv_len": 12
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 31.48,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.9728000000000001,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1.5442440509796143,
+        "performance_tops": 0.02629021555185318,
+        "computility_tops": 4.45420503616333,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/artifacts/msprof/main_tdffmfml",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 31.48,
+          "max_latency_us": 31.48,
+          "min_latency_us": 31.48,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EngramDecodeOp",
+        "case_id": "EngramDecodeOp-78dc8216d269",
+        "label": "decode-b4-dmem1024-d512-fp16",
+        "params": {
+          "batch": 4,
+          "conv_kernel_size": 4,
+          "d": 512,
+          "d_mem": 1024,
+          "dilation": 5,
+          "dtype": "float16",
+          "max_conv_len": 20
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 78.800003,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 3.6182,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 5.880370616912842,
+        "performance_tops": 0.16384324431419373,
+        "computility_tops": 4.528268337249756,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/artifacts/msprof/main_ezcgbwgd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 78.800003,
+          "max_latency_us": 78.800003,
+          "min_latency_us": 78.800003,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "EngramDecodeOp",
+        "case_id": "EngramDecodeOp-aa9402c4362b",
+        "label": "decode-b8-dmem512-d256-bf16",
+        "params": {
+          "batch": 8,
+          "conv_kernel_size": 4,
+          "d": 256,
+          "d_mem": 512,
+          "dilation": 3,
+          "dtype": "bfloat16",
+          "max_conv_len": 18
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 31.379998999999998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 4.7397,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 10.871245384216309,
+        "performance_tops": 0.21112249791622162,
+        "computility_tops": 4.454297065734863,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261016_210815_236774_EngramDecodeOp/artifacts/msprof/main_4xo05l75",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 31.379999,
+          "max_latency_us": 31.379999,
+          "min_latency_us": 31.379999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "EngramDecodeOp",
+      "family": "sequence_modeling",
+      "cases": 5,
+      "passed": 5,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.008775,
+      "max_abs_err": 0.0156,
+      "performance_cases": 4,
+      "ratio_range": {
+        "min": 0.7172999999999999,
+        "max": 4.7397
+      }
+    }
+  ],
+  "warnings": []
+}

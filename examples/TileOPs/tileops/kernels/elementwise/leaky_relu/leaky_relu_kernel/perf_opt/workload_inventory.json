@@ -1,0 +1,241 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+  "target_kernel_name": "main",
+  "manifest": "examples/TileOPs/tileops/manifest/elementwise.yaml::LeakyReluFwdOp",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "smoke-1m-float32",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float32",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "pytest case id contains the independent 'smoke' token (smoke-1m) -> excluded from performance tuning, used only for precision regression; final precision regression (`perf_opt/_make_leaky_relu_kernel.py --level all`) L0-smoke PASS max_diff=0",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "smoke-1m-float16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "float16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "pytest case id contains the independent 'smoke' token (smoke-1m) -> excluded from performance tuning, used only for precision regression; final precision regression (`perf_opt/_make_leaky_relu_kernel.py --level all`) L0-smoke PASS max_diff=0",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "smoke-1m-bfloat16",
+      "label": "smoke-1m",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        1048576
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "smoke",
+      "reason": "pytest case id contains the independent 'smoke' token (smoke-1m) -> excluded from performance tuning, used only for precision regression; final precision regression (`perf_opt/_make_leaky_relu_kernel.py --level all`) L0-smoke PASS max_diff=0",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "gan-feat-float16",
+      "label": "gan-feat",
+      "marks": [],
+      "shape": [
+        16,
+        256,
+        64,
+        64
+      ],
+      "n_total": 16777216,
+      "dtype": "float16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {f32 12288, f16/bf16 12288} + fp32 static-bulk/dynamic-tail split); all 7 tune workloads improved 60.2%-77.1%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "gan-feat-bfloat16",
+      "label": "gan-feat",
+      "marks": [],
+      "shape": [
+        16,
+        256,
+        64,
+        64
+      ],
+      "n_total": 16777216,
+      "dtype": "bfloat16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {f32 12288, f16/bf16 12288} + fp32 static-bulk/dynamic-tail split); all 7 tune workloads improved 60.2%-77.1%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "gan-feat-deep-float16",
+      "label": "gan-feat-deep",
+      "marks": [],
+      "shape": [
+        16,
+        512,
+        32,
+        32
+      ],
+      "n_total": 8388608,
+      "dtype": "float16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {f32 12288, f16/bf16 12288} + fp32 static-bulk/dynamic-tail split); all 7 tune workloads improved 60.2%-77.1%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "gan-feat-deep-bfloat16",
+      "label": "gan-feat-deep",
+      "marks": [],
+      "shape": [
+        16,
+        512,
+        32,
+        32
+      ],
+      "n_total": 8388608,
+      "dtype": "bfloat16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {f32 12288, f16/bf16 12288} + fp32 static-bulk/dynamic-tail split); all 7 tune workloads improved 60.2%-77.1%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "elementwise-16m-float16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "float16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {f32 12288, f16/bf16 12288} + fp32 static-bulk/dynamic-tail split); all 7 tune workloads improved 60.2%-77.1%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "elementwise-16m-bfloat16",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "bfloat16",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {f32 12288, f16/bf16 12288} + fp32 static-bulk/dynamic-tail split); all 7 tune workloads improved 60.2%-77.1%, smoke precision pass (max_diff=0)"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_elementwise_manifest.py::test_leaky_relu_manifest_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/leaky_relu/leaky_relu_kernel/_make_leaky_relu_kernel.py::_make_leaky_relu_kernel::main",
+      "workload_id": "elementwise-16m-float32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [
+        4096,
+        4096
+      ],
+      "n_total": 16777216,
+      "dtype": "float32",
+      "params": {
+        "negative_slope": 0.01,
+        "inplace": false
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "Stage 4 final candidate final_merged (per-dtype block_size {f32 12288, f16/bf16 12288} + fp32 static-bulk/dynamic-tail split); all 7 tune workloads improved 60.2%-77.1%, smoke precision pass (max_diff=0)"
+    }
+  ],
+  "tuning_summary": {
+    "final_candidate_id": "final_merged",
+    "final_artifact": "perf_opt/_make_leaky_relu_kernel.py",
+    "final_artifact_sha256": "1475bf2d7a227e5d06ff40a0488729b99783675ce610ef4cb2e6a274da7b37e7",
+    "primary_metric": "msprof_op_task_duration_us",
+    "baseline_latency_us": {
+      "gan-feat-float16": 75.62,
+      "gan-feat-bfloat16": 75.69,
+      "gan-feat-deep-float16": 38.75,
+      "gan-feat-deep-bfloat16": 39.23,
+      "elementwise-16m-float16": 75.72,
+      "elementwise-16m-bfloat16": 75.33,
+      "elementwise-16m-float32": 217.72
+    },
+    "final_latency_us": {
+      "gan-feat-float16": 27.82,
+      "gan-feat-bfloat16": 28.14,
+      "gan-feat-deep-float16": 15.41,
+      "gan-feat-deep-bfloat16": 15.04,
+      "elementwise-16m-float16": 28.57,
+      "elementwise-16m-bfloat16": 28.0,
+      "elementwise-16m-float32": 49.96
+    },
+    "stop_reason": "success"
+  }
+}

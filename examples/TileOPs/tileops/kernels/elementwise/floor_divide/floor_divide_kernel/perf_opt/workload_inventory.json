@@ -1,0 +1,337 @@
+{
+  "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+  "target_kernel_name": "main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+  "workloads": [
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float32",
+      "label": "smoke-1k",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 12288
+      },
+      "kind": "smoke",
+      "reason": "pytest.mark.smoke (idx==0 and dtype float32); precision regression only, not performance-tuned",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-float16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 12288
+      },
+      "kind": "smoke",
+      "reason": "smoke case; precision regression only, not performance-tuned (benchmark 'full' mark conflicts with the independent smoke token -> recorded as smoke per profile-collection.md)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "smoke-1k-bfloat16",
+      "label": "smoke-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          1024
+        ],
+        "other_shape": [
+          1024
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 12288
+      },
+      "kind": "smoke",
+      "reason": "smoke case; precision regression only, not performance-tuned (benchmark 'full' mark conflicts with the independent smoke token -> recorded as smoke per profile-collection.md)",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-float32",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 12288
+      },
+      "kind": "tune",
+      "reason": "flat 2r/1w stream, MTE2-bound at the shipped bs=1024 (0.79 TB/s): cross-dtype transit + block_size 12288 -> 84.22 -> ~49.7 us, Roofline 44.9% -> ~75% (>=60% met) | Round 6: fp32 exact chain demoted to a rare path guarded by a 6-pass conservative near-integer band + one tile reduction (eps=2^-20, 8x the 1-ulp bound); 111.39/148.97/217.47 -> 73.88/88.75/130.57 us, bit-exact (--level all x5, 36.2 M random + 59 246-site construction set). Remaining gap to the 60/50/75 us target is the per-tile cross-lane reduction (+10.8 us on hidden) plus the UB budget that keeps the fp32 2-D tile at r_blk=2 (opt_log Round 6).",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged",
+      "candidate_id": "r6_rarepath"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-float16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 12288
+      },
+      "kind": "tune",
+      "reason": "fp32-transit chain vector/emit-bound at bs=1024; cross-dtype copy transit + block_size 12288 -> 132.00 -> ~29.5 us, Roofline 14.1% -> ~63% (>=60% met) | Round 6: half paths unchanged (code path untouched); measured within +-1.6% of r4.",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "hidden-state-prefill-bfloat16",
+      "label": "hidden-state-prefill",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          2048,
+          4096
+        ],
+        "other_shape": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 12288
+      },
+      "kind": "tune",
+      "reason": "same as fp16; cross-dtype copy transit + block_size 12288 -> 132.06 -> ~30.5 us, Roofline 14.1% -> ~61% (>=60% met) | Round 6: half paths unchanged (code path untouched); measured within +-1.6% of r4.",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float32",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 3136
+      },
+      "kind": "tune",
+      "reason": "emit-bound (4096 rows x 3136 with a per-row scalar-b DMA); block_size 3136 -> 385.79 -> ~89 us, Roofline 7.4% -> ~32%. 60% not reachable (read-only numerator 1r/1w cap ~55% and the workload is per-task emit-limited, not bandwidth-limited) | Round 6: fp32 exact chain demoted to a rare path guarded by a 6-pass conservative near-integer band + one tile reduction (eps=2^-20, 8x the 1-ulp bound); 111.39/148.97/217.47 -> 73.88/88.75/130.57 us, bit-exact (--level all x5, 36.2 M random + 59 246-site construction set). Remaining gap to the 60/50/75 us target is the per-tile cross-lane reduction (+10.8 us on hidden) plus the UB budget that keeps the fp32 2-D tile at r_blk=2 (opt_log Round 6).",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged",
+      "candidate_id": "r6_rarepath"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-float16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 3136
+      },
+      "kind": "tune",
+      "reason": "emit-bound + mandatory fp32-transit 5-op chain; block_size 3136 -> 661.65 -> ~134 us, Roofline 2.7% -> ~10%. 60% not reachable (emit-limited; stopped after the <=1 round budget for this class) | Round 6: half paths unchanged (code path untouched); measured within +-1.6% of r4.",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "cnn-feat-broadcast-bfloat16",
+      "label": "cnn-feat-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          16,
+          256,
+          56,
+          56
+        ],
+        "other_shape": [
+          256,
+          1,
+          1
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 3136
+      },
+      "kind": "tune",
+      "reason": "same as fp16; block_size 3136 -> 511.73 -> ~150 us, Roofline 4.3% -> ~12%. 60% not reachable (emit-limited; stopped after the <=1 round budget for this class) | Round 6: half paths unchanged (code path untouched); measured within +-1.6% of r4.",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float32",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "outer-broadcast b hoist (removes 4096 redundant row re-reads) + block_size 4096 -> 163.84 -> ~66 us, Roofline 24.0% -> ~56%. At the report metric's read-only-numerator 1r/1w ceiling (~55.6%); 60% not reachable | Round 6: fp32 exact chain demoted to a rare path guarded by a 6-pass conservative near-integer band + one tile reduction (eps=2^-20, 8x the 1-ulp bound); 111.39/148.97/217.47 -> 73.88/88.75/130.57 us, bit-exact (--level all x5, 36.2 M random + 59 246-site construction set). Remaining gap to the 60/50/75 us target is the per-tile cross-lane reduction (+10.8 us on hidden) plus the UB budget that keeps the fp32 2-D tile at r_blk=2 (opt_log Round 6).",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged",
+      "candidate_id": "r6_rarepath"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-float16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "cross-dtype transit + b hoist + block_size 4096 -> 183.14 -> ~36 us, Roofline 10.8% -> ~52%. At/near the 1r/1w metric ceiling; 60% not reachable | Round 6: half paths unchanged (code path untouched); measured within +-1.6% of r4.",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/floor_divide/floor_divide_kernel/floor_divide_fwd_kernel.py::floor_divide_fwd_kernel::main",
+      "target_kernel_name": "main",
+      "workload_id": "row-broadcast-bfloat16",
+      "label": "row-broadcast",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "input_shape": [
+          4096,
+          4096
+        ],
+        "other_shape": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_size": 4096
+      },
+      "kind": "tune",
+      "reason": "cross-dtype transit + b hoist + block_size 4096 -> 158.76 -> ~measured final us (see opt_log), Roofline 15.0% -> ~50%. At/near the 1r/1w metric ceiling; 60% not reachable | Round 6: half paths unchanged (code path untouched); measured within +-1.6% of r4.",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_floor_divide.py::test_floor_divide_manifest_bench",
+      "tuning_status": "winner_merged"
+    }
+  ]
+}

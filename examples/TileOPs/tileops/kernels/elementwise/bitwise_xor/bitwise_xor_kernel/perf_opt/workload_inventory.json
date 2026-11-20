@@ -1,0 +1,268 @@
+{
+ "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+ "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+ "benchmark_manifest": "examples/TileOPs/tileops/manifest/elementwise.yaml::BitwiseXorFwdOp.workloads",
+ "target_kernel_name": "main",
+ "workloads": [
+  {
+   "workload_id": "cnn-feat-broadcast-bool",
+   "label": "cnn-feat-broadcast",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "dtype": "bool",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "winner_merged",
+   "reason": "round 7 bool int32 packing kept; round 8 unchanged (12.2-13.3 us across session states)"
+  },
+  {
+   "workload_id": "cnn-feat-broadcast-int32",
+   "label": "cnn-feat-broadcast",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "winner_merged",
+   "reason": "round 7 r_blk=8 / native col broadcast kept; round 8 unchanged"
+  },
+  {
+   "workload_id": "cnn-feat-broadcast-int64",
+   "label": "cnn-feat-broadcast",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "dtype": "int64",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     256,
+     1,
+     1
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "winner_merged",
+   "reason": "round 8: host-side int64 -> two int32 word packing on the channel-broadcast form (folded pair tile, K=392 positions per DMA row); Task Duration 195.6->135.1 us (and) and the reported ratio 35.77->49.09 %"
+  },
+  {
+   "workload_id": "hidden-state-prefill-bool",
+   "label": "hidden-state-prefill",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "dtype": "bool",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "winner_merged",
+   "reason": "round 8: static-extent 1-D chunks (exact decomposition) 14.02->13.46 us"
+  },
+  {
+   "workload_id": "hidden-state-prefill-int32",
+   "label": "hidden-state-prefill",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "winner_merged",
+   "reason": "round 8: static-extent 1-D chunks (exact decomposition); re-measured 48.5/60.3 us across two post-freeze runs (session drift)"
+  },
+  {
+   "workload_id": "hidden-state-prefill-int64",
+   "label": "hidden-state-prefill",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "dtype": "int64",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     2048,
+     4096
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "no_gain",
+   "reason": "round 8: int64 packing is deliberately NOT applied to the flat full-last-dim form — packed int32 measured 128.5 us vs 126.4 us int64 at block_size 4096 and 7168 alike, and the reported ratio regresses 61.4->58.0 %"
+  },
+  {
+   "workload_id": "row-broadcast-int32",
+   "label": "row-broadcast",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     1,
+     4096
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     1,
+     4096
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "winner_merged",
+   "reason": "round 8 unchanged (2-D row tile)"
+  },
+  {
+   "workload_id": "row-broadcast-int64",
+   "label": "row-broadcast",
+   "marks": [],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     1,
+     4096
+    ]
+   },
+   "dtype": "int64",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     1,
+     4096
+    ]
+   },
+   "kind": "tune",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "tuning_status": "no_gain",
+   "reason": "round 8: int64 packing is deliberately NOT applied to the full-last-dim form — packed int32 measured 167.9 us (vs 168.9 us int64) but the L2 read-miss counter drops 180->134 MB, i.e. the reported ratio regresses 59.2->44.4 %"
+  },
+  {
+   "workload_id": "smoke-1k-bool",
+   "label": "smoke-1k",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "input_shape": null,
+    "other_shape": [
+     1024
+    ]
+   },
+   "dtype": "bool",
+   "params": {
+    "a_shape": null,
+    "other_shape": [
+     1024
+    ]
+   },
+   "kind": "smoke",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "reason": "manifest label smoke-1k contains standalone 'smoke' token; precision regression only; NOTE: this variant is marked pytest.mark.full by _mark() (idx==0 but not int32) yet profiled -- classified smoke by the manifest label token per contract | round 4 final: --level all PASS on perf_opt file.",
+   "precision_pass": true
+  },
+  {
+   "workload_id": "smoke-1k-int32",
+   "label": "smoke-1k",
+   "marks": [
+    "smoke"
+   ],
+   "shape": {
+    "input_shape": [
+     1024
+    ],
+    "other_shape": [
+     1024
+    ]
+   },
+   "dtype": "int32",
+   "params": {
+    "a_shape": [
+     1024
+    ],
+    "other_shape": [
+     1024
+    ]
+   },
+   "kind": "smoke",
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_bitwise_xor.py::test_bitwise_xor_bench",
+   "kernel_id": "tileops/kernels/elementwise/bitwise_xor/bitwise_xor_kernel/bitwise_xor_fwd_kernel.py::bitwise_xor_fwd_kernel::main",
+   "reason": "manifest label smoke-1k contains standalone 'smoke' token -> precision regression only; NOTE: bench_bitwise_xor._mark() only marks (idx==0, int32) as pytest.mark.smoke and the benchmark stage deselects smoke-marked cases, so this variant is NOT profiled while its bool sibling IS (marked full). Classification follows the manifest label token per contract. | round 4 final: --level all PASS on perf_opt file.",
+   "precision_pass": true
+  }
+ ]
+}

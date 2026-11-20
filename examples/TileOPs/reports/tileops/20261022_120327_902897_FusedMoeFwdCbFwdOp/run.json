@@ -1,0 +1,409 @@
+{
+  "schema_version": 2,
+  "operator": "FusedMoeFwdCbFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261022_120327_902897_FusedMoeFwdCbFwdOp",
+    "generated_at": "2026-10-22T12:24:25.089379+08:00",
+    "project_root": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "147b71bcf2f0d4b613eaf815fc0cd45dc22b4048",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_moe_fused_moe_cb.py",
+    "benchmark_file": "benchmarks/ops/bench_moe_fused_moe_cb.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": "main_mix_aic",
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_moe_fused_moe_cb.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_120327_902897_FusedMoeFwdCbFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_moe_fused_moe_cb.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_120327_902897_FusedMoeFwdCbFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-22T12:24:25.089379+08:00",
+      "evaluation_scope": "FusedMoeFwdCbFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261022_120327_902897_FusedMoeFwdCbFwdOp",
+      "git_commit": "147b71bcf2f0d4b613eaf815fc0cd45dc22b4048",
+      "correctness_target": "tests/ops/test_moe_fused_moe_cb.py",
+      "benchmark_target": "benchmarks/ops/bench_moe_fused_moe_cb.py"
+    },
+    "environment": {
+      "npu": "Ascend910_9362 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.5",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 8,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 8,
+    "passed_cases": 8,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 5,
+    "benchmark_failed": 0,
+    "case_count": 3,
+    "msprof_case_count": 3,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_120327_902897_FusedMoeFwdCbFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_kimi[smoke-nobias-bf16]",
+        "name": "test_fused_moe_kimi[smoke-nobias-bf16]",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 105.789,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_kimi[smoke-bias-bf16]",
+        "name": "test_fused_moe_kimi[smoke-bias-bf16]",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 9.707,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_kimi[smoke-bias-scale-bf16]",
+        "name": "test_fused_moe_kimi[smoke-bias-scale-bf16]",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 1.6,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_kimi[smoke-bias-scale-fp16]",
+        "name": "test_fused_moe_kimi[smoke-bias-scale-fp16]",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 37.161,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_kimi[kimi-k2-smoke-bf16]",
+        "name": "test_fused_moe_kimi[kimi-k2-smoke-bf16]",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 17.569,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_kimi[kimi-k2-small-bf16]",
+        "name": "test_fused_moe_kimi[kimi-k2-small-bf16]",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 17.39,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_kimi[kimi-k2-medium-bf16]",
+        "name": "test_fused_moe_kimi[kimi-k2-medium-bf16]",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 17.432,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_fused_moe_cb::test_fused_moe_fwd_cb_op_identity",
+        "name": "test_fused_moe_fwd_cb_op_identity",
+        "classname": "tests.ops.test_moe_fused_moe_cb",
+        "time_s": 0.212,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_120327_902897_FusedMoeFwdCbFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_moe_fused_moe_cb::test_fused_moe_fwd_cb_bench[fused-moe-cb-smoke-bfloat16]",
+        "name": "test_fused_moe_fwd_cb_bench[fused-moe-cb-smoke-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_fused_moe_cb",
+        "time_s": 234.113,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedMoeFwdCbFwdOp",
+          "op_module": "tileops.ops.moe.fused_moe",
+          "tileops_latency_us": "7.7998"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_fused_moe_cb::test_fused_moe_fwd_cb_bench[fused-moe-cb-smoke-float16]",
+        "name": "test_fused_moe_fwd_cb_bench[fused-moe-cb-smoke-float16]",
+        "classname": "benchmarks.ops.bench_moe_fused_moe_cb",
+        "time_s": 168.67,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedMoeFwdCbFwdOp",
+          "op_module": "tileops.ops.moe.fused_moe",
+          "tileops_latency_us": "7.9798"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_fused_moe_cb::test_fused_moe_fwd_cb_bench[kimi-k2-decode-bfloat16]",
+        "name": "test_fused_moe_fwd_cb_bench[kimi-k2-decode-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_fused_moe_cb",
+        "time_s": 234.939,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedMoeFwdCbFwdOp",
+          "op_module": "tileops.ops.moe.fused_moe",
+          "tileops_latency_us": "13672.6465"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_fused_moe_cb::test_fused_moe_fwd_cb_bench[kimi-k2-medium-bfloat16]",
+        "name": "test_fused_moe_fwd_cb_bench[kimi-k2-medium-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_fused_moe_cb",
+        "time_s": 187.149,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedMoeFwdCbFwdOp",
+          "op_module": "tileops.ops.moe.fused_moe",
+          "tileops_latency_us": "20977.9414"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_fused_moe_cb::test_fused_moe_fwd_cb_bench[kimi-k2-prefill-bfloat16]",
+        "name": "test_fused_moe_fwd_cb_bench[kimi-k2-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_fused_moe_cb",
+        "time_s": 201.191,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedMoeFwdCbFwdOp",
+          "op_module": "tileops.ops.moe.fused_moe",
+          "tileops_latency_us": "26514.0508"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261022_120327_902897_FusedMoeFwdCbFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "FusedMoeFwdCbFwdOp",
+        "case_id": "FusedMoeFwdCbFwdOp-b0875d8b80d4",
+        "label": "kimi-k2-decode",
+        "params": {
+          "dtype": "bfloat16",
+          "dtype_str": "bfloat16",
+          "ffn_size": 2048,
+          "hidden_size": 7168,
+          "num_experts": 256,
+          "num_tokens": 512,
+          "renormalize": true,
+          "routed_scaling_factor": 2.827,
+          "scoring_func": "sigmoid",
+          "top_k": 8
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 13672.646484,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 45.9756,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.6502864830451502,
+        "bandwidth_utilization_percent": 91.68258239139723,
+        "arithmetic_intensity_ops_per_byte": 124.21878051757812,
+        "performance_tops": 102.79853820800781,
+        "computility_tops": 272.447998046875,
+        "artifact_dir": "/tmp/opencode/msprof-out-moe",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main_mix_aic"
+          ],
+          "kernel_name_requested": "main_mix_aic",
+          "kernel_name_resolved": "main_mix_aic",
+          "latency_us": 13672.646484,
+          "max_latency_us": 13672.646484,
+          "min_latency_us": 7059.158691,
+          "op_name": "main_mix_aic",
+          "sample_count": 2
+        }
+      },
+      {
+        "operator": "FusedMoeFwdCbFwdOp",
+        "case_id": "FusedMoeFwdCbFwdOp-83cfe7a0d51f",
+        "label": "kimi-k2-medium",
+        "params": {
+          "dtype": "bfloat16",
+          "dtype_str": "bfloat16",
+          "ffn_size": 2048,
+          "hidden_size": 7168,
+          "num_experts": 256,
+          "num_tokens": 2048,
+          "renormalize": true,
+          "routed_scaling_factor": 2.827,
+          "scoring_func": "sigmoid",
+          "top_k": 8
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 20977.941406,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 44.717,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.0777700394154681,
+        "bandwidth_utilization_percent": 59.87611330085934,
+        "arithmetic_intensity_ops_per_byte": 116.62499237060547,
+        "performance_tops": 93.87205505371094,
+        "computility_tops": 272.447998046875,
+        "artifact_dir": "/tmp/opencode/msprof-out-moe",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main_mix_aic"
+          ],
+          "kernel_name_requested": "main_mix_aic",
+          "kernel_name_resolved": "main_mix_aic",
+          "latency_us": 20977.941406,
+          "max_latency_us": 20977.941406,
+          "min_latency_us": 10092.658203,
+          "op_name": "main_mix_aic",
+          "sample_count": 2
+        }
+      },
+      {
+        "operator": "FusedMoeFwdCbFwdOp",
+        "case_id": "FusedMoeFwdCbFwdOp-0cb059c96b98",
+        "label": "kimi-k2-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "dtype_str": "bfloat16",
+          "ffn_size": 2048,
+          "hidden_size": 7168,
+          "num_experts": 256,
+          "num_tokens": 4096,
+          "renormalize": true,
+          "routed_scaling_factor": 2.827,
+          "scoring_func": "sigmoid",
+          "top_k": 8
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 26514.050781,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 53.7393,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.8550264284869479,
+        "bandwidth_utilization_percent": 47.50146824927488,
+        "arithmetic_intensity_ops_per_byte": 113.4144287109375,
+        "performance_tops": 109.70661163330078,
+        "computility_tops": 272.447998046875,
+        "artifact_dir": "/tmp/opencode/msprof-out-moe",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main_mix_aic"
+          ],
+          "kernel_name_requested": "main_mix_aic",
+          "kernel_name_resolved": "main_mix_aic",
+          "latency_us": 26514.050781,
+          "max_latency_us": 26514.050781,
+          "min_latency_us": 12522.589844,
+          "op_name": "main_mix_aic",
+          "sample_count": 2
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "FusedMoeFwdCbFwdOp",
+      "family": "moe",
+      "cases": 8,
+      "passed": 8,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 3,
+      "ratio_range": {
+        "min": 44.717,
+        "max": 53.7393
+      }
+    }
+  ],
+  "warnings": []
+}

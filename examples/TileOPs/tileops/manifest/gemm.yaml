@@ -1,0 +1,132 @@
+# gemm.yaml -- manifest entries for the 'gemm' family (NPU benchmark).
+#
+# 说明：本文件由本 family 的算子结果 PR 增量补充，不要整文件覆盖。
+
+GemmOp:
+  ref_api: "torch.matmul"
+  family: gemm
+  status: implemented
+
+  signature:
+    inputs:
+      a: {dtype: "float16 | bfloat16"}
+      b: {dtype: "same_as(a)"}
+    outputs:
+      d: {dtype: "same_as(a)"}
+    params:
+      trans_a: {type: bool, default: false}
+      trans_b: {type: bool, default: true}
+    shape_rules:
+    # d is logical [M, N] for all four layouts: M is a's non-K axis (axis 1 if
+    # a is stored [K, M] under trans_a, else axis 0); N is b's non-K axis.
+    - "d.shape == ((a.shape[1] if trans_a else a.shape[0]), (b.shape[0] if trans_b else b.shape[1]))"
+
+  workloads:
+    # Smoke: smallest robust shape (NPU manifest workload contract).
+  - {m: 128, n: 128, k: 128, trans_a: false, trans_b: true, dtypes: [float16, bfloat16], label: "gemm-smoke-nt-128"}
+    # Full: GPU manifest workloads (verbatim).  m/n/k are the logical GEMM
+    # dims (trans-independent); trans_a/trans_b pick the storage layout the
+    # kernel compiles for.  The NT (n, k) shapes mirror DeepGEMM's
+    # normal-GEMM test set (DeepSeek-V3 MLP/attention projections), swept over
+    # decode (m=128) and prefill (m=4096) token counts.
+  - {m: 1024, n: 1024, k: 1024, trans_a: false, trans_b: false, dtypes: [float16, bfloat16], label: "square-1k-nn"}
+  - {m: 128, n: 2112, k: 7168, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "ds-v3-decode-gate-up"}
+  - {m: 128, n: 7168, k: 2048, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "ds-v3-decode-down"}
+  - {m: 4096, n: 2112, k: 7168, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "ds-v3-prefill-gate-up"}
+  - {m: 4096, n: 7168, k: 2048, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "ds-v3-prefill-down"}
+  - {m: 4096, n: 4096, k: 7168, trans_a: false, trans_b: true, dtypes: [float16, bfloat16], label: "ds-v3-prefill-attn-proj"}
+  - {m: 4096, n: 7168, k: 16384, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "k-dominant-7168x16384"}
+  - {m: 4096, n: 24576, k: 1536, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "wide-n-24576"}
+    # Mid-m band: samples of m = 9..127, the token-count gap below the
+    # decode/prefill sweep (m in {128, 1024, 4096}); n/k reuse the
+    # DeepSeek-V3 projection shapes above.
+  - {m: 16, n: 4096, k: 7168, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "mid-m16-attn"}
+  - {m: 32, n: 4096, k: 7168, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "mid-m32-attn"}
+  - {m: 64, n: 7168, k: 2048, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "mid-m64-down"}
+  - {m: 96, n: 2112, k: 7168, trans_a: false, trans_b: true, dtypes: [bfloat16], label: "mid-m96-gate-up"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.gemm_fwd_roofline``:
+  #   flops = 2 * m * n * k
+  #   bytes = (m * k + n * k + m * n) * elem_bytes
+  # m/n/k are read off the op after forward() (input-inferred); the logical
+  # dims are transpose-independent.
+  roofline:
+    vars:
+      m: "m"
+      n: "n"
+      k: "k"
+    flops: "2 * m * n * k"
+    bytes: "(m * k + n * k + m * n) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/gemm/gemm/gemm.py
+    kernel_map:
+      gemm_kernel: GemmKernel
+      gemv_kernel: GemvKernel
+    op: tileops/ops/gemm/gemm.py
+    test: tests/ops/test_gemm.py
+    bench: benchmarks/ops/bench_gemm.py
+    bench_manifest_driven: false
+
+# gemm.yaml -- manifest entries for the 'gemm' family (NPU benchmark).
+#
+# 说明：本文件由本 family 的算子结果 PR 增量补充，不要整文件覆盖。
+
+GemmW4A16Op:
+  # W4A16 dense NT GEMM with group-wise affine weight dequantization.
+  # Ported from the GPU TileOPs manifest (tileops/manifest/gemm.yaml); the
+  # signature / shape_rules / workloads are copied verbatim.  roofline is the
+  # GPU ``tileops.perf.formulas.gemm_w4a16_fwd_roofline`` inlined as
+  # vars/flops/bytes (the NPU project has no tileops.perf module).
+  ref_api: "none"
+  family: gemm
+  status: implemented
+
+  signature:
+    inputs:
+      activation: {dtype: "float16", shape: "[M, K]"}
+      packed_weight: {dtype: "uint8", shape: "[N, K_PACKED]"}
+      weight_scale: {dtype: "float32", shape: "[N, GROUPS]"}
+      weight_zero: {dtype: "uint8", shape: "[N, GROUPS]"}
+    outputs:
+      output: {dtype: "same_as(activation)", shape: "[M, N]"}
+    params:
+      group_size: {type: int, default: 128}
+    shape_rules:
+    - "activation.shape[1] % group_size == 0"
+    - "packed_weight.shape == (weight_scale.shape[0], activation.shape[1] // 2)"
+    - "weight_scale.shape == (packed_weight.shape[0], activation.shape[1] // group_size)"
+    - "weight_zero.shape == weight_scale.shape"
+    - "output.shape == (activation.shape[0], packed_weight.shape[0])"
+
+  workloads:
+  # Decode-oriented coverage. The small non-decode shapes are compile/smoke
+  # checks only; they are not intended to claim full GEMM performance coverage.
+  - {m: 64, n: 64, k: 128, dtypes: [float16], label: "compile-smoke-square-64x64x128"}
+  - {m: 128, n: 256, k: 256, dtypes: [float16], label: "compile-smoke-rect-128x256x256"}
+  - {m: 1, n: 8192, k: 8192, dtypes: [float16], label: "decode-l2-resident-ish"}
+  - {m: 1, n: 8192, k: 16384, dtypes: [float16], label: "decode-hbm-streaming-threshold"}
+  - {m: 1, n: 7168, k: 20480, dtypes: [float16], label: "decode-non-power2-low-cta"}
+  - {m: 1, n: 8192, k: 81920, dtypes: [float16], label: "decode-long-k-pressure"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.gemm_w4a16_fwd_roofline``:
+  #   flops = 2 * m * n * k
+  #   bytes = m*k*elem_bytes + n*k//2 + n*(k//group_size)*(4+1) + m*n*elem_bytes
+  # m/n/k are read off the op after forward() (input-inferred).
+  roofline:
+    vars:
+      m: "m"
+      n: "n"
+      k: "k"
+      group_size: "group_size"
+    flops: "2 * m * n * k"
+    bytes: "m * k * elem_bytes + n * k // 2 + n * (k // group_size) * (4 + 1) + m * n * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/gemm/gemm_w4a16/gemm_w4a16.py
+    kernel_map:
+      gemm_w4a16_kernel: GemmW4A16Kernel
+    op: tileops/ops/gemm/gemm_w4a16.py
+    test: tests/ops/test_gemm_w4a16.py
+    bench: benchmarks/ops/bench_gemm_w4a16.py
+    bench_manifest_driven: false

@@ -1,0 +1,47 @@
+# scan.yaml -- manifest entries for the 'scan' family (NPU benchmark).
+#
+# 说明：本文件由本 family 的算子结果 PR 增量补充，不要整文件覆盖。
+
+CumprodFwdOp:
+  ref_api: "torch.cumprod"
+  family: scan
+  status: implemented
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      y: {dtype: "same_as(x)"}
+    params:
+      dim: {type: int, default: -1}
+    shape_rules:
+    - "-x.ndim <= dim < x.ndim"
+    - "y.shape == x.shape"
+
+  workloads:
+    # Smoke case (small shape, all supported dtypes)
+  - {x_shape: [128, 512], dtypes: [float16, bfloat16, float32], label: "smoke-cumprod"}
+    # Hidden state cumulative product (Llama-3.1-8B)
+  - {x_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "hidden-state-scan"}
+    # Long sequence cumulative product
+  - {x_shape: [64, 32768], dtypes: [bfloat16], label: "long-seq-scan"}
+    # Non-aligned N: exercises the masked tail tile
+  - {x_shape: [512, 300], dtypes: [float16, bfloat16], label: "non-aligned-cumprod"}
+
+  roofline:
+    vars:
+      M: "product(x.shape[:dim % x.ndim]) * product(x.shape[dim % x.ndim + 1:])"
+      N: "x.shape[dim % x.ndim]"
+    # N-1 multiplications per scan line
+    flops: "M * N"
+    # Read x + write y
+    bytes: "2 * M * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/scan/cumprod/cumprod.py
+    kernel_map:
+      cumulative_fwd: CumulativeKernel
+    op: tileops/ops/scan/cumprod.py
+    test: tests/ops/test_cumulative.py
+    bench: benchmarks/ops/bench_cumulative.py
+    bench_manifest_driven: true

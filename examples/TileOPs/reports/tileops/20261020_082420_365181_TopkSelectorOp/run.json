@@ -1,0 +1,353 @@
+{
+  "schema_version": 2,
+  "operator": "TopkSelectorOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261020_082420_365181_TopkSelectorOp",
+    "generated_at": "2026-10-20T08:26:23.206133+00:00",
+    "project_root": "/root/mla-full/examples/TileOPs",
+    "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+    "python": "3.11.15",
+    "platform": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+    "test_file": "tests/ops/test_topk_selector.py",
+    "benchmark_file": "benchmarks/ops/bench_topk_selector.py",
+    "prof_mode_requested": "events",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_topk_selector.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261020_082420_365181_TopkSelectorOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_topk_selector.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261020_082420_365181_TopkSelectorOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-20T08:26:23.206133+00:00",
+      "evaluation_scope": "TopkSelectorOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "events",
+      "run_id": "20261020_082420_365181_TopkSelectorOp",
+      "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+      "correctness_target": "tests/ops/test_topk_selector.py",
+      "benchmark_target": "benchmarks/ops/bench_topk_selector.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2C x 1",
+      "cpu": "x86_64",
+      "cann": "9.0.0",
+      "driver": "26.0.rc1",
+      "pytorch": "2.10.0+cpu",
+      "pytorch_npu": "2.10.0",
+      "tilelang": "0.1.2+ubuntu.22.4.npuir",
+      "python": "3.11.15",
+      "os": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 9,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 9,
+    "passed_cases": 9,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 4,
+    "benchmark_failed": 0,
+    "case_count": 3,
+    "msprof_case_count": 0,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261020_082420_365181_TopkSelectorOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_op[shape0-dtype0-8-None]",
+        "name": "test_topk_selector_op[shape0-dtype0-8-None]",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 31.337,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_op[shape1-dtype1-1-None]",
+        "name": "test_topk_selector_op[shape1-dtype1-1-None]",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 4.168,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_op[shape2-dtype2-512-None]",
+        "name": "test_topk_selector_op[shape2-dtype2-512-None]",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 2.773,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_op[shape3-dtype3-16-None]",
+        "name": "test_topk_selector_op[shape3-dtype3-16-None]",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 4.288,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_op[shape4-dtype4-64-None]",
+        "name": "test_topk_selector_op[shape4-dtype4-64-None]",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 4.626,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_op[shape5-dtype5-64-1024]",
+        "name": "test_topk_selector_op[shape5-dtype5-64-1024]",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 3.25,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_ties_are_a_set",
+        "name": "test_topk_selector_ties_are_a_set",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 4.196,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_rejects_bad_shape",
+        "name": "test_topk_selector_rejects_bad_shape",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 4.217,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_topk_selector::test_topk_selector_eval_roofline",
+        "name": "test_topk_selector_eval_roofline",
+        "classname": "tests.ops.test_topk_selector",
+        "time_s": 0.107,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261020_082420_365181_TopkSelectorOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_topk_selector::test_topk_selector_bench[smoke-256-float32]",
+        "name": "test_topk_selector_bench[smoke-256-float32]",
+        "classname": "benchmarks.ops.bench_topk_selector",
+        "time_s": 32.548,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "TopkSelectorOp",
+          "op_module": "tileops.ops.attention_indexing.topk_selector",
+          "tileops_latency_us": "372.7860",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_topk_selector::test_topk_selector_bench[topk-1024-float32]",
+        "name": "test_topk_selector_bench[topk-1024-float32]",
+        "classname": "benchmarks.ops.bench_topk_selector",
+        "time_s": 4.534,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "TopkSelectorOp",
+          "op_module": "tileops.ops.attention_indexing.topk_selector",
+          "tileops_latency_us": "991.7100",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_topk_selector::test_topk_selector_bench[topk-4096-float32]",
+        "name": "test_topk_selector_bench[topk-4096-float32]",
+        "classname": "benchmarks.ops.bench_topk_selector",
+        "time_s": 5.066,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "TopkSelectorOp",
+          "op_module": "tileops.ops.attention_indexing.topk_selector",
+          "tileops_latency_us": "1463.5260",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_topk_selector::test_topk_selector_bench[topk-8192-tiled-float32]",
+        "name": "test_topk_selector_bench[topk-8192-tiled-float32]",
+        "classname": "benchmarks.ops.bench_topk_selector",
+        "time_s": 5.203,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "TopkSelectorOp",
+          "op_module": "tileops.ops.attention_indexing.topk_selector",
+          "tileops_latency_us": "2485.5840",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/root/mla-full/examples/TileOPs/reports/tileops/20261020_082420_365181_TopkSelectorOp/benchmark.json",
+    "requested_prof_mode": "events",
+    "cases": [
+      {
+        "operator": "TopkSelectorOp",
+        "case_id": "TopkSelectorOp-3d516c062438",
+        "label": "topk-1024",
+        "params": {
+          "dtype": "float32",
+          "k": 16,
+          "op_params": {},
+          "shape": [
+            16,
+            1024
+          ],
+          "tile": null
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 991.7099952697754,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 6.71163952339652e-05,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 0.0006608383530728882,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "TopkSelectorOp",
+        "case_id": "TopkSelectorOp-cef508889747",
+        "label": "topk-4096",
+        "params": {
+          "dtype": "float32",
+          "k": 64,
+          "op_params": {},
+          "shape": [
+            8,
+            4096
+          ],
+          "tile": null
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 1463.5259985923767,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 9.095841148570999e-05,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 0.0008955905130900674,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "TopkSelectorOp",
+        "case_id": "TopkSelectorOp-35bec24a6191",
+        "label": "topk-8192-tiled",
+        "params": {
+          "dtype": "float32",
+          "k": 64,
+          "op_params": {},
+          "shape": [
+            8,
+            8192
+          ],
+          "tile": null
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 2485.584020614624,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.00010628970809631766,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 0.0010546575687076481,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "TopkSelectorOp",
+      "family": "attention_indexing",
+      "cases": 9,
+      "passed": 9,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 3,
+      "ratio_range": null
+    }
+  ],
+  "warnings": []
+}

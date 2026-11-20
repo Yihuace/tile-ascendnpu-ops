@@ -1,0 +1,1264 @@
+{
+  "schema_version": 2,
+  "operator": "L2NormFwdOp",
+  "status": "partial",
+  "metadata": {
+    "run_id": "20261018_142345_105317_L2NormFwdOp",
+    "generated_at": "2026-10-18T14:37:37.341651+00:00",
+    "project_root": "/root/mla-full/examples/TileOPs",
+    "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+    "python": "3.11.15",
+    "platform": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+    "test_file": "tests/ops/test_vector_norm.py",
+    "benchmark_file": "benchmarks/ops/bench_vector_norm.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_vector_norm.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_vector_norm.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-18T14:37:37.341651+00:00",
+      "evaluation_scope": "L2NormFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261018_142345_105317_L2NormFwdOp",
+      "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+      "correctness_target": "tests/ops/test_vector_norm.py",
+      "benchmark_target": "benchmarks/ops/bench_vector_norm.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2C x 1",
+      "cpu": "x86_64",
+      "cann": "9.0.0",
+      "driver": "26.0.rc1",
+      "pytorch": "2.10.0+cpu",
+      "pytorch_npu": "2.10.0",
+      "tilelang": "0.1.2+ubuntu.22.4.npuir",
+      "python": "3.11.15",
+      "os": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 28,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 28,
+    "passed_cases": 28,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": false,
+    "benchmark_tests": 21,
+    "benchmark_failed": 0,
+    "case_count": 12,
+    "msprof_case_count": 8,
+    "profiler_fallback_count": 4,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape0--1-dtype0]",
+        "name": "test_l1_norm_op[shape0--1-dtype0]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 18.304,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape1--1-dtype1]",
+        "name": "test_l1_norm_op[shape1--1-dtype1]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 6.368,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape2--1-dtype2]",
+        "name": "test_l1_norm_op[shape2--1-dtype2]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 6.335,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape3--1-dtype3]",
+        "name": "test_l1_norm_op[shape3--1-dtype3]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.471,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape4--1-dtype4]",
+        "name": "test_l1_norm_op[shape4--1-dtype4]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.496,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape5--1-dtype5]",
+        "name": "test_l1_norm_op[shape5--1-dtype5]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.384,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape6--1-dtype6]",
+        "name": "test_l1_norm_op[shape6--1-dtype6]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.365,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_op[shape7-dim7-dtype7]",
+        "name": "test_l1_norm_op[shape7-dim7-dtype7]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.372,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape0--1-dtype0]",
+        "name": "test_l2_norm_op[shape0--1-dtype0]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.459,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape1--1-dtype1]",
+        "name": "test_l2_norm_op[shape1--1-dtype1]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.415,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape2--1-dtype2]",
+        "name": "test_l2_norm_op[shape2--1-dtype2]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.43,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape3--1-dtype3]",
+        "name": "test_l2_norm_op[shape3--1-dtype3]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.534,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape4--1-dtype4]",
+        "name": "test_l2_norm_op[shape4--1-dtype4]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.538,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape5--1-dtype5]",
+        "name": "test_l2_norm_op[shape5--1-dtype5]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.422,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape6--1-dtype6]",
+        "name": "test_l2_norm_op[shape6--1-dtype6]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.41,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l2_norm_op[shape7-dim7-dtype7]",
+        "name": "test_l2_norm_op[shape7-dim7-dtype7]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.393,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape0--1-dtype0]",
+        "name": "test_inf_norm_op[shape0--1-dtype0]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.389,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape1--1-dtype1]",
+        "name": "test_inf_norm_op[shape1--1-dtype1]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.343,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape2--1-dtype2]",
+        "name": "test_inf_norm_op[shape2--1-dtype2]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.348,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape3--1-dtype3]",
+        "name": "test_inf_norm_op[shape3--1-dtype3]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.417,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape4--1-dtype4]",
+        "name": "test_inf_norm_op[shape4--1-dtype4]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.439,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape5--1-dtype5]",
+        "name": "test_inf_norm_op[shape5--1-dtype5]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.329,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape6--1-dtype6]",
+        "name": "test_inf_norm_op[shape6--1-dtype6]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.326,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_op[shape7-dim7-dtype7]",
+        "name": "test_inf_norm_op[shape7-dim7-dtype7]",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.312,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_norm_rejects_wrong_ord",
+        "name": "test_norm_rejects_wrong_ord",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_eval_roofline",
+        "name": "test_l1_norm_eval_roofline",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.363,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_inf_norm_propagates_nan",
+        "name": "test_inf_norm_propagates_nan",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.366,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_vector_norm::test_l1_norm_all_negative_row",
+        "name": "test_l1_norm_all_negative_row",
+        "classname": "tests.ops.test_vector_norm",
+        "time_s": 1.368,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 21,
+    "passed": 21,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l1_norm_bench[smoke-small-float32]",
+        "name": "test_l1_norm_bench[smoke-small-float32]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 49.052,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "2.6001"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l1_norm_bench[smoke-small-float16]",
+        "name": "test_l1_norm_bench[smoke-small-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 36.274,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.2201"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l1_norm_bench[smoke-small-bfloat16]",
+        "name": "test_l1_norm_bench[smoke-small-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 37.375,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.6401"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l1_norm_bench[hidden-state-l1-float16]",
+        "name": "test_l1_norm_bench[hidden-state-l1-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 37.342,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "17.5207"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l1_norm_bench[hidden-state-l1-bfloat16]",
+        "name": "test_l1_norm_bench[hidden-state-l1-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 37.399,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "19.2208"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l1_norm_bench[long-row-l1-bfloat16]",
+        "name": "test_l1_norm_bench[long-row-l1-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 32.36,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.9802"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l1_norm_bench[3d-multidim-reduce-float16]",
+        "name": "test_l1_norm_bench[3d-multidim-reduce-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 36.26,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L1NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.0001"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l2_norm_bench[smoke-small-float32]",
+        "name": "test_l2_norm_bench[smoke-small-float32]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 37.357,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "2.9001"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l2_norm_bench[smoke-small-float16]",
+        "name": "test_l2_norm_bench[smoke-small-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 37.337,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.2401"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l2_norm_bench[smoke-small-bfloat16]",
+        "name": "test_l2_norm_bench[smoke-small-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 36.385,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.7601"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l2_norm_bench[hidden-state-l2-float16]",
+        "name": "test_l2_norm_bench[hidden-state-l2-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 37.366,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "17.5407"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l2_norm_bench[hidden-state-l2-bfloat16]",
+        "name": "test_l2_norm_bench[hidden-state-l2-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 36.443,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "18.8808"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l2_norm_bench[long-row-l2-bfloat16]",
+        "name": "test_l2_norm_bench[long-row-l2-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 31.243,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.9002"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_l2_norm_bench[3d-multidim-reduce-float16]",
+        "name": "test_l2_norm_bench[3d-multidim-reduce-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 37.304,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "L2NormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "3.1201"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_inf_norm_bench[smoke-small-float32]",
+        "name": "test_inf_norm_bench[smoke-small-float32]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 23.389,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "261.9100",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_inf_norm_bench[smoke-small-float16]",
+        "name": "test_inf_norm_bench[smoke-small-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 33.324,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "279.3560",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_inf_norm_bench[smoke-small-bfloat16]",
+        "name": "test_inf_norm_bench[smoke-small-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 35.479,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "242.3980",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_inf_norm_bench[hidden-state-inf-float16]",
+        "name": "test_inf_norm_bench[hidden-state-inf-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 35.395,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "279.3400",
+          "tileops_tflops": "0.06",
+          "tileops_bandwidth_tbs": "0.06"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_inf_norm_bench[hidden-state-inf-bfloat16]",
+        "name": "test_inf_norm_bench[hidden-state-inf-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 35.427,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "282.0980",
+          "tileops_tflops": "0.06",
+          "tileops_bandwidth_tbs": "0.06"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_inf_norm_bench[long-row-inf-bfloat16]",
+        "name": "test_inf_norm_bench[long-row-inf-bfloat16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 34.169,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "256.2420",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_vector_norm::test_inf_norm_bench[3d-multidim-reduce-float16]",
+        "name": "test_inf_norm_bench[3d-multidim-reduce-float16]",
+        "classname": "benchmarks.ops.bench_vector_norm",
+        "time_s": 35.321,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "InfNormFwdOp",
+          "op_module": "tileops.ops.reduction.vector_norm",
+          "tileops_latency_us": "305.6840",
+          "tileops_tflops": "0.00",
+          "tileops_bandwidth_tbs": "0.00"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "L1NormFwdOp",
+        "case_id": "L1NormFwdOp-d5050a3c4cca",
+        "label": "hidden-state-l1",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 17.5207,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 53.1985,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5148199796676636,
+        "performance_tops": 1.4505503177642822,
+        "computility_tops": 5.475985527038574,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_0sk8ycsw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 17.5207,
+          "max_latency_us": 17.5207,
+          "min_latency_us": 17.5207,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "L1NormFwdOp",
+        "case_id": "L1NormFwdOp-e72fbf1d554a",
+        "label": "hidden-state-l1",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 19.220768,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 48.4931,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.524585485458374,
+        "performance_tops": 1.330773949623108,
+        "computility_tops": 5.469386100769043,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_64ipwkqr",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 19.220768,
+          "max_latency_us": 19.220768,
+          "min_latency_us": 19.220768,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "L1NormFwdOp",
+        "case_id": "L1NormFwdOp-075e534768f4",
+        "label": "long-row-l1",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            64,
+            8192
+          ]
+        },
+        "config": {
+          "block_m": 2
+        },
+        "tag": "tileops",
+        "latency_us": 3.9801589999999996,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 14.6379,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5232515335083008,
+        "performance_tops": 0.4013507664203644,
+        "computility_tops": 5.4596052169799805,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_a0cloci9",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 3.980159,
+          "max_latency_us": 3.980159,
+          "min_latency_us": 3.980159,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "L1NormFwdOp",
+        "case_id": "L1NormFwdOp-650ac584badf",
+        "label": "3d-multidim-reduce",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": [
+              0,
+              2
+            ]
+          },
+          "shape": [
+            4,
+            128,
+            512
+          ]
+        },
+        "config": {
+          "block_m": 8
+        },
+        "tag": "tileops",
+        "latency_us": 3.00012,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.711,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.514278769493103,
+        "performance_tops": 0.26469340920448303,
+        "computility_tops": 5.476634502410889,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_kv4y2jbw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 3.00012,
+          "max_latency_us": 3.00012,
+          "min_latency_us": 3.00012,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "L2NormFwdOp",
+        "case_id": "L2NormFwdOp-d5050a3c4cca",
+        "label": "hidden-state-l2",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 17.540701,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 53.1378,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5177496671676636,
+        "performance_tops": 1.4516984224319458,
+        "computility_tops": 5.47260046005249,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_vw6jchuy",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 17.540701,
+          "max_latency_us": 17.540701,
+          "min_latency_us": 17.540701,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "L2NormFwdOp",
+        "case_id": "L2NormFwdOp-e72fbf1d554a",
+        "label": "hidden-state-l2",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 18.880754,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 49.3664,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.527515172958374,
+        "performance_tops": 1.3573423624038696,
+        "computility_tops": 5.466043472290039,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_qnpyrt1m",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 18.880754,
+          "max_latency_us": 18.880754,
+          "min_latency_us": 18.880754,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "L2NormFwdOp",
+        "case_id": "L2NormFwdOp-075e534768f4",
+        "label": "long-row-l2",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            64,
+            8192
+          ]
+        },
+        "config": {
+          "block_m": 2
+        },
+        "tag": "tileops",
+        "latency_us": 3.900156,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 14.938199999999998,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5271573066711426,
+        "performance_tops": 0.4106338620185852,
+        "computility_tops": 5.452897071838379,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_mjklv0f4",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 3.900156,
+          "max_latency_us": 3.900156,
+          "min_latency_us": 3.900156,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "L2NormFwdOp",
+        "case_id": "L2NormFwdOp-650ac584badf",
+        "label": "3d-multidim-reduce",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": [
+              0,
+              2
+            ]
+          },
+          "shape": [
+            4,
+            128,
+            512
+          ]
+        },
+        "config": {
+          "block_m": 8
+        },
+        "tag": "tileops",
+        "latency_us": 3.120125,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.3375,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5172077417373657,
+        "performance_tops": 0.2550051808357239,
+        "computility_tops": 5.473247528076172,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_142345_105317_L2NormFwdOp/artifacts/msprof/main_m6x0b4ge",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 3.120125,
+          "max_latency_us": 3.120125,
+          "min_latency_us": 3.120125,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "InfNormFwdOp",
+        "case_id": "InfNormFwdOp-d5050a3c4cca",
+        "label": "hidden-state-inf",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 279.339998960495,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.060074862398683045,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 0.060060199264097086,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "InfNormFwdOp",
+        "case_id": "InfNormFwdOp-e72fbf1d554a",
+        "label": "hidden-state-inf",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 282.09800124168396,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.059487525349826285,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 0.059473005573075055,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "InfNormFwdOp",
+        "case_id": "InfNormFwdOp-075e534768f4",
+        "label": "long-row-inf",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            64,
+            8192
+          ]
+        },
+        "config": {
+          "block_m": 2
+        },
+        "tag": "tileops",
+        "latency_us": 256.24200105667114,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.0040926311677064444,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 0.004092131639918369,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "InfNormFwdOp",
+        "case_id": "InfNormFwdOp-650ac584badf",
+        "label": "3d-multidim-reduce",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": [
+              0,
+              2
+            ]
+          },
+          "shape": [
+            4,
+            128,
+            512
+          ]
+        },
+        "config": {
+          "block_m": 8
+        },
+        "tag": "tileops",
+        "latency_us": 305.6840032339096,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.0017159681057913215,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 0.0017151306396586757,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "L2NormFwdOp",
+      "family": "reduction",
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 4,
+      "ratio_range": {
+        "min": 9.3375,
+        "max": 53.1378
+      }
+    }
+  ],
+  "warnings": [
+    "InfNormFwdOp/InfNormFwdOp-d5050a3c4cca: requested msprof but recorded events",
+    "InfNormFwdOp/InfNormFwdOp-e72fbf1d554a: requested msprof but recorded events",
+    "InfNormFwdOp/InfNormFwdOp-075e534768f4: requested msprof but recorded events",
+    "InfNormFwdOp/InfNormFwdOp-650ac584badf: requested msprof but recorded events",
+    "correctness passed, but the benchmark stage did not produce valid records"
+  ]
+}

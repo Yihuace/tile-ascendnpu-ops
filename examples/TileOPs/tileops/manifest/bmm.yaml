@@ -1,0 +1,52 @@
+# bmm.yaml -- manifest entries for the 'bmm' family (NPU benchmark).
+#
+# 说明：本文件由本 family 的算子结果 PR 增量补充，不要整文件覆盖。
+
+BmmFwdOp:
+  ref_api: "torch.bmm"
+  family: bmm
+  status: implemented
+
+  signature:
+    inputs:
+      a: {dtype: "float16 | bfloat16"}
+      b: {dtype: "same_as(a)"}
+    outputs:
+      d: {dtype: "same_as(a)"}
+    shape_rules:
+    # a: [B, M, K], b: [B, K, N] -> d: [B, M, N]. Batch dim and contraction
+    # dim must match; no broadcasting is performed (this is torch.bmm, not
+    # torch.matmul).
+    - "a.shape[0] == b.shape[0]"
+    - "a.shape[2] == b.shape[1]"
+    - "a.shape[2] % 16 == 0"
+    - "d.shape == (a.shape[0], a.shape[1], b.shape[2])"
+
+  workloads:
+  # Smoke: smallest robust shape (NPU manifest workload contract).
+  - {b: 4, m: 128, n: 128, k: 128, dtypes: [float16, bfloat16], label: "smoke-b4-128"}
+  # Full: GPU manifest shapes (square + MHA-decode / MoE-prefill regimes).
+  - {b: 8, m: 1024, n: 1024, k: 1024, dtypes: [float16, bfloat16], label: "square-b8-1k"}
+  - {b: 16, m: 512, n: 512, k: 512, dtypes: [float16, bfloat16], label: "square-b16-512"}
+  - {b: 4, m: 4096, n: 4096, k: 4096, dtypes: [bfloat16], label: "square-b4-4k"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.bmm_fwd_roofline``:
+  #   flops = 2 * batch * m * n * k
+  #   bytes = batch * (m * k + n * k + m * n) * elem_bytes
+  roofline:
+    vars:
+      batch: "a_shape[0]"
+      m: "a_shape[1]"
+      n: "b_shape[2]"
+      k: "a_shape[2]"
+    flops: "2 * batch * m * n * k"
+    bytes: "batch * (m * k + n * k + m * n) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/bmm/bmm/bmm.py
+    kernel_map:
+      bmm_kernel: BmmKernel
+    op: tileops/ops/bmm/bmm.py
+    test: tests/ops/test_bmm.py
+    bench: benchmarks/ops/bench_bmm.py
+    bench_manifest_driven: true

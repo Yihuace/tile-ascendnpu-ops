@@ -1,0 +1,573 @@
+{
+  "schema_version": 2,
+  "operator": "AmaxFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261026_113750_230484_AmaxFwdOp",
+    "generated_at": "2026-10-26T11:39:59.504368+08:00",
+    "project_root": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "da4f6a41cbe98706e9bf9c6d0547f459b043e01c",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_amax.py",
+    "benchmark_file": "benchmarks/ops/bench_amax.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_amax.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261026_113750_230484_AmaxFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_amax.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261026_113750_230484_AmaxFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-26T11:39:59.504368+08:00",
+      "evaluation_scope": "AmaxFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261026_113750_230484_AmaxFwdOp",
+      "git_commit": "da4f6a41cbe98706e9bf9c6d0547f459b043e01c",
+      "correctness_target": "tests/ops/test_amax.py",
+      "benchmark_target": "benchmarks/ops/bench_amax.py"
+    },
+    "environment": {
+      "npu": "Ascend910_9362 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.5",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2220_156.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 14,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 14,
+    "passed_cases": 14,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 7,
+    "benchmark_failed": 0,
+    "case_count": 4,
+    "msprof_case_count": 4,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261026_113750_230484_AmaxFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 14,
+    "passed": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[128-512-dtype0]",
+        "name": "test_amax_op[128-512-dtype0]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 2.018,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[128-512-dtype1]",
+        "name": "test_amax_op[128-512-dtype1]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.053,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[128-512-dtype2]",
+        "name": "test_amax_op[128-512-dtype2]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.055,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[256-4096-dtype3]",
+        "name": "test_amax_op[256-4096-dtype3]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.047,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[256-4096-dtype4]",
+        "name": "test_amax_op[256-4096-dtype4]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.05,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[128-300-dtype5]",
+        "name": "test_amax_op[128-300-dtype5]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.049,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[128-300-dtype6]",
+        "name": "test_amax_op[128-300-dtype6]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.051,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_op[129-512-dtype7]",
+        "name": "test_amax_op[129-512-dtype7]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.05,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_spec_dim[shape0--1-False-dtype0]",
+        "name": "test_amax_spec_dim[shape0--1-False-dtype0]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.048,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_spec_dim[shape1--1-False-dtype1]",
+        "name": "test_amax_spec_dim[shape1--1-False-dtype1]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.05,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_spec_dim[shape2--1-True-dtype2]",
+        "name": "test_amax_spec_dim[shape2--1-True-dtype2]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.051,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_spec_dim[shape3-0-False-dtype3]",
+        "name": "test_amax_spec_dim[shape3-0-False-dtype3]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.049,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_spec_dim[shape4-1-False-dtype4]",
+        "name": "test_amax_spec_dim[shape4-1-False-dtype4]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.049,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_amax::test_amax_spec_dim[shape5--1-True-dtype5]",
+        "name": "test_amax_spec_dim[shape5--1-True-dtype5]",
+        "classname": "tests.ops.test_amax",
+        "time_s": 0.047,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261026_113750_230484_AmaxFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_amax::test_amax_bench[smoke-amax-float16]",
+        "name": "test_amax_bench[smoke-amax-float16]",
+        "classname": "benchmarks.ops.bench_amax",
+        "time_s": 15.698,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "tileops_latency_us": "1.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_amax::test_amax_bench[smoke-amax-bfloat16]",
+        "name": "test_amax_bench[smoke-amax-bfloat16]",
+        "classname": "benchmarks.ops.bench_amax",
+        "time_s": 14.845,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "tileops_latency_us": "2.1000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_amax::test_amax_bench[smoke-amax-float32]",
+        "name": "test_amax_bench[smoke-amax-float32]",
+        "classname": "benchmarks.ops.bench_amax",
+        "time_s": 15.8,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "tileops_latency_us": "1.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_amax::test_amax_bench[hidden-state-reduce-float16]",
+        "name": "test_amax_bench[hidden-state-reduce-float16]",
+        "classname": "benchmarks.ops.bench_amax",
+        "time_s": 15.808,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "tileops_latency_us": "12.9800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_amax::test_amax_bench[hidden-state-reduce-bfloat16]",
+        "name": "test_amax_bench[hidden-state-reduce-bfloat16]",
+        "classname": "benchmarks.ops.bench_amax",
+        "time_s": 13.762,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "tileops_latency_us": "16.5400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_amax::test_amax_bench[long-seq-reduce-bfloat16]",
+        "name": "test_amax_bench[long-seq-reduce-bfloat16]",
+        "classname": "benchmarks.ops.bench_amax",
+        "time_s": 14.814,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "tileops_latency_us": "9.3400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_amax::test_amax_bench[3d-multidim-reduce-float16]",
+        "name": "test_amax_bench[3d-multidim-reduce-float16]",
+        "classname": "benchmarks.ops.bench_amax",
+        "time_s": 14.78,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AmaxFwdOp",
+          "op_module": "tileops.ops.reduction.amax",
+          "tileops_latency_us": "5.4800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261026_113750_230484_AmaxFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "AmaxFwdOp",
+        "case_id": "AmaxFwdOp-d5050a3c4cca",
+        "label": "hidden-state-reduce",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 12.98,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 71.8085,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.2928591679506936,
+        "bandwidth_utilization_percent": 71.82550933059409,
+        "arithmetic_intensity_ops_per_byte": 0.5118674039840698,
+        "performance_tops": 0.6616160869598389,
+        "computility_tops": 7.89845609664917,
+        "artifact_dir": "/tmp/opencode/msprof-out-amax",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 12.98,
+          "max_latency_us": 12.98,
+          "min_latency_us": 12.98,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AmaxFwdOp",
+        "case_id": "AmaxFwdOp-e72fbf1d554a",
+        "label": "hidden-state-reduce",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 4
+        },
+        "tag": "tileops",
+        "latency_us": 16.540001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 56.3528,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 1.0145895396257838,
+        "bandwidth_utilization_percent": 56.366085534765766,
+        "arithmetic_intensity_ops_per_byte": 1.0228804349899292,
+        "performance_tops": 1.0375583171844482,
+        "computility_tops": 4.1631388664245605,
+        "artifact_dir": "/tmp/opencode/msprof-out-amax",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 16.540001,
+          "max_latency_us": 16.540001,
+          "min_latency_us": 16.540001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AmaxFwdOp",
+        "case_id": "AmaxFwdOp-5524ce71b00c",
+        "label": "long-seq-reduce",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "dim": -1
+          },
+          "shape": [
+            64,
+            32768
+          ]
+        },
+        "config": {
+          "block_m": 1,
+          "tile_n": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 9.34,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 24.948999999999998,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.44908265524625274,
+        "bandwidth_utilization_percent": 24.949036402569597,
+        "arithmetic_intensity_ops_per_byte": 1.0180352926254272,
+        "performance_tops": 0.45718201994895935,
+        "computility_tops": 4.170000076293945,
+        "artifact_dir": "/tmp/opencode/msprof-out-amax",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            null
+          ],
+          "kernel_name_requested": null,
+          "kernel_name_resolved": null,
+          "latency_us": 9.34,
+          "max_latency_us": 9.34,
+          "min_latency_us": 9.34,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AmaxFwdOp",
+        "case_id": "AmaxFwdOp-6b30e6773334",
+        "label": "3d-multidim-reduce",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "dim": [
+              0,
+              2
+            ]
+          },
+          "shape": [
+            4,
+            128,
+            4096
+          ]
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 5.48,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 42.5226,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "achieved_bandwidth_tb_s": 0.7654306569343066,
+        "bandwidth_utilization_percent": 42.52392538523925,
+        "arithmetic_intensity_ops_per_byte": 0.5084073543548584,
+        "performance_tops": 0.38913869857788086,
+        "computility_tops": 8.048013687133789,
+        "artifact_dir": "/tmp/opencode/msprof-out-amax",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 5.48,
+          "max_latency_us": 5.48,
+          "min_latency_us": 5.48,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "AmaxFwdOp",
+      "family": "reduction",
+      "cases": 14,
+      "passed": 14,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 4,
+      "ratio_range": {
+        "min": 24.948999999999998,
+        "max": 71.8085
+      }
+    }
+  ],
+  "warnings": []
+}

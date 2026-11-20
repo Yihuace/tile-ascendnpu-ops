@@ -1,0 +1,21 @@
+## Stage 5 (integrate) Retrospective — migration-harness (attempt 2, resumed) — 2026-10-13
+
+### Skill Flow Issues
+
+| area | issue | evidence | suggested_doc_change | vp_type |
+|---|---|---|---|---|
+| Integrate-flow | An interrupted Stage-5 run leaves a **fully-formed, `status=passed` report directory** under `reports/tileops/<ts>_<op>/` while `integration_report.json` is still unwritten; a resuming agent that trusts `latest.json` / existing dirs can wrongly treat the pre-interruption run as the authoritative result. The resume path needs an explicit "re-run the full report, do not reuse" gate keyed on the presence of `integration_report.json`, not on the existence of a report dir. | `reports/tileops/20261013_150539_246528_BitwiseXorFwdOp/run.json` (status=passed, 15:12, from the interrupted attempt, no `integration_report.json` yet) vs the resumed authoritative `reports/tileops/20261013_151545_963357_BitwiseXorFwdOp/run.json`; `latest.json` pointed at the stale dir until the re-run. | Add to the Stage-5 resume contract: the acceptance gate is the run referenced by `integration_report.json`; any pre-existing report dir without a matching `integration_report.json` is stale and must be re-run. | R |
+| Artifact provenance | `integrate_kernel.py` is idempotent (full-file overwrite of kernel + `{func}_DESIGN.md` + aggregated `__init__.py`), so re-running on a resumed attempt is safe and reproduced an identical integration package. No `[error]`/`[warn]` emitted. | kernel pkg `bitwise_xor_kernel/` (kernel mtime 12:03, DESIGN 11:35, `__init__.py` 15:04) unchanged across re-run; `ASCEND_MODE = "Developer"` == wrapper `ascend_mode = "Developer"`. | none (behaviour is already correct; recorded as a positive). | - |
+
+### Value Point Proposals
+
+| title | vp_type | evidence | repro | toolchain_stamp | target_doc |
+|---|---|---|---|---|---|
+| 同族 Stage 0 预置 1-byte 存储适配器使 `bitwise_xor` 的 Stage 5 集成**零调试**：wrapper `bitwise_xor.py` 已带 `_kernel_dtype_str` / `_as_kernel_input` / `_restore_public_dtype`（uint8/bool→int8 承载 + 公开 dtype 还原，view 位保持），首跑即 14/14 correctness + 8/8 msprof benchmark、`status=passed`、无任何胶水修复（本次为 resume，报告在续跑 attempt 一次通过）。这是 `bitwise_and`（Stage 5 才发现并补适配器）→ `bitwise_or`（Stage 0 预置，零调试）教训链的**第 3 个同族数据点**，坐实"上游 Stage 5 修复须回灌同族下游 Stage 0 脚手架"。 | P | `bitwise_xor.py` L94–L138（适配器）、L204/L213–221（kernel_dtype_str + factory）、L244–245（forward 承载/还原）；`integration_log.md#验证结果`；本次 `run.json` summary（correctness_passed=true, benchmark_tests=9, msprof_case_count=8）。 | `python3 .agents/skills/add-npu-op/scripts/integrate_kernel.py --meta tileops/kernels/elementwise/bitwise_xor/.migration_meta.json` → `python3 -m tileops.reporting.cli run --op BitwiseXorFwdOp --prof-mode msprof` | tilelang 0.1.1.10+ubuntu.20.4.cann900 / git 417dae9908ad / CANN 9.0.0 / Ascend910_9362 x1 / torch_npu 2.7.1.post4 / 2026-10-13 | pattern-library/traps-runtime.md（elementwise 1-byte 存储适配器模板）；add-npu-op Stage 0 脚手架说明 |
+| plain `uint8` 直接输入与 `bool` 存储两条 1-byte 路径在 `bitwise_xor` 上同为 bit-exact：`test_bitwise_xor_op[4096-dtype2]`（torch.uint8）与 `test_bitwise_xor_bool_fast_path[*]`（torch.bool）均 passed（max_abs_err=0.00e+00），证明 int8 承载适配器必须且已覆盖 manifest 声明的全部 1-byte 路径（CG-2026-0018）。 | D | 本次 `run.json` correctness case `test_bitwise_xor_op[4096-dtype2]`（uint8, passed, max_abs_err=0.00e+00）与 `test_bitwise_xor_bool_fast_path[a_shape0..1]`（passed）；`tests/ops/test_bitwise_xor.py` L54（uint8 param）/ L127–L135（bool fast path）。 | `python3 -m tileops.reporting.cli run --op BitwiseXorFwdOp --prof-mode msprof`（本 run） | 同上 | pattern-library/traps-runtime.md（能力缺口 dtype 须按 manifest 全集推广） |
+
+### Transferable Lessons（可迁移教训）
+
+- **中断续跑 Stage 5 时，验收门禁是 `integration_report.json` 所指向的 run，而不是"存在一个 passed 的 report 目录"。** 被中断的 attempt 可能已生成完整 `status=passed` 的 `run.json`（本次 15:12 的 `20261013_150539_...`），但它不是终态；必须重新跑完整 report 并以 `integration_report.json` 记录的 run_id 为准，否则会把旧结论当验收依据。
+- **同族 elementwise 迁移的 1-byte 存储适配器（uint8/bool→int8 承载 + 公开 dtype 还原）应在 Stage 0 wrapper 脚手架预置**，覆盖 manifest 声明的**全部** 1-byte 路径（plain uint8 与 bool 存储两条）：`bitwise_xor` 因此 Stage 5 零调试（14/14 + 8/8 msprof）。这是 and→or→xor 三算子的稳定规律。
+- **`integrate_kernel.py` 幂等**：kernel 与 `{func}_DESIGN.md` 整文件覆盖、聚合 `__init__.py` 重建、wrapper import 切换块重写，重复执行安全；resume 时直接重跑即可，无需手工比对残留。

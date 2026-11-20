@@ -1,0 +1,667 @@
+{
+  "schema_version": 2,
+  "operator": "AbsFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261018_131407_377317_AbsFwdOp",
+    "generated_at": "2026-10-18T13:21:17.559873+00:00",
+    "project_root": "/root/mla-full/examples/TileOPs",
+    "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+    "python": "3.11.15",
+    "platform": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+    "test_file": "tests/ops/test_abs.py",
+    "benchmark_file": "benchmarks/ops/bench_abs.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_abs.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_abs.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-18T13:21:17.559873+00:00",
+      "evaluation_scope": "AbsFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261018_131407_377317_AbsFwdOp",
+      "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+      "correctness_target": "tests/ops/test_abs.py",
+      "benchmark_target": "benchmarks/ops/bench_abs.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2C x 1",
+      "cpu": "x86_64",
+      "cann": "9.0.0",
+      "driver": "26.0.rc1",
+      "pytorch": "2.10.0+cpu",
+      "pytorch_npu": "2.10.0",
+      "tilelang": "0.1.2+ubuntu.22.4.npuir",
+      "python": "3.11.15",
+      "os": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 9,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 9,
+    "passed_cases": 9,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 7,
+    "msprof_case_count": 7,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_op[1048576-dtype0]",
+        "name": "test_abs_op[1048576-dtype0]",
+        "classname": "tests.ops.test_abs",
+        "time_s": 18.124,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_op[1048576-dtype1]",
+        "name": "test_abs_op[1048576-dtype1]",
+        "classname": "tests.ops.test_abs",
+        "time_s": 5.994,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_op[1048576-dtype2]",
+        "name": "test_abs_op[1048576-dtype2]",
+        "classname": "tests.ops.test_abs",
+        "time_s": 6.011,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_op[4000000-dtype3]",
+        "name": "test_abs_op[4000000-dtype3]",
+        "classname": "tests.ops.test_abs",
+        "time_s": 1.052,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_op[4000000-dtype4]",
+        "name": "test_abs_op[4000000-dtype4]",
+        "classname": "tests.ops.test_abs",
+        "time_s": 1.074,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_op[4000001-dtype5]",
+        "name": "test_abs_op[4000001-dtype5]",
+        "classname": "tests.ops.test_abs",
+        "time_s": 1.065,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_rejects_non_float_dtype",
+        "name": "test_abs_rejects_non_float_dtype",
+        "classname": "tests.ops.test_abs",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_eval_roofline",
+        "name": "test_abs_eval_roofline",
+        "classname": "tests.ops.test_abs",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_abs::test_abs_negative_input",
+        "name": "test_abs_negative_input",
+        "classname": "tests.ops.test_abs",
+        "time_s": 1.065,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[smoke-1m-float32]",
+        "name": "test_abs_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 47.727,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "10.8404"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[smoke-1m-float16]",
+        "name": "test_abs_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 37.013,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "10.2004"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[smoke-1m-bfloat16]",
+        "name": "test_abs_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 36.982,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "10.5404"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[elementwise-16m-float16]",
+        "name": "test_abs_bench[elementwise-16m-float16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 37.186,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "25.0410"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[elementwise-16m-bfloat16]",
+        "name": "test_abs_bench[elementwise-16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 37.179,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "26.6811"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[elementwise-16m-float32]",
+        "name": "test_abs_bench[elementwise-16m-float32]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 35.989,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "49.1220"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[elementwise-64m-float16]",
+        "name": "test_abs_bench[elementwise-64m-float16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 35.958,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "128.0851"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[elementwise-64m-bfloat16]",
+        "name": "test_abs_bench[elementwise-64m-bfloat16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 36.158,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "128.2451"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[elementwise-256m-float16]",
+        "name": "test_abs_bench[elementwise-256m-float16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 37.514,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "748.9500"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_abs::test_abs_bench[elementwise-256m-bfloat16]",
+        "name": "test_abs_bench[elementwise-256m-bfloat16]",
+        "classname": "benchmarks.ops.bench_abs",
+        "time_s": 37.503,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AbsFwdOp",
+          "op_module": "tileops.ops.elementwise.abs",
+          "tileops_latency_us": "750.5700"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "AbsFwdOp",
+        "case_id": "AbsFwdOp-948c5107d2c0",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 25.041002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.4436,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.5007295608520508,
+        "performance_tops": 0.6709699034690857,
+        "computility_tops": 11.010946273803711,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/artifacts/msprof/abs_fwd_kernel_9hhx1cdw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_attempts": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_requested": "abs_fwd_kernel",
+          "kernel_name_resolved": "abs_fwd_kernel",
+          "latency_us": 25.041002,
+          "max_latency_us": 25.041002,
+          "min_latency_us": 25.041002,
+          "op_name": "abs_fwd_kernel",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AbsFwdOp",
+        "case_id": "AbsFwdOp-d4c3fec3b359",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 26.681067,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.8665,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5007495880126953,
+        "performance_tops": 1.8873392343521118,
+        "computility_tops": 5.526902198791504,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/artifacts/msprof/abs_fwd_kernel_4rcyoebl",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_attempts": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_requested": "abs_fwd_kernel",
+          "kernel_name_resolved": "abs_fwd_kernel",
+          "latency_us": 26.681067,
+          "max_latency_us": 26.681067,
+          "min_latency_us": 26.681067,
+          "op_name": "abs_fwd_kernel",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AbsFwdOp",
+        "case_id": "AbsFwdOp-e8fa45bea844",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 49.121964,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 75.8984,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.2503657341003418,
+        "performance_tops": 0.34204235672950745,
+        "computility_tops": 5.521523475646973,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/artifacts/msprof/abs_fwd_kernel_k5aa8yhk",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_attempts": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_requested": "abs_fwd_kernel",
+          "kernel_name_resolved": "abs_fwd_kernel",
+          "latency_us": 49.121964,
+          "max_latency_us": 49.121964,
+          "min_latency_us": 49.121964,
+          "op_name": "abs_fwd_kernel",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AbsFwdOp",
+        "case_id": "AbsFwdOp-a0be62f722ac",
+        "label": "elementwise-64m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 128.085129,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.2274,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.39228641986846924,
+        "performance_tops": 0.5241309404373169,
+        "computility_tops": 11.047098159790039,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/artifacts/msprof/abs_fwd_kernel_drbjstap",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_attempts": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_requested": "abs_fwd_kernel",
+          "kernel_name_resolved": "abs_fwd_kernel",
+          "latency_us": 128.085129,
+          "max_latency_us": 128.085129,
+          "min_latency_us": 128.085129,
+          "op_name": "abs_fwd_kernel",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AbsFwdOp",
+        "case_id": "AbsFwdOp-778504803338",
+        "label": "elementwise-64m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 128.245132,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.0512,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.1779009103775024,
+        "performance_tops": 1.5700491666793823,
+        "computility_tops": 5.528924942016602,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/artifacts/msprof/abs_fwd_kernel_xqwvu2kk",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_attempts": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_requested": "abs_fwd_kernel",
+          "kernel_name_resolved": "abs_fwd_kernel",
+          "latency_us": 128.245132,
+          "max_latency_us": 128.245132,
+          "min_latency_us": 128.245132,
+          "op_name": "abs_fwd_kernel",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AbsFwdOp",
+        "case_id": "AbsFwdOp-45771d3e31b7",
+        "label": "elementwise-256m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 748.949951,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 72.1026,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.27618706226348877,
+        "performance_tops": 0.35844844579696655,
+        "computility_tops": 11.056171417236328,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/artifacts/msprof/abs_fwd_kernel_3xffh86x",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_attempts": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_requested": "abs_fwd_kernel",
+          "kernel_name_resolved": "abs_fwd_kernel",
+          "latency_us": 748.949951,
+          "max_latency_us": 748.949951,
+          "min_latency_us": 748.949951,
+          "op_name": "abs_fwd_kernel",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AbsFwdOp",
+        "case_id": "AbsFwdOp-6c988651021b",
+        "label": "elementwise-256m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 750.570007,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 71.5518,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 0.833086371421814,
+        "performance_tops": 1.072959065437317,
+        "computility_tops": 5.529431343078613,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_131407_377317_AbsFwdOp/artifacts/msprof/abs_fwd_kernel_sk7c6jg5",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_attempts": [
+            "abs_fwd_kernel"
+          ],
+          "kernel_name_requested": "abs_fwd_kernel",
+          "kernel_name_resolved": "abs_fwd_kernel",
+          "latency_us": 750.570007,
+          "max_latency_us": 750.570007,
+          "min_latency_us": 750.570007,
+          "op_name": "abs_fwd_kernel",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "AbsFwdOp",
+      "family": "elementwise",
+      "cases": 9,
+      "passed": 9,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 7,
+      "ratio_range": {
+        "min": 69.8665,
+        "max": 75.8984
+      }
+    }
+  ],
+  "warnings": []
+}

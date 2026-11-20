@@ -1,0 +1,217 @@
+EngramDecodeOp:
+  ref_api: "none"
+  family: sequence_modeling
+  status: spec-only
+
+  signature:
+    inputs:
+      e_t: {dtype: "float16 | bfloat16", shape: "[batch, d_mem]"}
+      h_t: {dtype: "same_as(e_t)", shape: "[batch, d]"}
+      conv_state: {dtype: "same_as(e_t)", shape: "[batch, max_conv_len, d]"}
+      W_K: {dtype: "same_as(e_t)", shape: "[d_mem, d]"}
+      W_V: {dtype: "same_as(e_t)", shape: "[d_mem, d]"}
+      rms_w_h: {dtype: "same_as(e_t)", shape: "[d]"}
+      rms_w_v: {dtype: "same_as(e_t)", shape: "[d]"}
+      conv_w: {dtype: "same_as(e_t)", shape: "[conv_kernel_size, d]"}
+    outputs:
+      y_t: {dtype: "same_as(e_t)", shape: "[batch, d]"}
+      new_conv_state: {dtype: "same_as(e_t)", shape: "[batch, max_conv_len, d]"}
+    params:
+      batch: {type: int}
+      d_mem: {type: int}
+      d: {type: int}
+      max_conv_len: {type: int}
+      conv_kernel_size: {type: int}
+      dilation: {type: int}
+      dtype: {type: torch.dtype}
+      eps: {type: float, default: 1.0e-6}
+    shape_rules:
+    - "e_t.shape == (batch, d_mem)"
+    - "h_t.shape == (batch, d)"
+    - "conv_state.shape == (batch, max_conv_len, d)"
+    - "W_K.shape == (d_mem, d)"
+    - "W_V.shape == (d_mem, d)"
+    - "conv_w.shape == (conv_kernel_size, d)"
+    - "d % 256 == 0"
+
+  workloads:
+    # Smoke: smallest robust shape (NPU manifest workload contract).
+    # min conv cache = dilation * (conv_kernel_size - 1) = 3 * 3 = 9.
+  - {batch: 1, d_mem: 256, d: 256, max_conv_len: 9, conv_kernel_size: 4, dilation: 3, dtype: float16, dtypes: [float16], label: "decode-smoke-b1-dmem256-d256-fp16"}
+    # Full: GPU manifest workloads.
+  - {batch: 1, d_mem: 512, d: 256, max_conv_len: 12, conv_kernel_size: 4, dilation: 3, dtype: float16, dtypes: [float16], label: "decode-b1-dmem512-d256-fp16"}
+  - {batch: 4, d_mem: 1024, d: 512, max_conv_len: 20, conv_kernel_size: 4, dilation: 5, dtype: float16, dtypes: [float16], label: "decode-b4-dmem1024-d512-fp16"}
+  - {batch: 8, d_mem: 512, d: 256, max_conv_len: 18, conv_kernel_size: 4, dilation: 3, dtype: bfloat16, dtypes: [bfloat16], label: "decode-b8-dmem512-d256-bf16"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.engram_decode_roofline``:
+  #   flops = 4*batch*d_mem*d + batch*(16*d + conv_kernel_size*2*d) + 20*batch
+  #   bytes = (batch*d_mem + batch*d + 2*batch*max_conv_len*d + 2*d_mem*d
+  #            + 2*d + conv_kernel_size*d + batch*d) * elem_bytes
+  roofline:
+    vars:
+      batch: "batch"
+      d_mem: "d_mem"
+      d: "d"
+      max_conv_len: "max_conv_len"
+      conv_kernel_size: "conv_kernel_size"
+      elem_bytes: "dtype.itemsize"
+    flops: "4 * batch * d_mem * d + batch * (16 * d + conv_kernel_size * 2 * d) + 20 * batch"
+    bytes: "(batch * d_mem + batch * d + 2 * batch * max_conv_len * d + 2 * d_mem * d + 2 * d + conv_kernel_size * d + batch * d) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/sequence_modeling/engram_decode/engram_decode.py
+    kernel_map:
+      engram_decode: EngramDecodeKernel
+    op: tileops/ops/sequence_modeling/engram_decode.py
+    test: tests/ops/test_engram_decode.py
+    bench: benchmarks/ops/bench_engram_decode.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# sequence_modeling -- Engram GateConv forward (post-projection fusion)
+# ---------------------------------------------------------------------------
+
+EngramGateConvFwdOp:
+  ref_api: "none"
+  family: sequence_modeling
+  status: spec-only
+
+  signature:
+    inputs:
+      H: {dtype: "float16 | bfloat16", shape: "[M, seq_len, d]"}
+      k: {dtype: "same_as(H)", shape: "[M, seq_len, d]"}
+      v: {dtype: "same_as(H)", shape: "[M, seq_len, d]"}
+      rms_w_h: {dtype: "same_as(H)", shape: "[d]"}
+      rms_w_v: {dtype: "same_as(H)", shape: "[d]"}
+      conv_w: {dtype: "same_as(H)", shape: "[4, d]"}
+    outputs:
+      Y: {dtype: "same_as(H)", shape: "[M, seq_len, d]"}
+      vhat: {dtype: "same_as(H)", shape: "[M, seq_len, d]"}
+      alpha: {dtype: "float32", shape: "[M, seq_len]"}
+      rrms_h: {dtype: "float32", shape: "[M, seq_len]"}
+      rrms_k: {dtype: "float32", shape: "[M, seq_len]"}
+      rrms_v: {dtype: "float32", shape: "[M, seq_len]"}
+    params:
+      M: {type: int}
+      seq_len: {type: int}
+      d: {type: int}
+      dtype: {type: torch.dtype}
+      eps: {type: float, default: 1.0e-6}
+    shape_rules:
+    - "H.shape == (M, seq_len, d)"
+    - "k.shape == H.shape"
+    - "v.shape == H.shape"
+    - "rms_w_h.shape == (d,)"
+    - "rms_w_v.shape == (d,)"
+    - "conv_w.shape == (4, d)"
+
+  workloads:
+    # d is kept 256-aligned so runtime padding does not distort roofline.
+    # Smoke: smallest robust shape (NPU manifest workload contract).
+  - {M: 1, seq_len: 16, d: 256, dtype: float16, dtypes: [float16], label: "fwd-smoke-b1-s16-d256-fp16"}
+    # Full: GPU manifest workloads.
+  - {M: 1, seq_len: 32, d: 256, dtype: float16, dtypes: [float16], label: "fwd-b1-s32-d256-fp16"}
+  - {M: 2, seq_len: 64, d: 512, dtype: float16, dtypes: [float16], label: "fwd-b2-s64-d512-fp16"}
+  - {M: 1, seq_len: 128, d: 256, dtype: bfloat16, dtypes: [bfloat16], label: "fwd-b1-s128-d256-bf16"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.engram_gate_conv_fwd_roofline``
+  # (the NPU project has no ``tileops.perf`` module):
+  #   flops = M * seq_len * (24 * d) + 20 * M * seq_len
+  #   bytes = (5 * M * seq_len * d) * elem_bytes + 4 * M * seq_len * 4 + 6 * d * elem_bytes
+  roofline:
+    vars:
+      M: "M"
+      seq_len: "seq_len"
+      d: "d"
+      elem_bytes: "dtype.itemsize"
+    flops: "M * seq_len * (24 * d) + 20 * M * seq_len"
+    bytes: "(5 * M * seq_len * d) * elem_bytes + 4 * M * seq_len * 4 + 6 * d * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/sequence_modeling/engram_gate_conv_fwd/engram_gate_conv_fwd.py
+    kernel_map:
+      engram_gate_conv_fwd: EngramGateConvFwdKernel
+    op: tileops/ops/sequence_modeling/engram_gate_conv_fwd.py
+    test: tests/ops/test_engram_gate_conv_fwd.py
+    bench: benchmarks/ops/bench_engram_gate_conv_fwd.py
+    bench_manifest_driven: true
+
+# ---------------------------------------------------------------------------
+# sequence_modeling -- Engram GateConv backward (post-projection fusion grads)
+# ---------------------------------------------------------------------------
+
+EngramGateConvBwdOp:
+  ref_api: "none"
+  family: sequence_modeling
+  status: spec-only
+
+  signature:
+    inputs:
+      dY: {dtype: "float16 | bfloat16", shape: "[M, seq_len, d]"}
+      H: {dtype: "same_as(dY)", shape: "[M, seq_len, d]"}
+      k: {dtype: "same_as(dY)", shape: "[M, seq_len, d]"}
+      v: {dtype: "same_as(dY)", shape: "[M, seq_len, d]"}
+      rms_w_h: {dtype: "same_as(dY)", shape: "[d]"}
+      rms_w_v: {dtype: "same_as(dY)", shape: "[d]"}
+      conv_w: {dtype: "same_as(dY)", shape: "[4, d]"}
+      vhat: {dtype: "same_as(dY)", shape: "[M, seq_len, d]"}
+      alpha: {dtype: "float32", shape: "[M, seq_len]"}
+      rrms_h: {dtype: "float32", shape: "[M, seq_len]"}
+      rrms_k: {dtype: "float32", shape: "[M, seq_len]"}
+      rrms_v: {dtype: "float32", shape: "[M, seq_len]"}
+    outputs:
+      dH: {dtype: "same_as(dY)", shape: "[M, seq_len, d]"}
+      dk: {dtype: "same_as(dY)", shape: "[M, seq_len, d]"}
+      dv: {dtype: "same_as(dY)", shape: "[M, seq_len, d]"}
+      drms_w_h: {dtype: "float32", shape: "[d]"}
+      drms_w_v: {dtype: "float32", shape: "[d]"}
+      dconv_w: {dtype: "float32", shape: "[4, d]"}
+    params:
+      M: {type: int}
+      seq_len: {type: int}
+      d: {type: int}
+      dtype: {type: torch.dtype}
+      eps: {type: float, default: 1.0e-6}
+    shape_rules:
+    - "dY.shape == (M, seq_len, d)"
+    - "H.shape == dY.shape"
+    - "k.shape == dY.shape"
+    - "v.shape == dY.shape"
+    - "vhat.shape == dY.shape"
+    - "alpha.shape == (M, seq_len)"
+    - "rrms_h.shape == (M, seq_len)"
+    - "rrms_k.shape == (M, seq_len)"
+    - "rrms_v.shape == (M, seq_len)"
+    - "conv_w.shape == (4, d)"
+
+  workloads:
+    # Smoke: smallest robust shape (NPU manifest workload contract).
+  - {M: 1, seq_len: 16, d: 256, dtype: float16, dtypes: [float16], label: "bwd-smoke-b1-s16-d256-fp16"}
+    # Full: GPU manifest workloads.
+  - {M: 1, seq_len: 32, d: 256, dtype: float16, dtypes: [float16], label: "bwd-b1-s32-d256-fp16"}
+  - {M: 2, seq_len: 64, d: 512, dtype: float16, dtypes: [float16], label: "bwd-b2-s64-d512-fp16"}
+  - {M: 1, seq_len: 128, d: 256, dtype: bfloat16, dtypes: [bfloat16], label: "bwd-b1-s128-d256-bf16"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.engram_gate_conv_bwd_roofline``
+  # (the NPU project has no ``tileops.perf`` module):
+  #   fwd_flops = M * seq_len * (24 * d) + 20 * M * seq_len
+  #   read_bytes  = 5*M*seq_len*d*elem + 6*d*elem + 4*M*seq_len*4
+  #   write_bytes = 3*M*seq_len*d*elem + 10*d*4 + M*seq_len*d*4
+  #   flops = int(fwd_flops * 2.5), bytes = int(read_bytes + write_bytes)
+  roofline:
+    vars:
+      M: "M"
+      seq_len: "seq_len"
+      d: "d"
+      elem_bytes: "dtype.itemsize"
+    flops: "(M * seq_len * (24 * d) + 20 * M * seq_len) * 2.5"
+    bytes: "(5 * M * seq_len * d) * elem_bytes + 6 * d * elem_bytes + 4 * M * seq_len * 4 + (3 * M * seq_len * d) * elem_bytes + 10 * d * 4 + M * seq_len * d * 4"
+
+  source:
+    kernel: tileops/kernels/sequence_modeling/engram_gate_conv_bwd/engram_gate_conv_bwd.py
+    kernel_map:
+      engram_gate_conv_bwd: EngramGateConvBwdKernel
+    op: tileops/ops/sequence_modeling/engram_gate_conv_bwd.py
+    test: tests/ops/test_engram_gate_conv_bwd.py
+    bench: benchmarks/ops/bench_engram_gate_conv_bwd.py
+    bench_manifest_driven: true

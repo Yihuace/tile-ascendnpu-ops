@@ -1,0 +1,339 @@
+{
+  "kernel_opt_py_path": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/perf_opt/_gqa_bwd_kernel.py",
+  "expansion": {
+    "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+    "manifest_source": "examples/TileOPs/tileops/manifest/attention.yaml::GroupedQueryAttentionBwdOp.workloads",
+    "n_manifest_workloads": 5,
+    "n_cases_after_dtype_expansion": 9,
+    "n_tune": 8,
+    "n_smoke": 1,
+    "n_skipped": 0,
+    "note": "Expanded by running load_workloads('GroupedQueryAttentionBwdOp') and expanding each workload's `dtypes` list (see Workload inventory section of opt_log.md). The independent `gqa-bwd-smoke` label is the smoke case (kind=smoke, precision regression only)."
+  },
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "gqa-bwd-smoke-float16",
+      "label": "gqa-bwd-smoke",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          128,
+          8,
+          64
+        ],
+        "kv": [
+          1,
+          128,
+          2,
+          64
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "seq_len": 128,
+        "heads": 8,
+        "heads_kv": 2,
+        "dim": 64,
+        "is_causal": true
+      },
+      "kind": "smoke",
+      "reason": "independent smoke label (no `llama-*` token); precision regression only, no performance record",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-8b-short-float16",
+      "label": "llama-3.1-8b-short",
+      "marks": [],
+      "shape": {
+        "q": [
+          4,
+          512,
+          32,
+          128
+        ],
+        "kv": [
+          4,
+          512,
+          8,
+          128
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 4,
+        "seq_len": 512,
+        "heads": 32,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-8b-short-bfloat16",
+      "label": "llama-3.1-8b-short",
+      "marks": [],
+      "shape": {
+        "q": [
+          4,
+          512,
+          32,
+          128
+        ],
+        "kv": [
+          4,
+          512,
+          8,
+          128
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 4,
+        "seq_len": 512,
+        "heads": 32,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-8b-long-float16",
+      "label": "llama-3.1-8b-long",
+      "marks": [],
+      "shape": {
+        "q": [
+          2,
+          2048,
+          32,
+          128
+        ],
+        "kv": [
+          2,
+          2048,
+          8,
+          128
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 2,
+        "seq_len": 2048,
+        "heads": 32,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-8b-long-bfloat16",
+      "label": "llama-3.1-8b-long",
+      "marks": [],
+      "shape": {
+        "q": [
+          2,
+          2048,
+          32,
+          128
+        ],
+        "kv": [
+          2,
+          2048,
+          8,
+          128
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 2,
+        "seq_len": 2048,
+        "heads": 32,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-70b-short-float16",
+      "label": "llama-3.1-70b-short",
+      "marks": [],
+      "shape": {
+        "q": [
+          2,
+          512,
+          64,
+          128
+        ],
+        "kv": [
+          2,
+          512,
+          8,
+          128
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 2,
+        "seq_len": 512,
+        "heads": 64,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-70b-short-bfloat16",
+      "label": "llama-3.1-70b-short",
+      "marks": [],
+      "shape": {
+        "q": [
+          2,
+          512,
+          64,
+          128
+        ],
+        "kv": [
+          2,
+          512,
+          8,
+          128
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 2,
+        "seq_len": 512,
+        "heads": 64,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-70b-long-float16",
+      "label": "llama-3.1-70b-long",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          2048,
+          64,
+          128
+        ],
+        "kv": [
+          1,
+          2048,
+          8,
+          128
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "batch": 1,
+        "seq_len": 2048,
+        "heads": 64,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_bwd.py::test_gqa_bwd_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_bwd/grouped_query_attention_bwd_kernel/_gqa_bwd_kernel.py::_gqa_bwd_kernel::_gqa_bwd_main",
+      "workload_id": "llama-3.1-70b-long-bfloat16",
+      "label": "llama-3.1-70b-long",
+      "marks": [],
+      "shape": {
+        "q": [
+          1,
+          2048,
+          64,
+          128
+        ],
+        "kv": [
+          1,
+          2048,
+          8,
+          128
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "batch": 1,
+        "seq_len": 2048,
+        "heads": 64,
+        "heads_kv": 8,
+        "dim": 128,
+        "is_causal": true
+      },
+      "kind": "tune",
+      "reason": "manifest full workload",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final-r20-3pass",
+      "n_kernels_per_call": 3
+    }
+  ],
+  "round20": {
+    "date": "2026-11-06",
+    "structure": "engine-phase split: pass1 _gqa_bwd_sdw (Cube only) -> pass2 _gqa_bwd_pds (Vector only) -> pass3 _gqa_bwd_mul (Mix); fp32 S/dW + dtype P/dS GM workspace",
+    "final_candidate_id": "final-r20-3pass",
+    "final_artifact": "perf_opt/_gqa_bwd_kernel.py",
+    "final_artifact_sha256": "26edd4c1d70e2db1dc77e7d1cfb0f4f78556bb73e5cef6e1b4ab906c098cc627",
+    "n_kernels_per_op_call": 3,
+    "workspace_bytes_max": 3218079744,
+    "split_domain": "all shapes except n_kv==1 (S==block_m), which keeps the fused Stage-3 kernel because bishengir-compile SIGSEGVs on that edge shape",
+    "latency_metric": "sum of the three per-kernel msprof op Task Duration medians"
+  }
+}

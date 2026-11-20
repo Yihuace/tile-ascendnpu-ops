@@ -1,0 +1,493 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T13:17:08.057970+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-d4c57400adb9",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "gqa-sw-fwd-smoke-s512-h8-kv2-d64",
+      "params": {
+        "batch": 2,
+        "dim": 64,
+        "dtype": "float16",
+        "heads": 8,
+        "heads_kv": 2,
+        "is_causal": true,
+        "seq": 512,
+        "wl": -1,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 2141.75341796875,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.4287109375,
+        "Perf(TOps/s)": 9.832468032836914,
+        "Ratio(%)": 3.2836999999999996,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_dh71n4y1",
+        "latency_us": 85.68,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 85.68,
+          "max_latency_us": 85.68,
+          "min_latency_us": 85.68,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-b8a8ffcc17ba",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "gqa-sw-fwd-smoke-s512-h8-kv2-d64",
+      "params": {
+        "batch": 2,
+        "dim": 64,
+        "dtype": "bfloat16",
+        "heads": 8,
+        "heads_kv": 2,
+        "is_causal": true,
+        "seq": 512,
+        "wl": -1,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 2141.0556640625,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.42950439453125,
+        "Perf(TOps/s)": 9.56360912322998,
+        "Ratio(%)": 3.1939,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_5alc_594",
+        "latency_us": 88.059998,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 88.059998,
+          "max_latency_us": 88.059998,
+          "min_latency_us": 88.059998,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-374f18248404",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-8b-short-w256",
+      "params": {
+        "batch": 4,
+        "dim": 128,
+        "dtype": "float16",
+        "heads": 32,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 512,
+        "wl": 256,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1053.75537109375,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.42205810546875,
+        "Perf(TOps/s)": 38.04500961303711,
+        "Ratio(%)": 12.706100000000001,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_q559ijxy",
+        "latency_us": 348.519989,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 348.519989,
+          "max_latency_us": 348.519989,
+          "min_latency_us": 348.519989,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-e91cbd14dbbe",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-8b-short-w256",
+      "params": {
+        "batch": 4,
+        "dim": 128,
+        "dtype": "bfloat16",
+        "heads": 32,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 512,
+        "wl": 256,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1053.4141845703125,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.422119140625,
+        "Perf(TOps/s)": 38.15311050415039,
+        "Ratio(%)": 12.7422,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_k4n88_gu",
+        "latency_us": 347.420013,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 347.420013,
+          "max_latency_us": 347.420013,
+          "min_latency_us": 347.420013,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-2d5b343df552",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-8b-long-w1024",
+      "params": {
+        "batch": 2,
+        "dim": 128,
+        "dtype": "float16",
+        "heads": 32,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 2048,
+        "wl": 1024,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 2615.71875,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.44000244140625,
+        "Perf(TOps/s)": 62.283138275146484,
+        "Ratio(%)": 20.799899999999997,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_0v6f1xnx",
+        "latency_us": 1056.900024,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 1056.900024,
+          "max_latency_us": 1056.900024,
+          "min_latency_us": 1056.900024,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-fa8f9697674c",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-8b-long-w1024",
+      "params": {
+        "batch": 2,
+        "dim": 128,
+        "dtype": "bfloat16",
+        "heads": 32,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 2048,
+        "wl": 1024,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 2613.86572265625,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.43890380859375,
+        "Perf(TOps/s)": 63.98998260498047,
+        "Ratio(%)": 21.37,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_5edy4isx",
+        "latency_us": 1027.97998,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 1027.97998,
+          "max_latency_us": 1027.97998,
+          "min_latency_us": 1027.97998,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-fac7ae1d4063",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-70b-short-w256",
+      "params": {
+        "batch": 2,
+        "dim": 128,
+        "dtype": "float16",
+        "heads": 64,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 512,
+        "wl": 256,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1264.5037841796875,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.42205810546875,
+        "Perf(TOps/s)": 37.903621673583984,
+        "Ratio(%)": 12.658900000000001,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_rm8g1p_1",
+        "latency_us": 349.820007,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 349.820007,
+          "max_latency_us": 349.820007,
+          "min_latency_us": 349.820007,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-3464823e653f",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-70b-short-w256",
+      "params": {
+        "batch": 2,
+        "dim": 128,
+        "dtype": "bfloat16",
+        "heads": 64,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 512,
+        "wl": 256,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1264.094482421875,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.422119140625,
+        "Perf(TOps/s)": 37.835113525390625,
+        "Ratio(%)": 12.636,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_2owwxykt",
+        "latency_us": 350.339996,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 350.339996,
+          "max_latency_us": 350.339996,
+          "min_latency_us": 350.339996,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-46c726db0cf6",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-70b-long-w1024",
+      "params": {
+        "batch": 1,
+        "dim": 128,
+        "dtype": "float16",
+        "heads": 64,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 2048,
+        "wl": 1024,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 3138.859130859375,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.44000244140625,
+        "Perf(TOps/s)": 62.81446838378906,
+        "Ratio(%)": 20.9773,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_mlixyhl8",
+        "latency_us": 1047.959961,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 1047.959961,
+          "max_latency_us": 1047.959961,
+          "min_latency_us": 1047.959961,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowFwdOp",
+      "case_id": "GroupedQueryAttentionSlidingWindowFwdOp-c0c1fda204a5",
+      "config": {
+        "block_m": 64,
+        "block_n": 64,
+        "num_stages": 1
+      },
+      "label": "llama-3.1-70b-long-w1024",
+      "params": {
+        "batch": 1,
+        "dim": 128,
+        "dtype": "bfloat16",
+        "heads": 64,
+        "heads_kv": 8,
+        "is_causal": true,
+        "seq": 2048,
+        "wl": 1024,
+        "wr": -1
+      },
+      "result": {
+        "AI(Ops/Byte)": 3136.6357421875,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 299.43890380859375,
+        "Perf(TOps/s)": 62.22135925292969,
+        "Ratio(%)": 20.7793,
+        "artifact_dir": "/mnt/workspace/Agentkj/examples/TileOPs/reports/tileops/20261017_131225_879547_GroupedQueryAttentionSlidingWindowFwdOp/artifacts/msprof/_gqa_sw_fwd_main_mix_aic_2v5r30gc",
+        "latency_us": 1057.199951,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_main",
+          "latency_us": 1057.199951,
+          "max_latency_us": 1057.199951,
+          "min_latency_us": 1057.199951,
+          "op_name": "_gqa_sw_fwd_main_mix_aic",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

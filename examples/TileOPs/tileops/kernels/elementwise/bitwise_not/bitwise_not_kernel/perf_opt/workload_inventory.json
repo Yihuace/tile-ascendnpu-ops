@@ -1,0 +1,88 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_bitwise_not_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py::bitwise_not_fwd_kernel::main",
+      "workload_id": "smoke-1m-int32",
+      "label": "smoke-1m",
+      "marks": ["smoke"],
+      "shape": [1048576],
+      "dtype": "int32",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-int32' contains the standalone smoke token 'smoke'; excluded from perf tuning, used for precision regression only",
+      "precision_pass": true,
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_bitwise_not_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py::bitwise_not_fwd_kernel::main",
+      "workload_id": "smoke-1m-int64",
+      "label": "smoke-1m",
+      "marks": ["smoke"],
+      "shape": [1048576],
+      "dtype": "int64",
+      "params": {},
+      "kind": "smoke",
+      "reason": "pytest case id 'smoke-1m-int64' contains the standalone smoke token 'smoke'; excluded from perf tuning, used for precision regression only",
+      "precision_pass": true,
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_bitwise_not_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py::bitwise_not_fwd_kernel::main",
+      "workload_id": "elementwise-16m-int32",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [4096, 4096],
+      "dtype": "int32",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner r4_merged (static-bulk + contiguous per-core + block_size 8192) merged into perf_opt/bitwise_not_fwd_kernel.py; 93.62 -> 63.94 us (-31.7%)",
+      "tuning_status": "winner_merged",
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_bitwise_not_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py::bitwise_not_fwd_kernel::main",
+      "workload_id": "elementwise-16m-int64",
+      "label": "elementwise-16m",
+      "marks": [],
+      "shape": [4096, 4096],
+      "dtype": "int64",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner r4_merged (per-dtype block_size 4096) merged into perf_opt/bitwise_not_fwd_kernel.py; 183.46 -> 171.60 us (-6.5%)",
+      "tuning_status": "winner_merged",
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_bitwise_not_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py::bitwise_not_fwd_kernel::main",
+      "workload_id": "elementwise-64m-int32",
+      "label": "elementwise-64m",
+      "marks": [],
+      "shape": [8192, 8192],
+      "dtype": "int32",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner r4_merged (static-bulk + contiguous per-core + block_size 8192) merged into perf_opt/bitwise_not_fwd_kernel.py; 484.17 -> 382.23 us (-21.1%)",
+      "tuning_status": "winner_merged",
+      "target_kernel_name": "main"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_unary_elementwise.py::test_bitwise_not_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/elementwise/bitwise_not/bitwise_not_kernel/bitwise_not_fwd_kernel.py::bitwise_not_fwd_kernel::main",
+      "workload_id": "elementwise-256m-int32",
+      "label": "elementwise-256m",
+      "marks": [],
+      "shape": [16384, 16384],
+      "dtype": "int32",
+      "params": {},
+      "kind": "tune",
+      "reason": "winner r4_merged (static-bulk + contiguous per-core + block_size 8192) merged into perf_opt/bitwise_not_fwd_kernel.py; 2058.50 -> 1657.27 us (-19.5%)",
+      "tuning_status": "winner_merged",
+      "target_kernel_name": "main"
+    }
+  ]
+}

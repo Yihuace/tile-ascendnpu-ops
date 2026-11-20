@@ -1,0 +1,1037 @@
+{
+  "schema_version": 2,
+  "operator": "BatchNormBwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261020_185252_421670_BatchNormBwdOp",
+    "generated_at": "2026-10-20T18:56:05.184296+08:00",
+    "project_root": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs",
+    "git_commit": "278f6a6b37ce19ddc49376b5eb8caf6e8a9414a0",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_batch_norm_bwd.py",
+    "benchmark_file": "benchmarks/ops/bench_batch_norm_bwd.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_batch_norm_bwd.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_batch_norm_bwd.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-20T18:56:05.184296+08:00",
+      "evaluation_scope": "BatchNormBwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261020_185252_421670_BatchNormBwdOp",
+      "git_commit": "278f6a6b37ce19ddc49376b5eb8caf6e8a9414a0",
+      "correctness_target": "tests/ops/test_batch_norm_bwd.py",
+      "benchmark_target": "benchmarks/ops/bench_batch_norm_bwd.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.2+278f6a6b37ce19ddc49376b5eb8caf6e8a9414a0 (/mnt/workspace/tilelang-mlir-ascend@9309edb)",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 12,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 12,
+    "passed_cases": 12,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 6,
+    "benchmark_failed": 0,
+    "case_count": 6,
+    "msprof_case_count": 6,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[32-64-spatial0-dtype0]",
+        "name": "test_batch_norm_bwd[32-64-spatial0-dtype0]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 1.753,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "3.81e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[32-64-spatial1-dtype1]",
+        "name": "test_batch_norm_bwd[32-64-spatial1-dtype1]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.273,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.91e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[32-64-spatial2-dtype2]",
+        "name": "test_batch_norm_bwd[32-64-spatial2-dtype2]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 5.943,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.91e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[8-64-spatial3-dtype3]",
+        "name": "test_batch_norm_bwd[8-64-spatial3-dtype3]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.274,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[4-128-spatial4-dtype4]",
+        "name": "test_batch_norm_bwd[4-128-spatial4-dtype4]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 4.33,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[8-64-spatial5-dtype5]",
+        "name": "test_batch_norm_bwd[8-64-spatial5-dtype5]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.275,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[4-256-spatial6-dtype6]",
+        "name": "test_batch_norm_bwd[4-256-spatial6-dtype6]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.278,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "3.05e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd[4-64-spatial7-dtype7]",
+        "name": "test_batch_norm_bwd[4-64-spatial7-dtype7]",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.29,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_matches_torch",
+        "name": "test_batch_norm_bwd_matches_torch",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 4.914,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "max_abs_err": "6.10e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_eval_roofline",
+        "name": "test_batch_norm_bwd_eval_roofline",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.509,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_rejects_bad_dtype",
+        "name": "test_batch_norm_bwd_rejects_bad_dtype",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.012,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_batch_norm_bwd::test_batch_norm_bwd_rejects_bad_shape",
+        "name": "test_batch_norm_bwd_rejects_bad_shape",
+        "classname": "tests.ops.test_batch_norm_bwd",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage1-float16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage1-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 24.678,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "12.2200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage1-bfloat16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage1-bfloat16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 23.108,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "12.1400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage2-float16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage2-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 22.576,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "14.2600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage3-float16]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage3-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 22.683,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "20.4400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[resnet-stage3-float32]",
+        "name": "test_batch_norm_bwd_bench[resnet-stage3-float32]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 22.24,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "19.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_batch_norm_bwd::test_batch_norm_bwd_bench[large-spatial-float16]",
+        "name": "test_batch_norm_bwd_bench[large-spatial-float16]",
+        "classname": "benchmarks.ops.bench_batch_norm_bwd",
+        "time_s": 24.362,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "BatchNormBwdOp",
+          "op_module": "tileops.ops.norm.batch_norm_bwd",
+          "tileops_latency_us": "1091.5200"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-895ee3e30b19",
+        "label": "resnet-stage1",
+        "params": {
+          "c": 64,
+          "dtype": "float16",
+          "n": 8,
+          "s": 1024
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 12.22,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 11.8076,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.7134487628936768,
+        "performance_tops": 0.4657859206199646,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/artifacts/msprof/main_mix_aic_2zk_8vp7",
+        "advice": "latency bound:compute caused",
+        "roofline_levels": [
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.118076,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.174934,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.118076,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.118076,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.118076,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.118076,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.118076,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.118076,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.118076,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.118076,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.118076,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 12.22,
+          "max_latency_us": 12.22,
+          "min_latency_us": 12.22,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-48e2ace7d023",
+        "label": "resnet-stage1",
+        "params": {
+          "c": 64,
+          "dtype": "bfloat16",
+          "n": 8,
+          "s": 1024
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 12.14,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 12.822600000000001,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.9633877277374268,
+        "performance_tops": 0.5120421648025513,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/artifacts/msprof/main_mix_aic_w3o9rx62",
+        "advice": "latency bound:compute caused",
+        "roofline_levels": [
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.128226,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.181602,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.128226,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.128226,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.128226,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.128226,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.128226,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.128226,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.128226,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.128226,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.128226,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 12.14,
+          "max_latency_us": 12.14,
+          "min_latency_us": 12.14,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-ece726b899de",
+        "label": "resnet-stage2",
+        "params": {
+          "c": 128,
+          "dtype": "float16",
+          "n": 4,
+          "s": 1024
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 14.26,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 10.667,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.8032705783843994,
+        "performance_tops": 0.412364661693573,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/artifacts/msprof/main_mix_aic_p7auufs5",
+        "advice": "latency bound:compute caused",
+        "roofline_levels": [
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.10667,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.151296,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.10667,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.10667,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.10667,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.10667,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.10667,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.10667,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.10667,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.10667,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.10667,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 14.26,
+          "max_latency_us": 14.26,
+          "min_latency_us": 14.26,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-c512e3f28888",
+        "label": "resnet-stage3",
+        "params": {
+          "c": 256,
+          "dtype": "float16",
+          "n": 4,
+          "s": 784
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 20.440001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 11.8341,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.6281166076660156,
+        "performance_tops": 0.4538113474845886,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/artifacts/msprof/main_mix_aic_agltpes5",
+        "advice": "latency bound:compute caused",
+        "roofline_levels": [
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.118341,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.162237,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.118341,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.118341,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.118341,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.118341,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.118341,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.118341,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.118341,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.118341,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.118341,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 20.440001,
+          "max_latency_us": 20.440001,
+          "min_latency_us": 20.440001,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-63a1ec85548e",
+        "label": "resnet-stage3",
+        "params": {
+          "c": 256,
+          "dtype": "float32",
+          "n": 4,
+          "s": 784
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 19.780001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 16.7859,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.524518609046936,
+        "performance_tops": 0.4478317201137543,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/artifacts/msprof/main_mix_aic_vp5pycj1",
+        "advice": "latency bound:compute caused",
+        "roofline_levels": [
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.130918,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.176149,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.130918,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.130918,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.130918,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.130918,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.130918,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.130918,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.130918,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.167859,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.130918,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 19.780001,
+          "max_latency_us": 19.780001,
+          "min_latency_us": 19.780001,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "BatchNormBwdOp",
+        "case_id": "BatchNormBwdOp-20ebc8b7ce60",
+        "label": "large-spatial",
+        "params": {
+          "c": 128,
+          "dtype": "float16",
+          "n": 4,
+          "s": 262144
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 1091.52002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 28.7098,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.3433210849761963,
+        "performance_tops": 1.1045774221420288,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261020_185252_421670_BatchNormBwdOp/artifacts/msprof/stats_mix_aic_linomfwo",
+        "advice": "latency bound:compute caused",
+        "roofline_levels": [
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.0,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.287098,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.411541,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.287098,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.287098,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.287098,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.287098,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.287098,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.287098,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.287098,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.287098,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.287098,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "stats_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "stats"
+          ],
+          "kernel_name_requested": "stats",
+          "kernel_name_resolved": "stats",
+          "latency_us": 1091.52002,
+          "max_latency_us": 1091.52002,
+          "min_latency_us": 1091.52002,
+          "op_name": "stats_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "BatchNormBwdOp",
+      "family": "norm",
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0023943477777777773,
+      "max_abs_err": 0.0156,
+      "performance_cases": 6,
+      "ratio_range": {
+        "min": 10.667,
+        "max": 28.7098
+      }
+    }
+  ],
+  "warnings": []
+}

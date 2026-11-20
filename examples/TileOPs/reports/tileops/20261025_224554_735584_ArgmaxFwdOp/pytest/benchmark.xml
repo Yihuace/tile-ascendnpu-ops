@@ -1,0 +1,1177 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="8" time="150.122" timestamp="2026-10-25T22:47:46.282564+08:00" hostname="db4ddc1493b14617970ae416a5778244"><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[smoke-argmax-float16]" time="27.400"><properties><property name="op" value="ArgmaxFwdOp" /><property name="op_module" value="tileops.ops.reduction.argmax" /><property name="tileops_latency_us" value="2.5800" /></properties></testcase><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[smoke-argmax-bfloat16]" time="25.453"><properties><property name="op" value="ArgmaxFwdOp" /><property name="op_module" value="tileops.ops.reduction.argmax" /><property name="tileops_latency_us" value="1.9600" /></properties></testcase><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[smoke-argmax-float32]" time="25.872"><properties><property name="op" value="ArgmaxFwdOp" /><property name="op_module" value="tileops.ops.reduction.argmax" /><property name="tileops_latency_us" value="1.8600" /></properties></testcase><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[lm-head-argmax-float16]" time="0.706"><failure message="RuntimeError: NPU IR opt failed: loc(&quot;/tmp/tmpoprx1n3c/kernel.npuir&quot;:87:71): error: custom op 'syn_instr_mode' is unknown (tried 'func.syn_instr_mode' as well)&#10;[ERROR] Failed to parse input file:  /tmp/tmpoprx1n3c/kernel.npuir">self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xffff071f6110&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+&gt;               ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1921: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmp8l7zplmd/kernel.npuir', '--enable-auto-multi-buf...', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', ...],)
+kwargs = {'stderr': -1, 'stdout': -1, 'text': True}
+process = &lt;Popen: returncode: 1 args: ['/home/developer/Ascend/cann-9.0.0/bin/bishengi...&gt;
+stdout = ''
+stderr = 'loc("/tmp/tmp8l7zplmd/kernel.npuir":87:71): error: custom op \'syn_instr_mode\' is unknown (tried \'func.syn_instr_mode\' as well)\n[ERROR] Failed to parse input file:  /tmp/tmp8l7zplmd/kernel.npuir\n'
+retcode = 1
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmp8l7zplmd/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '--disable-hivm-tensor-compile=true', '-o', '/tmp/tmp8l7zplmd/kernel']' returned non-zero exit status 1.
+
+/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py:571: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+functor = &lt;tileops.ops.reduction.argmax.ArgmaxFwdOp object at 0xffff140acd10&gt;
+args = (tensor([[-1.2402,  0.6143, -0.8101,  ...,  1.0664, -0.2174,  0.8140],
+        [-0.9648, -1.9082,  0.8652,  ...,  2.51...],
+        [ 0.6045, -0.0934, -0.8862,  ...,  1.1533, -1.2129, -0.2323]],
+       device='npu:0', dtype=torch.float16),)
+mode = 'msprof'
+
+    def _bench_with_mode(
+        functor: Callable,
+        args: tuple = (),
+        mode: Optional[str] = None,
+    ) -&gt; tuple[float, str, Optional[str]]:
+        """Dispatch to events or msprof profiling based on *mode* / env var.
+    
+        Returns ``(latency_ms, prof_mode, prof_output_dir)`` where *prof_mode*
+        is either ``"events"`` or ``"msprof"``, and *prof_output_dir* is the
+        path to the msprof output directory (or ``None`` for events mode).
+    
+        The default mode is ``msprof`` (kernel-only latency via ``msprof op``,
+        no launch overhead).  Set ``TILEOPS_PROF_MODE=events`` (or
+        *mode*="events") to use device-event timing instead.  If the functor
+        is not supported by msprof (e.g. closures/lambdas) or msprof is
+        unavailable, falls back to events with a warning.
+        """
+        mode = mode or os.environ.get("TILEOPS_PROF_MODE", "msprof")
+        mode = mode.lower().strip()
+    
+        if mode == "msprof":
+            if bench_kernel_msprof is None:
+                _logger.warning(
+                    "TILEOPS_PROF_MODE=msprof but msprof module is unavailable; falling back to events."
+                )
+                return bench_kernel(functor, args=args), "events", None
+            try:
+                # Call functor once in-process so that Op state (e.g. roofline
+                # spec, kernel cache) is initialized before msprof runs it in
+                # a subprocess.  This mirrors the events-mode warm-up path.
+&gt;               _ = functor(*args)
+
+tileops/benchmark/benchmark_base.py:236: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/reduction/reduce.py:199: in forward
+    x, orig_shape, dim_info, kernel = self._prepare_input(x)
+tileops/ops/reduction/reduce.py:485: in _prepare_input
+    kernel = self._get_or_create_kernel(M, N)
+tileops/ops/reduction/reduce.py:409: in _get_or_create_kernel
+    self._kernel_cache[key] = kernel_cls(
+tileops/kernels/reduction/argmax/argmax.py:146: in __init__
+    self.kernel = _argreduce_kernel(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1107: in _argreduce_kernel
+    _f = _build_nsplit_dispatch(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1063: in _build_nsplit_dispatch
+    fused = _build_nsplit_fused(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1735: in _fused
+    return _fused_jit(block_m)
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:151: in wrapper
+    kernel_result = compile(
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:66: in compile
+    return cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/__init__.py:29: in cached_npu
+    return _kernel_cache_instance.cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/kernel_cache.py:186: in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1585: in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xffff071f6110&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+                ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+                print("AscendNPU IR compile success:", ret.stdout)
+            except subprocess.CalledProcessError as e:
+                # print ir
+                print("AscendNPU IR:\n")
+                print(self.mlir_content)
+                # print error info
+                print("err cmd:", " ".join(cmd_list))
+                print(f"err code: {e.returncode}")
+&gt;               raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+E               RuntimeError: NPU IR opt failed: loc("/tmp/tmp8l7zplmd/kernel.npuir":87:71): error: custom op 'syn_instr_mode' is unknown (tried 'func.syn_instr_mode' as well)
+E               [ERROR] Failed to parse input file:  /tmp/tmp8l7zplmd/kernel.npuir
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1932: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xffff1409bb90&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+&gt;               ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1921: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmpoprx1n3c/kernel.npuir', '--enable-auto-multi-buf...', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', ...],)
+kwargs = {'stderr': -1, 'stdout': -1, 'text': True}
+process = &lt;Popen: returncode: 1 args: ['/home/developer/Ascend/cann-9.0.0/bin/bishengi...&gt;
+stdout = ''
+stderr = 'loc("/tmp/tmpoprx1n3c/kernel.npuir":87:71): error: custom op \'syn_instr_mode\' is unknown (tried \'func.syn_instr_mode\' as well)\n[ERROR] Failed to parse input file:  /tmp/tmpoprx1n3c/kernel.npuir\n'
+retcode = 1
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmpoprx1n3c/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '--disable-hivm-tensor-compile=true', '-o', '/tmp/tmpoprx1n3c/kernel']' returned non-zero exit status 1.
+
+/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py:571: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+shape = (4, 102400), dtype = torch.float16, extra = {'dim': -1}
+
+    @pytest.mark.parametrize("shape, dtype, extra", workloads_to_params(_ARGMAX_OP, include_extra=True))
+    def test_argmax_bench(shape: tuple, dtype: torch.dtype, extra: dict) -&gt; None:
+        workload = ArgmaxWorkload(shape, dtype)
+        inputs = workload.gen_inputs()
+    
+        op = ArgmaxFwdOp(dtype=dtype, **extra)
+        bm = ManifestBenchmark(_ARGMAX_OP, op, workload)
+&gt;       result = bm.profile(op, *inputs)
+
+benchmarks/ops/bench_argmax.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/benchmark/benchmark_base.py:285: in profile
+    latency, prof_mode, prof_output_dir = _bench_with_mode(functor, args=inputs, mode=mode)
+tileops/benchmark/benchmark_base.py:248: in _bench_with_mode
+    return bench_kernel(functor, args=args), "events", None
+tileops/benchmark/benchmark_base.py:179: in bench_kernel
+    _run(i)
+tileops/benchmark/benchmark_base.py:161: in _run
+    return fn(*arg_pool[i % _N_CLONES])
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/reduction/reduce.py:199: in forward
+    x, orig_shape, dim_info, kernel = self._prepare_input(x)
+tileops/ops/reduction/reduce.py:485: in _prepare_input
+    kernel = self._get_or_create_kernel(M, N)
+tileops/ops/reduction/reduce.py:409: in _get_or_create_kernel
+    self._kernel_cache[key] = kernel_cls(
+tileops/kernels/reduction/argmax/argmax.py:146: in __init__
+    self.kernel = _argreduce_kernel(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1107: in _argreduce_kernel
+    _f = _build_nsplit_dispatch(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1063: in _build_nsplit_dispatch
+    fused = _build_nsplit_fused(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1735: in _fused
+    return _fused_jit(block_m)
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:151: in wrapper
+    kernel_result = compile(
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:66: in compile
+    return cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/__init__.py:29: in cached_npu
+    return _kernel_cache_instance.cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/kernel_cache.py:186: in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1585: in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xffff1409bb90&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+                ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+                print("AscendNPU IR compile success:", ret.stdout)
+            except subprocess.CalledProcessError as e:
+                # print ir
+                print("AscendNPU IR:\n")
+                print(self.mlir_content)
+                # print error info
+                print("err cmd:", " ".join(cmd_list))
+                print(f"err code: {e.returncode}")
+&gt;               raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+E               RuntimeError: NPU IR opt failed: loc("/tmp/tmpoprx1n3c/kernel.npuir":87:71): error: custom op 'syn_instr_mode' is unknown (tried 'func.syn_instr_mode' as well)
+E               [ERROR] Failed to parse input file:  /tmp/tmpoprx1n3c/kernel.npuir
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1932: RuntimeError</failure></testcase><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[lm-head-argmax-bfloat16]" time="0.686"><failure message="RuntimeError: NPU IR opt failed: loc(&quot;/tmp/tmppw2m_x7c/kernel.npuir&quot;:87:71): error: custom op 'syn_instr_mode' is unknown (tried 'func.syn_instr_mode' as well)&#10;[ERROR] Failed to parse input file:  /tmp/tmppw2m_x7c/kernel.npuir">self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xfffeb834e650&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+&gt;               ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1921: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmp3dy9i640/kernel.npuir', '--enable-auto-multi-buf...', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', ...],)
+kwargs = {'stderr': -1, 'stdout': -1, 'text': True}
+process = &lt;Popen: returncode: 1 args: ['/home/developer/Ascend/cann-9.0.0/bin/bishengi...&gt;
+stdout = ''
+stderr = 'loc("/tmp/tmp3dy9i640/kernel.npuir":87:71): error: custom op \'syn_instr_mode\' is unknown (tried \'func.syn_instr_mode\' as well)\n[ERROR] Failed to parse input file:  /tmp/tmp3dy9i640/kernel.npuir\n'
+retcode = 1
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmp3dy9i640/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '--disable-hivm-tensor-compile=true', '-o', '/tmp/tmp3dy9i640/kernel']' returned non-zero exit status 1.
+
+/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py:571: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+functor = &lt;tileops.ops.reduction.argmax.ArgmaxFwdOp object at 0xfffeb83984d0&gt;
+args = (tensor([[-1.2422,  0.6133, -0.8086,  ...,  1.0625, -0.2178,  0.8125],
+        [-0.9648, -1.9062,  0.8633,  ...,  2.51...,
+        [ 0.6055, -0.0933, -0.8867,  ...,  1.1562, -1.2109, -0.2324]],
+       device='npu:0', dtype=torch.bfloat16),)
+mode = 'msprof'
+
+    def _bench_with_mode(
+        functor: Callable,
+        args: tuple = (),
+        mode: Optional[str] = None,
+    ) -&gt; tuple[float, str, Optional[str]]:
+        """Dispatch to events or msprof profiling based on *mode* / env var.
+    
+        Returns ``(latency_ms, prof_mode, prof_output_dir)`` where *prof_mode*
+        is either ``"events"`` or ``"msprof"``, and *prof_output_dir* is the
+        path to the msprof output directory (or ``None`` for events mode).
+    
+        The default mode is ``msprof`` (kernel-only latency via ``msprof op``,
+        no launch overhead).  Set ``TILEOPS_PROF_MODE=events`` (or
+        *mode*="events") to use device-event timing instead.  If the functor
+        is not supported by msprof (e.g. closures/lambdas) or msprof is
+        unavailable, falls back to events with a warning.
+        """
+        mode = mode or os.environ.get("TILEOPS_PROF_MODE", "msprof")
+        mode = mode.lower().strip()
+    
+        if mode == "msprof":
+            if bench_kernel_msprof is None:
+                _logger.warning(
+                    "TILEOPS_PROF_MODE=msprof but msprof module is unavailable; falling back to events."
+                )
+                return bench_kernel(functor, args=args), "events", None
+            try:
+                # Call functor once in-process so that Op state (e.g. roofline
+                # spec, kernel cache) is initialized before msprof runs it in
+                # a subprocess.  This mirrors the events-mode warm-up path.
+&gt;               _ = functor(*args)
+
+tileops/benchmark/benchmark_base.py:236: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/reduction/reduce.py:199: in forward
+    x, orig_shape, dim_info, kernel = self._prepare_input(x)
+tileops/ops/reduction/reduce.py:485: in _prepare_input
+    kernel = self._get_or_create_kernel(M, N)
+tileops/ops/reduction/reduce.py:409: in _get_or_create_kernel
+    self._kernel_cache[key] = kernel_cls(
+tileops/kernels/reduction/argmax/argmax.py:146: in __init__
+    self.kernel = _argreduce_kernel(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1107: in _argreduce_kernel
+    _f = _build_nsplit_dispatch(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1063: in _build_nsplit_dispatch
+    fused = _build_nsplit_fused(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1735: in _fused
+    return _fused_jit(block_m)
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:151: in wrapper
+    kernel_result = compile(
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:66: in compile
+    return cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/__init__.py:29: in cached_npu
+    return _kernel_cache_instance.cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/kernel_cache.py:186: in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1585: in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xfffeb834e650&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+                ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+                print("AscendNPU IR compile success:", ret.stdout)
+            except subprocess.CalledProcessError as e:
+                # print ir
+                print("AscendNPU IR:\n")
+                print(self.mlir_content)
+                # print error info
+                print("err cmd:", " ".join(cmd_list))
+                print(f"err code: {e.returncode}")
+&gt;               raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+E               RuntimeError: NPU IR opt failed: loc("/tmp/tmp3dy9i640/kernel.npuir":87:71): error: custom op 'syn_instr_mode' is unknown (tried 'func.syn_instr_mode' as well)
+E               [ERROR] Failed to parse input file:  /tmp/tmp3dy9i640/kernel.npuir
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1932: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xffff0726aed0&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+&gt;               ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1921: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmppw2m_x7c/kernel.npuir', '--enable-auto-multi-buf...', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', ...],)
+kwargs = {'stderr': -1, 'stdout': -1, 'text': True}
+process = &lt;Popen: returncode: 1 args: ['/home/developer/Ascend/cann-9.0.0/bin/bishengi...&gt;
+stdout = ''
+stderr = 'loc("/tmp/tmppw2m_x7c/kernel.npuir":87:71): error: custom op \'syn_instr_mode\' is unknown (tried \'func.syn_instr_mode\' as well)\n[ERROR] Failed to parse input file:  /tmp/tmppw2m_x7c/kernel.npuir\n'
+retcode = 1
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/developer/Ascend/cann-9.0.0/bin/bishengir-compile', '/tmp/tmppw2m_x7c/kernel.npuir', '--enable-auto-multi-buffer=true', '--disable-hivm-auto-inject-sync=false', '--enable-triton-kernel-compile=true', '--enable-hivm-compile=true', '--disable-hivm-tensor-compile=true', '-o', '/tmp/tmppw2m_x7c/kernel']' returned non-zero exit status 1.
+
+/opt/buildtools/Python-3.11.4/lib/python3.11/subprocess.py:571: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+shape = (4, 102400), dtype = torch.bfloat16, extra = {'dim': -1}
+
+    @pytest.mark.parametrize("shape, dtype, extra", workloads_to_params(_ARGMAX_OP, include_extra=True))
+    def test_argmax_bench(shape: tuple, dtype: torch.dtype, extra: dict) -&gt; None:
+        workload = ArgmaxWorkload(shape, dtype)
+        inputs = workload.gen_inputs()
+    
+        op = ArgmaxFwdOp(dtype=dtype, **extra)
+        bm = ManifestBenchmark(_ARGMAX_OP, op, workload)
+&gt;       result = bm.profile(op, *inputs)
+
+benchmarks/ops/bench_argmax.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tileops/benchmark/benchmark_base.py:285: in profile
+    latency, prof_mode, prof_output_dir = _bench_with_mode(functor, args=inputs, mode=mode)
+tileops/benchmark/benchmark_base.py:248: in _bench_with_mode
+    return bench_kernel(functor, args=args), "events", None
+tileops/benchmark/benchmark_base.py:179: in bench_kernel
+    _run(i)
+tileops/benchmark/benchmark_base.py:161: in _run
+    return fn(*arg_pool[i % _N_CLONES])
+tileops/ops/op_base.py:92: in __call__
+    return self.forward(*args, **kwargs)
+tileops/ops/reduction/reduce.py:199: in forward
+    x, orig_shape, dim_info, kernel = self._prepare_input(x)
+tileops/ops/reduction/reduce.py:485: in _prepare_input
+    kernel = self._get_or_create_kernel(M, N)
+tileops/ops/reduction/reduce.py:409: in _get_or_create_kernel
+    self._kernel_cache[key] = kernel_cls(
+tileops/kernels/reduction/argmax/argmax.py:146: in __init__
+    self.kernel = _argreduce_kernel(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1107: in _argreduce_kernel
+    _f = _build_nsplit_dispatch(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1063: in _build_nsplit_dispatch
+    fused = _build_nsplit_fused(
+tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/_argreduce_kernel.py:1735: in _fused
+    return _fused_jit(block_m)
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:151: in wrapper
+    kernel_result = compile(
+../../../../tilelang-mlir-ascend/tilelang/jit/__init__.py:66: in compile
+    return cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/__init__.py:29: in cached_npu
+    return _kernel_cache_instance.cached_npu(
+../../../../tilelang-mlir-ascend/tilelang/cache/kernel_cache.py:186: in cached_npu
+    kernel = compiler_npu().compile(func, out_idx, pass_configs=pass_configs)
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1585: in compile
+    self.metadata["kernel_src"] = self._npuir_to_bin_enable_npu_compile()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;tilelang.jit.jit_npu.compiler_npu object at 0xffff0726aed0&gt;
+
+    def _npuir_to_bin_enable_npu_compile(self):
+        linalg = self.mlir_content
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ttadapter_path = os.path.join(tmpdir, "kernel.npuir")
+            Path(ttadapter_path).write_text(linalg)
+            bin_file = os.path.join(tmpdir, "kernel")
+            bin_path = os.path.join(tmpdir, "kernel.o")
+            so_path = os.path.join(tmpdir, "libkernel.so")
+    
+            npu_compiler_path = get_npucompiler_path()
+            # TileLang Ascend JIT Runtime now follows Triton JIT style.
+            # bishengir-compile --enable-triton-kernel-compile=true make sure the way.
+    
+            _compile_option_list = []
+            pass_configs = getattr(self, "pass_configs", {})
+    
+            if _is_a5_device():
+                # === A5 compile options ===
+                env_arch = os.getenv("TRITON_ASCEND_ARCH", "")
+                target_arch = env_arch if env_arch else _ARCH_CACHE
+                _compile_option_list = [
+                    f"--target={target_arch}",
+                    "--enable-auto-multi-buffer=true",
+                    "--disable-ffts",
+                    "--enable-triton-kernel-compile=true",
+                    "--enable-hivm-compile=true",
+                    "--enable-vf-merge-level=1",
+                    "--enable-hfusion-compile=true",
+                    "--enable-auto-bind-sub-block=true",
+                ]
+            else:
+                # === Non-A5 compile options ===
+                enable_auto_multi_buffer = pass_configs.get(
+                    "npuir.enable_auto_multi_buffer",
+                    True,
+                )
+                _compile_option_list.append(
+                    f"--enable-auto-multi-buffer={str(enable_auto_multi_buffer).lower()}"
+                )
+                disable_hivm_auto_inject_sync = pass_configs.get(
+                    "npuir.disable_hivm_auto_inject_sync",
+                    False,
+                )
+                _compile_option_list.append(
+                    f"--disable-hivm-auto-inject-sync={str(disable_hivm_auto_inject_sync).lower()}"
+                )
+                _compile_option_list.append("--enable-triton-kernel-compile=true")
+                _compile_option_list.append("--enable-hivm-compile=true")
+    
+            TILELANG_ASCEND_MODE = os.environ.get("TILELANG_ASCEND_MODE")
+            if TILELANG_ASCEND_MODE is None or TILELANG_ASCEND_MODE.lower().strip() in [
+                "expert",
+                "exp",
+                "e",
+            ]:
+                _compile_option_list.append("--disable-hivm-tensor-compile=true")
+    
+            cmd_list = (
+                [npu_compiler_path, ttadapter_path]
+                + _compile_option_list
+                + ["-o", bin_file]
+            )
+            try:
+                ret = subprocess.run(
+                    cmd_list, capture_output=True, check=True, text=True
+                )
+                print("AscendNPU IR compile success:", ret.stdout)
+            except subprocess.CalledProcessError as e:
+                # print ir
+                print("AscendNPU IR:\n")
+                print(self.mlir_content)
+                # print error info
+                print("err cmd:", " ".join(cmd_list))
+                print(f"err code: {e.returncode}")
+&gt;               raise RuntimeError(f"NPU IR opt failed: {e.stderr}") from e
+E               RuntimeError: NPU IR opt failed: loc("/tmp/tmppw2m_x7c/kernel.npuir":87:71): error: custom op 'syn_instr_mode' is unknown (tried 'func.syn_instr_mode' as well)
+E               [ERROR] Failed to parse input file:  /tmp/tmppw2m_x7c/kernel.npuir
+
+../../../../tilelang-mlir-ascend/tilelang/jit/jit_npu.py:1932: RuntimeError</failure></testcase><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[hidden-state-argmax-float16]" time="22.534"><properties><property name="op" value="ArgmaxFwdOp" /><property name="op_module" value="tileops.ops.reduction.argmax" /><property name="tileops_latency_us" value="30.8200" /></properties></testcase><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[hidden-state-argmax-bfloat16]" time="22.125"><properties><property name="op" value="ArgmaxFwdOp" /><property name="op_module" value="tileops.ops.reduction.argmax" /><property name="tileops_latency_us" value="52.7200" /></properties></testcase><testcase classname="benchmarks.ops.bench_argmax" name="test_argmax_bench[3d-non-last-axis-argmax-float16]" time="22.243"><properties><property name="op" value="ArgmaxFwdOp" /><property name="op_module" value="tileops.ops.reduction.argmax" /><property name="tileops_latency_us" value="13.7200" /></properties></testcase></testsuite></testsuites>

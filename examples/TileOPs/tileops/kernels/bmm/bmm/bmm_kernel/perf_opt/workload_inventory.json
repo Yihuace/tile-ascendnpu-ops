@@ -1,0 +1,206 @@
+{
+  "op": "BmmFwdOp",
+  "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+  "manifest_source": "tileops/manifest/bmm.yaml",
+  "kernel_source": "tileops/kernels/bmm/bmm/bmm_kernel/_bmm_kernel.py",
+  "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+      "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+      "workload_id": "smoke-b4-128-fp16",
+      "label": "smoke-b4-128",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "b": 4,
+        "m": 128,
+        "n": 128,
+        "k": 128
+      },
+      "dtype": "float16",
+      "params": {
+        "block_M": 64,
+        "block_N": 64,
+        "block_K": 64,
+        "num_stages": 2
+      },
+      "kind": "smoke",
+      "reason": "manifest workload index 0 -> pytest.mark.smoke; excluded from performance tuning, precision regression only (PASS: perf_opt/_bmm_kernel.py --level L1, L0 + L0-wrapper cells)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+      "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+      "workload_id": "smoke-b4-128-bf16",
+      "label": "smoke-b4-128",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "b": 4,
+        "m": 128,
+        "n": 128,
+        "k": 128
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_M": 64,
+        "block_N": 64,
+        "block_K": 64,
+        "num_stages": 2
+      },
+      "kind": "smoke",
+      "reason": "manifest workload index 0 -> pytest.mark.smoke; excluded from performance tuning, precision regression only (PASS: perf_opt/_bmm_kernel.py --level L1, L0 + L0-wrapper cells)",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+      "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+      "workload_id": "square-b8-1k-fp16",
+      "label": "square-b8-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "b": 8,
+        "m": 1024,
+        "n": 1024,
+        "k": 1024
+      },
+      "dtype": "float16",
+      "params": {
+        "block_M": 64,
+        "block_N": 64,
+        "block_K": 64,
+        "num_stages": 2
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; Stage-4 winner merged into perf_opt/_bmm_kernel.py (shape-adaptive tuned default via wrapper sentinel (64,64))",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final_tuned_autodispatch",
+      "final_task_duration_us": 102.75,
+      "final_ratio_pct": 56.7,
+      "final_params": "block_M=128,block_N=256,block_K=256(num_stages=2, K-pipelined tiled)"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+      "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+      "workload_id": "square-b8-1k-bf16",
+      "label": "square-b8-1k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "b": 8,
+        "m": 1024,
+        "n": 1024,
+        "k": 1024
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_M": 64,
+        "block_N": 64,
+        "block_K": 64,
+        "num_stages": 2
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; Stage-4 winner merged into perf_opt/_bmm_kernel.py (shape-adaptive tuned default via wrapper sentinel (64,64))",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final_tuned_autodispatch",
+      "final_task_duration_us": 102.85,
+      "final_ratio_pct": 56.64,
+      "final_params": "block_M=128,block_N=256,block_K=256(num_stages=2, K-pipelined tiled)"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+      "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+      "workload_id": "square-b16-512-fp16",
+      "label": "square-b16-512",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "b": 16,
+        "m": 512,
+        "n": 512,
+        "k": 512
+      },
+      "dtype": "float16",
+      "params": {
+        "block_M": 64,
+        "block_N": 64,
+        "block_K": 64,
+        "num_stages": 2
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; Stage-4 winner merged into perf_opt/_bmm_kernel.py (shape-adaptive tuned default via wrapper sentinel (64,64))",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final_tuned_autodispatch",
+      "final_task_duration_us": 33.88,
+      "final_ratio_pct": 42.99,
+      "final_params": "block_M=128,block_N=256,block_K=512(num_stages=2, full-K-slab B-resident)"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+      "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+      "workload_id": "square-b16-512-bf16",
+      "label": "square-b16-512",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "b": 16,
+        "m": 512,
+        "n": 512,
+        "k": 512
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_M": 64,
+        "block_N": 64,
+        "block_K": 64,
+        "num_stages": 2
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; Stage-4 winner merged into perf_opt/_bmm_kernel.py (shape-adaptive tuned default via wrapper sentinel (64,64))",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final_tuned_autodispatch",
+      "final_task_duration_us": 33.77,
+      "final_ratio_pct": 43.13,
+      "final_params": "block_M=128,block_N=256,block_K=512(num_stages=2, full-K-slab B-resident)"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_bmm.py::test_bmm_bench",
+      "kernel_id": "bmm/bmm_kernel/_bmm_kernel.py::_bmm_kernel",
+      "workload_id": "square-b4-4k-bf16",
+      "label": "square-b4-4k",
+      "marks": [
+        "full"
+      ],
+      "shape": {
+        "b": 4,
+        "m": 4096,
+        "n": 4096,
+        "k": 4096
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "block_M": 64,
+        "block_N": 64,
+        "block_K": 64,
+        "num_stages": 2
+      },
+      "kind": "tune",
+      "reason": "non-smoke manifest workload; Stage-4 winner merged into perf_opt/_bmm_kernel.py (shape-adaptive tuned default via wrapper sentinel (64,64))",
+      "tuning_status": "winner_merged",
+      "final_candidate_id": "final_tuned_autodispatch",
+      "final_task_duration_us": 2251.26,
+      "final_ratio_pct": 82.8,
+      "final_params": "block_M=128,block_N=256,block_K=256(num_stages=2, K-pipelined tiled)"
+    }
+  ],
+  "tuned_artifact": "tileops/kernels/bmm/bmm/bmm_kernel/perf_opt/_bmm_kernel.py",
+  "final_candidate_id": "final_tuned_autodispatch"
+}

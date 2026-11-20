@@ -1,0 +1,1108 @@
+{
+  "schema_version": 2,
+  "operator": "AddFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261117_152252_308638_AddFwdOp",
+    "generated_at": "2026-11-17T15:42:00.108597+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": null,
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_add.py",
+    "benchmark_file": "benchmarks/ops/bench_add.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_add.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_add.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-17T15:42:00.108597+08:00",
+      "evaluation_scope": "AddFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261117_152252_308638_AddFwdOp",
+      "git_commit": null,
+      "correctness_target": "tests/ops/test_add.py",
+      "benchmark_target": "benchmarks/ops/bench_add.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 25,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 25,
+    "passed_cases": 25,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 11,
+    "benchmark_failed": 0,
+    "case_count": 11,
+    "msprof_case_count": 11,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 25,
+    "passed": 25,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_add::test_add_same_shape[input_shape0-other_shape0-dtype0-1]",
+        "name": "test_add_same_shape[input_shape0-other_shape0-dtype0-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 46.319,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_same_shape[input_shape1-other_shape1-dtype1-1]",
+        "name": "test_add_same_shape[input_shape1-other_shape1-dtype1-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 18.078,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_same_shape[input_shape2-other_shape2-dtype2-1]",
+        "name": "test_add_same_shape[input_shape2-other_shape2-dtype2-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 18.284,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_same_shape[input_shape3-other_shape3-dtype3-1]",
+        "name": "test_add_same_shape[input_shape3-other_shape3-dtype3-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.302,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_broadcast[input_shape0-other_shape0-dtype0-1]",
+        "name": "test_add_broadcast[input_shape0-other_shape0-dtype0-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.47,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_broadcast[input_shape1-other_shape1-dtype1-1]",
+        "name": "test_add_broadcast[input_shape1-other_shape1-dtype1-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.312,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_broadcast[input_shape2-other_shape2-dtype2-1]",
+        "name": "test_add_broadcast[input_shape2-other_shape2-dtype2-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.301,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_broadcast[input_shape3-other_shape3-dtype3-1]",
+        "name": "test_add_broadcast[input_shape3-other_shape3-dtype3-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.472,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_broadcast[input_shape4-other_shape4-dtype4-1]",
+        "name": "test_add_broadcast[input_shape4-other_shape4-dtype4-1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.486,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype0-0.0]",
+        "name": "test_add_alpha[dtype0-0.0]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.499,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype0-0.5]",
+        "name": "test_add_alpha[dtype0-0.5]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.436,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype0-2.0]",
+        "name": "test_add_alpha[dtype0-2.0]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.506,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype1-0.0]",
+        "name": "test_add_alpha[dtype1-0.0]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.468,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype1-0.5]",
+        "name": "test_add_alpha[dtype1-0.5]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.49,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype1-2.0]",
+        "name": "test_add_alpha[dtype1-2.0]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.452,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype2-0.0]",
+        "name": "test_add_alpha[dtype2-0.0]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.401,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype2-0.5]",
+        "name": "test_add_alpha[dtype2-0.5]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.453,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_alpha[dtype2-2.0]",
+        "name": "test_add_alpha[dtype2-2.0]",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.523,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_rejects_non_float_dtype[dtype0]",
+        "name": "test_add_rejects_non_float_dtype[dtype0]",
+        "classname": "tests.ops.test_add",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_rejects_non_float_dtype[dtype1]",
+        "name": "test_add_rejects_non_float_dtype[dtype1]",
+        "classname": "tests.ops.test_add",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_rejects_non_float_dtype[dtype2]",
+        "name": "test_add_rejects_non_float_dtype[dtype2]",
+        "classname": "tests.ops.test_add",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_kernel_rejects_non_float_dtype",
+        "name": "test_add_kernel_rejects_non_float_dtype",
+        "classname": "tests.ops.test_add",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_rejects_dtype_mismatch",
+        "name": "test_add_rejects_dtype_mismatch",
+        "classname": "tests.ops.test_add",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_broadcast_output_shape",
+        "name": "test_add_broadcast_output_shape",
+        "classname": "tests.ops.test_add",
+        "time_s": 2.397,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_add::test_add_eval_roofline",
+        "name": "test_add_eval_roofline",
+        "classname": "tests.ops.test_add",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[hidden-state-prefill-float32]",
+        "name": "test_add_manifest_bench[hidden-state-prefill-float32]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 113.552,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "46.8200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[hidden-state-prefill-bfloat16]",
+        "name": "test_add_manifest_bench[hidden-state-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 86.411,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "25.0600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[cnn-feat-broadcast-float32]",
+        "name": "test_add_manifest_bench[cnn-feat-broadcast-float32]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 87.725,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "42.2400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[cnn-feat-broadcast-float16]",
+        "name": "test_add_manifest_bench[cnn-feat-broadcast-float16]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 87.165,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "22.7000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[cnn-feat-broadcast-bfloat16]",
+        "name": "test_add_manifest_bench[cnn-feat-broadcast-bfloat16]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 87.629,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "23.4000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[llama-7b-ffn-float32]",
+        "name": "test_add_manifest_bench[llama-7b-ffn-float32]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 86.677,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "62.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[llama-7b-ffn-float16]",
+        "name": "test_add_manifest_bench[llama-7b-ffn-float16]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 85.829,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "33.9200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[llama-7b-ffn-bfloat16]",
+        "name": "test_add_manifest_bench[llama-7b-ffn-bfloat16]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 87.845,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "32.6400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[linear-bias-float32]",
+        "name": "test_add_manifest_bench[linear-bias-float32]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 89.942,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "15.8400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[linear-bias-float16]",
+        "name": "test_add_manifest_bench[linear-bias-float16]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 88.154,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "8.6800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_add::test_add_manifest_bench[linear-bias-bfloat16]",
+        "name": "test_add_manifest_bench[linear-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_add",
+        "time_s": 89.152,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AddFwdOp",
+          "op_module": "tileops.ops.elementwise.add",
+          "tileops_latency_us": "9.3600"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-646e3566b0c7",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 46.82,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 81.9052,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.1250760555267334,
+        "performance_tops": 0.17927655577659607,
+        "computility_tops": 4.605190753936768,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_s3m7g20d",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 46.82,
+          "max_latency_us": 46.82,
+          "min_latency_us": 46.82,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-56593c85d006",
+        "label": "hidden-state-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            2048,
+            4096
+          ],
+          "other_shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 25.059999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 76.5125,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.0001487731933594,
+        "performance_tops": 1.3391680717468262,
+        "computility_tops": 4.607296943664551,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_edt8e3vv",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 25.059999,
+          "max_latency_us": 25.059999,
+          "min_latency_us": 25.059999,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-2f6937084cce",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "planes": 2
+        },
+        "tag": "tileops",
+        "latency_us": 42.240002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.50840000000001,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.251373291015625,
+        "performance_tops": 0.305769681930542,
+        "computility_tops": 4.5829291343688965,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_p7_ebqbz",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 42.240002,
+          "max_latency_us": 42.240002,
+          "min_latency_us": 42.240002,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-555fe1f9e237",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "planes": 2
+        },
+        "tag": "tileops",
+        "latency_us": 22.700001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 68.01089999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.4756269156932831,
+        "performance_tops": 0.5660869479179382,
+        "computility_tops": 9.204997062683105,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_s2bm1cxw",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 22.700001,
+          "max_latency_us": 22.700001,
+          "min_latency_us": 22.700001,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-4387e82f63ab",
+        "label": "cnn-feat-broadcast",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            16,
+            256,
+            56,
+            56
+          ],
+          "other_shape": [
+            256,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "planes": 2
+        },
+        "tag": "tileops",
+        "latency_us": 23.4,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 65.9764,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.9019391536712646,
+        "performance_tops": 2.1959550380706787,
+        "computility_tops": 4.607541084289551,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main__2fd0lc_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 23.4,
+          "max_latency_us": 23.4,
+          "min_latency_us": 23.4,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-a8a53c87d85d",
+        "label": "llama-7b-ffn",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            1024,
+            11008
+          ],
+          "other_shape": [
+            1024,
+            11008
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 62.040001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 83.0595,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.12505659461021423,
+        "performance_tops": 0.18177485466003418,
+        "computility_tops": 4.60590934753418,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_4t14chxn",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 62.040001,
+          "max_latency_us": 62.040001,
+          "min_latency_us": 62.040001,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-138a7b70301d",
+        "label": "llama-7b-ffn",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            1024,
+            11008
+          ],
+          "other_shape": [
+            1024,
+            11008
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 33.919998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 75.9584,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.2501128315925598,
+        "performance_tops": 0.3324679136276245,
+        "computility_tops": 9.20346450805664,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_zpn23fv3",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 33.919998,
+          "max_latency_us": 33.919998,
+          "min_latency_us": 33.919998,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-408570e1b6bc",
+        "label": "llama-7b-ffn",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            1024,
+            11008
+          ],
+          "other_shape": [
+            1024,
+            11008
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 32.639999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 78.9371,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.0001107454299927,
+        "performance_tops": 1.3815529346466064,
+        "computility_tops": 4.607477188110352,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_dgooeqka",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 32.639999,
+          "max_latency_us": 32.639999,
+          "min_latency_us": 32.639999,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-8d2d44332a73",
+        "label": "linear-bias",
+        "params": {
+          "dtype": "float32",
+          "input_shape": [
+            1024,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 15.84,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 60.5834,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.2598150968551636,
+        "performance_tops": 0.27545857429504395,
+        "computility_tops": 4.436214923858643,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_snxck342",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 15.84,
+          "max_latency_us": 15.84,
+          "min_latency_us": 15.84,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-725f4e69acda",
+        "label": "linear-bias",
+        "params": {
+          "dtype": "float16",
+          "input_shape": [
+            1024,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 8.68,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 55.2793,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.5098702907562256,
+        "performance_tops": 0.49324238300323486,
+        "computility_tops": 8.686224937438965,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_aypkztm4",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 8.68,
+          "max_latency_us": 8.68,
+          "min_latency_us": 8.68,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AddFwdOp",
+        "case_id": "AddFwdOp-05d572760e97",
+        "label": "linear-bias",
+        "params": {
+          "dtype": "bfloat16",
+          "input_shape": [
+            1024,
+            4096
+          ],
+          "other_shape": [
+            1,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 9.36,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 51.2633,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.0083839893341064,
+        "performance_tops": 1.801736831665039,
+        "computility_tops": 4.584338665008545,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/p0a_AddFwdOp_20261117b/20261117_152252_308638_AddFwdOp/artifacts/msprof/main_4avtobyt",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 9.36,
+          "max_latency_us": 9.36,
+          "min_latency_us": 9.36,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "AddFwdOp",
+      "family": "elementwise",
+      "cases": 25,
+      "passed": 25,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 11,
+      "ratio_range": {
+        "min": 51.2633,
+        "max": 83.0595
+      }
+    }
+  ],
+  "warnings": []
+}

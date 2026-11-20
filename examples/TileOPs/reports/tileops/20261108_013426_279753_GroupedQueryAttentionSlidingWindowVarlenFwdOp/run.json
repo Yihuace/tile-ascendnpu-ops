@@ -1,0 +1,1008 @@
+{
+  "schema_version": 2,
+  "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+    "generated_at": "2026-11-08T02:53:40.144982+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": "9cfae94c0d10200c1795c16cd9c2e5a504fd63db",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_grouped_query_attention_sliding_window_varlen.py",
+    "benchmark_file": "benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": "per-case pytest (26 processes)",
+      "benchmark": "per-case pytest (10 processes)"
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    },
+    "case_granularity": "one process per pytest id (single-process multi-trace deadlock)"
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-08T02:53:40.144982+08:00",
+      "evaluation_scope": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+      "git_commit": "9cfae94c0d10200c1795c16cd9c2e5a504fd63db",
+      "correctness_target": "tests/ops/test_grouped_query_attention_sliding_window_varlen.py",
+      "benchmark_target": "benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 26,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 26,
+    "passed_cases": 26,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 8,
+    "msprof_case_count": 8,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 26,
+    "passed": 26,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[smoke-fwd-fp16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[smoke-fwd-fp16]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.17,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[smoke-fwd-bf16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[smoke-fwd-bf16]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 49.878,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "9.77e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q2-seqlens_k2-8-2-64-True-128--1-dtype2]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q2-seqlens_k2-8-2-64-True-128--1-dtype2]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.551,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q3-seqlens_k3-8-2-64-False--1--1-dtype3]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q3-seqlens_k3-8-2-64-False--1--1-dtype3]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.9,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "1.53e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q4-seqlens_k4-8-2-64-False-64-64-dtype4]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q4-seqlens_k4-8-2-64-False-64-64-dtype4]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.6,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "3.05e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q5-seqlens_k5-8-2-64-True--1--1-dtype5]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q5-seqlens_k5-8-2-64-True--1--1-dtype5]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.389,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "1.53e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q6-seqlens_k6-8-2-64-True-128--1-dtype6]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q6-seqlens_k6-8-2-64-True-128--1-dtype6]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.324,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "3.05e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q7-seqlens_k7-8-2-64-False-64-64-dtype7]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q7-seqlens_k7-8-2-64-False-64-64-dtype7]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.371,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "3.05e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q8-seqlens_k8-8-2-64-False-64-64-dtype8]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q8-seqlens_k8-8-2-64-False-64-64-dtype8]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.955,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "2.44e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q9-seqlens_k9-8-8-64-True--1--1-dtype9]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q9-seqlens_k9-8-8-64-True--1--1-dtype9]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.517,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q10-seqlens_k10-16-1-64-True--1--1-dtype10]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q10-seqlens_k10-16-1-64-True--1--1-dtype10]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.909,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[3-seqlens_q11-seqlens_k11-8-2-64-True--1--1-dtype11]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[3-seqlens_q11-seqlens_k11-8-2-64-True--1--1-dtype11]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 51.02,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "1.22e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q12-seqlens_k12-8-2-64-False--1-64-dtype12]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q12-seqlens_k12-8-2-64-False--1-64-dtype12]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.654,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "3.05e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q13-seqlens_k13-8-2-64-True-0--1-dtype13]",
+        "name": "test_gqa_sliding_window_varlen_fwd_op[2-seqlens_q13-seqlens_k13-8-2-64-True-0--1-dtype13]",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen",
+        "time_s": 50.995,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics::test_total_flops_causal_wl0",
+        "name": "test_total_flops_causal_wl0",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics",
+        "time_s": 0.007,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics::test_total_flops_causal_finite_window",
+        "name": "test_total_flops_causal_finite_window",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics",
+        "time_s": 0.008,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics::test_total_flops_kvcache_offset",
+        "name": "test_total_flops_kvcache_offset",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics",
+        "time_s": 0.007,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics::test_total_memory_gqa",
+        "name": "test_total_memory_gqa",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics",
+        "time_s": 0.008,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics::test_eval_roofline_matches_metrics",
+        "name": "test_eval_roofline_matches_metrics",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpMetrics",
+        "time_s": 0.008,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation::test_invalid_window_size_left_raises",
+        "name": "test_invalid_window_size_left_raises",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation",
+        "time_s": 0.007,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation::test_invalid_window_size_right_raises",
+        "name": "test_invalid_window_size_right_raises",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation",
+        "time_s": 0.007,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation::test_heads_not_divisible_raises",
+        "name": "test_heads_not_divisible_raises",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation",
+        "time_s": 0.007,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation::test_dtype_mismatch_raises",
+        "name": "test_dtype_mismatch_raises",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation",
+        "time_s": 1.48,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation::test_cpu_tensor_raises",
+        "name": "test_cpu_tensor_raises",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation",
+        "time_s": 0.008,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation::test_cu_seqlens_dtype_raises",
+        "name": "test_cu_seqlens_dtype_raises",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation",
+        "time_s": 1.488,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation::test_max_seqlen_q_too_small_raises",
+        "name": "test_max_seqlen_q_too_small_raises",
+        "classname": "tests.ops.test_grouped_query_attention_sliding_window_varlen.TestGroupedQueryAttentionSlidingWindowVarlenFwdOpValidation",
+        "time_s": 1.527,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[gqa-sw-varlen-fwd-smoke-float16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[gqa-sw-varlen-fwd-smoke-float16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 123.725,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "58.9612"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[gqa-sw-varlen-fwd-smoke-bfloat16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[gqa-sw-varlen-fwd-smoke-bfloat16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 125.611,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "58.1212"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-short-w256-float16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-short-w256-float16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 124.387,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "314.8263"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-short-w256-bfloat16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-short-w256-bfloat16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 125.274,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "308.9062"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-long-w1024-float16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-long-w1024-float16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 125.41,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "1774.7355"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-long-w1024-bfloat16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-8b-long-w1024-bfloat16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 124.01,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "1787.2557"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-short-w256-float16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-short-w256-float16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 124.363,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "570.7314"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-short-w256-bfloat16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-short-w256-bfloat16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 123.959,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "569.8914"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-long-w1024-float16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-long-w1024-float16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 124.596,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "3490.6899"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen::test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-long-w1024-bfloat16]",
+        "name": "test_gqa_sliding_window_varlen_fwd_bench[llama-3.1-70b-long-w1024-bfloat16]",
+        "classname": "benchmarks.ops.bench_grouped_query_attention_sliding_window_varlen",
+        "time_s": 125.207,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+          "op_module": "tileops.ops.attention.grouped_query_attention_sliding_window_varlen",
+          "tileops_latency_us": "3508.1501"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": null,
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-b0e4e6267c86",
+        "label": "llama-3.1-8b-short-w256",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 32,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "seqlens_q": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "wl": 256,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 314.826294,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 14.0492,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1046.9857177734375,
+        "performance_tops": 42.06493377685547,
+        "computility_tops": 299.4118347167969,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic__c1txjgg",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 314.826294,
+          "max_latency_us": 314.826294,
+          "min_latency_us": 314.826294,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-c42935f41bd4",
+        "label": "llama-3.1-8b-short-w256",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 32,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "seqlens_q": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "wl": 256,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 308.906189,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 14.3315,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1047.9649658203125,
+        "performance_tops": 42.911190032958984,
+        "computility_tops": 299.417724609375,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_8wrccqc_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 308.906189,
+          "max_latency_us": 308.906189,
+          "min_latency_us": 308.906189,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-87e2aca33b14",
+        "label": "llama-3.1-8b-long-w1024",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 32,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "seqlens_q": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "wl": 1024,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 1774.735474,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 24.7343,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2351.43115234375,
+        "performance_tops": 74.06121063232422,
+        "computility_tops": 299.42767333984375,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_djj7v1kb",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 1774.735474,
+          "max_latency_us": 1774.735474,
+          "min_latency_us": 1774.735474,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-78a67f644b76",
+        "label": "llama-3.1-8b-long-w1024",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 32,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "seqlens_q": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "wl": 1024,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 1787.255737,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 24.5835,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2266.02587890625,
+        "performance_tops": 73.6116943359375,
+        "computility_tops": 299.4350280761719,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_fhts9p67",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 1787.255737,
+          "max_latency_us": 1787.255737,
+          "min_latency_us": 1787.255737,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-4f6f5ee9cf7f",
+        "label": "llama-3.1-70b-short-w256",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 64,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "seqlens_q": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "wl": 256,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 570.731384,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 15.499199999999998,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1258.979736328125,
+        "performance_tops": 46.406612396240234,
+        "computility_tops": 299.413330078125,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_oxala2to",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 570.731384,
+          "max_latency_us": 570.731384,
+          "min_latency_us": 570.731384,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-f76d12797acf",
+        "label": "llama-3.1-70b-short-w256",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 64,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "seqlens_q": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "wl": 256,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 569.891418,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 15.536200000000001,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1260.1573486328125,
+        "performance_tops": 46.51848220825195,
+        "computility_tops": 299.4191589355469,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_53pu_yuj",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 569.891418,
+          "max_latency_us": 569.891418,
+          "min_latency_us": 569.891418,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-1575d6eebd41",
+        "label": "llama-3.1-70b-long-w1024",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "float16",
+          "heads": 64,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "seqlens_q": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "wl": 1024,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 3490.689941,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 25.150699999999997,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1579.61181640625,
+        "performance_tops": 75.30818939208984,
+        "computility_tops": 299.4278869628906,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic_kcgmepup",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 3490.689941,
+          "max_latency_us": 3490.689941,
+          "min_latency_us": 3490.689941,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+        "case_id": "GroupedQueryAttentionSlidingWindowVarlenFwdOp-2bf46b6c5bbf",
+        "label": "llama-3.1-70b-long-w1024",
+        "params": {
+          "batch": 4,
+          "dim": 128,
+          "dtype": "bfloat16",
+          "heads": 64,
+          "heads_kv": 8,
+          "is_causal": true,
+          "seqlens_k": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "seqlens_q": [
+            2048,
+            2048,
+            2048,
+            2048
+          ],
+          "wl": 1024,
+          "wr": -1
+        },
+        "config": {
+          "block_m": 64,
+          "block_n": 64,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 3508.150146,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 25.0485,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1571.2197265625,
+        "performance_tops": 75.00399017333984,
+        "computility_tops": 299.4352111816406,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs/reports/tileops/20261108_013426_279753_GroupedQueryAttentionSlidingWindowVarlenFwdOp/artifacts/msprof/_gqa_sw_fwd_varlen_main_mix_aic__5d3fwty",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gqa_sw_fwd_varlen_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_gqa_sw_fwd_varlen_main"
+          ],
+          "kernel_name_requested": "_gqa_sw_fwd_varlen_main",
+          "kernel_name_resolved": "_gqa_sw_fwd_varlen_main",
+          "latency_us": 3508.150146,
+          "max_latency_us": 3508.150146,
+          "min_latency_us": 3508.150146,
+          "op_name": "_gqa_sw_fwd_varlen_main_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "GroupedQueryAttentionSlidingWindowVarlenFwdOp",
+      "family": "attention",
+      "cases": 26,
+      "passed": 26,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.00014168571428571424,
+      "max_abs_err": 0.000977,
+      "performance_cases": 8,
+      "ratio_range": {
+        "min": 14.0492,
+        "max": 25.150699999999997
+      }
+    }
+  ],
+  "warnings": []
+}

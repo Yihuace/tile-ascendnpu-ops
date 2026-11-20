@@ -1,0 +1,35 @@
+{
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_llama31_bench",
+  "target_kernel_name": "main",
+  "note": "Shared-kernel adoption: _make_rope_neox_{1d,2d} are byte-identical across RopeNeoxOp / RopeLongRopeOp / RopeLlama31Op; tuned once in rope_neox/perf_opt and adopted here. Workloads identical to a rope_neox measured workload reuse the same msprof measurement. | Split: 2d kernel tuning set (see perf_records_2d.jsonl; full history in perf_records_all.audit.jsonl).",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_rope.py::test_rope_llama31_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/position_encoding/rope_llama31/rope_llama31_kernel/_make_rope_neox_2d.py::_make_rope_neox_2d::main",
+      "workload_id": "longrope-2d-b1-s8k-h32-d128-fp16",
+      "label": "longrope-2d-b1-s8k-h32-d128-fp16",
+      "marks": [
+        "full"
+      ],
+      "shape": [
+        1,
+        8192,
+        32,
+        128
+      ],
+      "dtype": "float16",
+      "params": {
+        "layout": "2d",
+        "shape": [
+          1,
+          8192,
+          32,
+          128
+        ]
+      },
+      "kind": "tune",
+      "tuning_status": "winner_merged",
+      "reason": "shared tuning: kernel byte-identical to rope_neox perf_opt (sha256 ab22c025); measured 211.74 -> 81.43 us"
+    }
+  ]
+}

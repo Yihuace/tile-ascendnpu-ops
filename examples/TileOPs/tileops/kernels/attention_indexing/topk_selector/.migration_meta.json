@@ -1,0 +1,26 @@
+{
+  "op_name": "TopkSelectorOp",
+  "op_slug": "topk_selector",
+  "family": "attention_indexing",
+  "gpu_repo_root": "/tmp/tops/TileOPs-main",
+  "kernel_class_name": "TopkSelectorKernel",
+  "op_class_name": "TopkSelectorOp",
+  "test_path": "tests/ops/test_topk_selector.py",
+  "test_slug": "topk_selector",
+  "bench_path": "benchmarks/ops/bench_topk_selector.py",
+  "bench_slug": "topk_selector",
+  "wrapper_path": "tileops/kernels/attention_indexing/topk_selector/topk_selector.py",
+  "extracted_file": "tileops/kernels/attention_indexing/topk_selector/_topk_selector_kernels.py",
+  "extracted_functions": [
+    "_topk_count_kernel",
+    "_topk_select_kernel"
+  ],
+  "algorithm_redesigned": true,
+  "redesign_reason": "the GPU kernel is a CUDA-thread radix-select needing threads/shared-memory atomics/CUDA barriers/dynamic shapes, none of which exist on npuir; the NPU design is two simple kernels (count, select) plus a host-side threshold bisection",
+  "architecture_constraints": [
+    "a kernel holding the compaction plus >=2 unrolled bisection bodies segfaults the build",
+    "multi-block GM writes lose rows: T.Kernel(M) dropped half the rows while T.Kernel(1) + a serial row loop was correct, so a single block is used"
+  ],
+  "workload_scale_deviation": "the GPU manifest full workload is seq_len=32768 x seq_len_kv=65536 with topk up to 1024; the single-block serial architecture is correct but too slow for that scale, so the manifest workloads are sized to what the delivered kernel runs to completion",
+  "created_at": "2026-10-16T00:00:00Z"
+}

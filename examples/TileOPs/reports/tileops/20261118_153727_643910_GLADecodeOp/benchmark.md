@@ -1,0 +1,23 @@
+# NPU Benchmark Report
+Generated: 2026-11-18 15:40:10
+
+## Environment
+
+- **Torch version**: 2.7.1+cpu
+- **torch_npu version**: 2.7.1.post4
+- **NPU model**: Ascend910B3
+- **NPU count**: 1
+- **Profiling mode**: msprof
+
+## GLADecodeOp
+
+### tileops
+
+| Label | Latency (us) | Ratio (%) | AI(Ops/Byte) | Bandwidth(TB/s) | Computility(TOps/s) | Perf(TOps/s) | artifact_dir | msprof | prof_mode | B | DK | DV | H | scale | config | dtype |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| smoke-b2-h4-d64 | 3.8200 | 1.5416 | 3.7965 | 1.7500 | 4.2994 | 0.0663 | /tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_bkx2_d_9 | {'captured_op_count': 1, 'captured_op_names': ['_gla_decode_transit_main'], 'kernel_name_attempts': ['_gla_decode_transit_main'], 'kernel_name_requested': '_gla_decode_transit_main', 'kernel_name_resolved': '_gla_decode_transit_main', 'kernel_names': None, 'latency_us': 3.82, 'max_latency_us': 3.82, 'min_latency_us': 3.82, 'multi_launch': False, 'op_name': '_gla_decode_transit_main', 'sample_count': 1} | msprof | 2 | 64 | 64 | 4 | 0.125 | {'k_tile': 32} | bfloat16 |
+| serving-b1-h8 | 3.5000 | 4.3489 | 2.5786 | 1.7500 | 8.4449 | 0.1962 | /tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_8w2jyrhn | {'captured_op_count': 1, 'captured_op_names': ['_gla_decode_algo1_1h_main'], 'kernel_name_attempts': ['_gla_decode_algo1_1h_main'], 'kernel_name_requested': '_gla_decode_algo1_1h_main', 'kernel_name_resolved': '_gla_decode_algo1_1h_main', 'kernel_names': None, 'latency_us': 3.5, 'max_latency_us': 3.5, 'min_latency_us': 3.5, 'multi_launch': False, 'op_name': '_gla_decode_algo1_1h_main', 'sample_count': 1} | msprof | 1 | 128 | 128 | 8 | 0.08838834764831845 | {'k_tile': 32} | bfloat16 |
+| serving-b1-h32 | 5.2400 | 11.6149 | 2.5795 | 1.7500 | 8.4449 | 0.5243 | /tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_egdi35xn | {'captured_op_count': 1, 'captured_op_names': ['_gla_decode_algo1_1h_main'], 'kernel_name_attempts': ['_gla_decode_algo1_1h_main'], 'kernel_name_requested': '_gla_decode_algo1_1h_main', 'kernel_name_resolved': '_gla_decode_algo1_1h_main', 'kernel_names': None, 'latency_us': 5.24, 'max_latency_us': 5.24, 'min_latency_us': 5.24, 'multi_launch': False, 'op_name': '_gla_decode_algo1_1h_main', 'sample_count': 1} | msprof | 1 | 128 | 128 | 32 | 0.08838834764831845 | {'k_tile': 32} | bfloat16 |
+| serving-b1-h64 | 5.9600 | 20.4223 | 2.5787 | 1.7500 | 8.4533 | 0.9216 | /tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_1qkw4glu | {'captured_op_count': 1, 'captured_op_names': ['_gla_decode_algo1_1h_main'], 'kernel_name_attempts': ['_gla_decode_algo1_1h_main'], 'kernel_name_requested': '_gla_decode_algo1_1h_main', 'kernel_name_resolved': '_gla_decode_algo1_1h_main', 'kernel_names': None, 'latency_us': 5.96, 'max_latency_us': 5.96, 'min_latency_us': 5.96, 'multi_launch': False, 'op_name': '_gla_decode_algo1_1h_main', 'sample_count': 1} | msprof | 1 | 128 | 128 | 64 | 0.08838834764831845 | {'k_tile': 32} | bfloat16 |
+| serving-b8-h32 | 13.4600 | 36.1698 | 2.5899 | 1.7500 | 8.3580 | 1.6393 | /tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_68vv2crl | {'captured_op_count': 1, 'captured_op_names': ['_gla_decode_algo1_1h_main'], 'kernel_name_attempts': ['_gla_decode_algo1_1h_main'], 'kernel_name_requested': '_gla_decode_algo1_1h_main', 'kernel_name_resolved': '_gla_decode_algo1_1h_main', 'kernel_names': None, 'latency_us': 13.46, 'max_latency_us': 13.46, 'min_latency_us': 13.46, 'multi_launch': False, 'op_name': '_gla_decode_algo1_1h_main', 'sample_count': 1} | msprof | 8 | 128 | 128 | 32 | 0.08838834764831845 | {'k_tile': 32} | bfloat16 |
+| serving-b8-h64 | 20.8200 | 46.7668 | 2.5897 | 1.7500 | 8.3593 | 2.1195 | /tmp/opencode/reports_gla_r46/20261118_153727_643910_GLADecodeOp/artifacts/msprof/_gla_decode_algo1_1h_main_r24sjomx | {'captured_op_count': 1, 'captured_op_names': ['_gla_decode_algo1_1h_main'], 'kernel_name_attempts': ['_gla_decode_algo1_1h_main'], 'kernel_name_requested': '_gla_decode_algo1_1h_main', 'kernel_name_resolved': '_gla_decode_algo1_1h_main', 'kernel_names': None, 'latency_us': 20.82, 'max_latency_us': 20.82, 'min_latency_us': 20.82, 'multi_launch': False, 'op_name': '_gla_decode_algo1_1h_main', 'sample_count': 1} | msprof | 8 | 128 | 128 | 64 | 0.08838834764831845 | {'k_tile': 32} | bfloat16 |

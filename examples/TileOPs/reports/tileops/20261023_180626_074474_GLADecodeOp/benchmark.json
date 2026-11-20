@@ -1,0 +1,685 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-23T18:10:05.765170+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "GLADecodeOp",
+      "case_id": "GLADecodeOp-1b10120f6f5a",
+      "config": {
+        "k_tile": 32
+      },
+      "label": "smoke-b2-h4-d64",
+      "params": {
+        "B": 2,
+        "DK": 64,
+        "DV": 64,
+        "H": 4,
+        "dtype": "bfloat16",
+        "scale": 0.125
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.7965450286865234,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.299351215362549,
+        "Perf(TOps/s)": 0.06458775699138641,
+        "Ratio(%)": 1.5023,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_0iulr4gl",
+        "latency_us": 3.92,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 3.92,
+          "max_latency_us": 3.92,
+          "min_latency_us": 3.92,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.015023,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.01965,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.015023,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.015023,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.015023,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.015023,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.015023,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.015023,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.015023,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.015023,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.015023,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GLADecodeOp",
+      "case_id": "GLADecodeOp-624c6100e0dd",
+      "config": {
+        "k_tile": 32
+      },
+      "label": "serving-b1-h8",
+      "params": {
+        "B": 1,
+        "DK": 128,
+        "DV": 128,
+        "H": 8,
+        "dtype": "bfloat16",
+        "scale": 0.08838834764831845
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.63847279548645,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.447310924530029,
+        "Perf(TOps/s)": 0.14087484776973724,
+        "Ratio(%)": 3.1676,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_a1djcerk",
+        "latency_us": 6.84,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 6.84,
+          "max_latency_us": 6.84,
+          "min_latency_us": 6.84,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.044706,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.031676,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.031676,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.031676,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.031676,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.031676,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.031676,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GLADecodeOp",
+      "case_id": "GLADecodeOp-87e5c0c1bd86",
+      "config": {
+        "k_tile": 32
+      },
+      "label": "serving-b1-h32",
+      "params": {
+        "B": 1,
+        "DK": 128,
+        "DV": 128,
+        "H": 32,
+        "dtype": "bfloat16",
+        "scale": 0.08838834764831845
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.6397922039031982,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.447310924530029,
+        "Perf(TOps/s)": 0.4440478980541229,
+        "Ratio(%)": 9.9846,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_3go_iusj",
+        "latency_us": 8.68,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 8.68,
+          "max_latency_us": 8.68,
+          "min_latency_us": 8.68,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.140915,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.099846,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.099846,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.099846,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.099846,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.099846,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.099846,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GLADecodeOp",
+      "case_id": "GLADecodeOp-a152dc16af7b",
+      "config": {
+        "k_tile": 32
+      },
+      "label": "serving-b1-h64",
+      "params": {
+        "B": 1,
+        "DK": 128,
+        "DV": 128,
+        "H": 64,
+        "dtype": "bfloat16",
+        "scale": 0.08838834764831845
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.640979051589966,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.446211814880371,
+        "Perf(TOps/s)": 0.6148899793624878,
+        "Ratio(%)": 13.8295,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_vtyyknz4",
+        "latency_us": 12.54,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 12.54,
+          "max_latency_us": 12.54,
+          "min_latency_us": 12.54,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.195683,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.138295,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.138295,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.138295,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.138295,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.138295,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.138295,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GLADecodeOp",
+      "case_id": "GLADecodeOp-50d02b2e7b6d",
+      "config": {
+        "k_tile": 32
+      },
+      "label": "serving-b8-h32",
+      "params": {
+        "B": 8,
+        "DK": 128,
+        "DV": 128,
+        "H": 32,
+        "dtype": "bfloat16",
+        "scale": 0.08838834764831845
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.638545036315918,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.449166774749756,
+        "Perf(TOps/s)": 0.8170960545539856,
+        "Ratio(%)": 18.3651,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_x3ckszyr",
+        "latency_us": 37.720001,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 37.720001,
+          "max_latency_us": 37.720001,
+          "min_latency_us": 37.720001,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.259934,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.183651,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.183651,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.183651,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.183651,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.183651,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.183651,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GLADecodeOp",
+      "case_id": "GLADecodeOp-79b99814337f",
+      "config": {
+        "k_tile": 32
+      },
+      "label": "serving-b8-h64",
+      "params": {
+        "B": 8,
+        "DK": 128,
+        "DV": 128,
+        "H": 64,
+        "dtype": "bfloat16",
+        "scale": 0.08838834764831845
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.6384215354919434,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOPs/s)": 4.449339389801025,
+        "Perf(TOps/s)": 0.8871497511863708,
+        "Ratio(%)": 19.9389,
+        "advice": "latency bound:pipeline caused",
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_63ph5gx7",
+        "latency_us": 69.480003,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 69.480003,
+          "max_latency_us": 69.480003,
+          "min_latency_us": 69.480003,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.282231,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.199389,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.199389,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.199389,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.199389,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.199389,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.199389,
+            "title": "GM/L2"
+          }
+        ]
+      },
+      "tag": "tileops"
+    }
+  ]
+}

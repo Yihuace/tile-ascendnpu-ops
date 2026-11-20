@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-19T16:14:23.282587+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+      "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-3a63069a7739",
+      "config": {
+        "block_M": 128,
+        "block_N": 64,
+        "num_split": 4,
+        "num_stages": 2
+      },
+      "label": "single-token-page128",
+      "params": {
+        "batch": 1,
+        "dim": 128,
+        "dtype": "float16",
+        "heads": 16,
+        "is_causal": false,
+        "page_size": 128,
+        "seqlen_kv": 512,
+        "seqlen_q": 1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.5425372123718262,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.912757873535156,
+        "Perf(TOps/s)": 0.9167999625205994,
+        "Ratio(%)": 33.962599999999995,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_160151_272035_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/decode_vector_packed_34o6iq9a",
+        "latency_us": 7.04,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_attempts": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_requested": "decode_vector_packed",
+          "kernel_name_resolved": "decode_vector_packed",
+          "kernel_names": null,
+          "latency_us": 7.04,
+          "max_latency_us": 7.04,
+          "min_latency_us": 7.04,
+          "multi_launch": false,
+          "op_name": "decode_vector_packed",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+      "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-e227385bc4ce",
+      "config": {
+        "block_M": 128,
+        "block_N": 64,
+        "num_split": 4,
+        "num_stages": 2
+      },
+      "label": "batch2-page256",
+      "params": {
+        "batch": 2,
+        "dim": 64,
+        "dtype": "float16",
+        "heads": 8,
+        "is_causal": false,
+        "page_size": 256,
+        "seqlen_kv": 1024,
+        "seqlen_q": 1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.8334869146347046,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 5.191132545471191,
+        "Perf(TOps/s)": 1.0024986267089844,
+        "Ratio(%)": 31.244100000000003,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_160151_272035_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/decode_vector_packed_dtysyl5m",
+        "latency_us": 7.62,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_attempts": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_requested": "decode_vector_packed",
+          "kernel_name_resolved": "decode_vector_packed",
+          "kernel_names": null,
+          "latency_us": 7.62,
+          "max_latency_us": 7.62,
+          "min_latency_us": 7.62,
+          "multi_launch": false,
+          "op_name": "decode_vector_packed",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+      "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-886077985f85",
+      "config": {
+        "block_M": 128,
+        "block_N": 64,
+        "num_split": 4,
+        "num_stages": 2
+      },
+      "label": "longer-cache",
+      "params": {
+        "batch": 1,
+        "dim": 64,
+        "dtype": "float16",
+        "heads": 8,
+        "is_causal": false,
+        "page_size": 256,
+        "seqlen_kv": 1024,
+        "seqlen_q": 1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.8299336433410645,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 5.2112956047058105,
+        "Perf(TOps/s)": 0.6931549310684204,
+        "Ratio(%)": 21.645,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_160151_272035_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/decode_vector_packed_yj8vyi4r",
+        "latency_us": 5.5,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_attempts": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_requested": "decode_vector_packed",
+          "kernel_name_resolved": "decode_vector_packed",
+          "kernel_names": null,
+          "latency_us": 5.5,
+          "max_latency_us": 5.5,
+          "min_latency_us": 5.5,
+          "multi_launch": false,
+          "op_name": "decode_vector_packed",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp",
+      "case_id": "MultiHeadAttentionDecodePagedWithKVCacheFwdOp-5d2b4d56f611",
+      "config": {
+        "block_M": 128,
+        "block_N": 64,
+        "num_split": 4,
+        "num_stages": 2
+      },
+      "label": "shorter-cache",
+      "params": {
+        "batch": 1,
+        "dim": 64,
+        "dtype": "float16",
+        "heads": 8,
+        "is_causal": false,
+        "page_size": 256,
+        "seqlen_kv": 512,
+        "seqlen_q": 1
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.83024001121521,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 5.239970684051514,
+        "Perf(TOps/s)": 0.43626174330711365,
+        "Ratio(%)": 13.6208,
+        "artifact_dir": "/mnt/workspace/tilelang-ascend-npu-ops-20261119/examples/TileOPs/reports/tileops/20261119_160151_272035_MultiHeadAttentionDecodePagedWithKVCacheFwdOp/artifacts/msprof/decode_vector_packed_4nhrhwim",
+        "latency_us": 4.34,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_attempts": [
+            "decode_vector_packed"
+          ],
+          "kernel_name_requested": "decode_vector_packed",
+          "kernel_name_resolved": "decode_vector_packed",
+          "kernel_names": null,
+          "latency_us": 4.34,
+          "max_latency_us": 4.34,
+          "min_latency_us": 4.34,
+          "multi_launch": false,
+          "op_name": "decode_vector_packed",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

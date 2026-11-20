@@ -1,0 +1,868 @@
+{
+  "schema_version": 2,
+  "operator": "GLADecodeOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261023_180626_074474_GLADecodeOp",
+    "generated_at": "2026-10-23T18:10:11.357599+08:00",
+    "project_root": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs",
+    "git_commit": "60cfa4e4e811e9deaa895ae56181d9bc5be488c4",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_gla_decode.py",
+    "benchmark_file": "benchmarks/ops/bench_gla_decode.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_gla_decode.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_gla_decode.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-23T18:10:11.357599+08:00",
+      "evaluation_scope": "GLADecodeOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261023_180626_074474_GLADecodeOp",
+      "git_commit": "60cfa4e4e811e9deaa895ae56181d9bc5be488c4",
+      "correctness_target": "tests/ops/test_gla_decode.py",
+      "benchmark_target": "benchmarks/ops/bench_gla_decode.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.2+60cfa4e4e811e9deaa895ae56181d9bc5be488c4 (/mnt/workspace/tilelang-mlir-ascend@9309edb)",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 11,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 11,
+    "passed_cases": 11,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 6,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[smoke-d64-fp16]",
+        "name": "test_gla_decode[smoke-d64-fp16]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 9.153,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[smoke-d64-bf16]",
+        "name": "test_gla_decode[smoke-d64-bf16]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 7.066,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[serving-b1-h8]",
+        "name": "test_gla_decode[serving-b1-h8]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 4.491,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[serving-b1-h32]",
+        "name": "test_gla_decode[serving-b1-h32]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 4.395,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[serving-b8-h32]",
+        "name": "test_gla_decode[serving-b8-h32]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 4.483,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[f32-untiled]",
+        "name": "test_gla_decode[f32-untiled]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 6.977,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[small-k16]",
+        "name": "test_gla_decode[small-k16]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 4.37,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[rect-d128x64]",
+        "name": "test_gla_decode[rect-d128x64]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 4.396,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode[custom-scale]",
+        "name": "test_gla_decode[custom-scale]",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 4.456,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode_default_scale",
+        "name": "test_gla_decode_default_scale",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_gla_decode::test_gla_decode_eval_roofline",
+        "name": "test_gla_decode_eval_roofline",
+        "classname": "tests.ops.test_gla_decode",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[smoke-b2-h4-d64-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[smoke-b2-h4-d64-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 23.248,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "3.9200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b1-h8-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b1-h8-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 21.379,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "6.8400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b1-h32-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b1-h32-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 21.768,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "8.6800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b1-h64-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b1-h64-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 26.793,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "12.5400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b8-h32-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b8-h32-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 21.742,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "37.7200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_gla_decode::test_gla_decode_manifest_bench[serving-b8-h64-bfloat16]",
+        "name": "test_gla_decode_manifest_bench[serving-b8-h64-bfloat16]",
+        "classname": "benchmarks.ops.bench_gla_decode",
+        "time_s": 26.048,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "GLADecodeOp",
+          "op_module": "tileops.ops.linear_attention.gla_decode",
+          "tileops_latency_us": "69.4800"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-624c6100e0dd",
+        "label": "serving-b1-h8",
+        "params": {
+          "B": 1,
+          "DK": 128,
+          "DV": 128,
+          "H": 8,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 6.84,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 3.1676,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.63847279548645,
+        "performance_tops": 0.14087484776973724,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_a1djcerk",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.044706,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.031676,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.031676,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.031676,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.031676,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.031676,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.031676,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.031676,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 6.84,
+          "max_latency_us": 6.84,
+          "min_latency_us": 6.84,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-87e5c0c1bd86",
+        "label": "serving-b1-h32",
+        "params": {
+          "B": 1,
+          "DK": 128,
+          "DV": 128,
+          "H": 32,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 8.68,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.9846,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.6397922039031982,
+        "performance_tops": 0.4440478980541229,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_3go_iusj",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.140915,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.099846,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.099846,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.099846,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.099846,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.099846,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.099846,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.099846,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 8.68,
+          "max_latency_us": 8.68,
+          "min_latency_us": 8.68,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-a152dc16af7b",
+        "label": "serving-b1-h64",
+        "params": {
+          "B": 1,
+          "DK": 128,
+          "DV": 128,
+          "H": 64,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 12.54,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 13.8295,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.640979051589966,
+        "performance_tops": 0.6148899793624878,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_vtyyknz4",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.195683,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.138295,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.138295,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.138295,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.138295,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.138295,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.138295,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.138295,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 12.54,
+          "max_latency_us": 12.54,
+          "min_latency_us": 12.54,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-50d02b2e7b6d",
+        "label": "serving-b8-h32",
+        "params": {
+          "B": 8,
+          "DK": 128,
+          "DV": 128,
+          "H": 32,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 37.720001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 18.3651,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.638545036315918,
+        "performance_tops": 0.8170960545539856,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_x3ckszyr",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.259934,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.183651,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.183651,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.183651,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.183651,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.183651,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.183651,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.183651,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 37.720001,
+          "max_latency_us": 37.720001,
+          "min_latency_us": 37.720001,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "GLADecodeOp",
+        "case_id": "GLADecodeOp-79b99814337f",
+        "label": "serving-b8-h64",
+        "params": {
+          "B": 8,
+          "DK": 128,
+          "DV": 128,
+          "H": 64,
+          "dtype": "bfloat16",
+          "scale": 0.08838834764831845
+        },
+        "config": {
+          "k_tile": 32
+        },
+        "tag": "tileops",
+        "latency_us": 69.480003,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 19.9389,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.6384215354919434,
+        "performance_tops": 0.8871497511863708,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_180626_074474_GLADecodeOp/artifacts/msprof/_gla_decode_transit_main_63ph5gx7",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.282231,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.199389,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.199389,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.199389,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.199389,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.199389,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.199389,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.199389,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_attempts": [
+            "_gla_decode_transit_main"
+          ],
+          "kernel_name_requested": "_gla_decode_transit_main",
+          "kernel_name_resolved": "_gla_decode_transit_main",
+          "latency_us": 69.480003,
+          "max_latency_us": 69.480003,
+          "min_latency_us": 69.480003,
+          "op_name": "_gla_decode_transit_main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "GLADecodeOp",
+      "family": "linear_attention",
+      "cases": 11,
+      "passed": 11,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 3.1676,
+        "max": 19.9389
+      }
+    }
+  ],
+  "warnings": []
+}

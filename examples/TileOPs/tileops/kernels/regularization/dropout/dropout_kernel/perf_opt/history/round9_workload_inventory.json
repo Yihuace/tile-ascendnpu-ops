@@ -1,0 +1,152 @@
+{
+  "op_name": "DropoutOp",
+  "project": "dropout",
+  "op_dir": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_dropout.py::test_dropout_bench",
+  "workload_source": "workloads_to_params(\"DropoutOp\", include_extra=True) driven by examples/TileOPs/tileops/manifest/regularization.yaml",
+  "kernel_id": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel/perf_opt/_make_dropout_kernel.py::_make_dropout_kernel::main",
+  "target_kernel_name": "main",
+  "programming_mode": "Developer",
+  "device": "Ascend910B3 (20 AI core x 2 = 40 Vector core, UB 192 KB, CANN 9.0.0)",
+  "primary_metric": "msprof_op_task_duration_us",
+  "workloads": [
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_dropout.py::test_dropout_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel/perf_opt/_make_dropout_kernel.py::_make_dropout_kernel::main",
+      "workload_id": "smoke-dropout-1m-float32",
+      "label": "smoke-dropout-1m",
+      "marks": [],
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "float32",
+      "params": {
+        "p": 0.5,
+        "training": true,
+        "seed": 42,
+        "N": 1048576
+      },
+      "kind": "smoke",
+      "reason": "manifest workload label carries the standalone token 'smoke' (NPU manifest workload contract: first workload is the smoke case); excluded from performance baseline / winner selection / performance gate",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_dropout.py::test_dropout_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel/perf_opt/_make_dropout_kernel.py::_make_dropout_kernel::main",
+      "workload_id": "smoke-dropout-1m-float16",
+      "label": "smoke-dropout-1m",
+      "marks": [],
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "float16",
+      "params": {
+        "p": 0.5,
+        "training": true,
+        "seed": 42,
+        "N": 1048576
+      },
+      "kind": "smoke",
+      "reason": "manifest workload label carries the standalone token 'smoke'; precision-regression only",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_dropout.py::test_dropout_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel/perf_opt/_make_dropout_kernel.py::_make_dropout_kernel::main",
+      "workload_id": "smoke-dropout-1m-bfloat16",
+      "label": "smoke-dropout-1m",
+      "marks": [],
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "p": 0.5,
+        "training": true,
+        "seed": 42,
+        "N": 1048576
+      },
+      "kind": "smoke",
+      "reason": "manifest workload label carries the standalone token 'smoke'; precision-regression only",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_dropout.py::test_dropout_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel/perf_opt/_make_dropout_kernel.py::_make_dropout_kernel::main",
+      "workload_id": "tokens-1k-hidden-4k-fp16-float16",
+      "label": "tokens-1k-hidden-4k-fp16",
+      "marks": [],
+      "shape": [
+        1024,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "p": 0.5,
+        "training": true,
+        "seed": 42,
+        "N": 4194304
+      },
+      "kind": "tune",
+      "tuning_status": "no_gain",
+      "reason": "tune: R8 对照阶梯实测 msprof op Task Duration（fp16 4k）——a) bs8192 单链 21.949µs；b) bs4096 单链(Dev) 24.317；c) bs4096 双链交错(Expert) 25.879；d) bs4096 双链交错(Dev) 23.023；e) bs2048 四链交错(Dev) 24.677；f) bs4096 单链(Expert) 26.631。交错确实把 vec_time 降 4.4–4.6%（20.887→19.964），但 halve-tile 的 per-tile 开销(+2.37µs)与 Expert 固定开销(+2.3µs)更大，无任何形态低于 bs8192 单链；保持 R6 版本"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_dropout.py::test_dropout_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel/perf_opt/_make_dropout_kernel.py::_make_dropout_kernel::main",
+      "workload_id": "tokens-1k-hidden-10k-bf16-bfloat16",
+      "label": "tokens-1k-hidden-10k-bf16",
+      "marks": [],
+      "shape": [
+        1024,
+        10240
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "p": 0.5,
+        "training": true,
+        "seed": 42,
+        "N": 10485760
+      },
+      "kind": "tune",
+      "tuning_status": "no_gain",
+      "reason": "tune: R8 对照阶梯实测 msprof op Task Duration（fp16 4k）——a) bs8192 单链 21.949µs；b) bs4096 单链(Dev) 24.317；c) bs4096 双链交错(Expert) 25.879；d) bs4096 双链交错(Dev) 23.023；e) bs2048 四链交错(Dev) 24.677；f) bs4096 单链(Expert) 26.631。交错确实把 vec_time 降 4.4–4.6%（20.887→19.964），但 halve-tile 的 per-tile 开销(+2.37µs)与 Expert 固定开销(+2.3µs)更大，无任何形态低于 bs8192 单链；保持 R6 版本"
+    },
+    {
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_dropout.py::test_dropout_bench",
+      "kernel_id": "examples/TileOPs/tileops/kernels/regularization/dropout/dropout_kernel/perf_opt/_make_dropout_kernel.py::_make_dropout_kernel::main",
+      "workload_id": "tokens-1k-hidden-4k-fp32-float32",
+      "label": "tokens-1k-hidden-4k-fp32",
+      "marks": [],
+      "shape": [
+        1024,
+        4096
+      ],
+      "dtype": "float32",
+      "params": {
+        "p": 0.5,
+        "training": true,
+        "seed": 42,
+        "N": 4194304
+      },
+      "kind": "tune",
+      "tuning_status": "no_gain",
+      "reason": "tune: R8 对照阶梯实测 msprof op Task Duration（fp16 4k）——a) bs8192 单链 21.949µs；b) bs4096 单链(Dev) 24.317；c) bs4096 双链交错(Expert) 25.879；d) bs4096 双链交错(Dev) 23.023；e) bs2048 四链交错(Dev) 24.677；f) bs4096 单链(Expert) 26.631。交错确实把 vec_time 降 4.4–4.6%（20.887→19.964），但 halve-tile 的 per-tile 开销(+2.37µs)与 Expert 固定开销(+2.3µs)更大，无任何形态低于 bs8192 单链；保持 R6 版本"
+    }
+  ],
+  "round": 8,
+  "tuned_revision": {
+    "file": "perf_opt/_make_dropout_kernel.py",
+    "sha256": "c3f71a95854ca1711d7ab8f34908f5e4a8a54d19dc406b0566ff2a9731962572",
+    "single_point_change": "none (R8: Expert 2-chain interleave / tile-halving ladder all slower than bs=8192 single chain; R6 file kept)",
+    "block_size": {
+      "float32": 8192,
+      "float16": 8192,
+      "bfloat16": 8192
+    },
+    "round": 8
+  }
+}

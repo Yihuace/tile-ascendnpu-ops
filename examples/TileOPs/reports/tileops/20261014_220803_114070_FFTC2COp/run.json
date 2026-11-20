@@ -1,0 +1,428 @@
+{
+  "schema_version": 2,
+  "operator": "FFTC2COp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261014_220803_114070_FFTC2COp",
+    "generated_at": "2026-10-14T22:11:09.641647+08:00",
+    "project_root": "/home/developer/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "a2357253662babf317ada194080078f928d155b3",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_fft.py",
+    "benchmark_file": "benchmarks/ops/bench_fft.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_fft.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_fft.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-14T22:11:09.641647+08:00",
+      "evaluation_scope": "FFTC2COp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261014_220803_114070_FFTC2COp",
+      "git_commit": "a2357253662babf317ada194080078f928d155b3",
+      "correctness_target": "tests/ops/test_fft.py",
+      "benchmark_target": "benchmarks/ops/bench_fft.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 9,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 9,
+    "passed_cases": 7,
+    "failed_cases": 0,
+    "pass_rate": 0.7777777777777778,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 4,
+    "benchmark_failed": 0,
+    "case_count": 3,
+    "msprof_case_count": 3,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 7,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 2,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[64-dtype0-batch_shape0]",
+        "name": "test_fft_c2c[64-dtype0-batch_shape0]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 2.753,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "max_abs_err": "3.93e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[64-dtype1-batch_shape1]",
+        "name": "test_fft_c2c[64-dtype1-batch_shape1]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 0.04,
+        "outcome": "skipped",
+        "message": "complex128 unsupported on NPU/npuir (CG-2026-0019: no complex dtype + no fp64 vector elementwise ops)",
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[64-dtype2-batch_shape2]",
+        "name": "test_fft_c2c[64-dtype2-batch_shape2]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 0.937,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "max_abs_err": "4.86e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[128-dtype3-batch_shape3]",
+        "name": "test_fft_c2c[128-dtype3-batch_shape3]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 1.092,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "max_abs_err": "9.54e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[256-dtype4-batch_shape4]",
+        "name": "test_fft_c2c[256-dtype4-batch_shape4]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 1.291,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "max_abs_err": "1.01e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[512-dtype5-batch_shape5]",
+        "name": "test_fft_c2c[512-dtype5-batch_shape5]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 1.552,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "max_abs_err": "1.57e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[1024-dtype6-batch_shape6]",
+        "name": "test_fft_c2c[1024-dtype6-batch_shape6]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 1.814,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "max_abs_err": "2.41e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[1024-dtype7-batch_shape7]",
+        "name": "test_fft_c2c[1024-dtype7-batch_shape7]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 1.792,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "max_abs_err": "3.10e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fft::test_fft_c2c[128-dtype8-batch_shape8]",
+        "name": "test_fft_c2c[128-dtype8-batch_shape8]",
+        "classname": "tests.ops.test_fft",
+        "time_s": 0.006,
+        "outcome": "skipped",
+        "message": "complex128 unsupported on NPU/npuir (CG-2026-0019: no complex dtype + no fp64 vector elementwise ops)",
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 4,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_fft::test_fft_bench[fft-64-c64-smoke-complex64]",
+        "name": "test_fft_bench[fft-64-c64-smoke-complex64]",
+        "classname": "benchmarks.ops.bench_fft",
+        "time_s": 45.269,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "tileops_latency_us": "7.1800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fft::test_fft_bench[fft-4k-c64-unbatched-complex64]",
+        "name": "test_fft_bench[fft-4k-c64-unbatched-complex64]",
+        "classname": "benchmarks.ops.bench_fft",
+        "time_s": 47.323,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "tileops_latency_us": "717.8000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fft::test_fft_bench[fft-4k-c64-b64-complex64]",
+        "name": "test_fft_bench[fft-4k-c64-b64-complex64]",
+        "classname": "benchmarks.ops.bench_fft",
+        "time_s": 47.066,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FFTC2COp",
+          "op_module": "tileops.ops.spectral.fft_c2c",
+          "tileops_latency_us": "1496.6801"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fft::test_fft_bench[fft-4k-c128-b64-complex128]",
+        "name": "test_fft_bench[fft-4k-c128-b64-complex128]",
+        "classname": "benchmarks.ops.bench_fft",
+        "time_s": 0.242,
+        "outcome": "skipped",
+        "message": "complex128 unsupported on NPU/npuir (CG-2026-0019: no complex dtype + no fp64 vector elementwise ops)",
+        "properties": {}
+      }
+    ]
+  },
+  "performance": {
+    "source": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "FFTC2COp",
+        "case_id": "FFTC2COp-8df20a2ae2fc",
+        "label": "fft-64-c64-smoke",
+        "params": {
+          "batch_shape": [],
+          "dtype": "complex64",
+          "n": 64,
+          "shape": [
+            64
+          ]
+        },
+        "config": {
+          "block_size": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 7.18,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.0102,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.10000000149011612,
+        "performance_tops": 1.7827298506745137e-05,
+        "computility_tops": 2.303999900817871,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/artifacts/msprof/main_kvst5pt9",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 7.18,
+          "max_latency_us": 7.18,
+          "min_latency_us": 7.18,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FFTC2COp",
+        "case_id": "FFTC2COp-f60eb3b30f63",
+        "label": "fft-4k-c64-unbatched",
+        "params": {
+          "batch_shape": [],
+          "dtype": "complex64",
+          "n": 4096,
+          "shape": [
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 717.799988,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.0033000000000000004,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.09908536821603775,
+        "performance_tops": 5.795486231363611e-06,
+        "computility_tops": 2.303999900817871,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/artifacts/msprof/main_gsoxfqmv",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 717.799988,
+          "max_latency_us": 717.799988,
+          "min_latency_us": 717.799988,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FFTC2COp",
+        "case_id": "FFTC2COp-83259322437e",
+        "label": "fft-4k-c64-b64",
+        "params": {
+          "batch_shape": [
+            64
+          ],
+          "dtype": "complex64",
+          "n": 4096,
+          "shape": [
+            64,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 1496.680054,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.0804,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 0.12645146250724792,
+        "performance_tops": 0.00017788705008570105,
+        "computility_tops": 2.303999900817871,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261014_220803_114070_FFTC2COp/artifacts/msprof/main_9o1wd2vh",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 1496.680054,
+          "max_latency_us": 1496.680054,
+          "min_latency_us": 1496.680054,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "FFTC2COp",
+      "family": "spectral",
+      "cases": 9,
+      "passed": 7,
+      "failed": 0,
+      "pass_rate": 0.7777777777777778,
+      "avg_max_abs_err": 1.4175714285714286e-05,
+      "max_abs_err": 3.1e-05,
+      "performance_cases": 3,
+      "ratio_range": {
+        "min": 0.0033000000000000004,
+        "max": 0.0804
+      }
+    }
+  ],
+  "warnings": [
+    "FFTC2COp/FFTC2COp-2399f4b212b8: missing tileops candidate record",
+    "FFTC2COp/FFTC2COp-45b7f253137e: missing tileops candidate record",
+    "FFTC2COp/FFTC2COp-ae4a94f2c683: missing tileops candidate record"
+  ]
+}

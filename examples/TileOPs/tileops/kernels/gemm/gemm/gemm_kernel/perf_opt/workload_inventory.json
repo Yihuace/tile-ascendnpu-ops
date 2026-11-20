@@ -1,0 +1,334 @@
+{
+  "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+  "benchmark_manifest": "examples/TileOPs/tileops/manifest/gemm.yaml::GemmOp.workloads",
+  "target_kernel_name": "main",
+  "workloads": [
+    {
+      "workload_id": "gemm-smoke-nt-128-float16",
+      "label": "gemm-smoke-nt-128",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "m": 128,
+        "n": 128,
+        "k": 128
+      },
+      "dtype": "float16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "smoke",
+      "reason": "manifest label gemm-smoke-nt-128 contains standalone 'smoke' token; precision regression only",
+      "precision_pass": true,
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "gemm-smoke-nt-128-bfloat16",
+      "label": "gemm-smoke-nt-128",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "m": 128,
+        "n": 128,
+        "k": 128
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "smoke",
+      "reason": "manifest label gemm-smoke-nt-128 contains standalone 'smoke' token; precision regression only",
+      "precision_pass": true,
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "square-1k-nn-float16",
+      "label": "square-1k-nn",
+      "marks": [],
+      "shape": {
+        "m": 1024,
+        "n": 1024,
+        "k": 1024
+      },
+      "dtype": "float16",
+      "params": {
+        "trans_a": false,
+        "trans_b": false
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 35.74 -> 19.12 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "square-1k-nn-bfloat16",
+      "label": "square-1k-nn",
+      "marks": [],
+      "shape": {
+        "m": 1024,
+        "n": 1024,
+        "k": 1024
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": false
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 35.82 -> 19.04 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "ds-v3-decode-gate-up-bfloat16",
+      "label": "ds-v3-decode-gate-up",
+      "marks": [],
+      "shape": {
+        "m": 128,
+        "n": 2112,
+        "k": 7168
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 154.40 -> 55.64 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "ds-v3-decode-down-bfloat16",
+      "label": "ds-v3-decode-down",
+      "marks": [],
+      "shape": {
+        "m": 128,
+        "n": 7168,
+        "k": 2048
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 75.42 -> 38.08 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "ds-v3-prefill-gate-up-bfloat16",
+      "label": "ds-v3-prefill-gate-up",
+      "marks": [],
+      "shape": {
+        "m": 4096,
+        "n": 2112,
+        "k": 7168
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 1937.68 -> 718.69 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "ds-v3-prefill-down-bfloat16",
+      "label": "ds-v3-prefill-down",
+      "marks": [],
+      "shape": {
+        "m": 4096,
+        "n": 7168,
+        "k": 2048
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 1546.63 -> 642.07 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "ds-v3-prefill-attn-proj-float16",
+      "label": "ds-v3-prefill-attn-proj",
+      "marks": [],
+      "shape": {
+        "m": 4096,
+        "n": 4096,
+        "k": 7168
+      },
+      "dtype": "float16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 3003.06 -> 1199.60 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "ds-v3-prefill-attn-proj-bfloat16",
+      "label": "ds-v3-prefill-attn-proj",
+      "marks": [],
+      "shape": {
+        "m": 4096,
+        "n": 4096,
+        "k": 7168
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 2988.08 -> 1200.92 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "k-dominant-7168x16384-bfloat16",
+      "label": "k-dominant-7168x16384",
+      "marks": [],
+      "shape": {
+        "m": 4096,
+        "n": 7168,
+        "k": 16384
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 13521.63 -> 5152.20 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "wide-n-24576-bfloat16",
+      "label": "wide-n-24576",
+      "marks": [],
+      "shape": {
+        "m": 4096,
+        "n": 24576,
+        "k": 1536
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 4265.28 -> 1856.20 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "mid-m16-attn-bfloat16",
+      "label": "mid-m16-attn",
+      "marks": [],
+      "shape": {
+        "m": 16,
+        "n": 4096,
+        "k": 7168
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 108.32 -> 57.66 us | Round 5 (P2 true split-K probe, falsified): split_k=2/7/28 with an fp32 workspace + separate reduce kernel measured 64.20/63.04/83.81 us (m16) and 67.85/65.14/92.07 us (m32) vs 60.68/59.45 us for the adopted single-kernel winner; filling all 20 cores (112 blocks) left the GEMM duration unchanged (m32 59.48 vs 59.45 us), so the binding limit is the aggregate GM read path (~1.0-1.14 TB/s), not core occupancy. No change adopted.",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main",
+      "round5_splitk_probe": "falsified_no_gain"
+    },
+    {
+      "workload_id": "mid-m32-attn-bfloat16",
+      "label": "mid-m32-attn",
+      "marks": [],
+      "shape": {
+        "m": 32,
+        "n": 4096,
+        "k": 7168
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 111.18 -> 58.30 us | Round 5 (P2 true split-K probe, falsified): split_k=2/7/28 with an fp32 workspace + separate reduce kernel measured 64.20/63.04/83.81 us (m16) and 67.85/65.14/92.07 us (m32) vs 60.68/59.45 us for the adopted single-kernel winner; filling all 20 cores (112 blocks) left the GEMM duration unchanged (m32 59.48 vs 59.45 us), so the binding limit is the aggregate GM read path (~1.0-1.14 TB/s), not core occupancy. No change adopted.",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main",
+      "round5_splitk_probe": "falsified_no_gain"
+    },
+    {
+      "workload_id": "mid-m64-down-bfloat16",
+      "label": "mid-m64-down",
+      "marks": [],
+      "shape": {
+        "m": 64,
+        "n": 7168,
+        "k": 2048
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 58.40 -> 33.60 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    },
+    {
+      "workload_id": "mid-m96-gate-up-bfloat16",
+      "label": "mid-m96-gate-up",
+      "marks": [],
+      "shape": {
+        "m": 96,
+        "n": 2112,
+        "k": 7168
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "trans_a": false,
+        "trans_b": true
+      },
+      "kind": "tune",
+      "reason": "adopted tile policy block_M/N/K=128/256/256 num_stages=2 + Stage-4 M/N aspect rule (_mn_aspect; k-dominant-7168x16384 -> 256x128); latency 135.92 -> 50.10 us",
+      "tuning_status": "winner_merged",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_gemm.py::test_gemm_bench",
+      "kernel_id": "tileops/kernels/gemm/gemm/gemm_kernel/_gemm_kernel.py::_gemm_kernel::main"
+    }
+  ]
+}

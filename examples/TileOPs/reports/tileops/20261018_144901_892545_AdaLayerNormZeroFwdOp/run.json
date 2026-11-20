@@ -1,0 +1,901 @@
+{
+  "schema_version": 2,
+  "operator": "AdaLayerNormZeroFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261018_144901_892545_AdaLayerNormZeroFwdOp",
+    "generated_at": "2026-10-18T15:00:06.581525+00:00",
+    "project_root": "/root/mla-full/examples/TileOPs",
+    "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+    "python": "3.11.15",
+    "platform": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+    "test_file": "tests/ops/test_ada_layer_norm_zero.py",
+    "benchmark_file": "benchmarks/ops/bench_ada_layer_norm.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_ada_layer_norm_zero.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_ada_layer_norm.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-18T15:00:06.581525+00:00",
+      "evaluation_scope": "AdaLayerNormZeroFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261018_144901_892545_AdaLayerNormZeroFwdOp",
+      "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+      "correctness_target": "tests/ops/test_ada_layer_norm_zero.py",
+      "benchmark_target": "benchmarks/ops/bench_ada_layer_norm.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2C x 1",
+      "cpu": "x86_64",
+      "cann": "9.0.0",
+      "driver": "26.0.rc1",
+      "pytorch": "2.10.0+cpu",
+      "pytorch_npu": "2.10.0",
+      "tilelang": "0.1.2+ubuntu.22.4.npuir",
+      "python": "3.11.15",
+      "os": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 14,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 14,
+    "passed_cases": 14,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 16,
+    "benchmark_failed": 0,
+    "case_count": 10,
+    "msprof_case_count": 10,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 14,
+    "passed": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[1024-4096-dtype0]",
+        "name": "test_ada_layer_norm_zero_op[1024-4096-dtype0]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 18.59,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "5.72e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[1024-4096-dtype1]",
+        "name": "test_ada_layer_norm_zero_op[1024-4096-dtype1]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 6.868,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[1024-4096-dtype2]",
+        "name": "test_ada_layer_norm_zero_op[1024-4096-dtype2]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 6.819,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "3.12e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[4096-4096-dtype3]",
+        "name": "test_ada_layer_norm_zero_op[4096-4096-dtype3]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.87,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[4096-4096-dtype4]",
+        "name": "test_ada_layer_norm_zero_op[4096-4096-dtype4]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.806,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "6.25e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[1024-3000-dtype5]",
+        "name": "test_ada_layer_norm_zero_op[1024-3000-dtype5]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.81,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "3.81e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[1024-3000-dtype6]",
+        "name": "test_ada_layer_norm_zero_op[1024-3000-dtype6]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.832,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[1025-4096-dtype7]",
+        "name": "test_ada_layer_norm_zero_op[1025-4096-dtype7]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.829,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_op[1024-1152-dtype8]",
+        "name": "test_ada_layer_norm_zero_op[1024-1152-dtype8]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.811,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_eval_roofline",
+        "name": "test_ada_layer_norm_zero_eval_roofline",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.772,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_3d[2-512-4096-dtype0]",
+        "name": "test_ada_layer_norm_zero_3d[2-512-4096-dtype0]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 0.055,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_3d[2-512-4096-dtype1]",
+        "name": "test_ada_layer_norm_zero_3d[2-512-4096-dtype1]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 0.051,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_3d[2-512-4096-dtype2]",
+        "name": "test_ada_layer_norm_zero_3d[2-512-4096-dtype2]",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 0.049,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_ada_layer_norm_zero::test_ada_layer_norm_zero_gate_is_used",
+        "name": "test_ada_layer_norm_zero_gate_is_used",
+        "classname": "tests.ops.test_ada_layer_norm_zero",
+        "time_s": 1.764,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 16,
+    "passed": 16,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[smoke-dit-float32]",
+        "name": "test_ada_layer_norm_bench[smoke-dit-float32]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 49.567,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "3.3801"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[smoke-dit-float16]",
+        "name": "test_ada_layer_norm_bench[smoke-dit-float16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.745,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "3.2801"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[smoke-dit-bfloat16]",
+        "name": "test_ada_layer_norm_bench[smoke-dit-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.789,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "3.2801"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[dit-xl-2-float16]",
+        "name": "test_ada_layer_norm_bench[dit-xl-2-float16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 36.674,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "8.9804"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[dit-xl-2-bfloat16]",
+        "name": "test_ada_layer_norm_bench[dit-xl-2-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 36.743,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "9.0604"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[llama-3.1-8b-prefill-float16]",
+        "name": "test_ada_layer_norm_bench[llama-3.1-8b-prefill-float16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.876,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "41.7817"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[llama-3.1-8b-prefill-bfloat16]",
+        "name": "test_ada_layer_norm_bench[llama-3.1-8b-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.725,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "41.8017"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_bench[llama-3.1-8b-decode-bfloat16]",
+        "name": "test_ada_layer_norm_bench[llama-3.1-8b-decode-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 32.487,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm",
+          "tileops_latency_us": "2.9801"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[smoke-dit-zero-float32]",
+        "name": "test_ada_layer_norm_zero_bench[smoke-dit-zero-float32]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.707,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "3.3601"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[smoke-dit-zero-float16]",
+        "name": "test_ada_layer_norm_zero_bench[smoke-dit-zero-float16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.602,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "3.4801"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[smoke-dit-zero-bfloat16]",
+        "name": "test_ada_layer_norm_zero_bench[smoke-dit-zero-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 36.711,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "3.3201"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[dit-xl-2-float16]",
+        "name": "test_ada_layer_norm_zero_bench[dit-xl-2-float16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.743,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "11.1404"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[dit-xl-2-bfloat16]",
+        "name": "test_ada_layer_norm_zero_bench[dit-xl-2-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.675,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "10.8404"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[llama-3.1-8b-prefill-float16]",
+        "name": "test_ada_layer_norm_zero_bench[llama-3.1-8b-prefill-float16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 37.892,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "54.1022"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[llama-3.1-8b-prefill-bfloat16]",
+        "name": "test_ada_layer_norm_zero_bench[llama-3.1-8b-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 36.864,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "53.2821"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_ada_layer_norm::test_ada_layer_norm_zero_bench[llama-3.1-8b-decode-bfloat16]",
+        "name": "test_ada_layer_norm_zero_bench[llama-3.1-8b-decode-bfloat16]",
+        "classname": "benchmarks.ops.bench_ada_layer_norm",
+        "time_s": 32.498,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "AdaLayerNormZeroFwdOp",
+          "op_module": "tileops.ops.norm.ada_layer_norm_zero",
+          "tileops_latency_us": "3.3601"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "AdaLayerNormFwdOp",
+        "case_id": "AdaLayerNormFwdOp-a89ce5af2ba9",
+        "label": "dit-xl-2",
+        "params": {
+          "dtype": "float16",
+          "m": 1024,
+          "n": 1152
+        },
+        "config": {
+          "block_m": 7
+        },
+        "tag": "tileops",
+        "latency_us": 8.980359,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 43.440200000000004,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.7153794765472412,
+        "performance_tops": 1.3412951231002808,
+        "computility_tops": 5.464189529418945,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_4npk6stz",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 8.980359,
+          "max_latency_us": 8.980359,
+          "min_latency_us": 8.980359,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormFwdOp",
+        "case_id": "AdaLayerNormFwdOp-a302a48f1196",
+        "label": "dit-xl-2",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 1024,
+          "n": 1152
+        },
+        "config": {
+          "block_m": 7
+        },
+        "tag": "tileops",
+        "latency_us": 9.060363,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 43.0566,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.884194016456604,
+        "performance_tops": 1.4602859020233154,
+        "computility_tops": 5.469986438751221,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_043ff8v6",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 9.060363,
+          "max_latency_us": 9.060363,
+          "min_latency_us": 9.060363,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormFwdOp",
+        "case_id": "AdaLayerNormFwdOp-cf69afb990a9",
+        "label": "llama-3.1-8b-prefill",
+        "params": {
+          "dtype": "float16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 2
+        },
+        "tag": "tileops",
+        "latency_us": 41.78167,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 66.9243,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.6973223686218262,
+        "performance_tops": 2.0446584224700928,
+        "computility_tops": 5.452028274536133,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main__gyv8yc4",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 41.78167,
+          "max_latency_us": 41.78167,
+          "min_latency_us": 41.78167,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormFwdOp",
+        "case_id": "AdaLayerNormFwdOp-28038cf59f93",
+        "label": "llama-3.1-8b-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 2
+        },
+        "tag": "tileops",
+        "latency_us": 41.801674,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 66.8923,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.8639886379241943,
+        "performance_tops": 2.244356393814087,
+        "computility_tops": 5.45887565612793,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_nsi8fir4",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 41.801674,
+          "max_latency_us": 41.801674,
+          "min_latency_us": 41.801674,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormFwdOp",
+        "case_id": "AdaLayerNormFwdOp-45f5bb43a324",
+        "label": "llama-3.1-8b-decode",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 1,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 2.980119,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.4701,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.828680157661438,
+        "performance_tops": 0.015473206527531147,
+        "computility_tops": 5.405803203582764,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_748wrnfn",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 2.980119,
+          "max_latency_us": 2.980119,
+          "min_latency_us": 2.980119,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormZeroFwdOp",
+        "case_id": "AdaLayerNormZeroFwdOp-a89ce5af2ba9",
+        "label": "dit-xl-2",
+        "params": {
+          "dtype": "float16",
+          "m": 1024,
+          "n": 1152
+        },
+        "config": {
+          "block_m": 7
+        },
+        "tag": "tileops",
+        "latency_us": 11.140446,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 46.6895,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5407683849334717,
+        "performance_tops": 1.294879674911499,
+        "computility_tops": 5.471341609954834,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_l857xzyi",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 11.140446,
+          "max_latency_us": 11.140446,
+          "min_latency_us": 11.140446,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormZeroFwdOp",
+        "case_id": "AdaLayerNormZeroFwdOp-a302a48f1196",
+        "label": "dit-xl-2",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 1024,
+          "n": 1152
+        },
+        "config": {
+          "block_m": 7
+        },
+        "tag": "tileops",
+        "latency_us": 10.840434,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 47.9817,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.6673798561096191,
+        "performance_tops": 1.4400664567947388,
+        "computility_tops": 5.4757232666015625,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_h5fsslav",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 10.840434,
+          "max_latency_us": 10.840434,
+          "min_latency_us": 10.840434,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormZeroFwdOp",
+        "case_id": "AdaLayerNormZeroFwdOp-cf69afb990a9",
+        "label": "llama-3.1-8b-prefill",
+        "params": {
+          "dtype": "float16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 2
+        },
+        "tag": "tileops",
+        "latency_us": 54.102165,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 68.9118,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.5239686965942383,
+        "performance_tops": 1.8903495073318481,
+        "computility_tops": 5.46119499206543,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_cvngcle5",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 54.102165,
+          "max_latency_us": 54.102165,
+          "min_latency_us": 54.102165,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormZeroFwdOp",
+        "case_id": "AdaLayerNormZeroFwdOp-28038cf59f93",
+        "label": "llama-3.1-8b-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 2
+        },
+        "tag": "tileops",
+        "latency_us": 53.282131,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 69.97240000000001,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.6489684581756592,
+        "performance_tops": 2.07688045501709,
+        "computility_tops": 5.466320991516113,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_fapeavxv",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 53.282131,
+          "max_latency_us": 53.282131,
+          "min_latency_us": 53.282131,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "AdaLayerNormZeroFwdOp",
+        "case_id": "AdaLayerNormZeroFwdOp-45f5bb43a324",
+        "label": "llama-3.1-8b-decode",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 1,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 3.360134,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.5524,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 1.6264368295669556,
+        "performance_tops": 0.01617078296840191,
+        "computility_tops": 5.421051502227783,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_144901_892545_AdaLayerNormZeroFwdOp/artifacts/msprof/main_u2s2g7kj",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 3.360134,
+          "max_latency_us": 3.360134,
+          "min_latency_us": 3.360134,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "AdaLayerNormZeroFwdOp",
+      "family": "norm",
+      "cases": 14,
+      "passed": 14,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.01388439222222222,
+      "max_abs_err": 0.0625,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 0.5524,
+        "max": 69.97240000000001
+      }
+    }
+  ],
+  "warnings": []
+}

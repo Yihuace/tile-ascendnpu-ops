@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-17T10:52:34.223577+08:00",
+  "profiling_mode_requested": "msprof",
+  "environment": [
+    "- **Torch version**: 2.7.1+cpu",
+    "- **torch_npu version**: 2.7.1.post4",
+    "- **NPU model**: Ascend910B3",
+    "- **NPU count**: 1"
+  ],
+  "records": [
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-d27d208fc64c",
+      "label": "smoke",
+      "params": {
+        "M": 16,
+        "N": 128,
+        "dtype": "float32"
+      },
+      "result": {
+        "AI(Ops/Byte)": 1.7984496355056763,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 3.9303529262542725,
+        "Perf(TOps/s)": 0.014276924543082714,
+        "Ratio(%)": 0.4536,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_104002_621842_GeluTanhAndMulFwdOp/artifacts/msprof/main_liytmaa9",
+        "latency_us": 2.08,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 2.08,
+          "max_latency_us": 2.08,
+          "min_latency_us": 2.08,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-43e35b2a94f2",
+      "label": "smoke",
+      "params": {
+        "M": 16,
+        "N": 128,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 8.484848022460938,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.0320000648498535,
+        "Perf(TOps/s)": 0.01706666685640812,
+        "Ratio(%)": 0.42329999999999995,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_104002_621842_GeluTanhAndMulFwdOp/artifacts/msprof/main_8gv7umyv",
+        "latency_us": 2.1,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 2.1,
+          "max_latency_us": 2.1,
+          "min_latency_us": 2.1,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-9c90c357a1f0",
+      "label": "llama-8b-ffn-prefill",
+      "params": {
+        "M": 2048,
+        "N": 14336,
+        "dtype": "float16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.891197681427002,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 5.369403839111328,
+        "Perf(TOps/s)": 5.25244140625,
+        "Ratio(%)": 97.8217,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_104002_621842_GeluTanhAndMulFwdOp/artifacts/msprof/main_4b_w32mg",
+        "latency_us": 88.82,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 88.82,
+          "max_latency_us": 88.82,
+          "min_latency_us": 88.82,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-4b61a9968042",
+      "label": "llama-8b-ffn-prefill",
+      "params": {
+        "M": 2048,
+        "N": 14336,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.857149362564087,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.601078987121582,
+        "Perf(TOps/s)": 3.1628966331481934,
+        "Ratio(%)": 68.74249999999999,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_104002_621842_GeluTanhAndMulFwdOp/artifacts/msprof/main_htuaaxpw",
+        "latency_us": 141.940002,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 141.940002,
+          "max_latency_us": 141.940002,
+          "min_latency_us": 141.940002,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-79c0520cd36b",
+      "label": "llama-8b-ffn-decode",
+      "params": {
+        "M": 1,
+        "N": 14336,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 4.081264019012451,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.440972805023193,
+        "Perf(TOps/s)": 0.09723696857690811,
+        "Ratio(%)": 2.1895000000000002,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_104002_621842_GeluTanhAndMulFwdOp/artifacts/msprof/main_r_5pytzl",
+        "latency_us": 2.38,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 2.38,
+          "max_latency_us": 2.38,
+          "min_latency_us": 2.38,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-8d0b8f361439",
+      "label": "qwen3-8b-swiglu-b32",
+      "params": {
+        "M": 32,
+        "N": 12288,
+        "dtype": "float16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 4.717715263366699,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 5.245707988739014,
+        "Perf(TOps/s)": 1.663885235786438,
+        "Ratio(%)": 31.719,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_104002_621842_GeluTanhAndMulFwdOp/artifacts/msprof/main_6dbg53wq",
+        "latency_us": 4.46,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 4.46,
+          "max_latency_us": 4.46,
+          "min_latency_us": 4.46,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    },
+    {
+      "operator": "GeluTanhAndMulFwdOp",
+      "case_id": "GeluTanhAndMulFwdOp-4c768422b395",
+      "label": "qwen3-8b-swiglu-b32",
+      "params": {
+        "M": 32,
+        "N": 12288,
+        "dtype": "bfloat16"
+      },
+      "result": {
+        "AI(Ops/Byte)": 3.9615163803100586,
+        "Bandwidth(TB/s)": 1.75,
+        "Computility(TOps/s)": 4.546097278594971,
+        "Perf(TOps/s)": 1.1461946964263916,
+        "Ratio(%)": 25.212699999999998,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_104002_621842_GeluTanhAndMulFwdOp/artifacts/msprof/main_41qakbb2",
+        "latency_us": 5.38,
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 5.38,
+          "max_latency_us": 5.38,
+          "min_latency_us": 5.38,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        },
+        "prof_mode": "msprof"
+      },
+      "tag": "tileops"
+    }
+  ]
+}

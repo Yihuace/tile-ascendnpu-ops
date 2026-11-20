@@ -1,0 +1,17 @@
+{
+  "run_json": "examples/TileOPs/reports/tileops/20261016_135447_124960_TopkSelectorOp/run.json",
+  "status": "passed",
+  "correctness": "9/9",
+  "benchmark": "4/4",
+  "benchmark_failed": 0,
+  "pass_rate": 1.0,
+  "algorithm_redesigned": true,
+  "architecture_constraints": [
+    "the bisection must NOT be unrolled inside the kernel: a kernel holding the compaction plus >=2 unrolled bodies segfaults the build",
+    "multi-block GM writes lose rows on this toolchain, so the kernels use a single block with a serial row loop",
+    "a row wider than the UB budget must be streamed, and the tile is chosen automatically as the largest divisor of N that is <= 2048"
+  ],
+  "first_integration_failure": "the integration-side kernel copy was stale (taken before the tile parameter was added) and raised TypeError; re-syncing the kernel fixed it",
+  "workload_scale_deviation": "the GPU manifest full workload (seq_len=32768 x seq_len_kv=65536, topk up to 1024) is not runnable in reasonable time under the single-block serial architecture that this toolchain forces; manifest workloads are sized to what the delivered kernel completes",
+  "stage4_tuning": "not done (the migration harness skips the tuning stage); correctness was prioritised"
+}

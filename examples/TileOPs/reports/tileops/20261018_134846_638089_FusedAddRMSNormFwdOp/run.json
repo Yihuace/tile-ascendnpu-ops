@@ -1,0 +1,543 @@
+{
+  "schema_version": 2,
+  "operator": "FusedAddRMSNormFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261018_134846_638089_FusedAddRMSNormFwdOp",
+    "generated_at": "2026-10-18T13:55:44.117022+00:00",
+    "project_root": "/root/mla-full/examples/TileOPs",
+    "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+    "python": "3.11.15",
+    "platform": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+    "test_file": "tests/ops/test_fused_add_rms_norm.py",
+    "benchmark_file": "benchmarks/ops/bench_fused_add_rms_norm.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_fused_add_rms_norm.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/root/venv-npuir/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_fused_add_rms_norm.py",
+        "-sv",
+        "--junitxml=/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-18T13:55:44.117022+00:00",
+      "evaluation_scope": "FusedAddRMSNormFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261018_134846_638089_FusedAddRMSNormFwdOp",
+      "git_commit": "417dae9908ad2ea5ffb74294a7075b6cb64b4f2b",
+      "correctness_target": "tests/ops/test_fused_add_rms_norm.py",
+      "benchmark_target": "benchmarks/ops/bench_fused_add_rms_norm.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2C x 1",
+      "cpu": "x86_64",
+      "cann": "9.0.0",
+      "driver": "26.0.rc1",
+      "pytorch": "2.10.0+cpu",
+      "pytorch_npu": "2.10.0",
+      "tilelang": "0.1.2+ubuntu.22.4.npuir",
+      "python": "3.11.15",
+      "os": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 12,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 12,
+    "passed_cases": 12,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 8,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[64-512-dtype0]",
+        "name": "test_fused_add_rms_norm_op[64-512-dtype0]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 18.475,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[64-512-dtype1]",
+        "name": "test_fused_add_rms_norm_op[64-512-dtype1]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 6.753,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[64-512-dtype2]",
+        "name": "test_fused_add_rms_norm_op[64-512-dtype2]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 6.653,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[8-300-dtype3]",
+        "name": "test_fused_add_rms_norm_op[8-300-dtype3]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 16.562,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[8-300-dtype4]",
+        "name": "test_fused_add_rms_norm_op[8-300-dtype4]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 6.569,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[8-300-dtype5]",
+        "name": "test_fused_add_rms_norm_op[8-300-dtype5]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 6.576,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[2048-4096-dtype6]",
+        "name": "test_fused_add_rms_norm_op[2048-4096-dtype6]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 1.92,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_op[1-4096-dtype7]",
+        "name": "test_fused_add_rms_norm_op[1-4096-dtype7]",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 1.534,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_eval_roofline",
+        "name": "test_fused_add_rms_norm_eval_roofline",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 1.627,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_residual_out_is_the_sum",
+        "name": "test_fused_add_rms_norm_residual_out_is_the_sum",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 1.516,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_unit_weight_matches_manual_rms",
+        "name": "test_fused_add_rms_norm_unit_weight_matches_manual_rms",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 0.023,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_rms_norm::test_fused_add_rms_norm_3d",
+        "name": "test_fused_add_rms_norm_3d",
+        "classname": "tests.ops.test_fused_add_rms_norm",
+        "time_s": 1.531,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[smoke-small-float32]",
+        "name": "test_fused_add_rms_norm_bench[smoke-small-float32]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 48.511,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "4.5402"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[smoke-small-float16]",
+        "name": "test_fused_add_rms_norm_bench[smoke-small-float16]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 37.523,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "4.4202"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[smoke-small-bfloat16]",
+        "name": "test_fused_add_rms_norm_bench[smoke-small-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 37.444,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "4.7802"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[llama-3.1-8b-prefill-float16]",
+        "name": "test_fused_add_rms_norm_bench[llama-3.1-8b-prefill-float16]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 44.299,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "89.4436"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[llama-3.1-8b-prefill-bfloat16]",
+        "name": "test_fused_add_rms_norm_bench[llama-3.1-8b-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 43.855,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "92.7637"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[llama-3.1-8b-decode-bfloat16]",
+        "name": "test_fused_add_rms_norm_bench[llama-3.1-8b-decode-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 32.442,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "3.1201"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[llama-3.1-70b-prefill-float16]",
+        "name": "test_fused_add_rms_norm_bench[llama-3.1-70b-prefill-float16]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 43.044,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "96.4839"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_rms_norm::test_fused_add_rms_norm_bench[llama-3.1-70b-prefill-bfloat16]",
+        "name": "test_fused_add_rms_norm_bench[llama-3.1-70b-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_rms_norm",
+        "time_s": 42.807,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddRMSNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_rms_norm",
+          "tileops_latency_us": "101.4041"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "FusedAddRMSNormFwdOp",
+        "case_id": "FusedAddRMSNormFwdOp-cf69afb990a9",
+        "label": "llama-3.1-8b-prefill",
+        "params": {
+          "dtype": "float16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 89.443581,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 20.8387,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 2.5406930446624756,
+        "performance_tops": 0.9530044794082642,
+        "computility_tops": 5.441763877868652,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/artifacts/msprof/main_hv3axdma",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 89.443581,
+          "max_latency_us": 89.443581,
+          "min_latency_us": 89.443581,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddRMSNormFwdOp",
+        "case_id": "FusedAddRMSNormFwdOp-28038cf59f93",
+        "label": "llama-3.1-8b-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 92.76371,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 21.796499999999998,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 3.2922966480255127,
+        "performance_tops": 1.1904240846633911,
+        "computility_tops": 5.461533546447754,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/artifacts/msprof/main_erb8iium",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 92.76371,
+          "max_latency_us": 92.76371,
+          "min_latency_us": 92.76371,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddRMSNormFwdOp",
+        "case_id": "FusedAddRMSNormFwdOp-45f5bb43a324",
+        "label": "llama-3.1-8b-decode",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 1,
+          "n": 4096
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 3.120125,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.4467,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 2.1492347717285156,
+        "performance_tops": 0.017281359061598778,
+        "computility_tops": 5.461533546447754,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/artifacts/msprof/main_jd7mpgse",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 3.120125,
+          "max_latency_us": 3.120125,
+          "min_latency_us": 3.120125,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddRMSNormFwdOp",
+        "case_id": "FusedAddRMSNormFwdOp-bf6a64195d6a",
+        "label": "llama-3.1-70b-prefill",
+        "params": {
+          "dtype": "float16",
+          "m": 2048,
+          "n": 8192
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 96.483856,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 38.6493,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 2.5219461917877197,
+        "performance_tops": 1.7544851303100586,
+        "computility_tops": 5.480796813964844,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/artifacts/msprof/main_kcg51r98",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 96.483856,
+          "max_latency_us": 96.483856,
+          "min_latency_us": 96.483856,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddRMSNormFwdOp",
+        "case_id": "FusedAddRMSNormFwdOp-d27ec4365cad",
+        "label": "llama-3.1-70b-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 2048,
+          "n": 8192
+        },
+        "config": {
+          "block_m": 1
+        },
+        "tag": "tileops",
+        "latency_us": 101.404053,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 39.4345,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 3.2716808319091797,
+        "performance_tops": 2.165703773498535,
+        "computility_tops": 5.491905212402344,
+        "artifact_dir": "/root/mla-full/examples/TileOPs/reports/tileops/20261018_134846_638089_FusedAddRMSNormFwdOp/artifacts/msprof/main_eplhtb0n",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 101.404053,
+          "max_latency_us": 101.404053,
+          "min_latency_us": 101.404053,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "FusedAddRMSNormFwdOp",
+      "family": "norm",
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 0.4467,
+        "max": 39.4345
+      }
+    }
+  ],
+  "warnings": []
+}

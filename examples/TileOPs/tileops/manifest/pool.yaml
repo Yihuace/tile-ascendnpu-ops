@@ -1,0 +1,364 @@
+# pool.yaml -- manifest entries for the 'pool' family (NPU benchmark).
+
+MaxPool2dFwdOp:
+  ref_api: "torch.nn.functional.max_pool2d"
+  # Equivalent to torch.nn.functional.max_pool2d (return_indices=False).
+  # Declared on the batched NCHW form; unlike the adaptive pool family the Op
+  # layer accepts exactly 4D NCHW input (no CHW unsqueeze).
+  family: pool
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32", shape: "[N, C, H_in, W_in]"}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "[N, C, H_out, W_out]"}
+    params:
+      kernel_size: {type: "int | tuple[int, int]"}
+      stride: {type: "int | tuple[int, int] | None", default: null}
+      padding: {type: "int | tuple[int, int]", default: 0}
+      dilation: {type: "int | tuple[int, int]", default: 1}
+      ceil_mode: {type: bool, default: false}
+    shape_rules:
+      - "_kH == (kernel_size[0] if isinstance(kernel_size, (tuple, list)) else kernel_size)"
+      - "_kW == (kernel_size[1] if isinstance(kernel_size, (tuple, list)) and len(kernel_size) > 1 else (kernel_size[0] if isinstance(kernel_size, (tuple, list)) else kernel_size))"
+      - "_sH == (_kH if stride is None else (stride[0] if isinstance(stride, (tuple, list)) else stride))"
+      - "_sW == (_kW if stride is None else (stride[1] if isinstance(stride, (tuple, list)) and len(stride) > 1 else (stride[0] if isinstance(stride, (tuple, list)) else stride)))"
+      - "_pH == (padding[0] if isinstance(padding, (tuple, list)) else padding)"
+      - "_pW == (padding[1] if isinstance(padding, (tuple, list)) and len(padding) > 1 else (padding[0] if isinstance(padding, (tuple, list)) else padding))"
+      - "_dH == (dilation[0] if isinstance(dilation, (tuple, list)) else dilation)"
+      - "_dW == (dilation[1] if isinstance(dilation, (tuple, list)) and len(dilation) > 1 else (dilation[0] if isinstance(dilation, (tuple, list)) else dilation))"
+      - "_kH > 0 and _kW > 0"
+      - "_sH > 0 and _sW > 0"
+      - "_dH > 0 and _dW > 0"
+      - "0 <= _pH <= _kH // 2 and 0 <= _pW <= _kW // 2"
+      - "_effH == _dH * (_kH - 1) + 1"
+      - "_effW == _dW * (_kW - 1) + 1"
+      - "H_out == max(((H_in + 2 * _pH - _effH + (_sH - 1 if ceil_mode else 0)) // _sH + 1) - (1 if ceil_mode and ((H_in + 2 * _pH - _effH + _sH - 1) // _sH + 1) > 0 and (((H_in + 2 * _pH - _effH + _sH - 1) // _sH + 1) - 1) * _sH >= H_in + _pH else 0), 0)"
+      - "W_out == max(((W_in + 2 * _pW - _effW + (_sW - 1 if ceil_mode else 0)) // _sW + 1) - (1 if ceil_mode and ((W_in + 2 * _pW - _effW + _sW - 1) // _sW + 1) > 0 and (((W_in + 2 * _pW - _effW + _sW - 1) // _sW + 1) - 1) * _sW >= W_in + _pW else 0), 0)"
+
+  workloads:
+    # Smoke: tiny 3x3/stride-2/pad-1 grid across all three supported dtypes
+    # (the Op layer accepts float32 as well as float16/bfloat16, so the usual
+    # fp32 smoke applies here).
+    - {input_shape: [1, 8, 16, 16], kernel_size: [3, 3], stride: [2, 2], padding: [1, 1], dtypes: [float16, bfloat16, float32], label: "smoke-1x8x16x16-k3s2p1"}
+    # Full: GPU manifest workloads, copied verbatim (labels and dtype lists
+    # included).  Real-model sources: ResNet stem uses 3x3 stride-2 max pooling
+    # on 64-channel 112x112 features; VGG blocks use 2x2 stride-2 max pooling;
+    # AlexNet-style CNNs use 3x3 stride-2 pooling on early 55x55 features.
+    - {input_shape: [32, 64, 112, 112], kernel_size: [3, 3], stride: [2, 2], padding: [1, 1], dtypes: [float16, bfloat16, float32], label: "resnet-stem"}
+    - {input_shape: [16, 128, 56, 56], kernel_size: [2, 2], stride: [2, 2], padding: [0, 0], dtypes: [float16, bfloat16, float32], label: "vgg-block"}
+    - {input_shape: [32, 64, 55, 55], kernel_size: [3, 3], stride: [2, 2], padding: [0, 0], ceil_mode: true, dtypes: [float16, bfloat16, float32], label: "alexnet-ceil"}
+
+  # Copied verbatim from the GPU entry (device-agnostic).
+  roofline:
+    vars:
+      kH: "kernel_size[0] if isinstance(kernel_size, (tuple, list)) else kernel_size"
+      kW: "kernel_size[1] if isinstance(kernel_size, (tuple, list)) and len(kernel_size) > 1 else (kernel_size[0] if isinstance(kernel_size, (tuple, list)) else kernel_size)"
+      sH: "kH if stride is None else (stride[0] if isinstance(stride, (tuple, list)) else stride)"
+      sW: "kW if stride is None else (stride[1] if isinstance(stride, (tuple, list)) and len(stride) > 1 else (stride[0] if isinstance(stride, (tuple, list)) else stride))"
+      pH: "padding[0] if isinstance(padding, (tuple, list)) else padding"
+      pW: "padding[1] if isinstance(padding, (tuple, list)) and len(padding) > 1 else (padding[0] if isinstance(padding, (tuple, list)) else padding)"
+      dH: "dilation[0] if isinstance(dilation, (tuple, list)) else dilation"
+      dW: "dilation[1] if isinstance(dilation, (tuple, list)) and len(dilation) > 1 else (dilation[0] if isinstance(dilation, (tuple, list)) else dilation)"
+      effH: "dH * (kH - 1) + 1"
+      effW: "dW * (kW - 1) + 1"
+      out_H: "max(((H_in + 2 * pH - effH + (sH - 1 if ceil_mode else 0)) // sH + 1) - (1 if ceil_mode and ((H_in + 2 * pH - effH + sH - 1) // sH + 1) > 0 and (((H_in + 2 * pH - effH + sH - 1) // sH + 1) - 1) * sH >= H_in + pH else 0), 0)"
+      out_W: "max(((W_in + 2 * pW - effW + (sW - 1 if ceil_mode else 0)) // sW + 1) - (1 if ceil_mode and ((W_in + 2 * pW - effW + sW - 1) // sW + 1) > 0 and (((W_in + 2 * pW - effW + sW - 1) // sW + 1) - 1) * sW >= W_in + pW else 0), 0)"
+    flops: "N * C * out_H * out_W * kH * kW"
+    bytes: "(N * C * H_in * W_in + N * C * out_H * out_W) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/pool/max_pool2d/max_pool2d.py
+    kernel_map:
+      max_pool2d_kernel: MaxPool2dKernel
+    op: tileops/ops/pool/max_pool2d.py
+    test: tests/ops/test_pool.py
+    bench: benchmarks/ops/bench_pool.py
+    bench_manifest_driven: true
+
+
+
+MaxPool1dIndicesFwdOp:
+  ref_api: "torch.nn.functional.max_pool1d"
+  # Equivalent to torch.nn.functional.max_pool1d (return_indices=True) -- the
+  # dual-output variant of MaxPool1dFwdOp.  Declared on the batched NCL form;
+  # unlike the adaptive pool family the Op layer accepts exactly 3D NCL input
+  # (no CHW unsqueeze).  ``indices`` carries the input position ``iw`` (int64)
+  # of the winning element along the length axis: ties keep the first hit, a NaN
+  # in the window makes the value NaN and records the last NaN visited.
+  family: pool
+  status: implemented
+  torch_compile_fullgraph: true
+  variant_of: MaxPool1dFwdOp
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32", shape: "[N, C, L_in]"}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "[N, C, L_out]"}
+      indices: {dtype: "int64", shape: "[N, C, L_out]"}
+    params:
+      kernel_size: {type: "int | tuple[int]"}
+      stride: {type: "int | tuple[int] | None", default: null}
+      padding: {type: "int | tuple[int]", default: 0}
+      dilation: {type: "int | tuple[int]", default: 1}
+      ceil_mode: {type: bool, default: false}
+    shape_rules:
+      - "_kW == (kernel_size[0] if isinstance(kernel_size, (tuple, list)) else kernel_size)"
+      - "_sW == (_kW if stride is None else (stride[0] if isinstance(stride, (tuple, list)) else stride))"
+      - "_pW == (padding[0] if isinstance(padding, (tuple, list)) else padding)"
+      - "_dW == (dilation[0] if isinstance(dilation, (tuple, list)) else dilation)"
+      - "_kW > 0"
+      - "_sW > 0"
+      - "_dW > 0"
+      - "0 <= _pW <= _kW // 2"
+      - "_effW == _dW * (_kW - 1) + 1"
+      - "L_out == max(((L_in + 2 * _pW - _effW + (_sW - 1 if ceil_mode else 0)) // _sW + 1) - (1 if ceil_mode and ((L_in + 2 * _pW - _effW + _sW - 1) // _sW + 1) > 0 and (((L_in + 2 * _pW - _effW + _sW - 1) // _sW + 1) - 1) * _sW >= L_in + _pW else 0), 0)"
+
+  workloads:
+    # Smoke: tiny 3/stride-2/pad-1 grid across all three supported dtypes (the
+    # Op layer accepts float32 as well as float16/bfloat16, so the usual fp32
+    # smoke applies here).  Mirrors the MaxPool1dFwdOp smoke case.
+    - {input_shape: [1, 8, 32], kernel_size: 3, stride: 2, padding: 1, dtypes: [float16, bfloat16, float32], label: "smoke-1x8x32-k3s2p1"}
+    # Full: GPU manifest workloads, copied verbatim (labels and dtype lists
+    # included).  Same model sources as MaxPool1dFwdOp; indices output is
+    # consumed by unpooling or argmax-tracking paths rather than changing input
+    # shapes.
+    - {input_shape: [32, 80, 4096], kernel_size: 3, stride: 3, padding: 0, dtypes: [float16], label: "sincnet-speaker-local"}
+    - {input_shape: [64, 256, 128], kernel_size: 128, stride: 1, padding: 0, dtypes: [float16], label: "textcnn-global"}
+    - {input_shape: [16, 128, 2048], kernel_size: 5, stride: 2, padding: 2, dilation: 2, ceil_mode: true, dtypes: [bfloat16], label: "ecg-cnn-dilated"}
+
+  # Copied verbatim from the GPU entry (device-agnostic).  The int64 indices
+  # output adds 8 bytes per output element.
+  roofline:
+    vars:
+      kW: "kernel_size[0] if isinstance(kernel_size, (tuple, list)) else kernel_size"
+      sW: "kW if stride is None else (stride[0] if isinstance(stride, (tuple, list)) else stride)"
+      pW: "padding[0] if isinstance(padding, (tuple, list)) else padding"
+      dW: "dilation[0] if isinstance(dilation, (tuple, list)) else dilation"
+      effW: "dW * (kW - 1) + 1"
+      out_W: "max(((L_in + 2 * pW - effW + (sW - 1 if ceil_mode else 0)) // sW + 1) - (1 if ceil_mode and ((L_in + 2 * pW - effW + sW - 1) // sW + 1) > 0 and (((L_in + 2 * pW - effW + sW - 1) // sW + 1) - 1) * sW >= L_in + pW else 0), 0)"
+    flops: "N * C * out_W * kW"
+    bytes: "(N * C * L_in + N * C * out_W) * elem_bytes + N * C * out_W * 8"
+
+  source:
+    kernel: tileops/kernels/pool/max_pool1d_with_indices/max_pool1d_with_indices.py
+    kernel_map:
+      max_pool1d_with_indices_kernel: MaxPool1dWithIndicesKernel
+    op: tileops/ops/pool/max_pool1d_with_indices.py
+    test: tests/ops/test_pool.py
+    bench: benchmarks/ops/bench_pool.py
+    bench_manifest_driven: true
+
+
+AdaptiveMaxPool2dIndicesFwdOp:
+  ref_api: "torch.nn.functional.adaptive_max_pool2d"
+  # Equivalent to torch.nn.functional.adaptive_max_pool2d(return_indices=True)
+  # -- the dual-output variant of AdaptiveMaxPool2dFwdOp.  Declared on the
+  # batched NCHW form (pool-family convention); the Op layer also accepts
+  # unbatched CHW input, unsqueezed to NCHW internally.  ``indices`` carries
+  # the flat ``ih * w_in + iw`` index (int64) within each h_in * w_in plane:
+  # ties keep the first hit, a NaN in the window makes the value NaN and
+  # records the last NaN visited.
+  variant_of: "AdaptiveMaxPool2dFwdOp"
+  family: pool
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16", shape: "[N, C, H_in, W_in]"}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "[N, C, H_out, W_out]"}
+      indices: {dtype: "int64", shape: "[N, C, H_out, W_out]"}
+    params:
+      output_size: {type: "int | None | tuple[int | None, int | None] | list[int | None]"}
+    shape_rules:
+      - "output_size is None or isinstance(output_size, int) or (isinstance(output_size, (tuple, list)) and len(output_size) == 2)"
+      - "_oH == (None if output_size is None else (output_size[0] if isinstance(output_size, (tuple, list)) else output_size))"
+      - "_oW == (None if output_size is None else (output_size[1] if isinstance(output_size, (tuple, list)) else output_size))"
+      - "H_out == (H_in if _oH is None else _oH)"
+      - "W_out == (W_in if _oW is None else _oW)"
+      - "H_out > 0 and W_out > 0"
+
+  workloads:
+    # Smoke: tiny SPP-style grid (NPU manifest workload contract -- first entry
+    # is the small smoke case). fp16 only: the op rejects float32 (adaptive-pool
+    # dtype gate), so the usual fp32 smoke variant does not apply.
+    - {input_shape: [1, 8, 4, 4], output_size: [2, 2], dtypes: [float16], label: "smoke-1x8x4x4-2x2"}
+    # Full: GPU manifest workloads, copied verbatim (labels included).
+    # Same grid shapes as the average/plain-max variants; the indices output
+    # targets SPP-style detection heads that need argmax-style unpooling.
+    - {input_shape: [8, 2048, 7, 7], output_size: [1, 1], dtypes: [float16], label: "global-1x1"}
+    - {input_shape: [2, 128, 56, 56], output_size: [6, 6], dtypes: [float16], label: "spp-6x6"}
+    - {input_shape: [2, 64, 55, 57], output_size: [7, 7], dtypes: [bfloat16], label: "nondiv-7x7"}
+
+  # Copied verbatim from the GPU entry (device-agnostic). The exact adaptive-bin
+  # scan counts the rows/cols actually touched: bins are
+  # [floor(o*in/out), ceil((o+1)*in/out)) and adjacent bins overlap by one
+  # row/col unless out | j*in. The int64 indices output adds 8 bytes per output
+  # element.
+  roofline:
+    vars:
+      N: "input.shape[0]"
+      C: "input.shape[1]"
+      H_in: "input.shape[2]"
+      W_in: "input.shape[3]"
+      oH: "None if output_size is None else (output_size[0] if isinstance(output_size, (tuple, list)) else output_size)"
+      oW: "None if output_size is None else (output_size[1] if isinstance(output_size, (tuple, list)) else output_size)"
+      out_H: "H_in if oH is None else oH"
+      out_W: "W_in if oW is None else oW"
+      scan_H: "H_in + sum(1 for j in range(1, out_H) if (j * H_in) % out_H != 0)"
+      scan_W: "W_in + sum(1 for o in range(1, out_W) if (o * W_in) % out_W != 0)"
+    flops: "N * C * scan_H * scan_W"
+    bytes: "(N * C * H_in * W_in + N * C * out_H * out_W) * elem_bytes + N * C * out_H * out_W * 8"
+
+  source:
+    kernel: tileops/kernels/pool/adaptive_max_pool2d_with_indices/adaptive_max_pool2d_with_indices.py
+    kernel_map:
+      adaptive_max_pool2d_with_indices_kernel: AdaptiveMaxPool2dWithIndicesKernel
+    op: tileops/ops/pool/adaptive_max_pool2d_with_indices.py
+    test: tests/ops/test_pool.py
+    bench: benchmarks/ops/bench_pool.py
+    bench_manifest_driven: true
+
+
+# ---------------------------------------------------------------------------
+# Windowed 2D max pooling -- appended by the max_pool2d migration.  signature /
+# shape_rules / roofline are copied verbatim from the GPU entry; a leading
+# smoke workload (small, all three supported dtypes) is prepended per the NPU
+# manifest workload contract (>= 4 workloads, first entry small).
+# ---------------------------------------------------------------------------
+
+
+AdaptiveMaxPool2dFwdOp:
+  ref_api: "torch.nn.functional.adaptive_max_pool2d"
+  # Equivalent to torch.nn.functional.adaptive_max_pool2d (return_indices=False).
+  # Declared on the batched NCHW form (pool-family convention). The Op layer
+  # also accepts unbatched CHW input, unsqueezed to NCHW internally.
+  family: pool
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16", shape: "[N, C, H_in, W_in]"}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "[N, C, H_out, W_out]"}
+    params:
+      output_size: {type: "int | None | tuple[int | None, int | None] | list[int | None]"}
+    shape_rules:
+      - "output_size is None or isinstance(output_size, int) or (isinstance(output_size, (tuple, list)) and len(output_size) == 2)"
+      - "_oH == (None if output_size is None else (output_size[0] if isinstance(output_size, (tuple, list)) else output_size))"
+      - "_oW == (None if output_size is None else (output_size[1] if isinstance(output_size, (tuple, list)) else output_size))"
+      - "H_out == (H_in if _oH is None else _oH)"
+      - "W_out == (W_in if _oW is None else _oW)"
+      - "H_out > 0 and W_out > 0"
+
+  workloads:
+    # Smoke: tiny SPP-style grid (NPU manifest workload contract -- first entry
+    # is the small smoke case). fp16 only: the op rejects float32 (adaptive-pool
+    # dtype gate), so the usual fp32 smoke variant does not apply.
+    - {input_shape: [1, 8, 4, 4], output_size: [2, 2], dtypes: [float16], label: "smoke-1x8x4x4-2x2"}
+    # Full: GPU manifest workloads, copied verbatim (labels included).
+    # Adaptive max pooling shows up in SPP-style detection/segmentation heads
+    # with the same grid shapes as the average variant.
+    - {input_shape: [8, 2048, 7, 7], output_size: [1, 1], dtypes: [float16], label: "global-1x1"}
+    - {input_shape: [2, 128, 56, 56], output_size: [6, 6], dtypes: [float16], label: "spp-6x6"}
+    - {input_shape: [2, 64, 55, 57], output_size: [7, 7], dtypes: [bfloat16], label: "nondiv-7x7"}
+
+  # Copied verbatim from the GPU entry (device-agnostic). The exact adaptive-bin
+  # scan counts the rows/cols actually touched: bins are
+  # [floor(o*in/out), ceil((o+1)*in/out)) and adjacent bins overlap by one
+  # row/col unless out | j*in.
+  roofline:
+    vars:
+      N: "input.shape[0]"
+      C: "input.shape[1]"
+      H_in: "input.shape[2]"
+      W_in: "input.shape[3]"
+      oH: "None if output_size is None else (output_size[0] if isinstance(output_size, (tuple, list)) else output_size)"
+      oW: "None if output_size is None else (output_size[1] if isinstance(output_size, (tuple, list)) else output_size)"
+      out_H: "H_in if oH is None else oH"
+      out_W: "W_in if oW is None else oW"
+      scan_H: "H_in + sum(1 for j in range(1, out_H) if (j * H_in) % out_H != 0)"
+      scan_W: "W_in + sum(1 for o in range(1, out_W) if (o * W_in) % out_W != 0)"
+    flops: "N * C * scan_H * scan_W"
+    bytes: "(N * C * H_in * W_in + N * C * out_H * out_W) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/pool/adaptive_max_pool2d/adaptive_max_pool2d.py
+    kernel_map:
+      adaptive_max_pool2d_kernel: AdaptiveMaxPool2dKernel
+    op: tileops/ops/pool/adaptive_max_pool2d.py
+    test: tests/ops/test_pool.py
+    bench: benchmarks/ops/bench_pool.py
+    bench_manifest_driven: true
+
+
+AdaptiveAvgPool2dFwdOp:
+  ref_api: "torch.nn.functional.adaptive_avg_pool2d"
+  # Declared on the batched NCHW form (pool-family convention). The Op layer
+  # also accepts unbatched CHW input, unsqueezed to NCHW internally.
+  family: pool
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16", shape: "[N, C, H_in, W_in]"}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "[N, C, H_out, W_out]"}
+    params:
+      output_size: {type: "int | None | tuple[int | None, int | None] | list[int | None]"}
+    shape_rules:
+      - "output_size is None or isinstance(output_size, int) or (isinstance(output_size, (tuple, list)) and len(output_size) == 2)"
+      - "_oH == (None if output_size is None else (output_size[0] if isinstance(output_size, (tuple, list)) else output_size))"
+      - "_oW == (None if output_size is None else (output_size[1] if isinstance(output_size, (tuple, list)) else output_size))"
+      - "H_out == (H_in if _oH is None else _oH)"
+      - "W_out == (W_in if _oW is None else _oW)"
+      - "H_out > 0 and W_out > 0"
+
+  workloads:
+    # Smoke: tiny SPP-style grid (NPU manifest workload contract -- first entry
+    # is the small smoke case). fp16 only: the op rejects float32 (adaptive-pool
+    # dtype gate), so the usual fp32 smoke variant does not apply.
+    - {input_shape: [1, 8, 4, 4], output_size: [2, 2], dtypes: [float16], label: "smoke-1x8x4x4-2x2"}
+    # Full: GPU manifest workloads, copied verbatim.
+    # Real-model sources: ResNet-50 applies a global adaptive average pool to
+    # its final 7x7 feature map before the FC layer; SPP-style heads pool
+    # arbitrary feature maps to a fixed grid; the non-divisible case stresses
+    # PyTorch adaptive bin-boundary semantics.
+    - {input_shape: [8, 2048, 7, 7], output_size: [1, 1], dtypes: [float16], label: "resnet-global"}
+    - {input_shape: [2, 128, 56, 56], output_size: [6, 6], dtypes: [float16], label: "spp-6x6"}
+    - {input_shape: [2, 64, 55, 57], output_size: [7, 7], dtypes: [bfloat16], label: "nondiv-7x7"}
+
+  # Copied verbatim from the GPU entry (device-agnostic). The exact adaptive-bin
+  # scan counts the rows/cols actually touched: bins are
+  # [floor(o*in/out), ceil((o+1)*in/out)) and adjacent bins overlap by one
+  # row/col unless out | j*in.
+  roofline:
+    vars:
+      N: "input.shape[0]"
+      C: "input.shape[1]"
+      H_in: "input.shape[2]"
+      W_in: "input.shape[3]"
+      oH: "None if output_size is None else (output_size[0] if isinstance(output_size, (tuple, list)) else output_size)"
+      oW: "None if output_size is None else (output_size[1] if isinstance(output_size, (tuple, list)) else output_size)"
+      out_H: "H_in if oH is None else oH"
+      out_W: "W_in if oW is None else oW"
+      scan_H: "H_in + sum(1 for j in range(1, out_H) if (j * H_in) % out_H != 0)"
+      scan_W: "W_in + sum(1 for o in range(1, out_W) if (o * W_in) % out_W != 0)"
+    flops: "N * C * scan_H * scan_W"
+    bytes: "(N * C * H_in * W_in + N * C * out_H * out_W) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/pool/adaptive_avg_pool2d/adaptive_avg_pool2d.py
+    kernel_map:
+      adaptive_avg_pool2d_kernel: AdaptiveAvgPool2dKernel
+    op: tileops/ops/pool/adaptive_avg_pool2d.py
+    test: tests/ops/test_pool.py
+    bench: benchmarks/ops/bench_pool.py
+    bench_manifest_driven: true

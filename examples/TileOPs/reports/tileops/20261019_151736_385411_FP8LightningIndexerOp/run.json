@@ -1,0 +1,360 @@
+{
+  "schema_version": 2,
+  "operator": "FP8LightningIndexerOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261019_151736_385411_FP8LightningIndexerOp",
+    "generated_at": "2026-10-19T15:20:19.186625+08:00",
+    "project_root": "/home/developer/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "c840ae1763725f068619af474dc5eac630fa6209",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_fp8_lightning_indexer.py",
+    "benchmark_file": "benchmarks/ops/bench_fp8_lightning_indexer.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_fp8_lightning_indexer.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_fp8_lightning_indexer.py",
+        "-sv",
+        "--junitxml=/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/pytest/benchmark.xml"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-19T15:20:19.186625+08:00",
+      "evaluation_scope": "FP8LightningIndexerOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261019_151736_385411_FP8LightningIndexerOp",
+      "git_commit": "c840ae1763725f068619af474dc5eac630fa6209",
+      "correctness_target": "tests/ops/test_fp8_lightning_indexer.py",
+      "benchmark_target": "benchmarks/ops/bench_fp8_lightning_indexer.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 4,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 4,
+    "passed_cases": 4,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 3,
+    "benchmark_failed": 0,
+    "case_count": 3,
+    "msprof_case_count": 3,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_fp8_lightning_indexer::test_indexer[1-4096-32-64-8192-1-True-None]",
+        "name": "test_indexer[1-4096-32-64-8192-1-True-None]",
+        "classname": "tests.ops.test_fp8_lightning_indexer",
+        "time_s": 8.077,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8LightningIndexerOp",
+          "op_module": "tileops.ops.attention_indexing.fp8_lightning_indexer",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_lightning_indexer::test_indexer[1-8192-32-64-8192-1-True-None]",
+        "name": "test_indexer[1-8192-32-64-8192-1-True-None]",
+        "classname": "tests.ops.test_fp8_lightning_indexer",
+        "time_s": 6.703,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8LightningIndexerOp",
+          "op_module": "tileops.ops.attention_indexing.fp8_lightning_indexer",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_lightning_indexer::test_indexer[1-4096-32-64-8192-2-True-None]",
+        "name": "test_indexer[1-4096-32-64-8192-2-True-None]",
+        "classname": "tests.ops.test_fp8_lightning_indexer",
+        "time_s": 8.421,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8LightningIndexerOp",
+          "op_module": "tileops.ops.attention_indexing.fp8_lightning_indexer",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fp8_lightning_indexer::test_indexer_rejects_bf16_inputs_with_external_scale",
+        "name": "test_indexer_rejects_bf16_inputs_with_external_scale",
+        "classname": "tests.ops.test_fp8_lightning_indexer",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_fp8_lightning_indexer::test_fp8_lightning_indexer_bench[lightning-indexer-smoke-s1k-h8-d64]",
+        "name": "test_fp8_lightning_indexer_bench[lightning-indexer-smoke-s1k-h8-d64]",
+        "classname": "benchmarks.ops.bench_fp8_lightning_indexer",
+        "time_s": 31.017,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8LightningIndexerOp",
+          "op_module": "tileops.ops.attention_indexing.fp8_lightning_indexer",
+          "tileops_latency_us": "134.9400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fp8_lightning_indexer::test_fp8_lightning_indexer_bench[lightning-indexer-bf16-s8k-h32-d64]",
+        "name": "test_fp8_lightning_indexer_bench[lightning-indexer-bf16-s8k-h32-d64]",
+        "classname": "benchmarks.ops.bench_fp8_lightning_indexer",
+        "time_s": 42.318,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8LightningIndexerOp",
+          "op_module": "tileops.ops.attention_indexing.fp8_lightning_indexer",
+          "tileops_latency_us": "10519.7002"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fp8_lightning_indexer::test_fp8_lightning_indexer_bench[lightning-indexer-bf16-s4k-h32-d64]",
+        "name": "test_fp8_lightning_indexer_bench[lightning-indexer-bf16-s4k-h32-d64]",
+        "classname": "benchmarks.ops.bench_fp8_lightning_indexer",
+        "time_s": 28.958,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FP8LightningIndexerOp",
+          "op_module": "tileops.ops.attention_indexing.fp8_lightning_indexer",
+          "tileops_latency_us": "5288.1602"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "FP8LightningIndexerOp",
+        "case_id": "FP8LightningIndexerOp-fad6cac4d9ed",
+        "label": "lightning-indexer-smoke-s1k-h8-d64",
+        "params": {
+          "batch": 1,
+          "clean_logits": true,
+          "heads": 8,
+          "index_dim": 64,
+          "kv_group": 1,
+          "seq_len": 1024,
+          "seq_len_kv": 1024
+        },
+        "config": {
+          "block_N": 64,
+          "block_Q": 8,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 134.940002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 2.766,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 930.7039794921875,
+        "performance_tops": 8.264243125915527,
+        "computility_tops": 298.78363037109375,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/artifacts/msprof/_fp8_lightning_indexer_main_mix_aic_xsiu1vjf",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_fp8_lightning_indexer_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_fp8_lightning_indexer_main"
+          ],
+          "kernel_name_requested": "_fp8_lightning_indexer_main",
+          "kernel_name_resolved": "_fp8_lightning_indexer_main",
+          "latency_us": 134.940002,
+          "max_latency_us": 134.940002,
+          "min_latency_us": 134.940002,
+          "op_name": "_fp8_lightning_indexer_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FP8LightningIndexerOp",
+        "case_id": "FP8LightningIndexerOp-662c725c1306",
+        "label": "lightning-indexer-bf16-s8k-h32-d64",
+        "params": {
+          "batch": 1,
+          "clean_logits": true,
+          "heads": 32,
+          "index_dim": 64,
+          "kv_group": 1,
+          "seq_len": 8192,
+          "seq_len_kv": 8192
+        },
+        "config": {
+          "block_N": 64,
+          "block_Q": 8,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 10519.700195,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.0403,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 1502.17578125,
+        "performance_tops": 27.038894653320312,
+        "computility_tops": 299.0943603515625,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/artifacts/msprof/_fp8_lightning_indexer_main_mix_aic_0amx7lr8",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_fp8_lightning_indexer_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_fp8_lightning_indexer_main"
+          ],
+          "kernel_name_requested": "_fp8_lightning_indexer_main",
+          "kernel_name_resolved": "_fp8_lightning_indexer_main",
+          "latency_us": 10519.700195,
+          "max_latency_us": 10519.700195,
+          "min_latency_us": 10519.700195,
+          "op_name": "_fp8_lightning_indexer_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FP8LightningIndexerOp",
+        "case_id": "FP8LightningIndexerOp-f735745f49b9",
+        "label": "lightning-indexer-bf16-s4k-h32-d64",
+        "params": {
+          "batch": 1,
+          "clean_logits": true,
+          "heads": 32,
+          "index_dim": 64,
+          "kv_group": 1,
+          "seq_len": 4096,
+          "seq_len_kv": 8192
+        },
+        "config": {
+          "block_N": 64,
+          "block_Q": 8,
+          "num_stages": 2
+        },
+        "tag": "tileops",
+        "latency_us": 5288.160156,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 8.9919,
+        "bandwidth_tb_s": 1.75,
+        "achieved_bandwidth_tb_s": 1.75,
+        "roofline_bw_theoretical_tb_s": null,
+        "arithmetic_intensity_ops_per_byte": 4514.8408203125,
+        "performance_tops": 26.894142150878906,
+        "computility_tops": 299.0943603515625,
+        "artifact_dir": "/home/developer/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261019_151736_385411_FP8LightningIndexerOp/artifacts/msprof/_fp8_lightning_indexer_main_mix_aic_g4yvm4jr",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_fp8_lightning_indexer_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_fp8_lightning_indexer_main"
+          ],
+          "kernel_name_requested": "_fp8_lightning_indexer_main",
+          "kernel_name_resolved": "_fp8_lightning_indexer_main",
+          "latency_us": 5288.160156,
+          "max_latency_us": 5288.160156,
+          "min_latency_us": 5288.160156,
+          "op_name": "_fp8_lightning_indexer_main_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "FP8LightningIndexerOp",
+      "family": "attention_indexing",
+      "cases": 4,
+      "passed": 4,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 3,
+      "ratio_range": {
+        "min": 2.766,
+        "max": 9.0403
+      }
+    }
+  ],
+  "warnings": []
+}

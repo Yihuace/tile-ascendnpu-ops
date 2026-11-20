@@ -1,0 +1,167 @@
+{
+  "op": "FusedAddRMSNormFwdOp",
+  "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+  "target_kernel_name": "main",
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "smoke-small-float32",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        64,
+        512
+      ],
+      "dtype": "float32",
+      "params": {
+        "m": 64,
+        "n": 512,
+        "eps": 1e-06
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "smoke-small-float16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        64,
+        512
+      ],
+      "dtype": "float16",
+      "params": {
+        "m": 64,
+        "n": 512,
+        "eps": 1e-06
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "smoke-small-bfloat16",
+      "label": "smoke-small",
+      "marks": [],
+      "shape": [
+        64,
+        512
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "m": 64,
+        "n": 512,
+        "eps": 1e-06
+      },
+      "kind": "smoke",
+      "reason": "",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "llama-3.1-8b-prefill-float16",
+      "label": "llama-3.1-8b-prefill",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "float16",
+      "params": {
+        "m": 2048,
+        "n": 4096,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "结构轴(基线/拉满/min-grid)与参数轴(num_cores 24/48/96/192)均搜尽,所有候选与基线差异都落在 no-op 对照测出的噪声底内(89us 用例 -4.6%、3us 用例 -14.8%);交付件保持 Stage 3 结构不变",
+      "tuning_status": "no_gain"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "llama-3.1-8b-prefill-bfloat16",
+      "label": "llama-3.1-8b-prefill",
+      "marks": [],
+      "shape": [
+        2048,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "m": 2048,
+        "n": 4096,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "结构轴(基线/拉满/min-grid)与参数轴(num_cores 24/48/96/192)均搜尽,所有候选与基线差异都落在 no-op 对照测出的噪声底内(89us 用例 -4.6%、3us 用例 -14.8%);交付件保持 Stage 3 结构不变",
+      "tuning_status": "no_gain"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "llama-3.1-8b-decode-bfloat16",
+      "label": "llama-3.1-8b-decode",
+      "marks": [],
+      "shape": [
+        1,
+        4096
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "m": 1,
+        "n": 4096,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "结构轴(基线/拉满/min-grid)与参数轴(num_cores 24/48/96/192)均搜尽,所有候选与基线差异都落在 no-op 对照测出的噪声底内(89us 用例 -4.6%、3us 用例 -14.8%);交付件保持 Stage 3 结构不变",
+      "tuning_status": "no_gain"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "llama-3.1-70b-prefill-float16",
+      "label": "llama-3.1-70b-prefill",
+      "marks": [],
+      "shape": [
+        2048,
+        8192
+      ],
+      "dtype": "float16",
+      "params": {
+        "m": 2048,
+        "n": 8192,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "结构轴(基线/拉满/min-grid)与参数轴(num_cores 24/48/96/192)均搜尽,所有候选与基线差异都落在 no-op 对照测出的噪声底内(89us 用例 -4.6%、3us 用例 -14.8%);交付件保持 Stage 3 结构不变",
+      "tuning_status": "no_gain"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_rms_norm.py",
+      "kernel_id": "tileops/kernels/norm/fused_add_rms_norm/fused_add_rms_norm_kernel/_fused_add_rms_norm_kernel.py::_fused_add_rms_norm_kernel::main",
+      "workload_id": "llama-3.1-70b-prefill-bfloat16",
+      "label": "llama-3.1-70b-prefill",
+      "marks": [],
+      "shape": [
+        2048,
+        8192
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "m": 2048,
+        "n": 8192,
+        "eps": 1e-06
+      },
+      "kind": "tune",
+      "reason": "结构轴(基线/拉满/min-grid)与参数轴(num_cores 24/48/96/192)均搜尽,所有候选与基线差异都落在 no-op 对照测出的噪声底内(89us 用例 -4.6%、3us 用例 -14.8%);交付件保持 Stage 3 结构不变",
+      "tuning_status": "no_gain"
+    }
+  ]
+}

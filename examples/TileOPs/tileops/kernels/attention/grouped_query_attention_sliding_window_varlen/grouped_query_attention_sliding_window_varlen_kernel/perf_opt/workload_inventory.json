@@ -1,0 +1,538 @@
+{
+ "workloads": [
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "gqa-sw-varlen-fwd-smoke-float16",
+   "label": "gqa-sw-varlen-fwd-smoke",
+   "marks": [],
+   "shape": {
+    "q": [
+     128,
+     128
+    ],
+    "k": [
+     128,
+     128
+    ],
+    "batch": 2,
+    "total_q": 256,
+    "total_k": 256,
+    "max_seqlen_q": 128
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 2,
+    "seqlens_q": [
+     128,
+     128
+    ],
+    "seqlens_k": [
+     128,
+     128
+    ],
+    "heads": 8,
+    "heads_kv": 2,
+    "dim": 64,
+    "is_causal": true,
+    "window_size_left": -1,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "smoke",
+   "precision_pass": true,
+   "reason": "label token `smoke` (standalone `-`-separated word): precision-only regression at every merge and at the end; no performance record, no winner selection (opt_log.md section 1)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "gqa-sw-varlen-fwd-smoke-bfloat16",
+   "label": "gqa-sw-varlen-fwd-smoke",
+   "marks": [],
+   "shape": {
+    "q": [
+     128,
+     128
+    ],
+    "k": [
+     128,
+     128
+    ],
+    "batch": 2,
+    "total_q": 256,
+    "total_k": 256,
+    "max_seqlen_q": 128
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 2,
+    "seqlens_q": [
+     128,
+     128
+    ],
+    "seqlens_k": [
+     128,
+     128
+    ],
+    "heads": 8,
+    "heads_kv": 2,
+    "dim": 64,
+    "is_causal": true,
+    "window_size_left": -1,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "smoke",
+   "precision_pass": true,
+   "reason": "label token `smoke` (standalone `-`-separated word): precision-only regression at every merge and at the end; no performance record, no winner selection (opt_log.md section 1)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-8b-short-w256-float16",
+   "label": "llama-3.1-8b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "batch": 4,
+    "total_q": 2048,
+    "total_k": 2048,
+    "max_seqlen_q": 512
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "seqlens_k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-8b-short-w256-bfloat16",
+   "label": "llama-3.1-8b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "batch": 4,
+    "total_q": 2048,
+    "total_k": 2048,
+    "max_seqlen_q": 512
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "seqlens_k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-8b-long-w1024-float16",
+   "label": "llama-3.1-8b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "batch": 4,
+    "total_q": 8192,
+    "total_k": 8192,
+    "max_seqlen_q": 2048
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "seqlens_k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-8b-long-w1024-bfloat16",
+   "label": "llama-3.1-8b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "batch": 4,
+    "total_q": 8192,
+    "total_k": 8192,
+    "max_seqlen_q": 2048
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "seqlens_k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "heads": 32,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-70b-short-w256-float16",
+   "label": "llama-3.1-70b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "batch": 4,
+    "total_q": 2048,
+    "total_k": 2048,
+    "max_seqlen_q": 512
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "seqlens_k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-70b-short-w256-bfloat16",
+   "label": "llama-3.1-70b-short-w256",
+   "marks": [],
+   "shape": {
+    "q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "batch": 4,
+    "total_q": 2048,
+    "total_k": 2048,
+    "max_seqlen_q": 512
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "seqlens_k": [
+     512,
+     512,
+     512,
+     512
+    ],
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 256,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-70b-long-w1024-float16",
+   "label": "llama-3.1-70b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "batch": 4,
+    "total_q": 8192,
+    "total_k": 8192,
+    "max_seqlen_q": 2048
+   },
+   "dtype": "float16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "seqlens_k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  },
+  {
+   "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_grouped_query_attention_sliding_window_varlen.py::test_gqa_sliding_window_varlen_fwd_bench",
+   "kernel_id": "examples/TileOPs/tileops/kernels/attention/grouped_query_attention_sliding_window_varlen/grouped_query_attention_sliding_window_varlen_kernel/_gqa_sw_fwd_varlen_kernel.py::_gqa_sw_fwd_varlen_kernel::_gqa_sw_fwd_varlen_main",
+   "workload_id": "llama-3.1-70b-long-w1024-bfloat16",
+   "label": "llama-3.1-70b-long-w1024",
+   "marks": [],
+   "shape": {
+    "q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "batch": 4,
+    "total_q": 8192,
+    "total_k": 8192,
+    "max_seqlen_q": 2048
+   },
+   "dtype": "bfloat16",
+   "params": {
+    "batch": 4,
+    "seqlens_q": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "seqlens_k": [
+     2048,
+     2048,
+     2048,
+     2048
+    ],
+    "heads": 64,
+    "heads_kv": 8,
+    "dim": 128,
+    "is_causal": true,
+    "window_size_left": 1024,
+    "window_size_right": -1,
+    "block": [
+     64,
+     256
+    ],
+    "num_stages": 1
+   },
+   "kind": "tune",
+   "tuning_status": "winner_merged",
+   "reason": "Round 13: G=2 head-group batching winner merged into perf_opt/_gqa_sw_fwd_varlen_kernel.py (sha 6befe384, candidate r13_g2_headgroup). Two query heads sharing one KV head now share the K/V GM->L1 loads; per-workload msprof Task Duration vs r9_final_sf32 (sha d98cc867): 8b-long fp16 2017.22->1767.48 (1.141x), 8b-long bf16 2036.34->1798.08 (1.133x), 70b-long fp16 3991.16->3487.04 (1.145x), 70b-long bf16 4041.12->3533.76 (1.144x), 8b-short fp16 344.56->312.60 (1.102x), 8b-short bf16 350.88->311.14 (1.128x), 70b-short fp16 642.48->572.08 (1.123x), 70b-short bf16 647.30->575.64 (1.125x). L0 4/4 + contract, L1 26/26, L2 12/12, Boundary 9/9 all PASS on the promoted file (logs/round13/final_all.log)."
+  }
+ ]
+}

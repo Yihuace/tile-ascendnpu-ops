@@ -1,0 +1,390 @@
+{
+  "schema_version": 2,
+  "operator": "MoeGroupedGemmNopadFwdOp",
+  "status": "partial",
+  "metadata": {
+    "run_id": "20261015_145659_919898_MoeGroupedGemmNopadFwdOp",
+    "generated_at": "2026-10-15T15:04:38.518519+08:00",
+    "project_root": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs",
+    "git_commit": "0d7f496ec0ef9d3b75347e5dd7f702f40031cbd9",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_moe_grouped_gemm_nopad.py",
+    "benchmark_file": "benchmarks/ops/bench_moe_grouped_gemm_nopad.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_moe_grouped_gemm_nopad.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_145659_919898_MoeGroupedGemmNopadFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_moe_grouped_gemm_nopad.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_145659_919898_MoeGroupedGemmNopadFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-15T15:04:38.518519+08:00",
+      "evaluation_scope": "MoeGroupedGemmNopadFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261015_145659_919898_MoeGroupedGemmNopadFwdOp",
+      "git_commit": "0d7f496ec0ef9d3b75347e5dd7f702f40031cbd9",
+      "correctness_target": "tests/ops/test_moe_grouped_gemm_nopad.py",
+      "benchmark_target": "benchmarks/ops/bench_moe_grouped_gemm_nopad.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "8.5.2",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.4+ubuntu.20.4.cann852",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 3,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 3,
+    "passed_cases": 3,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": false,
+    "benchmark_tests": 6,
+    "benchmark_failed": 0,
+    "case_count": 4,
+    "msprof_case_count": 1,
+    "profiler_fallback_count": 3,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_145659_919898_MoeGroupedGemmNopadFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_op[aligned-uniform-bf16]",
+        "name": "test_moe_grouped_gemm_nopad_op[aligned-uniform-bf16]",
+        "classname": "tests.ops.test_moe_grouped_gemm_nopad",
+        "time_s": 7.087,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_op[aligned-skewed-fp16]",
+        "name": "test_moe_grouped_gemm_nopad_op[aligned-skewed-fp16]",
+        "classname": "tests.ops.test_moe_grouped_gemm_nopad",
+        "time_s": 1.914,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_op[unaligned-uniform-bf16]",
+        "name": "test_moe_grouped_gemm_nopad_op[unaligned-uniform-bf16]",
+        "classname": "tests.ops.test_moe_grouped_gemm_nopad",
+        "time_s": 5.016,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_145659_919898_MoeGroupedGemmNopadFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_bench[moe-grouped-gemm-nopad-smoke-float16]",
+        "name": "test_moe_grouped_gemm_nopad_bench[moe-grouped-gemm-nopad-smoke-float16]",
+        "classname": "benchmarks.ops.bench_moe_grouped_gemm_nopad",
+        "time_s": 24.417,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MoeGroupedGemmNopadFwdOp",
+          "op_module": "tileops.ops.moe.moe_grouped_gemm_nopad",
+          "tileops_latency_us": "4.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_bench[moe-grouped-gemm-nopad-smoke-bfloat16]",
+        "name": "test_moe_grouped_gemm_nopad_bench[moe-grouped-gemm-nopad-smoke-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_grouped_gemm_nopad",
+        "time_s": 22.946,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MoeGroupedGemmNopadFwdOp",
+          "op_module": "tileops.ops.moe.moe_grouped_gemm_nopad",
+          "tileops_latency_us": "4.8600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_bench[deepseek-v3-decode-gate-up-bfloat16]",
+        "name": "test_moe_grouped_gemm_nopad_bench[deepseek-v3-decode-gate-up-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_grouped_gemm_nopad",
+        "time_s": 124.304,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MoeGroupedGemmNopadFwdOp",
+          "op_module": "tileops.ops.moe.moe_grouped_gemm_nopad",
+          "tileops_latency_us": "28550.9378",
+          "tileops_tflops": "8.42",
+          "tileops_bandwidth_tbs": "0.53"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_bench[deepseek-v3-prefill-gate-up-bfloat16]",
+        "name": "test_moe_grouped_gemm_nopad_bench[deepseek-v3-prefill-gate-up-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_grouped_gemm_nopad",
+        "time_s": 111.582,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MoeGroupedGemmNopadFwdOp",
+          "op_module": "tileops.ops.moe.moe_grouped_gemm_nopad",
+          "tileops_latency_us": "67656.4125",
+          "tileops_tflops": "28.44",
+          "tileops_bandwidth_tbs": "0.23"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_bench[deepseek-v3-decode-down-bfloat16]",
+        "name": "test_moe_grouped_gemm_nopad_bench[deepseek-v3-decode-down-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_grouped_gemm_nopad",
+        "time_s": 81.707,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MoeGroupedGemmNopadFwdOp",
+          "op_module": "tileops.ops.moe.moe_grouped_gemm_nopad",
+          "tileops_latency_us": "14539.3479",
+          "tileops_tflops": "8.27",
+          "tileops_bandwidth_tbs": "0.52"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_moe_grouped_gemm_nopad::test_moe_grouped_gemm_nopad_bench[deepseek-v3-prefill-down-bfloat16]",
+        "name": "test_moe_grouped_gemm_nopad_bench[deepseek-v3-prefill-down-bfloat16]",
+        "classname": "benchmarks.ops.bench_moe_grouped_gemm_nopad",
+        "time_s": 46.584,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "MoeGroupedGemmNopadFwdOp",
+          "op_module": "tileops.ops.moe.moe_grouped_gemm_nopad",
+          "tileops_latency_us": "31932.6992"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tilelang-mlir-ascend/examples/TileOPs/reports/tileops/20261015_145659_919898_MoeGroupedGemmNopadFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "MoeGroupedGemmNopadFwdOp",
+        "case_id": "MoeGroupedGemmNopadFwdOp-a3b449f13a09",
+        "label": "deepseek-v3-decode-gate-up",
+        "params": {
+          "dtype": "bfloat16",
+          "dtype_str": "bfloat16",
+          "k": 7168,
+          "n": 4096,
+          "num_experts": 256,
+          "numel": 4096
+        },
+        "config": {
+          "block_k": 64,
+          "block_m": 64,
+          "block_n": 256,
+          "group_size_m": 1,
+          "num_stages": 3
+        },
+        "tag": "tileops",
+        "latency_us": 28550.937843322754,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.5297430265513056,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 8.424177513743224,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "MoeGroupedGemmNopadFwdOp",
+        "case_id": "MoeGroupedGemmNopadFwdOp-cfc0a433d6d1",
+        "label": "deepseek-v3-prefill-gate-up",
+        "params": {
+          "dtype": "bfloat16",
+          "dtype_str": "bfloat16",
+          "k": 7168,
+          "n": 4096,
+          "num_experts": 256,
+          "numel": 32768
+        },
+        "config": {
+          "block_k": 64,
+          "block_m": 64,
+          "block_n": 256,
+          "group_size_m": 1,
+          "num_stages": 3
+        },
+        "tag": "tileops",
+        "latency_us": 67656.41250610352,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.23309812707815805,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 28.439955317382758,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "MoeGroupedGemmNopadFwdOp",
+        "case_id": "MoeGroupedGemmNopadFwdOp-392fc6891e46",
+        "label": "deepseek-v3-decode-down",
+        "params": {
+          "dtype": "bfloat16",
+          "dtype_str": "bfloat16",
+          "k": 2048,
+          "n": 7168,
+          "num_experts": 256,
+          "numel": 4096
+        },
+        "config": {
+          "block_k": 64,
+          "block_m": 64,
+          "block_n": 256,
+          "group_size_m": 1,
+          "num_stages": 3
+        },
+        "tag": "tileops",
+        "latency_us": 14539.3479347229,
+        "prof_mode": "events",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": null,
+        "bandwidth_tb_s": 0.5221479170925891,
+        "arithmetic_intensity_ops_per_byte": null,
+        "performance_tops": 8.271284573966142,
+        "computility_tops": null,
+        "artifact_dir": null,
+        "msprof": null
+      },
+      {
+        "operator": "MoeGroupedGemmNopadFwdOp",
+        "case_id": "MoeGroupedGemmNopadFwdOp-d7ca7d68a057",
+        "label": "deepseek-v3-prefill-down",
+        "params": {
+          "dtype": "bfloat16",
+          "dtype_str": "bfloat16",
+          "k": 2048,
+          "n": 7168,
+          "num_experts": 256,
+          "numel": 32768
+        },
+        "config": {
+          "block_k": 64,
+          "block_m": 64,
+          "block_n": 256,
+          "group_size_m": 1,
+          "num_stages": 3
+        },
+        "tag": "tileops",
+        "latency_us": 31932.699219,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 10.1368,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 223.64889526367188,
+        "performance_tops": 30.128137588500977,
+        "computility_tops": 297.2159729003906,
+        "artifact_dir": "/mnt/workspace/msprof-out",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "main_mix_aic"
+          ],
+          "kernel_name_requested": "main_mix_aic",
+          "kernel_name_resolved": "main_mix_aic",
+          "latency_us": 31932.699219,
+          "max_latency_us": 31932.699219,
+          "min_latency_us": 31932.699219,
+          "op_name": "main_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "MoeGroupedGemmNopadFwdOp",
+      "family": "moe",
+      "cases": 3,
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 4,
+      "ratio_range": {
+        "min": 10.1368,
+        "max": 10.1368
+      }
+    }
+  ],
+  "warnings": [
+    "MoeGroupedGemmNopadFwdOp/MoeGroupedGemmNopadFwdOp-a3b449f13a09: requested msprof but recorded events",
+    "MoeGroupedGemmNopadFwdOp/MoeGroupedGemmNopadFwdOp-cfc0a433d6d1: requested msprof but recorded events",
+    "MoeGroupedGemmNopadFwdOp/MoeGroupedGemmNopadFwdOp-392fc6891e46: requested msprof but recorded events",
+    "correctness passed, but the benchmark stage did not produce valid records"
+  ]
+}

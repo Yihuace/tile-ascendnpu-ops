@@ -1,0 +1,663 @@
+{
+  "schema_version": 2,
+  "operator": "CosFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261104_081309_102403_CosFwdOp",
+    "generated_at": "2026-11-04T08:18:03.742987+00:00",
+    "project_root": "/data/work/fan-cos/examples/TileOPs",
+    "git_commit": "770f6efdba90581c55888e16066a496a6abf2d59",
+    "python": "3.11.15",
+    "platform": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+    "test_file": "tests/ops/test_cos.py",
+    "benchmark_file": "benchmarks/ops/bench_cos.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/python3.11.15/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_cos.py",
+        "-sv",
+        "--junitxml=/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/python3.11.15/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_cos.py",
+        "-sv",
+        "--junitxml=/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.0.1.dev2",
+      "date": "2026-11-04T08:18:03.742987+00:00",
+      "evaluation_scope": "CosFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261104_081309_102403_CosFwdOp",
+      "git_commit": "770f6efdba90581c55888e16066a496a6abf2d59",
+      "correctness_target": "tests/ops/test_cos.py",
+      "benchmark_target": "benchmarks/ops/bench_cos.py"
+    },
+    "environment": {
+      "npu": "Ascend910B2C x 1",
+      "cpu": "x86_64",
+      "cann": "9.0.0",
+      "driver": "26.0.rc1",
+      "pytorch": "2.10.0+cpu",
+      "pytorch_npu": "2.10.0",
+      "tilelang": null,
+      "python": "3.11.15",
+      "os": "Linux-5.15.0-113-generic-x86_64-with-glibc2.38",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 9,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 9,
+    "passed_cases": 9,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 7,
+    "msprof_case_count": 7,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_op[1048576-dtype0]",
+        "name": "test_cos_op[1048576-dtype0]",
+        "classname": "tests.ops.test_cos",
+        "time_s": 17.088,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "max_abs_err": "4.77e-07"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_op[1048576-dtype1]",
+        "name": "test_cos_op[1048576-dtype1]",
+        "classname": "tests.ops.test_cos",
+        "time_s": 2.33,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_op[1048576-dtype2]",
+        "name": "test_cos_op[1048576-dtype2]",
+        "classname": "tests.ops.test_cos",
+        "time_s": 2.513,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_op[4000000-dtype3]",
+        "name": "test_cos_op[4000000-dtype3]",
+        "classname": "tests.ops.test_cos",
+        "time_s": 1.273,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_op[4000001-dtype4]",
+        "name": "test_cos_op[4000001-dtype4]",
+        "classname": "tests.ops.test_cos",
+        "time_s": 1.232,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_rejects_non_float_dtype",
+        "name": "test_cos_rejects_non_float_dtype",
+        "classname": "tests.ops.test_cos",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_eval_roofline",
+        "name": "test_cos_eval_roofline",
+        "classname": "tests.ops.test_cos",
+        "time_s": 0.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_wide_range_regression",
+        "name": "test_cos_wide_range_regression",
+        "classname": "tests.ops.test_cos",
+        "time_s": 1.273,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_cos::test_cos_quadrant_boundaries",
+        "name": "test_cos_quadrant_boundaries",
+        "classname": "tests.ops.test_cos",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[smoke-1m-float32]",
+        "name": "test_cos_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 31.341,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "13.3805"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[smoke-1m-float16]",
+        "name": "test_cos_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 24.259,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "9.9204"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[smoke-1m-bfloat16]",
+        "name": "test_cos_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 24.28,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "10.2004"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[elementwise-16m-float16]",
+        "name": "test_cos_bench[elementwise-16m-float16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 25.3,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "96.7839"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[elementwise-16m-bfloat16]",
+        "name": "test_cos_bench[elementwise-16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 24.216,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "98.9240"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[elementwise-16m-float32]",
+        "name": "test_cos_bench[elementwise-16m-float32]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 24.252,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "108.8444"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[elementwise-64m-float16]",
+        "name": "test_cos_bench[elementwise-64m-float16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 24.512,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "371.1949"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[elementwise-64m-bfloat16]",
+        "name": "test_cos_bench[elementwise-64m-bfloat16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 23.311,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "378.2751"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[elementwise-256m-float16]",
+        "name": "test_cos_bench[elementwise-256m-float16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 25.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "1474.5990"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_cos::test_cos_bench[elementwise-256m-bfloat16]",
+        "name": "test_cos_bench[elementwise-256m-bfloat16]",
+        "classname": "benchmarks.ops.bench_cos",
+        "time_s": 24.791,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "CosFwdOp",
+          "op_module": "tileops.ops.elementwise.cos",
+          "tileops_latency_us": "1501.9000"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "CosFwdOp",
+        "case_id": "CosFwdOp-948c5107d2c0",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 96.783875,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 62.8277,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 10.012752532958984,
+        "performance_tops": 3.471378803253174,
+        "computility_tops": 5.525236129760742,
+        "artifact_dir": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/artifacts/msprof/main_4ui86a3t",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 96.783875,
+          "max_latency_us": 96.783875,
+          "min_latency_us": 96.783875,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "CosFwdOp",
+        "case_id": "CosFwdOp-d4c3fec3b359",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 98.923958,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 64.53710000000001,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 10.512994766235352,
+        "performance_tops": 3.565960168838501,
+        "computility_tops": 5.5254435539245605,
+        "artifact_dir": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/artifacts/msprof/main_avluciy0",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 98.923958,
+          "max_latency_us": 98.923958,
+          "min_latency_us": 98.923958,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "CosFwdOp",
+        "case_id": "CosFwdOp-e8fa45bea844",
+        "label": "elementwise-16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 108.844353,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 53.0948,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 4.755896091461182,
+        "performance_tops": 2.9322917461395264,
+        "computility_tops": 5.522743225097656,
+        "artifact_dir": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/artifacts/msprof/main_s2dvlvg7",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 108.844353,
+          "max_latency_us": 108.844353,
+          "min_latency_us": 108.844353,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "CosFwdOp",
+        "case_id": "CosFwdOp-a0be62f722ac",
+        "label": "elementwise-64m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 371.194855,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 65.5009,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 8.101737022399902,
+        "performance_tops": 3.6191041469573975,
+        "computility_tops": 5.52527379989624,
+        "artifact_dir": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/artifacts/msprof/main_56k_o69z",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 371.194855,
+          "max_latency_us": 371.194855,
+          "min_latency_us": 371.194855,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "CosFwdOp",
+        "case_id": "CosFwdOp-778504803338",
+        "label": "elementwise-64m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 378.275116,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 67.4836,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 8.303494453430176,
+        "performance_tops": 3.7287938594818115,
+        "computility_tops": 5.525479793548584,
+        "artifact_dir": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/artifacts/msprof/main_47nyygs9",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 378.275116,
+          "max_latency_us": 378.275116,
+          "min_latency_us": 378.275116,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "CosFwdOp",
+        "case_id": "CosFwdOp-45771d3e31b7",
+        "label": "elementwise-256m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 1474.598999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 65.94680000000001,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 5.521722316741943,
+        "performance_tops": 3.6437501907348633,
+        "computility_tops": 5.525284290313721,
+        "artifact_dir": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/artifacts/msprof/main_tn_ta3hg",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 1474.598999,
+          "max_latency_us": 1474.598999,
+          "min_latency_us": 1474.598999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "CosFwdOp",
+        "case_id": "CosFwdOp-6c988651021b",
+        "label": "elementwise-256m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 12288
+        },
+        "tag": "tileops",
+        "latency_us": 1501.900024,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 67.9804,
+        "bandwidth_tb_s": 1.7999999523162842,
+        "arithmetic_intensity_ops_per_byte": 5.797593116760254,
+        "performance_tops": 3.756251335144043,
+        "computility_tops": 5.52548885345459,
+        "artifact_dir": "/data/work/fan-cos/examples/TileOPs/reports/tileops/20261104_081309_102403_CosFwdOp/artifacts/msprof/main_awnaw8b6",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 1501.900024,
+          "max_latency_us": 1501.900024,
+          "min_latency_us": 1501.900024,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "CosFwdOp",
+      "family": "elementwise",
+      "cases": 9,
+      "passed": 9,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.00029289539999999997,
+      "max_abs_err": 0.000488,
+      "performance_cases": 7,
+      "ratio_range": {
+        "min": 53.0948,
+        "max": 67.9804
+      }
+    }
+  ],
+  "warnings": []
+}

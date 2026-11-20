@@ -1,0 +1,186 @@
+{
+  "kernel_id": "tileops/kernels/moe/grouped_gemm_persistent_3wg/grouped_gemm_persistent_3wg_kernel/_persistent_grouped_gemm_v2_kernel.py::_persistent_grouped_gemm_v2_kernel::main",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fused_moe_experts.py",
+  "benchmark_manifest": "examples/TileOPs/tileops/manifest/moe.yaml::FusedMoEExpertsNopadPersistent3WGFwdOp.workloads",
+  "target_kernel_name": "main_mix_aic",
+  "workloads": [
+    {
+      "workload_id": "deepseek-v3-decode-bfloat16",
+      "label": "deepseek-v3-decode",
+      "marks": [],
+      "kind": "tune",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fused_moe_experts.py",
+      "kernel_id": "tileops/kernels/moe/grouped_gemm_persistent_3wg/grouped_gemm_persistent_3wg_kernel/_persistent_grouped_gemm_v2_kernel.py::_persistent_grouped_gemm_v2_kernel::main",
+      "dtype": "bfloat16",
+      "tuning_status": "winner_merged",
+      "reason": "round 8 (2026-10-26): strided flat task index (round 8 C1). 39856.0(stage3 baseline) -> 18199.9(v1) -> 14332.0(v2) -> 13512.1(v3) us, Ratio 47.11 -> 59.84 -> 61.15. No regression.",
+      "params": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 256,
+        "num_tokens": 512,
+        "top_k": 8
+      },
+      "shape": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 256,
+        "num_tokens": 512,
+        "top_k": 8
+      }
+    },
+    {
+      "workload_id": "deepseek-v3-prefill-bfloat16",
+      "label": "deepseek-v3-prefill",
+      "marks": [],
+      "kind": "tune",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fused_moe_experts.py",
+      "kernel_id": "tileops/kernels/moe/grouped_gemm_persistent_3wg/grouped_gemm_persistent_3wg_kernel/_persistent_grouped_gemm_v2_kernel.py::_persistent_grouped_gemm_v2_kernel::main",
+      "dtype": "bfloat16",
+      "tuning_status": "winner_merged",
+      "reason": "round 8 (2026-10-26): strided flat task index (round 8 C1). 74085.0(stage3 baseline) -> 38133.3(v1) -> 26215.3(v2) -> 18207.8(v3) us, Ratio 37.72 -> 54.19 -> 58.26. Still below the 60% line: the remaining gap is MTE2 port bytes (30.03 GB, bit-identical before/after) at the L0C-capacity floor plus ~12% port idle, not A re-read (GM read already equals the incompressible lower bound 15.51 GB).",
+      "params": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 256,
+        "num_tokens": 4096,
+        "top_k": 8
+      },
+      "shape": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 256,
+        "num_tokens": 4096,
+        "top_k": 8
+      }
+    },
+    {
+      "workload_id": "fused-moe-experts-3wg-smoke-bfloat16",
+      "label": "fused-moe-experts-3wg-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "kind": "smoke",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fused_moe_experts.py",
+      "kernel_id": "tileops/kernels/moe/grouped_gemm_persistent_3wg/grouped_gemm_persistent_3wg_kernel/_persistent_grouped_gemm_v2_kernel.py::_persistent_grouped_gemm_v2_kernel::main",
+      "dtype": "bfloat16",
+      "reason": "manifest label contains standalone 'smoke' token -> precision regression only; precision_pass=true Re-verified in round 7 (v2): tests/ops/test_fused_moe_experts.py 20/20 and the smoke benchmark cases pass; the smoke K=256 takes the serial fallback body (the D2 pair needs K % (2*block_k) == 0).",
+      "precision_pass": true,
+      "params": {
+        "dtype": "float16",
+        "dtype_str": "float16",
+        "ffn_size": 128,
+        "hidden_size": 256,
+        "num_experts": 4,
+        "num_tokens": 16,
+        "top_k": 2
+      },
+      "shape": {
+        "dtype": "float16",
+        "dtype_str": "float16",
+        "ffn_size": 128,
+        "hidden_size": 256,
+        "num_experts": 4,
+        "num_tokens": 16,
+        "top_k": 2
+      }
+    },
+    {
+      "workload_id": "fused-moe-experts-3wg-smoke-float16",
+      "label": "fused-moe-experts-3wg-smoke",
+      "marks": [
+        "smoke"
+      ],
+      "kind": "smoke",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fused_moe_experts.py",
+      "kernel_id": "tileops/kernels/moe/grouped_gemm_persistent_3wg/grouped_gemm_persistent_3wg_kernel/_persistent_grouped_gemm_v2_kernel.py::_persistent_grouped_gemm_v2_kernel::main",
+      "dtype": "float16",
+      "reason": "manifest label contains standalone 'smoke' token -> precision regression only; precision_pass=true Re-verified in round 7 (v2): tests/ops/test_fused_moe_experts.py 20/20 and the smoke benchmark cases pass; the smoke K=256 takes the serial fallback body (the D2 pair needs K % (2*block_k) == 0).",
+      "precision_pass": true,
+      "params": {
+        "dtype": "float16",
+        "dtype_str": "float16",
+        "ffn_size": 128,
+        "hidden_size": 256,
+        "num_experts": 4,
+        "num_tokens": 16,
+        "top_k": 2
+      },
+      "shape": {
+        "dtype": "float16",
+        "dtype_str": "float16",
+        "ffn_size": 128,
+        "hidden_size": 256,
+        "num_experts": 4,
+        "num_tokens": 16,
+        "top_k": 2
+      }
+    },
+    {
+      "workload_id": "qwen3-235b-decode-bfloat16",
+      "label": "qwen3-235b-decode",
+      "marks": [],
+      "kind": "tune",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fused_moe_experts.py",
+      "kernel_id": "tileops/kernels/moe/grouped_gemm_persistent_3wg/grouped_gemm_persistent_3wg_kernel/_persistent_grouped_gemm_v2_kernel.py::_persistent_grouped_gemm_v2_kernel::main",
+      "dtype": "bfloat16",
+      "tuning_status": "winner_merged",
+      "reason": "round 8 (2026-10-26): strided flat task index (round 8 C1). 14040.7(stage3 baseline) -> 10221.1(v1) -> 7849.5(v2) -> 6907.3(v3) us, Ratio 42.94 -> 55.91 -> 61.30. No regression.",
+      "params": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 128,
+        "num_tokens": 512,
+        "top_k": 8
+      },
+      "shape": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 128,
+        "num_tokens": 512,
+        "top_k": 8
+      }
+    },
+    {
+      "workload_id": "qwen3-235b-prefill-bfloat16",
+      "label": "qwen3-235b-prefill",
+      "marks": [],
+      "kind": "tune",
+      "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_fused_moe_experts.py",
+      "kernel_id": "tileops/kernels/moe/grouped_gemm_persistent_3wg/grouped_gemm_persistent_3wg_kernel/_persistent_grouped_gemm_v2_kernel.py::_persistent_grouped_gemm_v2_kernel::main",
+      "dtype": "bfloat16",
+      "tuning_status": "winner_merged",
+      "reason": "round 8 (2026-10-26): strided flat task index (round 8 C1). 36287.3(stage3 baseline) -> 30199.6(v1) -> 21428.2(v2) -> 13139.7(v3) us, Ratio 40.58 -> 56.15 -> 66.03. GM read (L2 miss) 21.40 -> 7.99 GB = the incompressible lower bound; MTE2 port bytes unchanged at 26.11 GB.",
+      "params": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 128,
+        "num_tokens": 4096,
+        "top_k": 8
+      },
+      "shape": {
+        "dtype": "bfloat16",
+        "dtype_str": "bfloat16",
+        "ffn_size": 2048,
+        "hidden_size": 7168,
+        "num_experts": 128,
+        "num_tokens": 4096,
+        "top_k": 8
+      }
+    }
+  ]
+}

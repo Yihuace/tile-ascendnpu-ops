@@ -1,0 +1,1648 @@
+# elementwise.yaml -- manifest entries for the 'elementwise' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+MishFwdOp:
+  ref_api: "torch.nn.functional.mish"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: YOLO-style feature map activation
+    - {input_shape: [16, 256, 80, 80], dtypes: [float16, bfloat16], label: "yolo-p3"}
+    - {input_shape: [16, 512, 40, 40], dtypes: [float16, bfloat16], label: "yolo-p4"}
+    # Full: large FC layer
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "fc-wide"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: mish(x) = x * tanh(softplus(x)); softplus = exp + log1p = 2,
+    # tanh(1, transcendental) + final mul(1) = 4 per elem.
+    flops: "4 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/mish/mish.py
+    kernel_map:
+      mish: MishFwdKernel
+    op: tileops/ops/elementwise/mish.py
+    test: tests/ops/test_mish.py
+    bench: benchmarks/ops/bench_mish.py
+    bench_manifest_driven: true
+
+LerpTensorFwdOp:
+  ref_api: "torch.lerp"
+  # Tensor-weight variant: weight is a tensor that broadcasts together
+  # with input and end (PyTorch's torch.lerp(input, end, weight: Tensor)
+  # overload). Implements the 3-way tensor broadcast variant; the Op
+  # layer pre-broadcasts/expands to contiguous 1-D tensors before kernel
+  # dispatch.
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  variant_of: LerpFwdOp
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      end: {dtype: "same_as(input)"}
+      weight: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+    - "output.shape == broadcast_shapes(input.shape, end.shape, weight.shape)"
+
+  workloads:
+    # Smoke: small same-shape broadcast (1M elements per operand)
+    - {input_shape: [1024, 1024], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (same shape for all 3 inputs)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    # Full: mid-size square
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    # Full: GPU manifest elementwise-256M workload
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.lerp_tensor_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too — E14):
+  #   per output element: 3 flops (sub + mul + add);
+  #   3 reads + 1 write at post-broadcast N_total.
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "3 * N"
+    bytes: "4 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/lerp_tensor/lerp_tensor.py
+    kernel_map:
+      lerp_tensor: LerpTensorFwdKernel
+    op: tileops/ops/elementwise/lerp_tensor.py
+    test: tests/ops/test_lerp_tensor.py
+    bench: benchmarks/ops/bench_lerp_tensor.py
+    bench_manifest_driven: true
+
+CosFwdOp:
+  ref_api: torch.cos
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    shape_rules:
+      - output.shape == input.shape
+
+  workloads:
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/cos/cos.py
+    kernel_map:
+      cos: CosFwdKernel
+    op: tileops/ops/elementwise/cos.py
+    test: tests/ops/test_cos.py
+    bench: benchmarks/ops/bench_cos.py
+    bench_manifest_driven: true
+
+ExpFwdOp:
+  ref_api: torch.exp
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    shape_rules:
+      - output.shape == input.shape
+
+  workloads:
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/exp/exp.py
+    kernel_map:
+      exp: ExpFwdKernel
+    op: tileops/ops/elementwise/exp.py
+    test: tests/ops/test_exp.py
+    bench: benchmarks/ops/bench_exp.py
+    bench_manifest_driven: true
+
+FloorFwdOp:
+  ref_api: torch.floor
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input:
+        # See CeilFwdOp above: integer dtypes stay out of the kernel.
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    shape_rules:
+      - output.shape == input.shape
+
+  workloads:
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/floor/floor.py
+    kernel_map:
+      floor: FloorFwdKernel
+    op: tileops/ops/elementwise/floor.py
+    test: tests/ops/test_floor.py
+    bench: benchmarks/ops/bench_floor.py
+    bench_manifest_driven: true
+
+AddFwdOp:
+  # torch.add(input, other, *, alpha=1): y = input + alpha * other, with
+  # PyTorch broadcasting.  ``alpha`` is baked into the kernel (one
+  # specialization per distinct value).  The GPU op's manifest union also
+  # lists ints/bool; this NPU port follows the GPU/test float subset.
+  ref_api: "torch.add"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      alpha: {type: "int | float", default: 1, kw_only: true}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+      # An integral input takes only an integral alpha that converts to it
+      # (torch.add semantics).
+      - "category(alpha) == 'int' or category(alpha) == category(input.dtype)"
+      - "representable(alpha, input.dtype)"
+
+  workloads:
+    # Smoke: same-shape hidden-state prefill (GPU manifest hidden-state-prefill)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float32, float16, bfloat16], label: "hidden-state-prefill"}
+    # Full: per-channel broadcast over a CNN feature map (GPU manifest cnn-feat-broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float32, float16, bfloat16], label: "cnn-feat-broadcast"}
+    # Full: same-shape FFN projection (GPU manifest llama-7b-ffn)
+    - {input_shape: [1024, 11008], other_shape: [1024, 11008], dtypes: [float32, float16, bfloat16], label: "llama-7b-ffn"}
+    # Full: row-broadcast bias add (GPU manifest linear-bias)
+    - {input_shape: [1024, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "linear-bias"}
+
+  roofline:
+    vars:
+      # Post-broadcast output element count.
+      N: "product(broadcast(input_shape, other_shape))"
+      # Pre-broadcast operand size: the broadcast operand is read once.
+      B: "product(other_shape)"
+    # FLOPs: alpha == 1 folds the scalar multiply away; otherwise one mul and
+    # one add per output element (GPU manifest formula, verbatim).
+    flops: "(1 if alpha == 1 else 2) * N"
+    # Memory: 2 reads at the output size (input + write) plus one read of the
+    # broadcast operand, which the row/scalar reuse kernel consumes in place
+    # instead of materializing it at size N.  Same-shape add: B == N -> 3*N,
+    # identical to the original accounting.  Broadcast shapes that the reuse
+    # plan rejects (a broadcast ``input``, or ``1`` dims interleaved with real
+    # dims) fall back to expand-and-flatten, and ``AddFwdOp.eval_roofline``
+    # reports the 3*N form for them, so a fallback is never over-credited.
+    # Reuse paths: row/fp32-scalar charge 2*N + B; the 2-byte scalar period
+    # path charges 2*N + B*L (one materialized period, streamed from L2).
+    # `eval_roofline()` always reports the exact mode-specific value.
+    bytes: "(2 * N + B) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/add/add.py
+    kernel_map:
+      add: AddFwdKernel
+    op: tileops/ops/elementwise/add.py
+    test: tests/ops/test_add.py
+    bench: benchmarks/ops/bench_add.py
+    bench_manifest_driven: true
+
+
+SubFwdOp:
+  # torch.sub(input, other, *, alpha=1): y = input - alpha * other, with
+  # PyTorch broadcasting.  ``alpha`` is baked into the kernel (one
+  # specialization per distinct value).  The GPU op's manifest union also
+  # lists ints (uint8..int64); this NPU port follows the GPU/test float
+  # subset (float16/bf16/fp32 -- the migration targets).
+  ref_api: "torch.sub"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      alpha: {type: "int | float", default: 1, kw_only: true}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+      # An integral input takes only an integral alpha that converts to it
+      # (torch.sub semantics).
+      - "category(alpha) == 'int' or category(alpha) == category(input.dtype)"
+      - "representable(alpha, input.dtype)"
+
+  workloads:
+    # Smoke: same-shape hidden-state prefill (GPU manifest hidden-state-prefill)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float32, float16, bfloat16], label: "hidden-state-prefill"}
+    # Full: per-channel broadcast over a CNN feature map (GPU manifest cnn-feat-broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float32, float16, bfloat16], label: "cnn-feat-broadcast"}
+    # Full: same-shape FFN projection (GPU manifest llama-7b-ffn)
+    - {input_shape: [1024, 11008], other_shape: [1024, 11008], dtypes: [float32, float16, bfloat16], label: "llama-7b-ffn"}
+    # Full: row-broadcast bias subtraction (GPU manifest linear-bias)
+    - {input_shape: [1024, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "linear-bias"}
+    # Full: same-shape hidden-state (GPU manifest llama-7b-hidden, f16)
+    - {input_shape: [1024, 4096], other_shape: [1024, 4096], dtypes: [float16], label: "llama-7b-hidden"}
+    # Full: same-shape FFN projection (GPU manifest phi-2-ffn, f16)
+    - {input_shape: [1024, 10240], other_shape: [1024, 10240], dtypes: [float16], label: "phi-2-ffn"}
+    # Full: row-broadcast bias subtraction (GPU manifest phi-2-ffn-bias, f16)
+    - {input_shape: [1024, 10240], other_shape: [1, 10240], dtypes: [float16], label: "phi-2-ffn-bias"}
+    # Full: row-broadcast bias subtraction (GPU manifest llama-7b-ffn-bias, f16)
+    - {input_shape: [1024, 11008], other_shape: [1, 11008], dtypes: [float16], label: "llama-7b-ffn-bias"}
+
+  roofline:
+    vars:
+      # Post-broadcast output element count.
+      N: "product(broadcast(input_shape, other_shape))"
+    # FLOPs: alpha == 1 folds the scalar multiply away; otherwise one mul and
+    # one sub per output element (GPU manifest formula, verbatim).
+    flops: "(1 if alpha == 1 else 2) * N"
+    # Memory: 2 reads (both operands at the post-broadcast size) + 1 write.
+    bytes: "3 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/sub/sub.py
+    kernel_map:
+      sub: SubFwdKernel
+    op: tileops/ops/elementwise/sub.py
+    test: tests/ops/test_sub.py
+    bench: benchmarks/ops/bench_sub.py
+    bench_manifest_driven: true
+
+
+GeluAndMulFwdOp:
+  # Fused gated exact-GELU (flashinfer.activation.gelu_and_mul): the input
+  # x = [gate, value] is packed along the last dim, x.shape == (M, 2 * N);
+  # the output is y = gelu(gate) * value with the exact erf-based GELU
+  # (torch.nn.functional.gelu(..., approximate="none")).  The GPU manifest
+  # roofline gives flops = 6 * M * N; the memory term (read x's 2 * M * N
+  # elements + write M * N) is 3 * M * N * elem_bytes.
+  ref_api: "flashinfer.activation.gelu_and_mul"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32", shape: "[M, 2 * N]"}
+    outputs:
+      output: {dtype: "same_as(x)", shape: "[M, N]"}
+    shape_rules:
+      - "output.shape == [x.shape[0], x.shape[1] // 2]"
+
+  workloads:
+    # Smoke: small gated row (gate | value halves)
+    - {M: 16, N: 128, dtypes: [float32, float16, bfloat16], label: "smoke"}
+    # Full: Llama-3.1-8B SwiGLU FFN intermediate (GPU manifest llama-8b-ffn-prefill)
+    - {M: 2048, N: 14336, dtypes: [float16, bfloat16], label: "llama-8b-ffn-prefill"}
+    # Full: decode-time row (GPU manifest llama-8b-ffn-decode)
+    - {M: 1, N: 14336, dtypes: [bfloat16], label: "llama-8b-ffn-decode"}
+    # Full: Qwen3-8B SwiGLU batch-32
+    - {M: 32, N: 12288, dtypes: [float16, bfloat16], label: "qwen3-8b-swiglu-b32"}
+
+  roofline:
+    # FLOPs: gelu(gate) = gate * 0.5 * (1 + erf(gate / sqrt(2))) = 5, plus the
+    # final mul-by-value = 1 -> 6 per output element; M * N output elements.
+    flops: "6 * M * N"
+    bytes: "3 * M * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul.py
+    kernel_map:
+      gelu_and_mul: GeluAndMulFwdKernel
+    op: tileops/ops/elementwise/gelu_and_mul.py
+    test: tests/ops/test_gelu_and_mul.py
+    bench: benchmarks/ops/bench_gelu_and_mul.py
+    bench_manifest_driven: true
+
+
+GeluTanhAndMulFwdOp:
+  # Fused gated tanh-approximate-GELU
+  # (flashinfer.activation.gelu_tanh_and_mul): the input x = [gate, value] is
+  # packed along the last dim, x.shape == (M, 2 * N); the output is
+  # y = gelu_tanh(gate) * value with the tanh approximation
+  # (torch.nn.functional.gelu(..., approximate="tanh")), i.e.
+  # gelu_tanh(g) = 0.5 * g * (1 + tanh(sqrt(2/pi) * (g + 0.044715 * g^3))).
+  # The GPU manifest roofline gives flops = 10 * M * N; the memory term (read
+  # x's 2 * M * N elements + write M * N) is 3 * M * N * elem_bytes.
+  ref_api: "flashinfer.activation.gelu_tanh_and_mul"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      x: {dtype: "float16 | bfloat16 | float32", shape: "[M, 2 * N]"}
+    outputs:
+      output: {dtype: "same_as(x)", shape: "[M, N]"}
+    shape_rules:
+      - "output.shape == [x.shape[0], x.shape[1] // 2]"
+
+  workloads:
+    # Smoke: small gated row (gate | value halves)
+    - {M: 16, N: 128, dtypes: [float32, float16, bfloat16], label: "smoke"}
+    # Full: Llama-3.1-8B SwiGLU FFN intermediate (GPU manifest llama-8b-ffn-prefill)
+    - {M: 2048, N: 14336, dtypes: [float16, bfloat16], label: "llama-8b-ffn-prefill"}
+    # Full: decode-time row (GPU manifest llama-8b-ffn-decode)
+    - {M: 1, N: 14336, dtypes: [bfloat16], label: "llama-8b-ffn-decode"}
+    # Full: Qwen3-8B SwiGLU batch-32
+    - {M: 32, N: 12288, dtypes: [float16, bfloat16], label: "qwen3-8b-swiglu-b32"}
+
+  roofline:
+    # FLOPs: gelu_tanh(g) = 0.5 * g * (1 + tanh(sqrt(2/pi) * (g + 0.044715 * g^3))).
+    # cube(2 muls) + mul-coeff(1) + add(1) + mul-sqrt(1) + tanh(1) + add(1)
+    # + mul-half(1) + mul-by-gate(1) = 9; final mul-by-value = 1. Total 10
+    # per output element; M * N output elements.
+    flops: "10 * M * N"
+    bytes: "3 * M * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul.py
+    kernel_map:
+      gelu_tanh_and_mul: GeluTanhAndMulFwdKernel
+    op: tileops/ops/elementwise/gelu_tanh_and_mul.py
+    test: tests/ops/test_gelu_tanh_and_mul.py
+    bench: benchmarks/ops/bench_gelu_tanh_and_mul.py
+    bench_manifest_driven: true
+
+
+IsinfFwdOp:
+  # torch.isinf: y = isinf(x), bool output (a float infinity predicate).  Exact
+  # op (no tolerance).  The GPU op's manifest union also lists ints/bool, served
+  # by an ``isinf_exact`` false-everywhere fallback; this NPU port follows the
+  # float workloads (the standard isinf path only).
+  ref_api: "torch.isinf"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: bool}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector over every admitted float dtype
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (all float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "16m"}
+    # Full: GPU manifest elementwise-256M workload (half dtypes)
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "256m"}
+    # Full: GPU 16M shape over the half dtypes
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16], label: "16m-half"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: isinf is one elementwise predicate per element.
+    flops: "1 * N"
+    # Memory: read N float elements + write N bool (one byte) elements.
+    bytes: "N * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/isinf/isinf.py
+    kernel_map:
+      isinf: IsinfFwdKernel
+    op: tileops/ops/elementwise/isinf.py
+    test: tests/ops/test_isinf.py
+    bench: benchmarks/ops/bench_isinf.py
+    bench_manifest_driven: true
+
+
+IsfiniteFwdOp:
+  # torch.isfinite: y = isfinite(x), bool output (a float finiteness predicate).
+  # Exact op (no tolerance).  The GPU op's manifest union also lists ints/bool,
+  # served by an ``isfinite_exact`` true-everywhere fallback; this NPU port
+  # follows the float workloads (the standard isfinite path only).
+  ref_api: "torch.isfinite"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: bool}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector over every admitted float dtype
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (all float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "16m"}
+    # Full: GPU manifest elementwise-256M workload (half dtypes)
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "256m"}
+    # Full: GPU 16M shape over the half dtypes
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16], label: "16m-half"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: isfinite is one elementwise predicate per element.
+    flops: "1 * N"
+    # Memory: read N float elements + write N bool (one byte) elements.
+    bytes: "N * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/isfinite/isfinite.py
+    kernel_map:
+      isfinite: IsfiniteFwdKernel
+    op: tileops/ops/elementwise/isfinite.py
+    test: tests/ops/test_isfinite.py
+    bench: benchmarks/ops/bench_isfinite.py
+    bench_manifest_driven: true
+
+
+IsnanFwdOp:
+  # torch.isnan: y = isnan(x), bool output (a float NaN predicate).  Exact op
+  # (no tolerance).  The GPU op's manifest union also lists ints/bool, served by
+  # an ``isnan_exact`` false-everywhere fallback; this NPU port follows the
+  # float workloads (the standard isnan path only).
+  ref_api: "torch.isnan"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: bool}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector over every admitted float dtype
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (all float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "16m"}
+    # Full: GPU manifest elementwise-256M workload (half dtypes)
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "256m"}
+    # Full: GPU 16M shape over the half dtypes
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16], label: "16m-half"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: isnan is one elementwise predicate per element.
+    flops: "1 * N"
+    # Memory: read N float elements + write N bool (one byte) elements.
+    bytes: "N * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/isnan/isnan.py
+    kernel_map:
+      isnan: IsnanFwdKernel
+    op: tileops/ops/elementwise/isnan.py
+    test: tests/ops/test_isnan.py
+    bench: benchmarks/ops/bench_isnan.py
+    bench_manifest_driven: true
+
+
+AbsFwdOp:
+  # Ported from GPU TileOPs manifest/elementwise_unary_math.yaml (AbsFwdOp).
+  # Ref: https://github.com/tile-ai/TileOPs (GPU) -> NPU TileOPs.
+  ref_api: torch.abs
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input:
+        # GPU manifest additionally declares int8/int16/int32/int64/uint8;
+        # those were short-circuited at the GPU *op layer* (never entering the
+        # kernel).  The NPU port starts float-only, matching the float-only
+        # kernel family (MishFwdOp precedent).  Integer coverage is a
+        # follow-up, tracked in the per-op design doc.
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    shape_rules:
+      - output.shape == input.shape
+
+  workloads:
+    # Smoke: flat 1-D vector, all three float dtypes.
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: mid-size square
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    # Full: larger square (fp16/bf16 only, per GPU manifest)
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    # Full: GPU manifest elementwise-256M workload
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  # Copied verbatim from the GPU manifest (roofline is device-agnostic):
+  # one flop per element; read x + write y at elem_bytes each.
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/abs/abs.py
+    kernel_map:
+      abs: AbsFwdKernel
+    op: tileops/ops/elementwise/abs.py
+    test: tests/ops/test_abs.py
+    bench: benchmarks/ops/bench_abs.py
+    bench_manifest_driven: true
+
+
+# ---------------------------------------------------------------------------
+# Unary math family, ported from GPU manifest/elementwise_unary_math.yaml.
+# All four use flops = N / bytes = 2 * N * elem_bytes (verbatim from GPU).
+# Integer dtypes declared by the GPU manifest for ceil/floor were
+# short-circuited at the GPU op layer (never entering the kernel); the NPU
+# port is float-only for the same reason.
+# ---------------------------------------------------------------------------
+
+ClampScalarFwdOp:
+  # PyTorch's torch.clamp(input, min=None, max=None) with Number (or None)
+  # bounds.  The bounds are params here and tensor inputs in ClampTensorFwdOp;
+  # two signatures, so two entries.  The kernel computes in fp32 and casts
+  # back, so a half input keeps the precision of the comparison.
+  ref_api: "torch.clamp"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      min: {type: "Number | None", default: null, kw_only: true}
+      max: {type: "Number | None", default: null, kw_only: true}
+    shape_rules:
+      - "present(min) or present(max)"
+
+  workloads:
+    # Smoke: small flat vector (both bounds)
+    - {input_shape: [1048576], min: -0.5, max: 0.5, dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest 16M workload (both bounds)
+    - {input_shape: [4096, 4096], min: -0.5, max: 0.5, dtypes: [float16, bfloat16, float32], label: "16M"}
+    # Full: GPU manifest 256M workload (both bounds)
+    - {input_shape: [16384, 16384], min: -0.5, max: 0.5, dtypes: [float16, bfloat16], label: "256M"}
+    # Full: single lower bound (the torch.clamp_min form)
+    - {input_shape: [4096, 4096], min: -0.5, dtypes: [float16, bfloat16, float32], label: "16M-min-only"}
+    # Full: single upper bound (the torch.clamp_max form)
+    - {input_shape: [4096, 4096], max: 0.5, dtypes: [float16, bfloat16, float32], label: "16M-max-only"}
+
+  roofline:
+    vars:
+      N: "product(input_shape)"
+    # FLOPs: clamp = compare-and-select.  Per roofline.md §1.3 convention the
+    # clamp / min-max family collapses to 1 FLOP per output element regardless
+    # of one or two bounds.
+    flops: "1 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py
+    kernel_map:
+      clamp_scalar: ClampScalarFwdKernel
+    op: tileops/ops/elementwise/clamp_scalar.py
+    test: tests/ops/test_clamp_scalar.py
+    bench: benchmarks/ops/bench_clamp_scalar.py
+    bench_manifest_driven: true
+
+HardsigmoidFwdOp:
+  ref_api: "torch.nn.functional.hardsigmoid"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: SE-block gating (GPU manifest mbv3-se-gate)
+    - {input_shape: [32, 240, 1, 1], dtypes: [float16, bfloat16], label: "mbv3-se-gate"}
+    - {input_shape: [32, 960, 1, 1], dtypes: [float16, bfloat16], label: "mbv3-se-gate-deep"}
+    # Full: large FC layer
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "fc-wide"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: hardsigmoid(x) = relu6(x + 3) / 6.
+    # add(1) + two-sided-clamp(1, per convention) + div(1) = 3 per elem.
+    flops: "3 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py
+    kernel_map:
+      hardsigmoid: HardsigmoidFwdKernel
+    op: tileops/ops/elementwise/hardsigmoid.py
+    test: tests/ops/test_hardsigmoid.py
+    bench: benchmarks/ops/bench_hardsigmoid.py
+    bench_manifest_driven: true
+
+
+HardswishFwdOp:
+  ref_api: "torch.nn.functional.hardswish"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: MobileNetV3 activation map (GPU manifest mbv3-stage2)
+    - {input_shape: [32, 96, 56, 56], dtypes: [float16, bfloat16], label: "mbv3-stage2"}
+    # Full: MobileNetV3 activation map (GPU manifest mbv3-stage3)
+    - {input_shape: [32, 240, 28, 28], dtypes: [float16, bfloat16], label: "mbv3-stage3"}
+    # Full: large FC layer
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "fc-wide"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: hardswish(x) = x * relu6(x + 3) / 6.
+    # add(1) + two-sided-clamp(1, per convention) + mul(1) + div(1) = 4 per elem.
+    flops: "4 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/hardswish/hardswish.py
+    kernel_map:
+      hardswish: HardswishFwdKernel
+    op: tileops/ops/elementwise/hardswish.py
+    test: tests/ops/test_hardswish.py
+    bench: benchmarks/ops/bench_hardswish.py
+    bench_manifest_driven: true
+
+
+CeilFwdOp:
+  ref_api: torch.ceil
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input:
+        # GPU manifest also declares int8/int16/int32/int64/uint8; short-circuited
+        # at the GPU op layer, so the NPU kernel stays float-only.
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    shape_rules:
+      - output.shape == input.shape
+
+  workloads:
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/ceil/ceil.py
+    kernel_map:
+      ceil: CeilFwdKernel
+    op: tileops/ops/elementwise/ceil.py
+    test: tests/ops/test_ceil.py
+    bench: benchmarks/ops/bench_ceil.py
+    bench_manifest_driven: true
+
+ClampMinFwdOp:
+  # PyTorch's torch.clamp_min(input, min) = torch.clamp(input, min, max=None):
+  # the scalar-min-only specialization of ClampScalarFwdOp.  A thin interface
+  # that reuses the migrated clamp_scalar kernel package; no new kernel.
+  ref_api: "torch.clamp_min"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      min: {type: "Number", kw_only: true}
+    shape_rules:
+      - "present(min)"
+
+  workloads:
+    # Smoke: small flat vector (single lower bound)
+    - {input_shape: [1048576], min: -0.5, dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest 16M workload (single lower bound)
+    - {input_shape: [4096, 4096], min: -0.5, dtypes: [float16, bfloat16, float32], label: "16M-min-only"}
+    # Full: mid-size square
+    - {input_shape: [8192, 8192], min: -0.5, dtypes: [float16, bfloat16], label: "64M-min-only"}
+    # Full: GPU manifest 256M workload (single lower bound)
+    - {input_shape: [16384, 16384], min: -0.5, dtypes: [float16, bfloat16], label: "256M-min-only"}
+
+  roofline:
+    vars:
+      N: "product(input_shape)"
+    # FLOPs: clamp_min = compare-and-select; per roofline.md §1.3 convention
+    # the clamp / min-max family collapses to 1 FLOP per output element.
+    flops: "1 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py
+    kernel_map:
+      clamp_min: ClampScalarFwdKernel
+    op: tileops/ops/elementwise/clamp_min.py
+    test: tests/ops/test_clamp_min.py
+    bench: benchmarks/ops/bench_clamp_min.py
+    bench_manifest_driven: true
+
+BitwiseNotFwdOp:
+  ref_api: "torch.bitwise_not"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat integer vector
+    - {input_shape: [1048576], dtypes: [int32, int64], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (same shape, integer dtypes)
+    - {input_shape: [4096, 4096], dtypes: [int32, int64], label: "elementwise-16m"}
+    # Full: mid-size square (64M elements)
+    - {input_shape: [8192, 8192], dtypes: [int32], label: "elementwise-64m"}
+    # Full: GPU manifest elementwise-256M workload (256M elements)
+    - {input_shape: [16384, 16384], dtypes: [int32], label: "elementwise-256m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/bitwise_not/bitwise_not.py
+    kernel_map:
+      bitwise_not: BitwiseNotFwdKernel
+    op: tileops/ops/elementwise/bitwise_not.py
+    test: tests/ops/test_bitwise.py
+    bench: benchmarks/ops/bench_bitwise_not.py
+    bench_manifest_driven: true
+
+Expm1FwdOp:
+  ref_api: "torch.expm1"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (same shape, float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    # Full: mid-size square (64M elements)
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    # Full: GPU manifest elementwise-256M workload (256M elements)
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/expm1/expm1.py
+    kernel_map:
+      expm1: Expm1FwdKernel
+    op: tileops/ops/elementwise/expm1.py
+    test: tests/ops/test_expm1.py
+    bench: benchmarks/ops/bench_expm1.py
+    bench_manifest_driven: true
+
+ErfFwdOp:
+  ref_api: "torch.erf"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (same shape, float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    # Full: mid-size square (64M elements)
+    - {input_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    # Full: GPU manifest elementwise-256M workload (256M elements)
+    - {input_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/erf/erf.py
+    kernel_map:
+      erf: ErfFwdKernel
+    op: tileops/ops/elementwise/erf.py
+    test: tests/ops/test_erf.py
+    bench: benchmarks/ops/bench_erf.py
+    bench_manifest_driven: true
+
+EluFwdOp:
+  ref_api: "torch.nn.functional.elu"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      alpha: {type: float, default: 1.0}
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: MLP hidden activation (GPU manifest mlp-hidden)
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "mlp-hidden"}
+    # Full: MLP hidden activation, wide (GPU manifest mlp-hidden-wide)
+    - {input_shape: [2048, 8192], dtypes: [float16, bfloat16], label: "mlp-hidden-wide"}
+    # Full: GPU manifest elementwise-16M workload (same shape, float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: elu(x) = x if x>0 else alpha*(exp(x)-1).
+    # compare-and-select(1) + exp(1) + sub(1) + mul(1) = 4 per elem.
+    flops: "4 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/elu/elu.py
+    kernel_map:
+      elu: EluFwdKernel
+    op: tileops/ops/elementwise/elu.py
+    test: tests/ops/test_elu.py
+    bench: benchmarks/ops/bench_elu.py
+    bench_manifest_driven: true
+
+HardtanhFwdOp:
+  ref_api: "torch.nn.functional.hardtanh"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      min_val: {type: float, default: -1.0}
+      max_val: {type: float, default: 1.0}
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: MLP hidden activation (GPU manifest mlp-hidden)
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "mlp-hidden"}
+    # Full: GPU manifest elementwise-16M workload (same shape, float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: hardtanh(x) = clamp(x, min_val, max_val) -- one compare-select.
+    flops: "1 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/hardtanh/hardtanh.py
+    kernel_map:
+      hardtanh: HardtanhFwdKernel
+    op: tileops/ops/elementwise/hardtanh.py
+    test: tests/ops/test_hardtanh.py
+    bench: benchmarks/ops/bench_hardtanh.py
+    bench_manifest_driven: true
+
+LeakyReluFwdOp:
+  ref_api: "torch.nn.functional.leaky_relu"
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    params:
+      negative_slope: {type: float, default: 0.01}
+      inplace: {type: bool, default: false}
+    shape_rules:
+      - "output.shape == input.shape"
+
+  workloads:
+    # Smoke: small flat vector
+    - {input_shape: [1048576], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: MLP hidden activation (GPU manifest mlp-hidden)
+    - {input_shape: [2048, 4096], dtypes: [float16, bfloat16], label: "mlp-hidden"}
+    # Full: GPU manifest elementwise-16M workload (same shape, float dtypes)
+    - {input_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    # FLOPs: leaky_relu(x) = x if x > 0 else negative_slope * x
+    # compare-and-select(1) + multiply(1) = 2 per elem.
+    flops: "2 * N"
+    bytes: "2 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/leaky_relu/leaky_relu.py
+    kernel_map:
+      leaky_relu: LeakyReluFwdKernel
+    op: tileops/ops/elementwise/leaky_relu.py
+    test: tests/ops/test_leaky_relu.py
+    bench: benchmarks/ops/bench_leaky_relu.py
+    bench_manifest_driven: true
+
+ClampFwdOp:
+  ref_api: "torch.clamp"
+  # Primary entry: PyTorch's torch.clamp(input, min: Tensor, max: Tensor)
+  # where min / max are Tensors that broadcast together with input.  The
+  # scalar (Number) form and the single-bound min-only / max-only forms are
+  # separate variant_of entries (ClampScalarFwdOp / ClampMinFwdOp /
+  # ClampMaxFwdOp), not migrated here.
+  family: elementwise
+  status: implemented
+
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      min: {dtype: "same_as(input)"}
+      max: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      # PyTorch broadcasts input/min/max together for tensor-bound clamp.
+      - "output.shape == broadcast_shapes(input.shape, min.shape, max.shape)"
+
+  workloads:
+    # Smoke: small same-shape operands (1M elements each)
+    - {input_shape: [1024, 1024], min_shape: [1024, 1024], max_shape: [1024, 1024], dtypes: [float32, float16, bfloat16], label: "smoke-1m"}
+    # Full: GPU manifest elementwise-16M workload (same shape for all 3 operands)
+    - {input_shape: [4096, 4096], min_shape: [4096, 4096], max_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16m"}
+    # Full: mid-size square (64M elements)
+    - {input_shape: [8192, 8192], min_shape: [8192, 8192], max_shape: [8192, 8192], dtypes: [float16, bfloat16], label: "elementwise-64m"}
+    # Full: GPU manifest elementwise-256M workload (256M elements)
+    - {input_shape: [16384, 16384], min_shape: [16384, 16384], max_shape: [16384, 16384], dtypes: [float16, bfloat16], label: "elementwise-256m"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.clamp_fwd_roofline) —
+  # ``broadcast_shapes`` is not in the inline vars-layer namespace.  The NPU
+  # project has no tileops.perf module, so the same formula is expressed
+  # inline (Op.eval_roofline implements it too):
+  #   per output element: 1 fused compare-and-select (roofline.md §1.3);
+  #   3 reads (input, min, max) + 1 write at post-broadcast N_total.
+  # (All manifest workloads use equal operand shapes, so product(input.shape)
+  # equals the post-broadcast N_total.)
+  roofline:
+    vars:
+      N: "product(input.shape)"
+    flops: "N"
+    bytes: "4 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/clamp/clamp.py
+    kernel_map:
+      clamp_tensor: ClampTensorFwdKernel
+    op: tileops/ops/elementwise/clamp.py
+    test: tests/ops/test_clamp.py
+    bench: benchmarks/ops/bench_clamp.py
+    bench_manifest_driven: true
+
+AlibiFwdOp:
+  # ALiBi position-encoding bias: out[h, i, j] = -slope_h * |i - j|, where
+  # slope_h = 2^(-8 * (h + 1) / num_heads). No tensor input -- the full
+  # (num_heads, seq_len, seq_len) bias is synthesized from the
+  # construction-time integer parameters.
+  #
+  # Generative (zero-input) op: the single-input `workloads_to_params`
+  # contract does not apply (it requires exactly one tensor input), so the
+  # benchmark uses the custom `_generative_params` parametrization plus the
+  # empty `_GenerativeWorkload` (ported from the GPU bench file).
+  ref_api: "none"
+  family: elementwise
+  status: implemented
+
+  signature:
+    inputs: {}
+    outputs:
+      output: {dtype: "float16 | bfloat16 | float32", shape: "[num_heads, seq_len, seq_len]"}
+    params:
+      seq_len: {type: int}
+      num_heads: {type: int}
+      dtype: {type: torch.dtype}
+    shape_rules:
+      - "seq_len > 0"
+      - "num_heads > 0"
+
+  workloads:
+    # Llama-style attention bias dimensions (ported verbatim from the GPU
+    # manifest).  The first entry is the smoke case; the remaining three are
+    # full.  No extra shapes are introduced.
+    - {seq_len: 2048, num_heads: 32, dtype: float16, dtypes: [float16], label: "llama-prefill-2k-fp16"}
+    - {seq_len: 2048, num_heads: 32, dtype: bfloat16, dtypes: [bfloat16], label: "llama-prefill-2k-bf16"}
+    - {seq_len: 4096, num_heads: 32, dtype: float16, dtypes: [float16], label: "llama-prefill-4k-fp16"}
+    - {seq_len: 4096, num_heads: 32, dtype: bfloat16, dtypes: [bfloat16], label: "llama-prefill-4k-bf16"}
+
+  roofline:
+    vars:
+      H: "output.shape[0]"
+      S: "output.shape[1]"
+    # FLOPs: per output element compute |i - j| (sub + abs = 2) and
+    # multiply by -slope_h (1) = 3. Slope precomputation is O(H) and
+    # negligible vs the H * S * S body.
+    flops: "3 * H * S * S"
+    # Write-only output (no semantic input tensor read).
+    bytes: "H * S * S * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/alibi/alibi.py
+    kernel_map:
+      alibi: AlibiFwdKernel
+    op: tileops/ops/elementwise/alibi.py
+    test: tests/ops/test_alibi.py
+    bench: benchmarks/ops/bench_alibi.py
+    bench_manifest_driven: true
+
+ClampMaxFwdOp:
+  ref_api: "torch.clamp_max"
+  # Single-bound Tensor variant: torch.clamp_max(input, max: Tensor) --
+  # equivalent to torch.clamp with only the upper bound provided.
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      max: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, max.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], max_shape: [1024], dtypes: [float32, float16, bfloat16], label: "smoke-1k"}
+    # Full: GPU manifest elementwise-16M (same shape for both operands)
+    - {input_shape: [4096, 4096], max_shape: [4096, 4096], dtypes: [float16, bfloat16, float32], label: "elementwise-16M"}
+    # Full: per-channel broadcast (upper bound shared across spatial dims)
+    - {input_shape: [16, 256, 56, 56], max_shape: [256, 1, 1], dtypes: [float16, bfloat16, float32], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (broadcast first dim)
+    - {input_shape: [4096, 4096], max_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.clamp_max_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same device-agnostic
+  # formula is expressed inline (ClampMaxFwdOp.eval_roofline implements it too):
+  #   flops: one min(input, max) per output element (post-broadcast N);
+  #   bytes: read input + read max + write output, all post-broadcast, at
+  #          the input element size.
+  roofline:
+    vars:
+      N: "product(output.shape)"
+    flops: "N"
+    bytes: "3 * N * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/clamp_max/clamp_max.py
+    kernel_map:
+      clamp_tensor: ClampTensorFwdKernel
+    op: tileops/ops/elementwise/clamp_max.py
+    test: tests/ops/test_clamp_max.py
+    bench: benchmarks/ops/bench_clamp_max.py
+    bench_manifest_driven: true
+
+LeFwdOp:
+  ref_api: "torch.le"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64 | float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "bool"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [float32, float16, bfloat16], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float16, bfloat16, float32], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float16, bfloat16, float32], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.le_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   flops: one comparison per output element;
+  #   bytes: 2 reads (input + other) at the input element size + 1 write of
+  #          the broadcast bool output (1 byte per element).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "N"
+    bytes: "(A + B) * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/le/le.py
+    kernel_map:
+      le: LeFwdKernel
+    op: tileops/ops/elementwise/le.py
+    test: tests/ops/test_le.py
+    bench: benchmarks/ops/bench_le.py
+    bench_manifest_driven: true
+
+GtFwdOp:
+  ref_api: "torch.gt"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64 | float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "bool"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [float32, float16, bfloat16], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float16, bfloat16, float32], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float16, bfloat16, float32], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.gt_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   flops: one comparison per output element;
+  #   bytes: 2 reads (input + other) at the input element size + 1 write of
+  #          the broadcast bool output (1 byte per element).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "N"
+    bytes: "(A + B) * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/gt/gt.py
+    kernel_map:
+      gt: GtFwdKernel
+    op: tileops/ops/elementwise/gt.py
+    test: tests/ops/test_gt.py
+    bench: benchmarks/ops/bench_gt.py
+    bench_manifest_driven: true
+
+GeFwdOp:
+  ref_api: "torch.ge"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64 | float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "bool"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [float32, float16, bfloat16], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float16, bfloat16, float32], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float16, bfloat16, float32], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.ge_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   flops: one comparison per output element;
+  #   bytes: 2 reads (input + other) at the input element size + 1 write of
+  #          the broadcast bool output (1 byte per element).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "N"
+    bytes: "(A + B) * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/ge/ge.py
+    kernel_map:
+      ge: GeFwdKernel
+    op: tileops/ops/elementwise/ge.py
+    test: tests/ops/test_ge.py
+    bench: benchmarks/ops/bench_ge.py
+    bench_manifest_driven: true
+
+FloorDivideFwdOp:
+  ref_api: "torch.floor_divide"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [float32, float16, bfloat16], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float16, bfloat16, float32], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float16, bfloat16, float32], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.floor_divide_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   per output element: 2 flops (division + floor);
+  #   bytes: 2 reads (input + other) + 1 write (output), all elem_bytes
+  #          because output is same_as(input).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "2 * N"
+    bytes: "(A + B + N) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/floor_divide/floor_divide.py
+    kernel_map:
+      floor_divide: FloorDivideFwdKernel
+    op: tileops/ops/elementwise/floor_divide.py
+    test: tests/ops/test_floor_divide.py
+    bench: benchmarks/ops/bench_floor_divide.py
+    bench_manifest_driven: true
+
+EqFwdOp:
+  ref_api: "torch.eq"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64 | float16 | bfloat16 | float32"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "bool"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [float32, float16, bfloat16], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [float16, bfloat16, float32], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [float16, bfloat16, float32], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [float32, float16, bfloat16], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.eq_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   flops: one comparison per output element;
+  #   bytes: 2 reads (input + other) at the input element size + 1 write of
+  #          the broadcast bool output (1 byte per element).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "N"
+    bytes: "(A + B) * elem_bytes + N"
+
+  source:
+    kernel: tileops/kernels/elementwise/eq/eq.py
+    kernel_map:
+      eq: EqFwdKernel
+    op: tileops/ops/elementwise/eq.py
+    test: tests/ops/test_eq.py
+    bench: benchmarks/ops/bench_eq.py
+    bench_manifest_driven: true
+
+BitwiseAndFwdOp:
+  ref_api: "torch.bitwise_and"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [int32, bool], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [bool, int32, int64], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [bool, int32, int64], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [int32, int64], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.bitwise_and_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   flops: one bitwise AND per output element;
+  #   bytes: 2 reads (input + other) + 1 write (output), all elem_bytes
+  #          because output is same_as(input).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "N"
+    bytes: "(A + B + N) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/bitwise_and/bitwise_and.py
+    kernel_map:
+      bitwise_and: BitwiseAndFwdKernel
+    op: tileops/ops/elementwise/bitwise_and.py
+    test: tests/ops/test_bitwise_and.py
+    bench: benchmarks/ops/bench_bitwise_and.py
+    bench_manifest_driven: true
+
+BitwiseOrFwdOp:
+  ref_api: "torch.bitwise_or"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [int32, bool], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [bool, int32, int64], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [bool, int32, int64], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [int32, int64], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.bitwise_or_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   flops: one bitwise OR per output element;
+  #   bytes: 2 reads (input + other) + 1 write (output), all elem_bytes
+  #          because output is same_as(input).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "N"
+    bytes: "(A + B + N) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/bitwise_or/bitwise_or.py
+    kernel_map:
+      bitwise_or: BitwiseOrFwdKernel
+    op: tileops/ops/elementwise/bitwise_or.py
+    test: tests/ops/test_bitwise_or.py
+    bench: benchmarks/ops/bench_bitwise_or.py
+    bench_manifest_driven: true
+
+BitwiseXorFwdOp:
+  ref_api: "torch.bitwise_xor"
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+
+  signature:
+    inputs:
+      input: {dtype: "bool | uint8 | int8 | int16 | int32 | int64"}
+      other: {dtype: "same_as(input)"}
+    outputs:
+      output: {dtype: "same_as(input)"}
+    shape_rules:
+      - "output.shape == broadcast_shapes(input.shape, other.shape)"
+
+  workloads:
+    # Smoke: small flat same-shape pair
+    - {input_shape: [1024], other_shape: [1024], dtypes: [int32, bool], label: "smoke-1k"}
+    # Full: GPU manifest hidden-state-prefill (same shape for both operands)
+    - {input_shape: [2048, 4096], other_shape: [2048, 4096], dtypes: [bool, int32, int64], label: "hidden-state-prefill"}
+    # Full: GPU manifest cnn-feat-broadcast (per-channel broadcast)
+    - {input_shape: [16, 256, 56, 56], other_shape: [256, 1, 1], dtypes: [bool, int32, int64], label: "cnn-feat-broadcast"}
+    # Full: row broadcast (same-shape second dim, broadcast first dim)
+    - {input_shape: [4096, 4096], other_shape: [1, 4096], dtypes: [int32, int64], label: "row-broadcast"}
+
+  # GPU manifest used func mode (tileops.perf.formulas.bitwise_xor_fwd_roofline);
+  # the NPU project has no tileops.perf module, so the same formula is
+  # expressed inline (Op.eval_roofline implements it too):
+  #   flops: one bitwise XOR per output element;
+  #   bytes: 2 reads (input + other) + 1 write (output), all elem_bytes
+  #          because output is same_as(input).
+  roofline:
+    vars:
+      N: "product(output.shape)"
+      A: "product(input.shape)"
+      B: "product(other.shape)"
+    flops: "N"
+    bytes: "(A + B + N) * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/elementwise/bitwise_xor/bitwise_xor.py
+    kernel_map:
+      bitwise_xor: BitwiseXorFwdKernel
+    op: tileops/ops/elementwise/bitwise_xor.py
+    test: tests/ops/test_bitwise_xor.py
+    bench: benchmarks/ops/bench_bitwise_xor.py
+    bench_manifest_driven: true

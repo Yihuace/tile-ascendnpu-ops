@@ -1,0 +1,223 @@
+{
+  "op": "MoeGroupedGemmNopadFwdOp",
+  "project": "TileOPs",
+  "op_dir": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel",
+  "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_moe_grouped_gemm_kernel.py::_moe_grouped_gemm_kernel::main_mix_aic",
+  "target_kernel_name": "main_mix_aic",
+  "benchmark_source": "examples/TileOPs/benchmarks/ops/bench_moe_grouped_gemm_nopad.py (manifest MoeGroupedGemmNopadFwdOp workloads, tileops/manifest/moe.yaml)",
+  "benchmark_entry": "benchmarks/ops/bench_moe_grouped_gemm_nopad.py::test_moe_grouped_gemm_nopad_bench",
+  "benchmark_command": "python -m tileops.reporting.cli run --op MoeGroupedGemmNopadFwdOp --prof-mode msprof",
+  "instrumentation": "msprof op --kernel-name=main_mix_aic --launch-count=6 --warm-up=3 --replay-mode=application --dump=off --aic-metrics=Roofline,PipeUtilization,ArithmeticUtilization,Memory,MemoryUB,MemoryL0,L2Cache,ResourceConflictRatio",
+  "measurement_note": "The op-level forward launches three device kernels (_scan_main + _expand_main + main_mix_aic) and the op-level msprof capture fails for three of four tune shapes on this toolchain; the target kernel is therefore profiled standalone (schedule tables materialised on device by the sibling scheduler before the timed region, then the GEMM launched warmup+iters times). Metric is msprof-native Task Duration(us) + the GM/L2 `GM Read + Write` roofline Ratio.",
+  "tuned_config": {
+    "block_m": 128,
+    "block_n": 256,
+    "block_k": 256,
+    "num_stages": 2
+  },
+  "tuned_config_constant": "perf_opt/_moe_grouped_gemm_kernel.py::TUNED_DEFAULT_CONFIG",
+  "wrapper_pairing_required": "The wrapper passes block_m/block_n/block_k/num_stages EXPLICITLY to both factories, so flipping the perf_opt import alone is NOT sufficient: MoeGroupedGemmNopadKernel.default_config must return dict(TUNED_DEFAULT_CONFIG) (import it from .moe_grouped_gemm_nopad_kernel.perf_opt._moe_grouped_gemm_kernel). block_m is also the shared constant with the scheduler (max_tiles = numel // block_m + E), so the wrapper's max_tiles must be recomputed from the tuned block_m (it already is: _max_tiles uses self.config['block_m']). Wrapper files are NOT modified by Stage 4.",
+  "wrapper_switch_block_expected": [
+    "from .moe_grouped_gemm_nopad_kernel.perf_opt.MoeGroupedGemmNopadFwdOp import _moe_grouped_gemm_kernel, TUNED_DEFAULT_CONFIG",
+    "from .moe_grouped_gemm_nopad_kernel.perf_opt._tile_scheduler_kernel import _tile_scheduler_kernel",
+    "from .moe_grouped_gemm_nopad_kernel.perf_opt.MoeGroupedGemmNopadFwdOp import _run_gemm"
+  ],
+  "scheduler_kernel": {
+    "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_tile_scheduler_kernel.py::_tile_scheduler_kernel::{_scan_main,_expand_main}",
+    "kind": "no_tunable_workload",
+    "reason": "The scheduler is two Vector kernels over E-sized int32 tables (E=256 -> ~3 KB of traffic). Measured standalone with msprof op (this task, E=256/numel=32768/block_m=128): _scan_main 10.10 us + _expand_main 13.80 us ~= 24 us per forward, i.e. 0.15%-0.4% of the GEMM target kernel (5.7-15.9 ms). It is not part of the benchmark's Roofline target (msprof_kernel_name = main_mix_aic) and therefore carries no benchmark workload of its own. Shipped unchanged (byte-identical logic + mode self-pinning) so the perf_opt pair adopts atomically; regression `perf_opt/_tile_scheduler_kernel.py --level all` passes."
+  },
+  "workloads": [
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_moe_grouped_gemm_kernel.py::_moe_grouped_gemm_kernel::main_mix_aic",
+      "workload_id": "moe-grouped-gemm-nopad-smoke-float16",
+      "label": "moe-grouped-gemm-nopad-smoke",
+      "benchmark_source": "workloads[0] dtypes=[float16, bfloat16]",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        64,
+        4,
+        128,
+        64
+      ],
+      "dtype": "float16",
+      "params": {
+        "numel": 64,
+        "num_experts": 4,
+        "n": 128,
+        "k": 64
+      },
+      "kind": "smoke",
+      "reason": "compile/精度 smoke；不做性能采集与调优",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_moe_grouped_gemm_kernel.py::_moe_grouped_gemm_kernel::main_mix_aic",
+      "workload_id": "moe-grouped-gemm-nopad-smoke-bfloat16",
+      "label": "moe-grouped-gemm-nopad-smoke",
+      "benchmark_source": "workloads[0] dtypes=[float16, bfloat16]",
+      "marks": [
+        "smoke"
+      ],
+      "shape": [
+        64,
+        4,
+        128,
+        64
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "numel": 64,
+        "num_experts": 4,
+        "n": 128,
+        "k": 64
+      },
+      "kind": "smoke",
+      "reason": "compile/精度 smoke；不做性能采集与调优",
+      "precision_pass": true
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_moe_grouped_gemm_kernel.py::_moe_grouped_gemm_kernel::main_mix_aic",
+      "workload_id": "decode-gate-up",
+      "label": "deepseek-v3-decode-gate-up",
+      "benchmark_source": "workloads[1]",
+      "marks": [
+        "benchmark"
+      ],
+      "shape": [
+        4096,
+        256,
+        4096,
+        7168
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "numel": 4096,
+        "num_experts": 256,
+        "n": 4096,
+        "k": 7168
+      },
+      "kind": "tune",
+      "reason": "Meet target on the current toolchain (ratio >= 60%). Round 12 re-measured the same artifact on the upgraded toolchain; see opt_log.md round 12 variance note.",
+      "tuning_status": "winner_merged",
+      "baseline_us": 27151.46,
+      "final_us": 13045.9,
+      "baseline_ratio_pct": 11.92,
+      "final_ratio_pct": 64.345,
+      "speedup": 2.08,
+      "final_toolchain": "CANN 9.0.0 / tilelang 0.1.2+39a8cc68 / Ascend910_9362 (2026-10-26)",
+      "baseline_toolchain": "CANN 8.5.2 / tilelang 0.1.2+6c987c0a (2026-10-16)"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_moe_grouped_gemm_kernel.py::_moe_grouped_gemm_kernel::main_mix_aic",
+      "workload_id": "prefill-gate-up",
+      "label": "deepseek-v3-prefill-gate-up",
+      "benchmark_source": "workloads[2]",
+      "marks": [
+        "benchmark"
+      ],
+      "shape": [
+        32768,
+        256,
+        4096,
+        7168
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "numel": 32768,
+        "num_experts": 256,
+        "n": 4096,
+        "k": 7168
+      },
+      "kind": "tune",
+      "reason": "ratio 55.10% < 60% target on the current toolchain. Round 12 re-attack: N-inner per-core task mapping (the L2-residency hypothesis) measured 33676.06 us = 2.02x REGRESSION and was rejected; manual D2 ping-pong body is compile-blocked (bishengir SIGSEGV 6/6 on this shape); the tile aspect is pinned by L0C (block_m*block_n <= 32768) and bm=128 by tokens/expert, so MTE2 traffic is at its structural floor of 22.8 GB. See opt_log.md round 12 / section 4.",
+      "tuning_status": "winner_merged",
+      "baseline_us": 66009.93,
+      "final_us": 16646.76,
+      "baseline_ratio_pct": 9.81,
+      "final_ratio_pct": 55.097,
+      "speedup": 3.97,
+      "final_toolchain": "CANN 9.0.0 / tilelang 0.1.2+39a8cc68 / Ascend910_9362 (2026-10-26)",
+      "baseline_toolchain": "CANN 8.5.2 / tilelang 0.1.2+6c987c0a (2026-10-16)"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_moe_grouped_gemm_kernel.py::_moe_grouped_gemm_kernel::main_mix_aic",
+      "workload_id": "decode-down",
+      "label": "deepseek-v3-decode-down",
+      "benchmark_source": "workloads[3]",
+      "marks": [
+        "benchmark"
+      ],
+      "shape": [
+        4096,
+        256,
+        7168,
+        2048
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "numel": 4096,
+        "num_experts": 256,
+        "n": 7168,
+        "k": 2048
+      },
+      "kind": "tune",
+      "reason": "Meet target on the current toolchain (ratio >= 60%). Round 12 re-measured the same artifact on the upgraded toolchain; see opt_log.md round 12 variance note.",
+      "tuning_status": "winner_merged",
+      "baseline_us": 13160.37,
+      "final_us": 6000.98,
+      "baseline_ratio_pct": 12.3,
+      "final_ratio_pct": 70.377,
+      "speedup": 2.19,
+      "final_toolchain": "CANN 9.0.0 / tilelang 0.1.2+39a8cc68 / Ascend910_9362 (2026-10-26)",
+      "baseline_toolchain": "CANN 8.5.2 / tilelang 0.1.2+6c987c0a (2026-10-16)"
+    },
+    {
+      "kernel_id": "examples/TileOPs/tileops/kernels/moe/moe_grouped_gemm_nopad/moe_grouped_gemm_nopad_kernel/perf_opt/_moe_grouped_gemm_kernel.py::_moe_grouped_gemm_kernel::main_mix_aic",
+      "workload_id": "prefill-down",
+      "label": "deepseek-v3-prefill-down",
+      "benchmark_source": "workloads[4]",
+      "marks": [
+        "benchmark"
+      ],
+      "shape": [
+        32768,
+        256,
+        7168,
+        2048
+      ],
+      "dtype": "bfloat16",
+      "params": {
+        "numel": 32768,
+        "num_experts": 256,
+        "n": 7168,
+        "k": 2048
+      },
+      "kind": "tune",
+      "reason": "Meet target on the current toolchain (ratio >= 60%). Round 12 re-measured the same artifact on the upgraded toolchain; see opt_log.md round 12 variance note.",
+      "tuning_status": "winner_merged",
+      "baseline_us": 31819.34,
+      "final_us": 7460.58,
+      "baseline_ratio_pct": 10.17,
+      "final_ratio_pct": 61.166,
+      "speedup": 4.26,
+      "final_toolchain": "CANN 9.0.0 / tilelang 0.1.2+39a8cc68 / Ascend910_9362 (2026-10-26)",
+      "baseline_toolchain": "CANN 8.5.2 / tilelang 0.1.2+6c987c0a (2026-10-16)"
+    }
+  ],
+  "toolchain_stamp": "tilelang 0.1.2+39a8cc682a03c94296366ae0a86f550e3b89f5f0 / CANN 9.0.0 / Ascend910_9362 (20 AIC, L2 168MB) / 2026-10-26",
+  "final_artifact": "perf_opt/MoeGroupedGemmNopadFwdOp.py",
+  "final_measurement_variance": {
+    "workload_id": "prefill-gate-up",
+    "repeats_us": [
+      16646.76,
+      17014.9,
+      17217.13
+    ],
+    "median_us": 17014.9,
+    "median_ratio_pct": 53.16,
+    "note": "Same artifact, three clean runs on an idle chip: 3.4% spread. The single run recorded as `final` in perf_records.jsonl is 16646.76 us (55.10%); the median of the three repeats is 17014.90 us (53.16%). An additional run taken while a neighbouring chip was profiling measured 18183.61 us (50.08%) and is excluded as contaminated."
+  }
+}

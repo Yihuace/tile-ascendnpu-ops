@@ -1,0 +1,115 @@
+# 补丁草案：为 `hivm.hir.vcast` 增加 int32 -> f16 / bf16 的软分解
+# Draft patch: soft-decompose int32 -> f16 / bf16 for hivm.hir.vcast
+#
+# 状态：**已尝试并否决（2026-11-03）** —— 草案保留作证据，勿再实施。
+# 否决理由（双封，详见 capability-gaps.md CG-2026-0027 的 2026-11-03 条目）：
+#   1) 门禁不在我们能构建的层：拒绝发生在 CANN 预编译的
+#      /home/developer/Ascend/cann-9.0.0/tools/bishengir/bin/hivmc（含门禁字符串、无补丁），
+#      由 bishengir-compile 在末段委派调用；3rdparty/AscendNPU-IR/build 无 hivmc 构建目标。
+#      实测：补丁已进 bishengir-compile / bishengir-opt / libtilelangir.so /
+#      libtilelang_module.so / bundled libBiShengIRAggregateCAPI.so（五处字符串确认），
+#      探针仍报 `currently don't support cast int32_t_to_half_rintmode`。
+#   2) 即便打通也 0 收益：本补丁实现的是 i32 -> f32 -> half 两跳分解，与 kernel 现有
+#      手工两跳写法等价；省 1 个 op 需要原生单指令，而 HWSupportedCast 白名单无此组合。
+# 依据：perf_opt/probes/vcast_i32_to_f16_probe.py 的实测结果 ——
+#   对照 int32->f32 rint 通过；int32->f16（rint/round/floor/ceil/default）
+#   与 int32->bf16 rint 全部被 verify 拒于
+#   `currently don't support cast int32_t_to_half_<mode>mode`。
+#   两跳所需的 cast 均已在白名单：
+#     int32_t_to_float_*      (Utils.h HWSupportedCast)
+#     float_to_half_* / float_to_bfloat16_t_*  (Utils.h:411-416)
+#
+# 数值安全：掩码场景只出现 0/1，经 f32 中转 bit-exact；
+#   一般整数在 |v| <= 2048 亦精确（f32 尾数 24 位 / f16 尾数 11 位），
+#   |v| > 65504 时 f16 溢出 —— 与直转语义一致，无额外风险。
+#
+# 应用后必须验证：
+#   1. probes/vcast_i32_to_f16_probe.py 全绿（含 bitexact 断言，见文件 TODO）
+#   2. dropout fp16 路径 op 数 10 -> 9，msprof 时延 -8~10%
+#   3. 全量回归（自建 bishengir 与安装版 CANN 9.0.0 的 commit 差异风险）
+
+--- a/bishengir/lib/Dialect/HIVM/IR/HIVMVectorOps.cpp
++++ b/bishengir/lib/Dialect/HIVM/IR/HIVMVectorOps.cpp
+@@ -250,6 +250,13 @@
+       "int8_t_to_int16_t_rintmode",
+       "int32_t_to_int8_t_truncwithoverflowmode",
+       "int16_t_to_int8_t_truncwithoverflowmode",
+       "int32_t_to_int16_t_truncwithoverflowmode",
+-      "int64_t_to_int32_t_truncwithoverflowmode"};
++      "int64_t_to_int32_t_truncwithoverflowmode",
++      // soft: decomposed into int32->f32->half/bf16 (both hops HW-supported)
++      // by castSrcToF32ToDst in HIVMDecomposeOp.cpp.
++      "int32_t_to_half_rintmode",
++      "int32_t_to_half_roundmode",
++      "int32_t_to_half_floormode",
++      "int32_t_to_half_ceilmode",
++      "int32_t_to_bfloat16_t_rintmode"};
+
+--- a/bishengir/lib/Dialect/HIVM/Transforms/HIVMDecomposeOp.cpp
++++ b/bishengir/lib/Dialect/HIVM/Transforms/HIVMDecomposeOp.cpp
+@@ -80,6 +80,34 @@
+   rewriter.replaceOp(op, castF16ToDst);
+   return success();
+ }
+ 
++/// Cast src to dst via an **f32** intermediate: cast src to f32, then f32 to
++/// dst.  Mirrors castSrcToF16ToDst above (same tensor/buffer handling), but
++/// the intermediate is f32 because the source is an integer type -- going
++/// through f16 would lose the integer range before narrowing to half.
++/// Both hops must be HW-supported casts.
++static LogicalResult castSrcToF32ToDst(hivm::VCastOp &op,
++                                       PatternRewriter &rewriter) {
++  auto tmpVCastOp =
++      castTo(rewriter, op.getLoc(), op.getSingleSrc(), op.getRoundModeAttr(),
++             Float32Type::get(op.getContext()));
++
++  TypeRange dstTypeRange;
++  if (op.hasPureTensorSemantics()) {
++    dstTypeRange = TypeRange(op.getResult());
++  }
++  Value srcF32 = op.hasPureTensorSemantics() ? tmpVCastOp->getResult(0)
++                                             : tmpVCastOp.getSingleDst();
++
++  hivm::VCastOp castF32ToDst = rewriter.create<hivm::VCastOp>(
++      op.getLoc(), dstTypeRange, srcF32, op.getSingleDst(),
++      op.getRoundModeAttr(), op.getCastAttr(), op.getTransposeAttr(),
++      op.getBroadcastAttr());
++
++  rewriter.replaceOp(op, castF32ToDst);
++  return success();
++}
++
+ static LogicalResult castSrcToTargetTypeAndCmpiToDst(hivm::VCastOp &op,
+                                                      PatternRewriter &rewriter,
+                                                      Type targetElemType) {
+@@ -136,6 +164,9 @@
+     const bool isI32ToI1 =
+         srcElemType.isInteger(32) && dstElemType.isInteger(1);
+     const bool isBoolToI8 =
+         srcElemType.isInteger(1) && dstElemType.isInteger(8);
++    const bool isI32ToHalf =
++        srcElemType.isInteger(32) &&
++        (dstElemType.isF16() || dstElemType.isBF16());
+     if (isF32ToI8 || isI4ToI8 || isBoolToI8) {
+       LLVM_DEBUG(llvm::dbgs()
+                  << "match compound cast pattern from " << srcElemType << " to "
+@@ -145,6 +176,10 @@
+       return castSrcToF16ToDst(op, rewriter);
++    } else if (isI32ToHalf) {
++      // i32 -> f32 (HW) -> half/bf16 (HW); see castSrcToF32ToDst
++      return castSrcToF32ToDst(op, rewriter);
+     } else if (isI8orI16ToI1) {
+       return castSrcToTargetTypeAndCmpiToDst(op, rewriter,
+                                              Float16Type::get(op.getContext()));
+
+--- a/docs/Tilelang.language/数据类型转换操作/T.vcast.md
++++ b/docs/Tilelang.language/数据类型转换操作/T.vcast.md
+@@
+-（§2.2.1 DataType 支持表 i32 行：dst 仅 f32 / i64 / i16）
++（§2.2.1 DataType 支持表 i32 行：dst 增加 f16 / bf16，标注「soft 分解：
++  int32 -> f32 -> f16/bf16，两跳均走硬件 cast；|v| > 65504 时溢出」）
+# 注：该文档改动需与实现同 PR 提交，否则文档与实现不符（CG 条目要求）。
+
+# ---
+# 附：若评审希望更保守，可只放行 rint（dropout 掩码只用 rint），
+# 其余 mode 维持拒绝；但 round/floor/ceil 的两跳语义同样成立，无额外风险。

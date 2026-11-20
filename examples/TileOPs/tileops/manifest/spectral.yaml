@@ -1,0 +1,57 @@
+# spectral.yaml -- manifest entries for the 'spectral' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+#
+# Ported from TileOPs ``tileops/manifest/sequence_modeling.yaml`` -- the
+# FFTC2COp entry (its GPU manifest groups it under 'sequence_modeling'; the
+# NPU project gives the spectral operators their own family directory).
+# signature / shape_rules / workloads are copied verbatim from the GPU entry
+# (extended with a leading smoke case per the NPU manifest workload
+# contract); roofline is the GPU
+# ``tileops.perf.formulas.fft_c2c_roofline`` inlined as vars/flops/bytes
+# (the NPU project has no tileops.perf module).
+#
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+FFTC2COp:
+  ref_api: "torch.fft.fft"
+  family: spectral
+  status: spec-only
+
+  signature:
+    inputs:
+      input: {dtype: "complex64 | complex128", shape: "[..., n]"}
+    outputs:
+      output: {dtype: "same_as(input)", shape: "same_as(input)"}
+    params: {}
+    shape_rules:
+    - "input.shape[-1] > 0"
+    - "input.shape[-1] & (input.shape[-1] - 1) == 0"
+
+  workloads:
+    # Smoke: smallest robust shape (NPU manifest workload contract).
+  - {input_shape: [64], dtypes: [complex64], label: "fft-64-c64-smoke"}
+    # Full: GPU manifest workloads.
+  - {input_shape: [4096], dtypes: [complex64], label: "fft-4k-c64-unbatched"}
+  - {input_shape: [64, 4096], dtypes: [complex64], label: "fft-4k-c64-b64"}
+  - {input_shape: [64, 4096], dtypes: [complex128], label: "fft-4k-c128-b64"}
+
+  # Inlined from the GPU ``tileops.perf.formulas.fft_c2c_roofline``:
+  #   flops = batch * 5 * n * log2(n)
+  #   bytes = batch * 2 * n * elem_bytes   (read + write one complex (..., n))
+  roofline:
+    vars:
+      n: "input_shape[-1]"
+      batch: "product(input_shape[:-1]) (1 when input_shape has no leading axes)"
+      elem_bytes: "8 (complex64) / 16 (complex128)"
+    flops: "batch * 5 * n * log2(n)"
+    bytes: "batch * 2 * n * elem_bytes"
+
+  source:
+    kernel: tileops/kernels/spectral/fft_c2c/fft_c2c.py
+    kernel_map:
+      fft_c2c_kernel: FFTC2CKernel
+    op: tileops/ops/spectral/fft_c2c.py
+    test: tests/ops/test_fft.py
+    bench: benchmarks/ops/bench_fft.py
+    bench_manifest_driven: true

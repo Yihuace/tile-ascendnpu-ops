@@ -1,0 +1,577 @@
+{
+  "schema_version": 2,
+  "operator": "IsinfFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261117_122322_241985_IsinfFwdOp",
+    "generated_at": "2026-11-17T12:39:38.360257+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": null,
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_isinf.py",
+    "benchmark_file": "benchmarks/ops/bench_isinf.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_isinf.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_isinf.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-17T12:39:38.360257+08:00",
+      "evaluation_scope": "IsinfFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261117_122322_241985_IsinfFwdOp",
+      "git_commit": null,
+      "correctness_target": "tests/ops/test_isinf.py",
+      "benchmark_target": "benchmarks/ops/bench_isinf.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 9,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 9,
+    "passed_cases": 9,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_op[1048576-dtype0]",
+        "name": "test_isinf_op[1048576-dtype0]",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 45.372,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_op[1048576-dtype1]",
+        "name": "test_isinf_op[1048576-dtype1]",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 17.724,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_op[1048576-dtype2]",
+        "name": "test_isinf_op[1048576-dtype2]",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 18.094,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_op[4000000-dtype3]",
+        "name": "test_isinf_op[4000000-dtype3]",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 2.497,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_op[4000000-dtype4]",
+        "name": "test_isinf_op[4000000-dtype4]",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 2.871,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_output_dtype_and_values",
+        "name": "test_isinf_output_dtype_and_values",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 2.41,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_rejects_non_float_dtype",
+        "name": "test_isinf_rejects_non_float_dtype",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_op_rejects_non_float_dtype",
+        "name": "test_isinf_op_rejects_non_float_dtype",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isinf::test_isinf_eval_roofline",
+        "name": "test_isinf_eval_roofline",
+        "classname": "tests.ops.test_isinf",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[smoke-1m-float32]",
+        "name": "test_isinf_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 112.243,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "5.5200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[smoke-1m-float16]",
+        "name": "test_isinf_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 84.142,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "4.4800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[smoke-1m-bfloat16]",
+        "name": "test_isinf_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 85.53,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "5.8000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[16m-float16]",
+        "name": "test_isinf_bench[16m-float16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 86.318,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "27.1600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[16m-bfloat16]",
+        "name": "test_isinf_bench[16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 88.685,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "45.3400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[16m-float32]",
+        "name": "test_isinf_bench[16m-float32]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 85.704,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "50.5600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[256m-float16]",
+        "name": "test_isinf_bench[256m-float16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 86.469,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "596.3600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[256m-bfloat16]",
+        "name": "test_isinf_bench[256m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 86.631,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "737.0000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[16m-half-float16]",
+        "name": "test_isinf_bench[16m-half-float16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 67.449,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "27.5600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isinf::test_isinf_bench[16m-half-bfloat16]",
+        "name": "test_isinf_bench[16m-half-bfloat16]",
+        "classname": "benchmarks.ops.bench_isinf",
+        "time_s": 68.432,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsinfFwdOp",
+          "op_module": "tileops.ops.elementwise.isinf",
+          "tileops_latency_us": "46.0200"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "IsinfFwdOp",
+        "case_id": "IsinfFwdOp-948c5107d2c0",
+        "label": "16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 27.16,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 70.5966,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.01092529296875,
+        "performance_tops": 2.4843780994415283,
+        "computility_tops": 9.068097114562988,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/artifacts/msprof/main_gb79lhgi",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 27.16,
+          "max_latency_us": 27.16,
+          "min_latency_us": 27.16,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsinfFwdOp",
+        "case_id": "IsinfFwdOp-d4c3fec3b359",
+        "label": "16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 45.34,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 42.2894,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.396139621734619,
+        "performance_tops": 1.7732996940612793,
+        "computility_tops": 5.406388759613037,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/artifacts/msprof/main_zu_y1id_",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 45.34,
+          "max_latency_us": 45.34,
+          "min_latency_us": 45.34,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsinfFwdOp",
+        "case_id": "IsinfFwdOp-e8fa45bea844",
+        "label": "16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 50.560001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 75.84649999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.8824179172515869,
+        "performance_tops": 1.1712454557418823,
+        "computility_tops": 6.355018138885498,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/artifacts/msprof/main_35vtfoxd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 50.560001,
+          "max_latency_us": 50.560001,
+          "min_latency_us": 50.560001,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsinfFwdOp",
+        "case_id": "IsinfFwdOp-45771d3e31b7",
+        "label": "256m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 596.359985,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 70.6962,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.45980966091156,
+        "performance_tops": 1.8060530424118042,
+        "computility_tops": 9.131658554077148,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/artifacts/msprof/main_zu5lwbti",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 596.359985,
+          "max_latency_us": 596.359985,
+          "min_latency_us": 596.359985,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsinfFwdOp",
+        "case_id": "IsinfFwdOp-6c988651021b",
+        "label": "256m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 737.0,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 57.230599999999995,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.7377097606658936,
+        "performance_tops": 1.740378975868225,
+        "computility_tops": 5.427831649780273,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_122322_241985_IsinfFwdOp/artifacts/msprof/main_i340f3nb",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 737.0,
+          "max_latency_us": 737.0,
+          "min_latency_us": 737.0,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "IsinfFwdOp",
+      "family": "elementwise",
+      "cases": 9,
+      "passed": 9,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 42.2894,
+        "max": 75.84649999999999
+      }
+    }
+  ],
+  "warnings": []
+}

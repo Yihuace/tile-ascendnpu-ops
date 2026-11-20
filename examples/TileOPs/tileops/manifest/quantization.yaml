@@ -1,0 +1,67 @@
+# quantization.yaml -- manifest entries for the 'quantization' family (NPU benchmark).
+#
+# Standalone spec; no dependency on the TileOPs repository.
+# Ported from TileOPs ``tileops/manifest/quantization.yaml`` -- the FP8QuantOp
+# entry only (the GPU file declares just this one narrow helper op).
+#
+# ``signature`` / ``shape_rules`` are copied verbatim from the GPU entry.  The
+# GPU ``roofline.func`` hook (``tileops.perf.formulas.fp8_quant_roofline``) is
+# inlined here as ``vars`` / ``flops`` / ``bytes`` because the NPU project has
+# no ``perf.formulas`` module; the Op layer implements the same arithmetic in
+# ``eval_roofline()`` (see tileops/ops/quantization/fp8_quant.py).
+#
+# Workloads extend the GPU set with a leading smoke case per the NPU manifest
+# workload contract (>= 4 workloads, first entry small).
+#
+# See docs/gpu_to_npu_adaptation.md for the GPU-to-NPU adaptation notes.
+
+FP8QuantOp:
+  ref_api: "none"
+  family: quantization
+  status: implemented
+
+  signature:
+    inputs:
+      input_tensor: {dtype: "float16 | bfloat16 | float32", shape: "[batch, seq_len_kv, kv_group, index_dim]"}
+    outputs:
+      scale_tensor: {dtype: "float32", shape: "[batch, seq_len_kv, kv_group]"}
+      output_tensor: {dtype: "float8_e4m3fn", shape: "[batch, seq_len_kv, kv_group, index_dim]"}
+    shape_rules:
+    - "input_tensor.ndim == 4"
+    - "input_tensor.shape[3] > 0"
+
+  workloads:
+    # Smoke: tiny kv-index tile (NPU manifest workload contract -- first entry is
+    # the small smoke case).  Shapes here are the benchmark set; the correctness
+    # fixture carries its own fp32/fp16/bf16 smoke triple.
+    - {batch: 1, seq_len_kv: 256, kv_group: 1, index_dim: 64, in_dtype: float16, dtypes: [float16], label: "smoke-kv-index-256-d64-fp16"}
+    # Full: GPU manifest workloads, copied verbatim (labels and dtypes included).
+    - {batch: 1, seq_len_kv: 8192, kv_group: 1, index_dim: 64, in_dtype: float16, dtypes: [float16], label: "kv-index-8k-d64-fp16"}
+    - {batch: 1, seq_len_kv: 8192, kv_group: 1, index_dim: 64, in_dtype: bfloat16, dtypes: [bfloat16], label: "kv-index-8k-d64-bf16"}
+    - {batch: 1, seq_len_kv: 4096, kv_group: 1, index_dim: 128, in_dtype: float32, dtypes: [float32], label: "kv-index-4k-d128-fp32"}
+
+  # Inlined from the GPU ``func`` codegen hook (device-agnostic arithmetic;
+  # same formula as ``tileops.perf.formulas.fp8_quant_roofline``):
+  #   groups = batch * seq_len_kv * kv_group
+  #   elems  = groups * index_dim
+  #   flops  = 6 * elems + groups
+  #   bytes  = elems * in_elem + elems * 1 + groups * 4
+  # ``elem_bytes`` is the input element size (the fp8 output is 1 byte/el and
+  # the fp32 scale is 4 bytes/group).
+  roofline:
+    vars:
+      groups: "batch * seq_len_kv * kv_group"
+      elems: "groups * index_dim"
+    # 6 ops per element (abs + max + mul + div + 2 clamps) + 1 ops per group
+    flops: "6 * elems + groups"
+    # read input + write fp8 output (1 byte) + write fp32 scale (4 bytes)
+    bytes: "elems * elem_bytes + elems + groups * 4"
+
+  source:
+    kernel: tileops/kernels/quantization/fp8_quant/fp8_quant.py
+    kernel_map:
+      fp8_quant_kernel: FP8QuantKernel
+    op: tileops/ops/quantization/fp8_quant.py
+    test: tests/ops/test_fp8_quant.py
+    bench: benchmarks/ops/bench_fp8_quant.py
+    bench_manifest_driven: true
