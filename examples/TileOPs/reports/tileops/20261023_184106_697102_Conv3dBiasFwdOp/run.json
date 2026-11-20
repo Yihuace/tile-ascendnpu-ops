@@ -1,0 +1,921 @@
+{
+  "schema_version": 2,
+  "operator": "Conv3dBiasFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261023_184106_697102_Conv3dBiasFwdOp",
+    "generated_at": "2026-10-23T18:44:12.654411+08:00",
+    "project_root": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs",
+    "git_commit": "60cfa4e4e811e9deaa895ae56181d9bc5be488c4",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_conv3d_bias.py",
+    "benchmark_file": "benchmarks/ops/bench_conv3d_bias.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_conv3d_bias.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_conv3d_bias.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-23T18:44:12.654411+08:00",
+      "evaluation_scope": "Conv3dBiasFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261023_184106_697102_Conv3dBiasFwdOp",
+      "git_commit": "60cfa4e4e811e9deaa895ae56181d9bc5be488c4",
+      "correctness_target": "tests/ops/test_conv3d_bias.py",
+      "benchmark_target": "benchmarks/ops/bench_conv3d_bias.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.2+60cfa4e4e811e9deaa895ae56181d9bc5be488c4 (/mnt/workspace/tilelang-mlir-ascend@9309edb)",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 17,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 17,
+    "passed_cases": 17,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 4,
+    "benchmark_failed": 0,
+    "case_count": 3,
+    "msprof_case_count": 3,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[smoke-k3-s1-fp16]",
+        "name": "test_conv3d_bias[smoke-k3-s1-fp16]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 8.4,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[smoke-k3-s1-bf16]",
+        "name": "test_conv3d_bias[smoke-k3-s1-bf16]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 6.022,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[r3d-stem-bias]",
+        "name": "test_conv3d_bias[r3d-stem-bias]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 3.484,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[video-down-bias]",
+        "name": "test_conv3d_bias[video-down-bias]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 6.075,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[unet-encoder-bias]",
+        "name": "test_conv3d_bias[unet-encoder-bias]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 6.705,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[nondiv-fp16]",
+        "name": "test_conv3d_bias[nondiv-fp16]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 5.968,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[stride2-fp16]",
+        "name": "test_conv3d_bias[stride2-fp16]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 3.105,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[k2-pad0-fp16]",
+        "name": "test_conv3d_bias[k2-pad0-fp16]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 3.117,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[batch2-fp16]",
+        "name": "test_conv3d_bias[batch2-fp16]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 3.169,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias[dilation2-fp16]",
+        "name": "test_conv3d_bias[dilation2-fp16]",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 5.967,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias_required",
+        "name": "test_conv3d_bias_required",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias_rejects_bad_shape",
+        "name": "test_conv3d_bias_rejects_bad_shape",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias_rejects_bad_dtype",
+        "name": "test_conv3d_bias_rejects_bad_dtype",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias_rejects_cpu_bias",
+        "name": "test_conv3d_bias_rejects_cpu_bias",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias_rejects_bad_input_ndim",
+        "name": "test_conv3d_bias_rejects_bad_input_ndim",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias_rejects_unsupported_dtype",
+        "name": "test_conv3d_bias_rejects_unsupported_dtype",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv3d_bias::test_conv3d_bias_eval_roofline",
+        "name": "test_conv3d_bias_eval_roofline",
+        "classname": "tests.ops.test_conv3d_bias",
+        "time_s": 3.208,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_conv3d_bias::test_conv3d_bias_manifest_bench[smoke-k3-s1-bias-bfloat16]",
+        "name": "test_conv3d_bias_manifest_bench[smoke-k3-s1-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv3d_bias",
+        "time_s": 25.143,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv3dBiasFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "80.2400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv3d_bias::test_conv3d_bias_manifest_bench[r3d-stem-bias-float16]",
+        "name": "test_conv3d_bias_manifest_bench[r3d-stem-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv3d_bias",
+        "time_s": 22.916,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv3dBiasFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "2649.6799"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv3d_bias::test_conv3d_bias_manifest_bench[video-down-bias-float16]",
+        "name": "test_conv3d_bias_manifest_bench[video-down-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv3d_bias",
+        "time_s": 24.144,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv3dBiasFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "87.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv3d_bias::test_conv3d_bias_manifest_bench[unet-encoder-bias-bfloat16]",
+        "name": "test_conv3d_bias_manifest_bench[unet-encoder-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv3d_bias",
+        "time_s": 23.006,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv3dBiasFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "307.0200"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "Conv3dBiasFwdOp",
+        "case_id": "Conv3dBiasFwdOp-85fdc3d4b5a6",
+        "label": "r3d-stem-bias",
+        "params": {
+          "@py_assert1": null,
+          "@py_assert2": null,
+          "c_in": 3,
+          "c_in_g": 3,
+          "c_out": 64,
+          "d_in": 16,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "h_in": 112,
+          "input_shape": [
+            1,
+            3,
+            16,
+            112,
+            112
+          ],
+          "kd": 3,
+          "kh": 3,
+          "kw": 3,
+          "n": 1,
+          "padding": 1,
+          "stride": 1,
+          "use_bias": true,
+          "w_in": 112,
+          "weight_shape": [
+            64,
+            3,
+            3,
+            3,
+            3
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 2649.679932,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 1.6389999999999998,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 4907.0322265625,
+        "performance_tops": 4.888394355773926,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/artifacts/msprof/_conv3d_bias_main_r2_mix_aic_ge5ujhbt",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.042386,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.016521,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.016521,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.074175,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.162109375,
+            "bw_name": "FIXP",
+            "ratio": 0.016521,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.328125,
+            "bw_name": "MTE1",
+            "ratio": 0.016521,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.642578125,
+            "bw_name": "MTE2",
+            "ratio": 0.086328,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.016521,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "L1 to GM",
+            "ratio": 0.016521,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.004819,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.010373,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.004972,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.004819,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.005403,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.005269,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.004819,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.005269,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.004819,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.01639,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.045154,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv3d_bias_main_r2_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv3d_bias_main_r2"
+          ],
+          "kernel_name_requested": "_conv3d_bias_main_r2",
+          "kernel_name_resolved": "_conv3d_bias_main_r2",
+          "latency_us": 2649.679932,
+          "max_latency_us": 2649.679932,
+          "min_latency_us": 2649.679932,
+          "op_name": "_conv3d_bias_main_r2_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv3dBiasFwdOp",
+        "case_id": "Conv3dBiasFwdOp-a44e243c85db",
+        "label": "video-down-bias",
+        "params": {
+          "@py_assert1": null,
+          "@py_assert2": null,
+          "c_in": 64,
+          "c_in_g": 64,
+          "c_out": 128,
+          "d_in": 8,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "h_in": 56,
+          "input_shape": [
+            1,
+            64,
+            8,
+            56,
+            56
+          ],
+          "kd": 3,
+          "kh": 3,
+          "kw": 3,
+          "n": 1,
+          "padding": 1,
+          "stride": 2,
+          "use_bias": true,
+          "w_in": 56,
+          "weight_shape": [
+            128,
+            64,
+            3,
+            3,
+            3
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 87.599998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 6.0886000000000005,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1049.72119140625,
+        "performance_tops": 18.163724899291992,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/artifacts/msprof/_conv3d_bias_main_base_mix_aic_eoxdx4kd",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.101215,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.06137,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.101215,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.101215,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.162109375,
+            "bw_name": "FIXP",
+            "ratio": 0.06137,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.328125,
+            "bw_name": "MTE1",
+            "ratio": 0.123927,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.642578125,
+            "bw_name": "MTE2",
+            "ratio": 0.11806,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.06137,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "L1 to GM",
+            "ratio": 0.06137,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.019055,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.036257,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.020423,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.019055,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.019055,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.019055,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.019055,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.019055,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.019055,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.060886,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.188172,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv3d_bias_main_base_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv3d_bias_main_base"
+          ],
+          "kernel_name_requested": "_conv3d_bias_main_base",
+          "kernel_name_resolved": "_conv3d_bias_main_base",
+          "latency_us": 87.599998,
+          "max_latency_us": 87.599998,
+          "min_latency_us": 87.599998,
+          "op_name": "_conv3d_bias_main_base_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv3dBiasFwdOp",
+        "case_id": "Conv3dBiasFwdOp-f62c713fde26",
+        "label": "unet-encoder-bias",
+        "params": {
+          "@py_assert1": null,
+          "@py_assert2": null,
+          "c_in": 32,
+          "c_in_g": 32,
+          "c_out": 64,
+          "d_in": 32,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "h_in": 64,
+          "input_shape": [
+            1,
+            32,
+            32,
+            64,
+            64
+          ],
+          "kd": 3,
+          "kh": 3,
+          "kw": 3,
+          "n": 1,
+          "padding": 1,
+          "stride": 1,
+          "use_bias": true,
+          "w_in": 64,
+          "weight_shape": [
+            64,
+            32,
+            3,
+            3,
+            3
+          ]
+        },
+        "config": {
+          "block_k": 128,
+          "block_m": 64,
+          "block_n": 128,
+          "num_stages": 1
+        },
+        "tag": "tileops",
+        "latency_us": 307.019989,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 20.4257,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1667.31689453125,
+        "performance_tops": 61.0074462890625,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_184106_697102_Conv3dBiasFwdOp/artifacts/msprof/_conv3d_bias_main_r3_mix_aic_xgtl08ad",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 16.763805389404297,
+            "bw_name": "L1 Read + Write",
+            "ratio": 0.206371,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.190951347351074,
+            "bw_name": "Read from L0C",
+            "ratio": 0.206371,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from L1",
+            "ratio": 0.206371,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to L1",
+            "ratio": 0.206371,
+            "title": "Memory Unit(Cube)"
+          },
+          {
+            "bw": 4.162109375,
+            "bw_name": "FIXP",
+            "ratio": 0.206371,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.328125,
+            "bw_name": "MTE1",
+            "ratio": 0.206371,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 6.642578125,
+            "bw_name": "MTE2",
+            "ratio": 0.206371,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "MTE3",
+            "ratio": 0.206371,
+            "title": "Pipeline(Cube)"
+          },
+          {
+            "bw": 3.8951170444488525,
+            "bw_name": "L1 to GM",
+            "ratio": 0.206371,
+            "title": "Memory Transfer(Cube)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.038796,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.062767,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.038796,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.038796,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.038796,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.038796,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.038796,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.038796,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.038796,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.204257,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.247252,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv3d_bias_main_r3_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv3d_bias_main_r3"
+          ],
+          "kernel_name_requested": "_conv3d_bias_main_r3",
+          "kernel_name_resolved": "_conv3d_bias_main_r3",
+          "latency_us": 307.019989,
+          "max_latency_us": 307.019989,
+          "min_latency_us": 307.019989,
+          "op_name": "_conv3d_bias_main_r3_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "Conv3dBiasFwdOp",
+      "family": "convolution",
+      "cases": 17,
+      "passed": 17,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": null,
+      "max_abs_err": null,
+      "performance_cases": 3,
+      "ratio_range": {
+        "min": 1.6389999999999998,
+        "max": 20.4257
+      }
+    }
+  ],
+  "warnings": []
+}

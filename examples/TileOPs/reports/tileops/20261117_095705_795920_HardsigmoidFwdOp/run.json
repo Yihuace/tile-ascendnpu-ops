@@ -1,0 +1,609 @@
+{
+  "schema_version": 2,
+  "operator": "HardsigmoidFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261117_095705_795920_HardsigmoidFwdOp",
+    "generated_at": "2026-11-17T10:12:38.506953+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": null,
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_hardsigmoid.py",
+    "benchmark_file": "benchmarks/ops/bench_hardsigmoid.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_hardsigmoid.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_hardsigmoid.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-17T10:12:38.506953+08:00",
+      "evaluation_scope": "HardsigmoidFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261117_095705_795920_HardsigmoidFwdOp",
+      "git_commit": null,
+      "correctness_target": "tests/ops/test_hardsigmoid.py",
+      "benchmark_target": "benchmarks/ops/bench_hardsigmoid.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 7,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 7,
+    "passed_cases": 7,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 9,
+    "benchmark_failed": 0,
+    "case_count": 6,
+    "msprof_case_count": 6,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_hardsigmoid::test_hardsigmoid_op[1048576-dtype0]",
+        "name": "test_hardsigmoid_op[1048576-dtype0]",
+        "classname": "tests.ops.test_hardsigmoid",
+        "time_s": 46.001,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "max_abs_err": "5.96e-08"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardsigmoid::test_hardsigmoid_op[1048576-dtype1]",
+        "name": "test_hardsigmoid_op[1048576-dtype1]",
+        "classname": "tests.ops.test_hardsigmoid",
+        "time_s": 17.849,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardsigmoid::test_hardsigmoid_op[1048576-dtype2]",
+        "name": "test_hardsigmoid_op[1048576-dtype2]",
+        "classname": "tests.ops.test_hardsigmoid",
+        "time_s": 18.086,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardsigmoid::test_hardsigmoid_op[4000000-dtype3]",
+        "name": "test_hardsigmoid_op[4000000-dtype3]",
+        "classname": "tests.ops.test_hardsigmoid",
+        "time_s": 2.653,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "max_abs_err": "4.88e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardsigmoid::test_hardsigmoid_op[4000000-dtype4]",
+        "name": "test_hardsigmoid_op[4000000-dtype4]",
+        "classname": "tests.ops.test_hardsigmoid",
+        "time_s": 2.507,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_hardsigmoid::test_hardsigmoid_rejects_non_float_dtype",
+        "name": "test_hardsigmoid_rejects_non_float_dtype",
+        "classname": "tests.ops.test_hardsigmoid",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_hardsigmoid::test_hardsigmoid_eval_roofline",
+        "name": "test_hardsigmoid_eval_roofline",
+        "classname": "tests.ops.test_hardsigmoid",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[smoke-1m-float32]",
+        "name": "test_hardsigmoid_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 112.861,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "6.3800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[smoke-1m-float16]",
+        "name": "test_hardsigmoid_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 88.058,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "4.5800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[smoke-1m-bfloat16]",
+        "name": "test_hardsigmoid_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 86.162,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "5.5800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[mbv3-se-gate-float16]",
+        "name": "test_hardsigmoid_bench[mbv3-se-gate-float16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 87.259,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "2.3400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[mbv3-se-gate-bfloat16]",
+        "name": "test_hardsigmoid_bench[mbv3-se-gate-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 86.878,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "2.4600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[mbv3-se-gate-deep-float16]",
+        "name": "test_hardsigmoid_bench[mbv3-se-gate-deep-float16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 86.959,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "3.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[mbv3-se-gate-deep-bfloat16]",
+        "name": "test_hardsigmoid_bench[mbv3-se-gate-deep-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 86.729,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "2.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[fc-wide-float16]",
+        "name": "test_hardsigmoid_bench[fc-wide-float16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 87.22,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "14.1800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_hardsigmoid::test_hardsigmoid_bench[fc-wide-bfloat16]",
+        "name": "test_hardsigmoid_bench[fc-wide-bfloat16]",
+        "classname": "benchmarks.ops.bench_hardsigmoid",
+        "time_s": 87.122,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "HardsigmoidFwdOp",
+          "op_module": "tileops.ops.elementwise.hardsigmoid",
+          "tileops_latency_us": "17.7400"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "HardsigmoidFwdOp",
+        "case_id": "HardsigmoidFwdOp-f328d3d231ae",
+        "label": "mbv3-se-gate",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            32,
+            240,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 2.34,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.3813,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 4.204917907714844,
+        "performance_tops": 0.02806153893470764,
+        "computility_tops": 9.162419319152832,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/artifacts/msprof/main_y28l5lto",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 2.34,
+          "max_latency_us": 2.34,
+          "min_latency_us": 2.34,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardsigmoidFwdOp",
+        "case_id": "HardsigmoidFwdOp-0cde19a37061",
+        "label": "mbv3-se-gate",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            32,
+            240,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 2.46,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.4359,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.1300814151763916,
+        "performance_tops": 0.020032519474625587,
+        "computility_tops": 4.596062183380127,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/artifacts/msprof/main_5vf4jj6p",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 2.46,
+          "max_latency_us": 2.46,
+          "min_latency_us": 2.46,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardsigmoidFwdOp",
+        "case_id": "HardsigmoidFwdOp-9b299c6f8e84",
+        "label": "mbv3-se-gate-deep",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            32,
+            960,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 3.04,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 1.1597,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.1286306381225586,
+        "performance_tops": 0.04320000112056732,
+        "computility_tops": 9.162419319152832,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/artifacts/msprof/main_279c4mph",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 3.04,
+          "max_latency_us": 3.04,
+          "min_latency_us": 3.04,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardsigmoidFwdOp",
+        "case_id": "HardsigmoidFwdOp-929ebee7d006",
+        "label": "mbv3-se-gate-deep",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            32,
+            960,
+            1,
+            1
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 2.04,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 2.1024000000000003,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.188405752182007,
+        "performance_tops": 0.09662745893001556,
+        "computility_tops": 4.596062183380127,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/artifacts/msprof/main_70i__j_b",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 2.04,
+          "max_latency_us": 2.04,
+          "min_latency_us": 2.04,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardsigmoidFwdOp",
+        "case_id": "HardsigmoidFwdOp-38784cca412c",
+        "label": "fc-wide",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 16384
+        },
+        "tag": "tileops",
+        "latency_us": 14.18,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 67.60969999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.0004119873046875,
+        "performance_tops": 2.3668265342712402,
+        "computility_tops": 9.210098266601562,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/artifacts/msprof/main_o_1etipk",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 14.18,
+          "max_latency_us": 14.18,
+          "min_latency_us": 14.18,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "HardsigmoidFwdOp",
+        "case_id": "HardsigmoidFwdOp-0c5f035cb580",
+        "label": "fc-wide",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            2048,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 17.74,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.590900000000005,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.0004653930664062,
+        "performance_tops": 2.837646007537842,
+        "computility_tops": 4.607250213623047,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1117/20261117_095705_795920_HardsigmoidFwdOp/artifacts/msprof/main_40jgcz1u",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 17.74,
+          "max_latency_us": 17.74,
+          "min_latency_us": 17.74,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "HardsigmoidFwdOp",
+      "family": "elementwise",
+      "cases": 7,
+      "passed": 7,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.00019521192,
+      "max_abs_err": 0.000488,
+      "performance_cases": 6,
+      "ratio_range": {
+        "min": 0.3813,
+        "max": 67.60969999999999
+      }
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,374 @@
+# Copyright(c) Tile-AI Corporation.
+# Licensed under the MIT License.
+# Learn a lot from the MLC - LLM Project
+# https: // github.com/mlc-ai/mlc-llm/blob/main/CMakeLists.txt
+
+cmake_minimum_required(VERSION 3.18)
+project(TILE_LANG C CXX)
+
+# Suppress all warnings
+add_definitions(-w)
+
+# Set default build type to Release if not provided
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+
+# Define a custom macro for globbing files with conditional CONFIGURE_DEPENDS
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12.0")
+  macro(tilelang_file_glob glob variable)
+    file(${glob} ${variable} CONFIGURE_DEPENDS ${ARGN})
+  endmacro()
+else()
+  macro(tilelang_file_glob glob variable)
+    file(${glob} ${variable} ${ARGN})
+  endmacro()
+endif()
+
+# Handle TVM prebuild path or use default configuration
+if(EXISTS ${CMAKE_BINARY_DIR}/config.cmake)
+  include(${CMAKE_BINARY_DIR}/config.cmake)
+elseif(EXISTS ${CMAKE_SOURCE_DIR}/config.cmake)
+  include(${CMAKE_SOURCE_DIR}/config.cmake)
+endif()
+
+# Normalize the optional Ascend target selector used by NPUIR source gating.
+set(TILE_LANG_NPUIR_TARGET "")
+if(DEFINED TILELANG_NPUIR_TARGET)
+  set(TILE_LANG_NPUIR_TARGET "${TILELANG_NPUIR_TARGET}")
+elseif(DEFINED TILELANG_ASCEND_TARGET)
+  set(TILE_LANG_NPUIR_TARGET "${TILELANG_ASCEND_TARGET}")
+elseif(DEFINED TARGET)
+  set(TILE_LANG_NPUIR_TARGET "${TARGET}")
+elseif(DEFINED ENV{TILELANG_NPUIR_TARGET})
+  set(TILE_LANG_NPUIR_TARGET "$ENV{TILELANG_NPUIR_TARGET}")
+elseif(DEFINED ENV{TILELANG_ASCEND_TARGET})
+  set(TILE_LANG_NPUIR_TARGET "$ENV{TILELANG_ASCEND_TARGET}")
+elseif(DEFINED ENV{TILELANG_ASCEND_DEVICE_NAME})
+  set(TILE_LANG_NPUIR_TARGET "$ENV{TILELANG_ASCEND_DEVICE_NAME}")
+endif()
+
+string(TOUPPER "${TILE_LANG_NPUIR_TARGET}" TILE_LANG_NPUIR_TARGET_UPPER)
+set(TILE_LANG_ENABLE_NPUIR_A5 OFF)
+if(TILE_LANG_NPUIR_TARGET_UPPER STREQUAL "A5")
+  set(TILE_LANG_ENABLE_NPUIR_A5 ON)
+endif()
+
+# Enforce C++ standard
+set(CMAKE_CXX_STANDARD 17)
+
+# TVM's function-local type indices must stay within its private registry.
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fno-gnu-unique>)
+endif()
+
+if(NOT DEFINED TVM_PREBUILD_PATH)
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)
+    message(STATUS "Setting default build type to ${CMAKE_BUILD_TYPE}")
+  endif()
+endif()
+
+# Setting up MLIR infrastructure
+set(NPUIR_LIBS "")
+if(USE_NPUIR)
+  set(BISHENGIR_INCLUDE_DIRS "")
+  set(BISHENGIR_LIBRARY_DIRS "")
+  if(NOT BISHENGIR_ROOT_PATH)
+    find_package(MLIR REQUIRED CONFIG)
+    message(STATUS "Using MLIRConfig.cmake in: ${MLIR_DIR}")
+    list(APPEND CMAKE_MODULE_PATH "${MLIR_CMAKE_DIR}")
+    list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+    set(BISHENGIR_INCLUDE_DIRS ${LLVM_INCLUDE_DIRS})
+    set(BISHENGIR_LIBRARY_DIRS ${LLVM_LIBRARY_DIRS})
+    file(GLOB NPUIR_LIBS "${LLVM_LIBRARY_DIRS}/*.a")
+  else()
+    set(BISHENGIR_INCLUDE_DIRS ${BISHENGIR_ROOT_PATH}/include)
+    set(BISHENGIR_LIBRARY_DIRS ${BISHENGIR_ROOT_PATH}/lib)
+    file(GLOB NPUIR_LIBS "${BISHENGIR_ROOT_PATH}/lib/*.a")
+    list(INSERT CMAKE_PREFIX_PATH 0 ${BISHENGIR_ROOT_PATH})
+    find_package(MLIR REQUIRED CONFIG)
+    list(APPEND CMAKE_MODULE_PATH "${MLIR_CMAKE_DIR}" "${LLVM_CMAKE_DIR}")
+  endif()
+  set(TRITON_INCLUDE_DIR
+    "${PROJECT_SOURCE_DIR}/3rdparty/AscendNPU-IR-Dev/third-party/triton/include"
+    CACHE PATH "Path to Triton headers required by AscendNPU-IR"
+  )
+  set(TRITON_BINARY_INCLUDE_DIR
+    "${PROJECT_SOURCE_DIR}/3rdparty/AscendNPU-IR-Dev/build/tools/triton/include"
+    CACHE PATH "Path to generated Triton headers required by AscendNPU-IR"
+  )
+  set(TRITON_BIN_INCLUDE_DIR
+    "${PROJECT_SOURCE_DIR}/3rdparty/AscendNPU-IR-Dev/third-party/triton/bin"
+    CACHE PATH "Path to Triton registration headers required by AscendNPU-IR"
+  )
+  set(TRITON_THIRD_PARTY_INCLUDE_DIR
+    "${PROJECT_SOURCE_DIR}/3rdparty/AscendNPU-IR-Dev/third-party/triton/third_party"
+    CACHE PATH "Path to Triton third-party headers required by AscendNPU-IR"
+  )
+  set(TRITON_THIRD_PARTY_BINARY_INCLUDE_DIR
+    "${PROJECT_SOURCE_DIR}/3rdparty/AscendNPU-IR-Dev/build/tools/triton/third_party"
+    CACHE PATH "Path to generated Triton third-party headers required by AscendNPU-IR"
+  )
+  if(EXISTS "${TRITON_INCLUDE_DIR}/triton/Dialect/TritonGPU/IR/Dialect.h")
+    list(APPEND BISHENGIR_INCLUDE_DIRS "${TRITON_INCLUDE_DIR}")
+  endif()
+  if(EXISTS "${TRITON_BINARY_INCLUDE_DIR}/triton/Dialect/Triton/IR/Dialect.h.inc")
+    list(APPEND BISHENGIR_INCLUDE_DIRS "${TRITON_BINARY_INCLUDE_DIR}")
+  endif()
+  if(EXISTS "${TRITON_BIN_INCLUDE_DIR}/RegisterTritonDialects.h")
+    list(APPEND BISHENGIR_INCLUDE_DIRS "${TRITON_BIN_INCLUDE_DIR}")
+  endif()
+  if(EXISTS "${TRITON_THIRD_PARTY_INCLUDE_DIR}/nvidia/include/Dialect/NVGPU/IR/Dialect.h")
+    list(APPEND BISHENGIR_INCLUDE_DIRS "${TRITON_THIRD_PARTY_INCLUDE_DIR}")
+  endif()
+  if(EXISTS "${TRITON_THIRD_PARTY_BINARY_INCLUDE_DIR}/nvidia/include/Dialect/NVGPU/IR/Dialect.h.inc")
+    list(APPEND BISHENGIR_INCLUDE_DIRS "${TRITON_THIRD_PARTY_BINARY_INCLUDE_DIR}")
+  endif()
+  message(STATUS "BISHENGIR_INCLUDE_DIRS: ${BISHENGIR_INCLUDE_DIRS}")
+  message(STATUS "BISHENGIR_LIBRARY_DIRS: ${BISHENGIR_LIBRARY_DIRS}")
+  include_directories(${BISHENGIR_INCLUDE_DIRS})
+  link_directories(${BISHENGIR_LIBRARY_DIRS})
+  if(DEFINED CACHE{Python3_EXECUTABLE})
+    set(Python3_EXECUTABLE "${Python3_EXECUTABLE}" CACHE FILEPATH "Python for tilelangir (from -DPython3_EXECUTABLE)" FORCE)
+    message(STATUS "NPUIR/tilelangir Python: ${Python3_EXECUTABLE}")
+  endif()
+  include(AddLLVM)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/tilelangir tilelangir)
+endif()
+
+# include cmake modules
+include(CheckCXXCompilerFlag)
+
+# Enable static runtime build if required
+if(TILE_LANG_INSTALL_STATIC_LIB)
+  set(BUILD_STATIC_RUNTIME ON)
+endif()
+
+# Enforce CUDA standard
+if(USE_CUDA)
+  set(CMAKE_CUDA_STANDARD 17)
+endif()
+
+# Enforce HIP standard
+if(USE_ROCM)
+  set(CMAKE_HIP_STANDARD 17)
+  check_cxx_compiler_flag("-std=c++17" SUPPORT_CXX17)
+  set(CMAKE_CXX_FLAGS "-D__HIP_PLATFORM_AMD__ ${CMAKE_CXX_FLAGS}")
+endif()
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Locate TVM prebuild path
+if(NOT DEFINED TVM_PREBUILD_PATH)
+  if(DEFINED ENV{TVM_PREBUILD_PATH})
+    set(TVM_PREBUILD_PATH "$ENV{TVM_PREBUILD_PATH}")
+  endif()
+endif()
+
+# Locate TVM source directory
+if(NOT DEFINED TVM_SOURCE_DIR)
+  if(DEFINED ENV{TVM_SOURCE_DIR})
+    set(TVM_SOURCE_DIR "$ENV{TVM_SOURCE_DIR}")
+  elseif(DEFINED TVM_PREBUILD_PATH)
+    set(TVM_SOURCE_DIR "${TVM_PREBUILD_PATH}/..")
+  else()
+    set(TVM_SOURCE_DIR ${PROJECT_SOURCE_DIR}/3rdparty/tvm)
+  endif()
+endif()
+
+# Handle TVM prebuild or build TVM from source
+if(DEFINED TVM_PREBUILD_PATH)
+  message(STATUS "Using prebuilt TVM from ${TVM_PREBUILD_PATH}")
+  add_library(tvm SHARED IMPORTED)
+  set_target_properties(tvm PROPERTIES
+    IMPORTED_LOCATION "${TVM_PREBUILD_PATH}/libtilelang_tvm.so"
+  )
+  add_library(tvm_runtime SHARED IMPORTED)
+  set_target_properties(tvm_runtime PROPERTIES
+    IMPORTED_LOCATION "${TVM_PREBUILD_PATH}/libtilelang_tvm_runtime.so"
+  )
+else()
+  message(STATUS "Building TVM from source at ${TVM_SOURCE_DIR}")
+  add_subdirectory(${TVM_SOURCE_DIR} tvm EXCLUDE_FROM_ALL)
+  set_target_properties(tvm PROPERTIES OUTPUT_NAME tilelang_tvm)
+  set_target_properties(tvm_runtime PROPERTIES OUTPUT_NAME tilelang_tvm_runtime)
+endif()
+
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_custom_target(tilelang_tvm_python ALL
+  COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/tools/prepare_tvm.py"
+          python "${TVM_SOURCE_DIR}/python/tvm" "${CMAKE_BINARY_DIR}/tvm-python/tvm"
+  COMMENT "Preparing TileLang's private TVM Python package"
+  VERBATIM
+)
+
+# Collect source files
+tilelang_file_glob(GLOB TILE_LANG_SRCS
+  src/*.cc
+  src/layout/*.cc
+  src/transform/*.cc
+  src/op/*.cc
+  src/target/utils.cc
+  src/target/codegen_cpp.cc
+  src/target/rt_mod_cpp.cc
+  # webgpu doesn't have system dependency
+  src/target/codegen_webgpu.cc
+)
+
+# Include CUDA source files if CUDA is enabled
+if(USE_CUDA)
+  tilelang_file_glob(GLOB TILE_LANG_CUDA_SRCS
+    src/runtime/*.cc
+    src/target/codegen_cuda.cc
+    src/target/rt_mod_cuda.cc
+  )
+  list(APPEND TILE_LANG_SRCS ${TILE_LANG_CUDA_SRCS})
+endif()
+
+# Include NPUIR source files if NPUIR is enabled
+if(USE_NPUIR)
+  if(TILE_LANG_ENABLE_NPUIR_A5)
+    tilelang_file_glob(GLOB TILE_LANG_NPUIR_SRCS
+      src/target/codegen_npuir.cc
+      src/target/codegen_npuir_api_a5.cc
+      src/target/codegen_npuir_dev_a5.cc
+      src/target/rt_mod_npuir.cc
+    )
+  else()
+    tilelang_file_glob(GLOB TILE_LANG_NPUIR_SRCS
+      src/target/codegen_npuir.cc
+      src/target/codegen_npuir_api.cc
+      src/target/codegen_npuir_dev.cc
+      src/target/rt_mod_npuir.cc
+    )
+  endif()
+  list(APPEND TILE_LANG_SRCS ${TILE_LANG_NPUIR_SRCS})
+endif()
+
+# Include ROCm source files if ROCm is enabled
+if(USE_ROCM)
+  tilelang_file_glob(GLOB TILE_LANG_HIP_SRCS
+    src/target/codegen_hip.cc
+    src/target/rt_mod_hip.cc
+  )
+  list(APPEND TILE_LANG_SRCS ${TILE_LANG_HIP_SRCS})
+endif()
+
+message(STATUS "Collected source files: ${TILE_LANG_SRCS}")
+
+# Add TileLang object library
+add_library(tilelang_objs OBJECT ${TILE_LANG_SRCS})
+
+message(STATUS "TVM_SOURCE_DIR: ${TVM_SOURCE_DIR}")
+# Include directories for TileLang
+set(TILE_LANG_INCLUDES
+  ${TVM_SOURCE_DIR}/include
+  ${TVM_SOURCE_DIR}/src
+  ${TVM_SOURCE_DIR}/3rdparty/dlpack/include
+  ${TVM_SOURCE_DIR}/3rdparty/dmlc-core/include
+)
+
+# Find CUDA Toolkit
+if(USE_CUDA)
+  find_package(CUDAToolkit REQUIRED)
+
+  if(NOT CUDAToolkit_FOUND)
+    message(FATAL_ERROR "CUDA Toolkit not found. Please set CUDAToolkit_ROOT.")
+  endif()
+
+  message(STATUS "CUDA Toolkit includes: ${CUDAToolkit_INCLUDE_DIRS}")
+  set(CUDA_MAJOR_VERSION ${CUDAToolkit_VERSION_MAJOR})
+  message(STATUS "Setting CUDA_MAJOR_VERSION=${CUDA_MAJOR_VERSION}")
+  add_compile_definitions(CUDA_MAJOR_VERSION=${CUDA_MAJOR_VERSION})
+
+  list(APPEND TILE_LANG_INCLUDES ${CUDAToolkit_INCLUDE_DIRS})
+endif(USE_CUDA)
+
+# Find ROCM Toolkit
+if(USE_ROCM)
+  find_rocm(${USE_ROCM})
+  message(STATUS "USE_ROCM: ${USE_ROCM}")
+
+  if(ROCM_FOUND)
+    # always set the includedir
+    # avoid global retrigger of cmake
+    include_directories(SYSTEM ${ROCM_INCLUDE_DIRS})
+    add_definitions(-D__HIP_PLATFORM_HCC__=1)
+  else()
+    message(FATAL_ERROR "ROCM Toolkit not found. Please set HIP_ROOT.")
+  endif(ROCM_FOUND)
+
+  message(STATUS "ROCM Toolkit includes: ${ROCM_INCLUDE_DIRS}")
+  list(APPEND TILE_LANG_INCLUDES ${ROCM_INCLUDE_DIRS})
+endif(USE_ROCM)
+
+# Define compile-time macros
+set(TILE_LANG_COMPILE_DEFS
+  DMLC_USE_LOGGING_LIBRARY=<tvm/runtime/logging.h>
+  __STDC_FORMAT_MACROS=1
+  PICOJSON_USE_INT64
+)
+if(TILE_LANG_ENABLE_NPUIR_A5)
+  list(APPEND TILE_LANG_COMPILE_DEFS TILELANG_ENABLE_NPUIR_A5=1)
+endif()
+
+# Set target properties for object library
+target_include_directories(tilelang_objs PRIVATE ${TILE_LANG_INCLUDES})
+target_compile_definitions(tilelang_objs PRIVATE ${TILE_LANG_COMPILE_DEFS})
+target_compile_definitions(tilelang_objs PRIVATE -DTILE_LANG_EXPORTS)
+
+# Shared library
+add_library(tilelang SHARED $<TARGET_OBJECTS:tilelang_objs>)
+target_link_libraries(tilelang PUBLIC tvm_runtime)
+
+# Static library
+add_library(tilelang_static STATIC $<TARGET_OBJECTS:tilelang_objs>)
+add_dependencies(tilelang_static tvm_runtime)
+set_target_properties(tilelang_static PROPERTIES OUTPUT_NAME tilelang)
+
+# Debug build type-specific definitions
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  target_compile_definitions(tilelang PRIVATE "TVM_LOG_DEBUG")
+  target_compile_definitions(tilelang_objs PRIVATE "TVM_LOG_DEBUG")
+  target_compile_definitions(tilelang_static PRIVATE "TVM_LOG_DEBUG")
+endif()
+
+# Module shared library
+add_library(tilelang_module SHARED $<TARGET_OBJECTS:tilelang_objs>)
+target_link_libraries(
+  tilelang_module
+  PUBLIC
+  tvm
+  -Wl,--start-group
+  ${NPUIR_LIBS}
+  -Wl,--end-group
+  zstd
+  z
+)
+if(USE_NPUIR)
+  # TODO: Use Tilelangir Dialect in tilelang_module
+  # target_include_directories(tilelang_objs PRIVATE ${PROJECT_SOURCE_DIR}/tilelangir/include)
+
+  if(MLIR_INCLUDE_TESTS)
+    add_definitions(-DMLIR_INCLUDE_TESTS)
+    add_subdirectory(testing/mlir)
+  endif()
+endif()
+
+# Install targets
+if(TILE_LANG_INSTALL_STATIC_LIB)
+  install(TARGETS tilelang_static tvm_runtime
+    LIBRARY DESTINATION lib${LIB_SUFFIX}
+  )
+else()
+  if(DEFINED TVM_PREBUILD_PATH)
+    install(TARGETS tilelang tilelang_module
+      RUNTIME DESTINATION bin
+      LIBRARY DESTINATION lib${LIB_SUFFIX}
+    )
+  else()
+    install(TARGETS tvm_runtime tilelang tilelang_module
+      RUNTIME DESTINATION bin
+      LIBRARY DESTINATION lib${LIB_SUFFIX}
+    )
+  endif()
+endif()

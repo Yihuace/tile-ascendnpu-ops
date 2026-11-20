@@ -1,0 +1,1621 @@
+{
+  "schema_version": 2,
+  "operator": "Conv1dFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261028_173709_347602_Conv1dFwdOp",
+    "generated_at": "2026-10-28T17:46:34.860917+08:00",
+    "project_root": "/mnt/workspace/opdev-repo/examples/TileOPs",
+    "git_commit": "fc068f4d5a754554f2ec2c3390d394ba0ea37b01",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_conv1d.py",
+    "benchmark_file": "benchmarks/ops/bench_conv1d.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_conv1d.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_conv1d.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-28T17:46:34.860917+08:00",
+      "evaluation_scope": "Conv1dFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261028_173709_347602_Conv1dFwdOp",
+      "git_commit": "fc068f4d5a754554f2ec2c3390d394ba0ea37b01",
+      "correctness_target": "tests/ops/test_conv1d.py",
+      "benchmark_target": "benchmarks/ops/bench_conv1d.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 29,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 29,
+    "passed_cases": 29,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 17,
+    "benchmark_failed": 0,
+    "case_count": 16,
+    "msprof_case_count": 16,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 29,
+    "passed": 29,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[smoke-tcn-k3-s1-fp16]",
+        "name": "test_conv1d[smoke-tcn-k3-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 1.778,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[smoke-tcn-k3-s1-bf16]",
+        "name": "test_conv1d[smoke-tcn-k3-s1-bf16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.209,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "3.12e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[smoke-padding-wider-than-row-fp16]",
+        "name": "test_conv1d[smoke-padding-wider-than-row-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.205,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-convtasnet-pointwise-k1-s1-fp16]",
+        "name": "test_conv1d[full-convtasnet-pointwise-k1-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.338,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "3.12e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-seanet-residual-k3-s1-fp16]",
+        "name": "test_conv1d[full-seanet-residual-k3-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.213,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "6.25e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-audio-downsample-k5-s2-fp16]",
+        "name": "test_conv1d[full-audio-downsample-k5-s2-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.244,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "3.12e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-small-seanet-stem-k7-s1-fp16]",
+        "name": "test_conv1d[full-small-seanet-stem-k7-s1-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.214,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "7.81e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-sequence-downsample-k3-s2-bf16]",
+        "name": "test_conv1d[full-sequence-downsample-k3-s2-bf16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.239,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "2.50e-01"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-dilation-k3-d2-fp16]",
+        "name": "test_conv1d[full-dilation-k3-d2-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.209,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-padding-valid-fp16]",
+        "name": "test_conv1d[full-padding-valid-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.205,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-padding-same-fp16]",
+        "name": "test_conv1d[full-padding-same-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.206,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-groups2-k3-fp16]",
+        "name": "test_conv1d[full-groups2-k3-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.205,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "2.44e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-groups3-coutg24-fp16]",
+        "name": "test_conv1d[full-groups3-coutg24-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.203,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d[full-conformer-depthwise-k31-fp16]",
+        "name": "test_conv1d[full-conformer-depthwise-k31-fp16]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.226,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "max_abs_err": "6.10e-05"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_no_bias_matches_torch",
+        "name": "test_conv1d_no_bias_matches_torch",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.235,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_bias_matches_torch",
+        "name": "test_conv1d_bias_matches_torch",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.246,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dilation_matches_torch[no-bias]",
+        "name": "test_conv1d_dilation_matches_torch[no-bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.204,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dilation_matches_torch[bias]",
+        "name": "test_conv1d_dilation_matches_torch[bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.216,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_same_padding_even_kernel_matches_torch[no-bias]",
+        "name": "test_conv1d_same_padding_even_kernel_matches_torch[no-bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.212,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_same_padding_even_kernel_matches_torch[bias]",
+        "name": "test_conv1d_same_padding_even_kernel_matches_torch[bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.22,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dispatches_kernel[unit-stride]",
+        "name": "test_conv1d_dispatches_kernel[unit-stride]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.203,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dispatches_kernel[generic]",
+        "name": "test_conv1d_dispatches_kernel[generic]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.23,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_dispatches_kernel[pointwise]",
+        "name": "test_conv1d_dispatches_kernel[pointwise]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.439,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_depthwise_matches_torch",
+        "name": "test_conv1d_depthwise_matches_torch",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.205,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_grouped_matches_torch[no-bias]",
+        "name": "test_conv1d_grouped_matches_torch[no-bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.004,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_grouped_matches_torch[bias]",
+        "name": "test_conv1d_grouped_matches_torch[bias]",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.217,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_rejects_unsupported_dtype",
+        "name": "test_conv1d_rejects_unsupported_dtype",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_direct_block_n_heuristic",
+        "name": "test_conv1d_direct_block_n_heuristic",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_conv1d::test_conv1d_eval_roofline",
+        "name": "test_conv1d_eval_roofline",
+        "classname": "tests.ops.test_conv1d",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[smoke-k3-s1-bfloat16]",
+        "name": "test_conv1d_manifest_bench[smoke-k3-s1-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 32.717,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "36.4480"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-float16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 29.75,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "6200.6846"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-bfloat16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 32.898,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "6131.6890"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-float16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 30.896,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "336.8741"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-bfloat16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 32.042,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "365.5404"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 31.972,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "88.1794"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 30.913,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "85.6989"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 32.016,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "4144.6318"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 31.122,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "4133.5093"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-bias-float16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 26.789,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "6463.2217"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[whisper-conv1-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[whisper-conv1-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 31.129,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "6445.2383"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-bias-float16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 32.519,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "334.6536"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[wav2vec2-layer1-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[wav2vec2-layer1-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 32.249,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "338.1544"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-bias-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 25.778,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "83.7984"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-init-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-init-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 31.169,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "80.8778"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-bias-float16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-bias-float16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 27.784,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "4147.1123"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_conv1d::test_conv1d_manifest_bench[encodec-deep-bias-bfloat16]",
+        "name": "test_conv1d_manifest_bench[encodec-deep-bias-bfloat16]",
+        "classname": "benchmarks.ops.bench_conv1d",
+        "time_s": 32.201,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "Conv1dFwdOp",
+          "op_module": "tileops.ops.convolution",
+          "tileops_latency_us": "4136.1899"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-f5eeceafac0d",
+        "label": "whisper-conv1",
+        "params": {
+          "bias": null,
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 6200.68457,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 27.106400000000004,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 12586.271484375,
+        "performance_tops": 1.235429286956787,
+        "computility_tops": 4.5576982498168945,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic_avcesp0z",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 6200.68457,
+          "max_latency_us": 6200.68457,
+          "min_latency_us": 6200.68457,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-641990cb6e14",
+        "label": "whisper-conv1",
+        "params": {
+          "bias": null,
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 6131.688965,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 27.4486,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 12611.4560546875,
+        "performance_tops": 1.251041054725647,
+        "computility_tops": 4.557765960693359,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic_yqax1s_x",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 6131.688965,
+          "max_latency_us": 6131.688965,
+          "min_latency_us": 6131.688965,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-5029ac522ba4",
+        "label": "wav2vec2-layer1",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": false,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 336.874115,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.1424,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1370.8326416015625,
+        "performance_tops": 0.40158841013908386,
+        "computility_tops": 4.392615795135498,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic_p0_jqjxi",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 336.874115,
+          "max_latency_us": 336.874115,
+          "min_latency_us": 336.874115,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-4242f72164d2",
+        "label": "wav2vec2-layer1",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": false,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 365.540405,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 8.6744,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1413.3333740234375,
+        "performance_tops": 0.38156938552856445,
+        "computility_tops": 4.398797988891602,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic_w6vsx7fy",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 365.540405,
+          "max_latency_us": 365.540405,
+          "min_latency_us": 365.540405,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-c9aa57bb875b",
+        "label": "encodec-init",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 88.179398,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 8.6395,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 708.3616943359375,
+        "performance_tops": 0.38662126660346985,
+        "computility_tops": 4.475063800811768,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic_4f_0p_43",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 88.179398,
+          "max_latency_us": 88.179398,
+          "min_latency_us": 88.179398,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-b61fa207198d",
+        "label": "encodec-init",
+        "params": {
+          "bias": null,
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 85.698853,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.2878,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 743.0186767578125,
+        "performance_tops": 0.41616538166999817,
+        "computility_tops": 4.480764865875244,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic_igpm5s_h",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 85.698853,
+          "max_latency_us": 85.698853,
+          "min_latency_us": 85.698853,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-59751a88257f",
+        "label": "encodec-deep",
+        "params": {
+          "bias": null,
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 4144.631836,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 10.8525,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 7376.26953125,
+        "performance_tops": 0.49342286586761475,
+        "computility_tops": 4.546648025512695,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic_sesn90pg",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 4144.631836,
+          "max_latency_us": 4144.631836,
+          "min_latency_us": 4144.631836,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-bafe9f39ea61",
+        "label": "encodec-deep",
+        "params": {
+          "bias": null,
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": false,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 4133.509277,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 10.8844,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 7361.16796875,
+        "performance_tops": 0.4948773980140686,
+        "computility_tops": 4.546663761138916,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_main_mix_aic___mib3yd",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_main",
+          "kernel_name_resolved": "_conv1d_direct_main",
+          "latency_us": 4133.509277,
+          "max_latency_us": 4133.509277,
+          "min_latency_us": 4133.509277,
+          "op_name": "_conv1d_direct_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-3696fca1b6c6",
+        "label": "whisper-conv1-bias",
+        "params": {
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 6463.22168,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 26.0428,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 12588.4228515625,
+        "performance_tops": 1.1869444847106934,
+        "computility_tops": 4.55767297744751,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_52bezebx",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 6463.22168,
+          "max_latency_us": 6463.22168,
+          "min_latency_us": 6463.22168,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-e5284771eae5",
+        "label": "whisper-conv1-bias",
+        "params": {
+          "c_in": 80,
+          "c_in_g": 80,
+          "c_out": 1280,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            80,
+            3000
+          ],
+          "kernel_size": 3,
+          "l_in": 3000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            1280,
+            80,
+            3
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 6445.238281,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 26.1507,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 12605.62890625,
+        "performance_tops": 1.1918833255767822,
+        "computility_tops": 4.557741165161133,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_32oz5y0w",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 6445.238281,
+          "max_latency_us": 6445.238281,
+          "min_latency_us": 6445.238281,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-59c2812dbf96",
+        "label": "wav2vec2-layer1-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": true,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 334.653625,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.508999999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1413.6507568359375,
+        "performance_tops": 0.4179612696170807,
+        "computility_tops": 4.3954267501831055,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_2fpxg7rv",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 334.653625,
+          "max_latency_us": 334.653625,
+          "min_latency_us": 334.653625,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-ddd8f3a71b5d",
+        "label": "wav2vec2-layer1-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 512,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            16000
+          ],
+          "kernel_size": 10,
+          "l_in": 16000,
+          "n": 1,
+          "padding": 0,
+          "stride": 5,
+          "use_bias": true,
+          "weight_shape": [
+            512,
+            1,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 338.154388,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.679699999999999,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1456.0413818359375,
+        "performance_tops": 0.42603781819343567,
+        "computility_tops": 4.401338577270508,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_112cmse0",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 338.154388,
+          "max_latency_us": 338.154388,
+          "min_latency_us": 338.154388,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-ac8047fef70f",
+        "label": "encodec-init-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 83.798439,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 9.5366,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 743.0850830078125,
+        "performance_tops": 0.4267764389514923,
+        "computility_tops": 4.475123405456543,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_ms9_d_jh",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 83.798439,
+          "max_latency_us": 83.798439,
+          "min_latency_us": 83.798439,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-802571d618fd",
+        "label": "encodec-init-bias",
+        "params": {
+          "c_in": 1,
+          "c_in_g": 1,
+          "c_out": 32,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            1,
+            24000
+          ],
+          "kernel_size": 7,
+          "l_in": 24000,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            32,
+            1,
+            7
+          ]
+        },
+        "config": {
+          "block_n": 2048
+        },
+        "tag": "tileops",
+        "latency_us": 80.877792,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 10.3031,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 773.708251953125,
+        "performance_tops": 0.461635559797287,
+        "computility_tops": 4.480566501617432,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_ujz878sf",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 80.877792,
+          "max_latency_us": 80.877792,
+          "min_latency_us": 80.877792,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-70d6f0e84fa3",
+        "label": "encodec-deep-bias",
+        "params": {
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "float16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 4147.112305,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 10.849,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 7368.1328125,
+        "performance_tops": 0.4932659864425659,
+        "computility_tops": 4.546628952026367,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_isq79uox",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 4147.112305,
+          "max_latency_us": 4147.112305,
+          "min_latency_us": 4147.112305,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "Conv1dFwdOp",
+        "case_id": "Conv1dFwdOp-71d05debf21d",
+        "label": "encodec-deep-bias",
+        "params": {
+          "c_in": 128,
+          "c_in_g": 128,
+          "c_out": 256,
+          "dilation": 1,
+          "dtype": "bfloat16",
+          "groups": 1,
+          "input_shape": [
+            1,
+            128,
+            600
+          ],
+          "kernel_size": 10,
+          "l_in": 600,
+          "n": 1,
+          "padding": 0,
+          "stride": 1,
+          "use_bias": true,
+          "weight_shape": [
+            256,
+            128,
+            10
+          ]
+        },
+        "config": {
+          "block_n": 1024
+        },
+        "tag": "tileops",
+        "latency_us": 4136.189941,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 10.8804,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 7359.841796875,
+        "performance_tops": 0.4946953058242798,
+        "computility_tops": 4.546644687652588,
+        "artifact_dir": "/mnt/workspace/opdev-repo/examples/TileOPs/reports/tileops/20261028_173709_347602_Conv1dFwdOp/artifacts/msprof/_conv1d_direct_bias_main_mix_aic_f7l2p8l1",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "_conv1d_direct_bias_main_mix_aic"
+          ],
+          "kernel_name_attempts": [
+            "_conv1d_direct_bias_main"
+          ],
+          "kernel_name_requested": "_conv1d_direct_bias_main",
+          "kernel_name_resolved": "_conv1d_direct_bias_main",
+          "latency_us": 4136.189941,
+          "max_latency_us": 4136.189941,
+          "min_latency_us": 4136.189941,
+          "op_name": "_conv1d_direct_bias_main_mix_aic",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "Conv1dFwdOp",
+      "family": "convolution",
+      "cases": 29,
+      "passed": 29,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.03237321428571429,
+      "max_abs_err": 0.25,
+      "performance_cases": 16,
+      "ratio_range": {
+        "min": 8.6395,
+        "max": 27.4486
+      }
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,37 @@
+{
+  "op_name": "Conv1dFwdOp",
+  "op_slug": "conv1d",
+  "family": "convolution",
+  "verdict": "INTEGRATE_COMPLETED",
+  "attempts_used": 0,
+  "run_json": "examples/TileOPs/reports/tileops/20261014_174100_695290_Conv1dFwdOp/run.json",
+  "report_md": "examples/TileOPs/reports/tileops/20261014_174100_695290_Conv1dFwdOp/report.md",
+  "report_status": "partial",
+  "correctness": {"status": "pass", "passed": 28, "failed": 0, "avg_max_abs_err": 0.0391},
+  "benchmark_status": "partial",
+  "benchmark_note": "16 workloads profiled with 0 pytest failures, but all profiles flagged invalid: '--kernel-name main' matched no device op (_conv1d*_main_mix_aic) and the unfiltered retry also captured the wrapper's ZerosLike workspace ops. Root cause is the harness kernel-name filter + workspace-allocation ops, not a kernel defect.",
+  "per_kernel_smoke": {
+    "_conv1d_pointwise_kernel": "L0 pass (7 cases)",
+    "_conv1d_kernel": "L0 pass (11 cases)",
+    "_conv1d_unit_stride_kernel": "L0 pass (9 cases)",
+    "_conv1d_group_kernel": "L0 pass (12 cases)",
+    "_conv1d_direct_kernel": "L0 pass (10 cases)"
+  },
+  "integrated_files": [
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_pointwise_kernel.py",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel.py",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel.py",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel.py",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel.py",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/__init__.py",
+    "tileops/kernels/convolution/conv1d/conv1d.py"
+  ],
+  "design_docs": [
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_pointwise_kernel_DESIGN.md",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_kernel_DESIGN.md",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_unit_stride_kernel_DESIGN.md",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_group_kernel_DESIGN.md",
+    "tileops/kernels/convolution/conv1d/conv1d_kernel/_conv1d_direct_kernel_DESIGN.md"
+  ],
+  "log": "tileops/kernels/convolution/conv1d/conv1d_kernel/integration_log.md"
+}

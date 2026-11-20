@@ -1,0 +1,387 @@
+{
+  "workloads": [
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "smoke-llama-float32",
+      "label": "smoke-llama",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          64,
+          4096
+        ],
+        "residual": [
+          64,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          64,
+          4096
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 262144,
+      "kind": "smoke",
+      "reason": "smoke case: precision regression only (R7 final --level all PASS); not measured for performance",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "smoke-llama-float16",
+      "label": "smoke-llama",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          64,
+          4096
+        ],
+        "residual": [
+          64,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          64,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 262144,
+      "kind": "smoke",
+      "reason": "smoke case: precision regression only (R7 final --level all PASS); not measured for performance",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "smoke-llama-bfloat16",
+      "label": "smoke-llama",
+      "marks": [
+        "smoke"
+      ],
+      "shape": {
+        "input": [
+          64,
+          4096
+        ],
+        "residual": [
+          64,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          64,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 262144,
+      "kind": "smoke",
+      "reason": "smoke case: precision regression only (R7 final --level all PASS); not measured for performance",
+      "precision_pass": true
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-8b-prefill-float16",
+      "label": "llama-8b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          4096
+        ],
+        "residual": [
+          2048,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 8388608,
+      "kind": "tune",
+      "reason": "R8: 62.940us (SOL 32.99%, compute line 60%). Row batching (block_m>=3) UB-blocked: backend needs 229,408 B (auto-multi-buffer ON) / 204,832 B (OFF) vs 196,608 B capacity; R7 best retained",
+      "tuning_status": "winner_merged",
+      "final_artifact": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/FusedAddLayerNormFwdOp.py",
+      "final_candidate_id": "r8final"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-8b-prefill-bfloat16",
+      "label": "llama-8b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          4096
+        ],
+        "residual": [
+          2048,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          2048,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 8388608,
+      "kind": "tune",
+      "reason": "R8: 64.480us (SOL 37.88%, compute line 60%). Same row-batching UB block as fp16; R7 best retained",
+      "tuning_status": "winner_merged",
+      "final_artifact": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/FusedAddLayerNormFwdOp.py",
+      "final_candidate_id": "r8final"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-8b-decode-bfloat16",
+      "label": "llama-8b-decode",
+      "marks": [],
+      "shape": {
+        "input": [
+          1,
+          4096
+        ],
+        "residual": [
+          1,
+          4096
+        ],
+        "weight": [
+          4096
+        ],
+        "bias": [
+          4096
+        ],
+        "output": [
+          1,
+          4096
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 4096,
+      "kind": "tune",
+      "reason": "R8: 4.160us; micro shape exemption (decode <=5us), no regression",
+      "tuning_status": "winner_merged",
+      "final_artifact": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/FusedAddLayerNormFwdOp.py",
+      "final_candidate_id": "r8final"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-70b-prefill-float16",
+      "label": "llama-70b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          8192
+        ],
+        "residual": [
+          2048,
+          8192
+        ],
+        "weight": [
+          8192
+        ],
+        "bias": [
+          8192
+        ],
+        "output": [
+          2048,
+          8192
+        ]
+      },
+      "dtype": "float16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 16777216,
+      "kind": "tune",
+      "reason": "R8: 117.100us (SOL 35.01%). block_m=2 at N=8192 would need 327,680 B vs 196,608 B capacity -> UB-blocked; R7 best retained",
+      "tuning_status": "winner_merged",
+      "final_artifact": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/FusedAddLayerNormFwdOp.py",
+      "final_candidate_id": "r8final"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-70b-prefill-bfloat16",
+      "label": "llama-70b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          8192
+        ],
+        "residual": [
+          2048,
+          8192
+        ],
+        "weight": [
+          8192
+        ],
+        "bias": [
+          8192
+        ],
+        "output": [
+          2048,
+          8192
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 16777216,
+      "kind": "tune",
+      "reason": "R8: 120.440us (SOL 40.43%). Same N=8192 UB block; R7 best retained",
+      "tuning_status": "winner_merged",
+      "final_artifact": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/FusedAddLayerNormFwdOp.py",
+      "final_candidate_id": "r8final"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-70b-decode-bfloat16",
+      "label": "llama-70b-decode",
+      "marks": [],
+      "shape": {
+        "input": [
+          1,
+          8192
+        ],
+        "residual": [
+          1,
+          8192
+        ],
+        "weight": [
+          8192
+        ],
+        "bias": [
+          8192
+        ],
+        "output": [
+          1,
+          8192
+        ]
+      },
+      "dtype": "bfloat16",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 8192,
+      "kind": "tune",
+      "reason": "R8: 4.170us; micro shape exemption (decode <=5us), no regression",
+      "tuning_status": "winner_merged",
+      "final_artifact": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/FusedAddLayerNormFwdOp.py",
+      "final_candidate_id": "r8final"
+    },
+    {
+      "benchmark_source": "benchmarks/ops/bench_fused_add_layer_norm.py::test_fused_add_layer_norm_bench",
+      "kernel_id": "_fused_add_layer_norm_kernel",
+      "kernel_file": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/_fused_add_layer_norm_kernel.py",
+      "workload_id": "llama-13b-prefill-float32",
+      "label": "llama-13b-prefill",
+      "marks": [],
+      "shape": {
+        "input": [
+          2048,
+          5120
+        ],
+        "residual": [
+          2048,
+          5120
+        ],
+        "weight": [
+          5120
+        ],
+        "bias": [
+          5120
+        ],
+        "output": [
+          2048,
+          5120
+        ]
+      },
+      "dtype": "float32",
+      "params": {
+        "eps": 1e-05
+      },
+      "N": 10485760,
+      "kind": "tune",
+      "reason": "R8: 67.280us (SOL 70.82%, memory line 70% -> MET). R8 op1 fp32 block_m=1->2 under the calibrated plane model (-13.1/-13.7% vs R7 best, 2 interleaved reps); 2048/2=1024 tiles over 40 cores halves per-tile MTE overhead",
+      "tuning_status": "winner_merged",
+      "final_artifact": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/FusedAddLayerNormFwdOp.py",
+      "final_candidate_id": "r8final"
+    }
+  ],
+  "stage4_round": 8,
+  "stage4_toolchain_stamp": "tilelang 0.1.2 dev root (/mnt/workspace/tilelang-mlir-ascend HEAD 9309edb, pkg 3c4e9cf9) + CANN 9.0.0 + Ascend910B3 / 2026-10-21, TILELANG_ASCEND_MODE=Developer",
+  "stage4_note": "R8: replaced the Stage-3 20 B/elem UB envelope with an explicit per-dtype plane model calibrated against backend capacity diagnostics; that model legalises block_m=2 for the fp32 N=5120 path (13b prefill -14.8% vs R7). Row batching (block_m=3/4) for the N=4096 half path is UB-blocked (measured 229,408 B needed vs 196,608 B available); evidence in opt_log.md section 5."
+}

@@ -1,0 +1,1168 @@
+{
+  "schema_version": 2,
+  "operator": "FusedAddLayerNormFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261021_095838_127621_FusedAddLayerNormFwdOp",
+    "generated_at": "2026-10-21T10:03:10.146351+08:00",
+    "project_root": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs",
+    "git_commit": "3c4e9cf9a9b4fd41dcb7dfeafc45b8a8b70254f6",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_fused_add_layer_norm.py",
+    "benchmark_file": "benchmarks/ops/bench_fused_add_layer_norm.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_fused_add_layer_norm.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_fused_add_layer_norm.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-21T10:03:10.146351+08:00",
+      "evaluation_scope": "FusedAddLayerNormFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261021_095838_127621_FusedAddLayerNormFwdOp",
+      "git_commit": "3c4e9cf9a9b4fd41dcb7dfeafc45b8a8b70254f6",
+      "correctness_target": "tests/ops/test_fused_add_layer_norm.py",
+      "benchmark_target": "benchmarks/ops/bench_fused_add_layer_norm.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.2+3c4e9cf9a9b4fd41dcb7dfeafc45b8a8b70254f6 (/mnt/workspace/tilelang-mlir-ascend@9309edb)",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 14,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 14,
+    "passed_cases": 14,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 7,
+    "msprof_case_count": 7,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 14,
+    "passed": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_op[64-4096-dtype0]",
+        "name": "test_fused_add_layer_norm_op[64-4096-dtype0]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 1.569,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "1.91e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_op[64-4096-dtype1]",
+        "name": "test_fused_add_layer_norm_op[64-4096-dtype1]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.173,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_op[64-4096-dtype2]",
+        "name": "test_fused_add_layer_norm_op[64-4096-dtype2]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.167,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "9.77e-04"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_op[2048-4096-dtype3]",
+        "name": "test_fused_add_layer_norm_op[2048-4096-dtype3]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.161,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "3.91e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_op[2048-4096-dtype4]",
+        "name": "test_fused_add_layer_norm_op[2048-4096-dtype4]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.161,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "1.56e-02"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_op[2048-5120-dtype5]",
+        "name": "test_fused_add_layer_norm_op[2048-5120-dtype5]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.149,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "2.86e-06"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_op[1025-4096-dtype6]",
+        "name": "test_fused_add_layer_norm_op[1025-4096-dtype6]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.16,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_3d[2-512-4096-dtype0]",
+        "name": "test_fused_add_layer_norm_3d[2-512-4096-dtype0]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 4.969,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_3d[2-512-4096-dtype1]",
+        "name": "test_fused_add_layer_norm_3d[2-512-4096-dtype1]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.169,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_3d[2-512-4096-dtype2]",
+        "name": "test_fused_add_layer_norm_3d[2-512-4096-dtype2]",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 4.454,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_root_shape",
+        "name": "test_fused_add_layer_norm_root_shape",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.163,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "max_abs_err": "1.95e-03"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_eval_roofline",
+        "name": "test_fused_add_layer_norm_eval_roofline",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.144,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_rejects_bad_shape",
+        "name": "test_fused_add_layer_norm_rejects_bad_shape",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_fused_add_layer_norm::test_fused_add_layer_norm_kernel_returns_two_outputs",
+        "name": "test_fused_add_layer_norm_kernel_returns_two_outputs",
+        "classname": "tests.ops.test_fused_add_layer_norm",
+        "time_s": 4.249,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[smoke-llama-float32]",
+        "name": "test_fused_add_layer_norm_bench[smoke-llama-float32]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 24.112,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "6.1000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[smoke-llama-float16]",
+        "name": "test_fused_add_layer_norm_bench[smoke-llama-float16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 21.555,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "6.1200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[smoke-llama-bfloat16]",
+        "name": "test_fused_add_layer_norm_bench[smoke-llama-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 22.567,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "5.9400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[llama-8b-prefill-float16]",
+        "name": "test_fused_add_layer_norm_bench[llama-8b-prefill-float16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 21.603,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "63.2600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[llama-8b-prefill-bfloat16]",
+        "name": "test_fused_add_layer_norm_bench[llama-8b-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 21.621,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "64.7400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[llama-8b-decode-bfloat16]",
+        "name": "test_fused_add_layer_norm_bench[llama-8b-decode-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 21.54,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "4.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[llama-70b-prefill-float16]",
+        "name": "test_fused_add_layer_norm_bench[llama-70b-prefill-float16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 21.788,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "117.5600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[llama-70b-prefill-bfloat16]",
+        "name": "test_fused_add_layer_norm_bench[llama-70b-prefill-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 21.94,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "121.2600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[llama-70b-decode-bfloat16]",
+        "name": "test_fused_add_layer_norm_bench[llama-70b-decode-bfloat16]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 21.612,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "4.6600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_fused_add_layer_norm::test_fused_add_layer_norm_bench[llama-13b-prefill-float32]",
+        "name": "test_fused_add_layer_norm_bench[llama-13b-prefill-float32]",
+        "classname": "benchmarks.ops.bench_fused_add_layer_norm",
+        "time_s": 22.171,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "FusedAddLayerNormFwdOp",
+          "op_module": "tileops.ops.norm.fused_add_layer_norm",
+          "tileops_latency_us": "67.2000"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "FusedAddLayerNormFwdOp",
+        "case_id": "FusedAddLayerNormFwdOp-cf69afb990a9",
+        "label": "llama-8b-prefill",
+        "params": {
+          "dtype": "float16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 63.259997999999996,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 32.805,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.8083410263061523,
+        "performance_tops": 1.4903360605239868,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/artifacts/msprof/main_96uh3_1n",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.32805,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.512663,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.32805,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.32805,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.32805,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.32805,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.32805,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.32805,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.32805,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.32805,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.32805,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 63.259998,
+          "max_latency_us": 63.259998,
+          "min_latency_us": 63.259998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddLayerNormFwdOp",
+        "case_id": "FusedAddLayerNormFwdOp-28038cf59f93",
+        "label": "llama-8b-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 2048,
+          "n": 4096
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 64.739998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 37.6789,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.3080949783325195,
+        "performance_tops": 1.7154135704040527,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/artifacts/msprof/main_xsoo2hpm",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.376789,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.531738,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.376789,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.376789,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.376789,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.376789,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.376789,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.376789,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.376789,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.376789,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.376789,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 64.739998,
+          "max_latency_us": 64.739998,
+          "min_latency_us": 64.739998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddLayerNormFwdOp",
+        "case_id": "FusedAddLayerNormFwdOp-45f5bb43a324",
+        "label": "llama-8b-decode",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 1,
+          "n": 4096
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 4.78,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.5343,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.469465732574463,
+        "performance_tops": 0.024341421201825142,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/artifacts/msprof/main_ss2ni6o4",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.005343,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.007354,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.005343,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.005343,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.005343,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.005343,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.005343,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.005343,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.005343,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.005343,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.005343,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 4.78,
+          "max_latency_us": 4.78,
+          "min_latency_us": 4.78,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddLayerNormFwdOp",
+        "case_id": "FusedAddLayerNormFwdOp-bf6a64195d6a",
+        "label": "llama-70b-prefill",
+        "params": {
+          "dtype": "float16",
+          "m": 2048,
+          "n": 8192
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 117.559998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 35.0372,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.7926526069641113,
+        "performance_tops": 1.5949610471725464,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/artifacts/msprof/main_rak_ohw0",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.350372,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.528943,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.350372,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.350372,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.350372,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.350372,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.350372,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.350372,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.350372,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.350372,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.350372,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 117.559998,
+          "max_latency_us": 117.559998,
+          "min_latency_us": 117.559998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddLayerNormFwdOp",
+        "case_id": "FusedAddLayerNormFwdOp-d27ec4365cad",
+        "label": "llama-70b-prefill",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 2048,
+          "n": 8192
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 121.260002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 39.9732,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 3.292407751083374,
+        "performance_tops": 1.8230087757110596,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/artifacts/msprof/main_71l6lq7b",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.399732,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.545817,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.399732,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.399732,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.399732,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.399732,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.399732,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.399732,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.399732,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.399732,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.399732,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 121.260002,
+          "max_latency_us": 121.260002,
+          "min_latency_us": 121.260002,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddLayerNormFwdOp",
+        "case_id": "FusedAddLayerNormFwdOp-24ab78199e2d",
+        "label": "llama-70b-decode",
+        "params": {
+          "dtype": "bfloat16",
+          "m": 1,
+          "n": 8192
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 4.66,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 0.8130000000000001,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.872104287147522,
+        "performance_tops": 0.026636909693479538,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/artifacts/msprof/main_yrh5bbay",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.005839,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.007963,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.005839,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.005839,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.005839,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.005839,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.005839,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.005839,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.005839,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.00813,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.005839,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 4.66,
+          "max_latency_us": 4.66,
+          "min_latency_us": 4.66,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "FusedAddLayerNormFwdOp",
+        "case_id": "FusedAddLayerNormFwdOp-4a47e8ed48a3",
+        "label": "llama-13b-prefill",
+        "params": {
+          "dtype": "float32",
+          "m": 2048,
+          "n": 5120
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 67.199997,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 71.3666,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.0182816982269287,
+        "performance_tops": 1.271748661994934,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261021_095838_127621_FusedAddLayerNormFwdOp/artifacts/msprof/main_k6p_gshe",
+        "advice": "latency bound:pipeline caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.280017,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.489017,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.280017,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.280017,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.280017,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.280017,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.280017,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.280017,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.280017,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.713666,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.280017,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 67.199997,
+          "max_latency_us": 67.199997,
+          "min_latency_us": 67.199997,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "FusedAddLayerNormFwdOp",
+      "family": "norm",
+      "cases": 14,
+      "passed": 14,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.00329272125,
+      "max_abs_err": 0.0156,
+      "performance_cases": 7,
+      "ratio_range": {
+        "min": 0.5343,
+        "max": 71.3666
+      }
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,175 @@
+FusedAddLayerNormFwdOp:
+  ref_api: flash_attn.ops.triton.layer_norm.layer_norm_fn
+  family: norm
+  status: implemented
+  signature:
+    inputs:
+      x:
+        dtype: float32 | float16 | bfloat16
+      residual:
+        dtype: same_as(x)
+      weight:
+        dtype: same_as(x)
+      bias:
+        dtype: same_as(x)
+    outputs:
+      output:
+        dtype: same_as(x)
+      residual_out:
+        dtype: same_as(x)
+    params:
+      eps:
+        type: float
+        default: 1.0e-05
+    shape_rules:
+    - residual.shape == x.shape
+    - weight.shape == x.shape[-1:]
+    - bias.shape == x.shape[-1:]
+    - output.shape == x.shape
+    - residual_out.shape == x.shape
+  workloads:
+  - x_shape:
+    - 64
+    - 4096
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-llama
+  - x_shape:
+    - 2048
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    label: llama-8b-prefill
+  - x_shape:
+    - 1
+    - 4096
+    dtypes:
+    - bfloat16
+    label: llama-8b-decode
+  - x_shape:
+    - 2048
+    - 8192
+    dtypes:
+    - float16
+    - bfloat16
+    label: llama-70b-prefill
+  - x_shape:
+    - 1
+    - 8192
+    dtypes:
+    - bfloat16
+    label: llama-70b-decode
+  - x_shape:
+    - 2048
+    - 5120
+    dtypes:
+    - float32
+    label: llama-13b-prefill
+  roofline:
+    vars:
+      M: product(x.shape[:-1])
+      N: x.shape[-1]
+    flops: 8 * M * N
+    bytes: (4 * M * N + 2 * N) * elem_bytes
+  source:
+    kernel: tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm.py
+    kernel_map:
+      fused_add_layer_norm: FusedAddLayerNormKernel
+    op: tileops/ops/norm/fused_add_layer_norm.py
+    test: tests/ops/test_fused_add_layer_norm.py
+    bench: benchmarks/ops/bench_fused_add_layer_norm.py
+    bench_manifest_driven: true
+BatchNormBwdOp:
+  ref_api: torch.ops.aten.native_batch_norm_backward.default
+  family: norm
+  status: implemented
+  signature:
+    inputs:
+      grad_out:
+        dtype: float32 | float16 | bfloat16
+        shape: '[N, C, S]'
+      x:
+        dtype: same_as(grad_out)
+        shape: '[N, C, S]'
+      weight:
+        dtype: float32
+        shape: '[C]'
+      mean:
+        dtype: float32
+        shape: '[C]'
+      rstd:
+        dtype: float32
+        shape: '[C]'
+    outputs:
+      grad_x:
+        dtype: same_as(grad_out)
+        shape: '[N, C, S]'
+      grad_weight:
+        dtype: float32
+        shape: '[C]'
+      grad_bias:
+        dtype: float32
+        shape: '[C]'
+    shape_rules:
+    - x.shape == grad_out.shape
+    - weight.shape == mean.shape == rstd.shape == (grad_out.shape[1],)
+  workloads:
+  - x_shape:
+    - 32
+    - 64
+    - 1
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-fc
+  - x_shape:
+    - 8
+    - 64
+    - 1024
+    dtypes:
+    - float16
+    - bfloat16
+    label: resnet-stage1
+  - x_shape:
+    - 4
+    - 128
+    - 1024
+    dtypes:
+    - float16
+    label: resnet-stage2
+  - x_shape:
+    - 4
+    - 256
+    - 784
+    dtypes:
+    - float16
+    - float32
+    label: resnet-stage3
+  - x_shape:
+    - 4
+    - 128
+    - 262144
+    dtypes:
+    - float16
+    label: large-spatial
+  roofline:
+    vars:
+      N: x_shape[0]
+      C: x_shape[1]
+      S: x_shape[2]
+    flops: 9 * N * C * S
+    bytes: (3 * N * C * S + 5 * C) * elem_bytes
+  source:
+    kernel: tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py
+    kernel_map:
+      bwd_wide: BatchNormBwdWideKernel
+      bwd_split: BatchNormBwdSplitKernel
+      bwd_kernel: BatchNormBwdKernel
+    op: tileops/ops/norm/batch_norm_bwd.py
+    test: tests/ops/test_batch_norm_bwd.py
+    bench: benchmarks/ops/bench_batch_norm_bwd.py
+    bench_manifest_driven: false

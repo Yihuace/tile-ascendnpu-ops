@@ -1,0 +1,577 @@
+{
+  "schema_version": 2,
+  "operator": "IsnanFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261116_183742_409434_IsnanFwdOp",
+    "generated_at": "2026-11-16T18:54:06.135829+08:00",
+    "project_root": "/mnt/workspace/tilelang-ascend-npu-ops/examples/TileOPs",
+    "git_commit": null,
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_isnan.py",
+    "benchmark_file": "benchmarks/ops/bench_isnan.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "tests/ops/test_isnan.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/opt/buildtools/Python-3.11.4/bin/python3",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_isnan.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-11-16T18:54:06.135829+08:00",
+      "evaluation_scope": "IsnanFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261116_183742_409434_IsnanFwdOp",
+      "git_commit": null,
+      "correctness_target": "tests/ops/test_isnan.py",
+      "benchmark_target": "benchmarks/ops/bench_isnan.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.1.10+ubuntu.20.4.cann900",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 9,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 9,
+    "passed_cases": 9,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 5,
+    "msprof_case_count": 5,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_op[1048576-dtype0]",
+        "name": "test_isnan_op[1048576-dtype0]",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 45.266,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_op[1048576-dtype1]",
+        "name": "test_isnan_op[1048576-dtype1]",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 17.624,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_op[1048576-dtype2]",
+        "name": "test_isnan_op[1048576-dtype2]",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 17.734,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_op[4000000-dtype3]",
+        "name": "test_isnan_op[4000000-dtype3]",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 2.468,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_op[4000000-dtype4]",
+        "name": "test_isnan_op[4000000-dtype4]",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 2.462,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_output_dtype_and_values",
+        "name": "test_isnan_output_dtype_and_values",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 2.385,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_rejects_non_float_dtype",
+        "name": "test_isnan_rejects_non_float_dtype",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 0.003,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_op_rejects_non_float_dtype",
+        "name": "test_isnan_op_rejects_non_float_dtype",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_isnan::test_isnan_eval_roofline",
+        "name": "test_isnan_eval_roofline",
+        "classname": "tests.ops.test_isnan",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[smoke-1m-float32]",
+        "name": "test_isnan_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 111.843,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "5.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[smoke-1m-float16]",
+        "name": "test_isnan_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 85.065,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "4.3200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[smoke-1m-bfloat16]",
+        "name": "test_isnan_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 86.97,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "5.0600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[16m-float16]",
+        "name": "test_isnan_bench[16m-float16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 87.733,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "31.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[16m-bfloat16]",
+        "name": "test_isnan_bench[16m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 86.7,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "36.1600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[16m-float32]",
+        "name": "test_isnan_bench[16m-float32]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 86.899,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "49.1200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[256m-float16]",
+        "name": "test_isnan_bench[256m-float16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 87.489,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "633.5200"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[256m-bfloat16]",
+        "name": "test_isnan_bench[256m-bfloat16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 87.173,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "664.7800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[16m-half-float16]",
+        "name": "test_isnan_bench[16m-half-float16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 68.885,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "30.8000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_isnan::test_isnan_bench[16m-half-bfloat16]",
+        "name": "test_isnan_bench[16m-half-bfloat16]",
+        "classname": "benchmarks.ops.bench_isnan",
+        "time_s": 69.722,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "IsnanFwdOp",
+          "op_module": "tileops.ops.elementwise.isnan",
+          "tileops_latency_us": "36.2400"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "IsnanFwdOp",
+        "case_id": "IsnanFwdOp-948c5107d2c0",
+        "label": "16m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 31.040001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 61.772000000000006,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.01043701171875,
+        "performance_tops": 2.1733028888702393,
+        "computility_tops": 9.074568748474121,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/artifacts/msprof/main__xwkx2b7",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 31.040001,
+          "max_latency_us": 31.040001,
+          "min_latency_us": 31.040001,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsnanFwdOp",
+        "case_id": "IsnanFwdOp-d4c3fec3b359",
+        "label": "16m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 36.16,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 53.0255,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 2.2623891830444336,
+        "performance_tops": 2.099376916885376,
+        "computility_tops": 6.837067127227783,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/artifacts/msprof/main__8bs6b97",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 36.16,
+          "max_latency_us": 36.16,
+          "min_latency_us": 36.16,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsnanFwdOp",
+        "case_id": "IsnanFwdOp-e8fa45bea844",
+        "label": "16m",
+        "params": {
+          "dtype": "float32",
+          "op_params": {},
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 49.119999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 78.07,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.8802206516265869,
+        "performance_tops": 1.2025798559188843,
+        "computility_tops": 7.946140289306641,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/artifacts/msprof/main_x5mp54qc",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 49.119999,
+          "max_latency_us": 49.119999,
+          "min_latency_us": 49.119999,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsnanFwdOp",
+        "case_id": "IsnanFwdOp-45771d3e31b7",
+        "label": "256m",
+        "params": {
+          "dtype": "float16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 633.52002,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 66.5802,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.4604438543319702,
+        "performance_tops": 1.7016421556472778,
+        "computility_tops": 9.107457160949707,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/artifacts/msprof/main_3a13wv2c",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 633.52002,
+          "max_latency_us": 633.52002,
+          "min_latency_us": 633.52002,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "IsnanFwdOp",
+        "case_id": "IsnanFwdOp-6c988651021b",
+        "label": "256m",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {},
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": null,
+        "tag": "tileops",
+        "latency_us": 664.780029,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 63.453700000000005,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.6435853242874146,
+        "performance_tops": 1.8251010179519653,
+        "computility_tops": 6.8517866134643555,
+        "artifact_dir": "/mnt/workspace/reports/2026-11/optsweep_1116/20261116_183742_409434_IsnanFwdOp/artifacts/msprof/main_ltwwvo8s",
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "kernel_names": null,
+          "latency_us": 664.780029,
+          "max_latency_us": 664.780029,
+          "min_latency_us": 664.780029,
+          "multi_launch": false,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "IsnanFwdOp",
+      "family": "elementwise",
+      "cases": 9,
+      "passed": 9,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 5,
+      "ratio_range": {
+        "min": 53.0255,
+        "max": 78.07
+      }
+    }
+  ],
+  "warnings": []
+}

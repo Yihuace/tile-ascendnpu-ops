@@ -1,0 +1,75 @@
+ArgmaxFwdOp:
+  ref_api: torch.argmax
+  family: reduction
+  status: implemented
+  signature:
+    inputs:
+      x:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: int64
+    params:
+      dim:
+        type: int | None
+        default: null
+      keepdim:
+        type: bool
+        default: false
+    shape_rules:
+    - dim is None or -x.ndim <= dim < x.ndim
+    - output.ndim == (x.ndim if keepdim else (x.ndim - 1 if dim is not None else 0))
+    - dim is None or not keepdim or all(output.shape[i] == 1 for i in range(x.ndim))
+    - dim is None or not keepdim or all(output.shape[i] == (1 if i == dim % x.ndim
+      else x.shape[i]) for i in range(x.ndim))
+    - dim is None or keepdim or all(output.shape[i] == (x.shape[i] if i < dim % x.ndim
+      else x.shape[i + 1]) for i in range(output.ndim))
+  workloads:
+  - x_shape:
+    - 32
+    - 256
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    dim: -1
+    label: smoke-argmax
+  - x_shape:
+    - 4
+    - 102400
+    dtypes:
+    - float16
+    - bfloat16
+    dim: -1
+    label: lm-head-argmax
+  - x_shape:
+    - 2048
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    dim: -1
+    label: hidden-state-argmax
+  - x_shape:
+    - 4
+    - 128
+    - 4096
+    dtypes:
+    - float16
+    dim: 0
+    label: 3d-non-last-axis-argmax
+  roofline:
+    vars:
+      M: 1 if dim is None else product(x.shape[:dim % x.ndim]) * product(x.shape[dim
+        % x.ndim + 1:])
+      N: product(x.shape) if dim is None else x.shape[dim % x.ndim]
+    flops: M * N
+    bytes: M * N * elem_bytes + M * 8
+  source:
+    kernel: tileops/kernels/reduction/argmax/argmax.py
+    kernel_map:
+      argreduce: ArgreduceKernel
+    op: tileops/ops/reduction/argmax.py
+    test: tests/ops/test_argmax.py
+    bench: benchmarks/ops/bench_argmax.py
+    bench_manifest_driven: true

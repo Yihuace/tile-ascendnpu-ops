@@ -1,0 +1,756 @@
+AddFwdOp:
+  ref_api: torch.add
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+      other:
+        dtype: same_as(input)
+    outputs:
+      output:
+        dtype: same_as(input)
+    params:
+      alpha:
+        type: int | float
+        default: 1
+        kw_only: true
+    shape_rules:
+    - output.shape == broadcast_shapes(input.shape, other.shape)
+    - category(alpha) == 'int' or category(alpha) == category(input.dtype)
+    - representable(alpha, input.dtype)
+  workloads:
+  - input_shape:
+    - 2048
+    - 4096
+    other_shape:
+    - 2048
+    - 4096
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: hidden-state-prefill
+  - input_shape:
+    - 16
+    - 256
+    - 56
+    - 56
+    other_shape:
+    - 256
+    - 1
+    - 1
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: cnn-feat-broadcast
+  - input_shape:
+    - 1024
+    - 11008
+    other_shape:
+    - 1024
+    - 11008
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: llama-7b-ffn
+  - input_shape:
+    - 1024
+    - 4096
+    other_shape:
+    - 1
+    - 4096
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: linear-bias
+  roofline:
+    vars:
+      N: product(broadcast(input_shape, other_shape))
+      B: product(other_shape)
+    flops: (1 if alpha == 1 else 2) * N
+    bytes: (2 * N + B) * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/add/add.py
+    kernel_map:
+      add: AddFwdKernel
+    op: tileops/ops/elementwise/add.py
+    test: tests/ops/test_add.py
+    bench: benchmarks/ops/bench_add.py
+    bench_manifest_driven: true
+SubFwdOp:
+  ref_api: torch.sub
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+      other:
+        dtype: same_as(input)
+    outputs:
+      output:
+        dtype: same_as(input)
+    params:
+      alpha:
+        type: int | float
+        default: 1
+        kw_only: true
+    shape_rules:
+    - output.shape == broadcast_shapes(input.shape, other.shape)
+    - category(alpha) == 'int' or category(alpha) == category(input.dtype)
+    - representable(alpha, input.dtype)
+  workloads:
+  - input_shape:
+    - 2048
+    - 4096
+    other_shape:
+    - 2048
+    - 4096
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: hidden-state-prefill
+  - input_shape:
+    - 16
+    - 256
+    - 56
+    - 56
+    other_shape:
+    - 256
+    - 1
+    - 1
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: cnn-feat-broadcast
+  - input_shape:
+    - 1024
+    - 11008
+    other_shape:
+    - 1024
+    - 11008
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: llama-7b-ffn
+  - input_shape:
+    - 1024
+    - 4096
+    other_shape:
+    - 1
+    - 4096
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: linear-bias
+  - input_shape:
+    - 1024
+    - 4096
+    other_shape:
+    - 1024
+    - 4096
+    dtypes:
+    - float16
+    label: llama-7b-hidden
+  - input_shape:
+    - 1024
+    - 10240
+    other_shape:
+    - 1024
+    - 10240
+    dtypes:
+    - float16
+    label: phi-2-ffn
+  - input_shape:
+    - 1024
+    - 10240
+    other_shape:
+    - 1
+    - 10240
+    dtypes:
+    - float16
+    label: phi-2-ffn-bias
+  - input_shape:
+    - 1024
+    - 11008
+    other_shape:
+    - 1
+    - 11008
+    dtypes:
+    - float16
+    label: llama-7b-ffn-bias
+  roofline:
+    vars:
+      N: product(broadcast(input_shape, other_shape))
+    flops: (1 if alpha == 1 else 2) * N
+    bytes: 3 * N * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/sub/sub.py
+    kernel_map:
+      sub: SubFwdKernel
+    op: tileops/ops/elementwise/sub.py
+    test: tests/ops/test_sub.py
+    bench: benchmarks/ops/bench_sub.py
+    bench_manifest_driven: true
+GeluAndMulFwdOp:
+  ref_api: flashinfer.activation.gelu_and_mul
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      x:
+        dtype: float16 | bfloat16 | float32
+        shape: '[M, 2 * N]'
+    outputs:
+      output:
+        dtype: same_as(x)
+        shape: '[M, N]'
+    shape_rules:
+    - output.shape == [x.shape[0], x.shape[1] // 2]
+  workloads:
+  - M: 16
+    N: 128
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke
+  - M: 2048
+    N: 14336
+    dtypes:
+    - float16
+    - bfloat16
+    label: llama-8b-ffn-prefill
+  - M: 1
+    N: 14336
+    dtypes:
+    - bfloat16
+    label: llama-8b-ffn-decode
+  - M: 32
+    N: 12288
+    dtypes:
+    - float16
+    - bfloat16
+    label: qwen3-8b-swiglu-b32
+  roofline:
+    flops: 6 * M * N
+    bytes: 3 * M * N * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul.py
+    kernel_map:
+      gelu_and_mul: GeluAndMulFwdKernel
+    op: tileops/ops/elementwise/gelu_and_mul.py
+    test: tests/ops/test_gelu_and_mul.py
+    bench: benchmarks/ops/bench_gelu_and_mul.py
+    bench_manifest_driven: true
+GeluTanhAndMulFwdOp:
+  ref_api: flashinfer.activation.gelu_tanh_and_mul
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      x:
+        dtype: float16 | bfloat16 | float32
+        shape: '[M, 2 * N]'
+    outputs:
+      output:
+        dtype: same_as(x)
+        shape: '[M, N]'
+    shape_rules:
+    - output.shape == [x.shape[0], x.shape[1] // 2]
+  workloads:
+  - M: 16
+    N: 128
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke
+  - M: 2048
+    N: 14336
+    dtypes:
+    - float16
+    - bfloat16
+    label: llama-8b-ffn-prefill
+  - M: 1
+    N: 14336
+    dtypes:
+    - bfloat16
+    label: llama-8b-ffn-decode
+  - M: 32
+    N: 12288
+    dtypes:
+    - float16
+    - bfloat16
+    label: qwen3-8b-swiglu-b32
+  roofline:
+    flops: 10 * M * N
+    bytes: 3 * M * N * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul.py
+    kernel_map:
+      gelu_tanh_and_mul: GeluTanhAndMulFwdKernel
+    op: tileops/ops/elementwise/gelu_tanh_and_mul.py
+    test: tests/ops/test_gelu_tanh_and_mul.py
+    bench: benchmarks/ops/bench_gelu_tanh_and_mul.py
+    bench_manifest_driven: true
+IsinfFwdOp:
+  ref_api: torch.isinf
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: bool
+    shape_rules:
+    - output.shape == input.shape
+  workloads:
+  - input_shape:
+    - 1048576
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-1m
+  - input_shape:
+    - 4096
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    label: 16m
+  - input_shape:
+    - 16384
+    - 16384
+    dtypes:
+    - float16
+    - bfloat16
+    label: 256m
+  - input_shape:
+    - 4096
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    label: 16m-half
+  roofline:
+    vars:
+      N: product(input.shape)
+    flops: 1 * N
+    bytes: N * elem_bytes + N
+  source:
+    kernel: tileops/kernels/elementwise/isinf/isinf.py
+    kernel_map:
+      isinf: IsinfFwdKernel
+    op: tileops/ops/elementwise/isinf.py
+    test: tests/ops/test_isinf.py
+    bench: benchmarks/ops/bench_isinf.py
+    bench_manifest_driven: true
+IsfiniteFwdOp:
+  ref_api: torch.isfinite
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: bool
+    shape_rules:
+    - output.shape == input.shape
+  workloads:
+  - input_shape:
+    - 1048576
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-1m
+  - input_shape:
+    - 4096
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    label: 16m
+  - input_shape:
+    - 16384
+    - 16384
+    dtypes:
+    - float16
+    - bfloat16
+    label: 256m
+  - input_shape:
+    - 4096
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    label: 16m-half
+  roofline:
+    vars:
+      N: product(input.shape)
+    flops: 1 * N
+    bytes: N * elem_bytes + N
+  source:
+    kernel: tileops/kernels/elementwise/isfinite/isfinite.py
+    kernel_map:
+      isfinite: IsfiniteFwdKernel
+    op: tileops/ops/elementwise/isfinite.py
+    test: tests/ops/test_isfinite.py
+    bench: benchmarks/ops/bench_isfinite.py
+    bench_manifest_driven: true
+IsnanFwdOp:
+  ref_api: torch.isnan
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: bool
+    shape_rules:
+    - output.shape == input.shape
+  workloads:
+  - input_shape:
+    - 1048576
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-1m
+  - input_shape:
+    - 4096
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    label: 16m
+  - input_shape:
+    - 16384
+    - 16384
+    dtypes:
+    - float16
+    - bfloat16
+    label: 256m
+  - input_shape:
+    - 4096
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    label: 16m-half
+  roofline:
+    vars:
+      N: product(input.shape)
+    flops: 1 * N
+    bytes: N * elem_bytes + N
+  source:
+    kernel: tileops/kernels/elementwise/isnan/isnan.py
+    kernel_map:
+      isnan: IsnanFwdKernel
+    op: tileops/ops/elementwise/isnan.py
+    test: tests/ops/test_isnan.py
+    bench: benchmarks/ops/bench_isnan.py
+    bench_manifest_driven: true
+ClampScalarFwdOp:
+  ref_api: torch.clamp
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    params:
+      min:
+        type: Number | None
+        default: null
+        kw_only: true
+      max:
+        type: Number | None
+        default: null
+        kw_only: true
+    shape_rules:
+    - present(min) or present(max)
+  workloads:
+  - input_shape:
+    - 1048576
+    min: -0.5
+    max: 0.5
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-1m
+  - input_shape:
+    - 4096
+    - 4096
+    min: -0.5
+    max: 0.5
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    label: 16M
+  - input_shape:
+    - 16384
+    - 16384
+    min: -0.5
+    max: 0.5
+    dtypes:
+    - float16
+    - bfloat16
+    label: 256M
+  - input_shape:
+    - 4096
+    - 4096
+    min: -0.5
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    label: 16M-min-only
+  - input_shape:
+    - 4096
+    - 4096
+    max: 0.5
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    label: 16M-max-only
+  roofline:
+    vars:
+      N: product(input_shape)
+    flops: 1 * N
+    bytes: 2 * N * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py
+    kernel_map:
+      clamp_scalar: ClampScalarFwdKernel
+    op: tileops/ops/elementwise/clamp_scalar.py
+    test: tests/ops/test_clamp_scalar.py
+    bench: benchmarks/ops/bench_clamp_scalar.py
+    bench_manifest_driven: true
+HardsigmoidFwdOp:
+  ref_api: torch.nn.functional.hardsigmoid
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    params:
+      inplace:
+        type: bool
+        default: false
+    shape_rules:
+    - output.shape == input.shape
+  workloads:
+  - input_shape:
+    - 1048576
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-1m
+  - input_shape:
+    - 32
+    - 240
+    - 1
+    - 1
+    dtypes:
+    - float16
+    - bfloat16
+    label: mbv3-se-gate
+  - input_shape:
+    - 32
+    - 960
+    - 1
+    - 1
+    dtypes:
+    - float16
+    - bfloat16
+    label: mbv3-se-gate-deep
+  - input_shape:
+    - 2048
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    label: fc-wide
+  roofline:
+    vars:
+      N: product(input.shape)
+    flops: 3 * N
+    bytes: 2 * N * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py
+    kernel_map:
+      hardsigmoid: HardsigmoidFwdKernel
+    op: tileops/ops/elementwise/hardsigmoid.py
+    test: tests/ops/test_hardsigmoid.py
+    bench: benchmarks/ops/bench_hardsigmoid.py
+    bench_manifest_driven: true
+HardswishFwdOp:
+  ref_api: torch.nn.functional.hardswish
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    params:
+      inplace:
+        type: bool
+        default: false
+    shape_rules:
+    - output.shape == input.shape
+  workloads:
+  - input_shape:
+    - 1048576
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-1m
+  - input_shape:
+    - 32
+    - 96
+    - 56
+    - 56
+    dtypes:
+    - float16
+    - bfloat16
+    label: mbv3-stage2
+  - input_shape:
+    - 32
+    - 240
+    - 28
+    - 28
+    dtypes:
+    - float16
+    - bfloat16
+    label: mbv3-stage3
+  - input_shape:
+    - 2048
+    - 4096
+    dtypes:
+    - float16
+    - bfloat16
+    label: fc-wide
+  roofline:
+    vars:
+      N: product(input.shape)
+    flops: 4 * N
+    bytes: 2 * N * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/hardswish/hardswish.py
+    kernel_map:
+      hardswish: HardswishFwdKernel
+    op: tileops/ops/elementwise/hardswish.py
+    test: tests/ops/test_hardswish.py
+    bench: benchmarks/ops/bench_hardswish.py
+    bench_manifest_driven: true
+ClampMinFwdOp:
+  ref_api: torch.clamp_min
+  family: elementwise
+  status: implemented
+  torch_compile_fullgraph: true
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16 | float32
+    outputs:
+      output:
+        dtype: same_as(input)
+    params:
+      min:
+        type: Number
+        kw_only: true
+    shape_rules:
+    - present(min)
+  workloads:
+  - input_shape:
+    - 1048576
+    min: -0.5
+    dtypes:
+    - float32
+    - float16
+    - bfloat16
+    label: smoke-1m
+  - input_shape:
+    - 4096
+    - 4096
+    min: -0.5
+    dtypes:
+    - float16
+    - bfloat16
+    - float32
+    label: 16M-min-only
+  - input_shape:
+    - 8192
+    - 8192
+    min: -0.5
+    dtypes:
+    - float16
+    - bfloat16
+    label: 64M-min-only
+  - input_shape:
+    - 16384
+    - 16384
+    min: -0.5
+    dtypes:
+    - float16
+    - bfloat16
+    label: 256M-min-only
+  roofline:
+    vars:
+      N: product(input_shape)
+    flops: 1 * N
+    bytes: 2 * N * elem_bytes
+  source:
+    kernel: tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py
+    kernel_map:
+      clamp_min: ClampScalarFwdKernel
+    op: tileops/ops/elementwise/clamp_min.py
+    test: tests/ops/test_clamp_min.py
+    bench: benchmarks/ops/bench_clamp_min.py
+    bench_manifest_driven: true

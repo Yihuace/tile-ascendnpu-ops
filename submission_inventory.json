@@ -1,0 +1,792 @@
+[
+  {
+    "op": "HardsigmoidFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/hardsigmoid-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/14",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py",
+    "op_file": "tileops/ops/elementwise/hardsigmoid.py",
+    "test": "tests/ops/test_hardsigmoid.py",
+    "bench": "benchmarks/ops/bench_hardsigmoid.py",
+    "opdir": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/hardsigmoid.py",
+      "kernel": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid.py",
+      "test": "tests/ops/test_hardsigmoid.py",
+      "bench": "benchmarks/ops/bench_hardsigmoid.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/hardsigmoid/hardsigmoid_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 19,
+      "last": "2026-10-18T00:27:54+08:00"
+    },
+    "report": {
+      "dir": "20261117_095705_795920_HardsigmoidFwdOp",
+      "status": "passed",
+      "date": "2026-11-17"
+    },
+    "six": true
+  },
+  {
+    "op": "ClampScalarFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/clamp-scalar-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/3",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py",
+    "op_file": "tileops/ops/elementwise/clamp_scalar.py",
+    "test": "tests/ops/test_clamp_scalar.py",
+    "bench": "benchmarks/ops/bench_clamp_scalar.py",
+    "opdir": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/clamp_scalar.py",
+      "kernel": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py",
+      "test": "tests/ops/test_clamp_scalar.py",
+      "bench": "benchmarks/ops/bench_clamp_scalar.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_min_evidence/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 101,
+      "last": "2026-10-21T17:14:01+08:00"
+    },
+    "report": {
+      "dir": "20261021_172100_734147_ClampScalarFwdOp",
+      "status": "passed",
+      "date": "2026-10-21"
+    },
+    "six": true
+  },
+  {
+    "op": "HardswishFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/hardswish-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/16",
+    "status": "ready",
+    "notes": "已切到 dev 11-03 perf_opt（fp16 16384 + exact-wave 10752）",
+    "kernel": "tileops/kernels/elementwise/hardswish/hardswish.py",
+    "op_file": "tileops/ops/elementwise/hardswish.py",
+    "test": "tests/ops/test_hardswish.py",
+    "bench": "benchmarks/ops/bench_hardswish.py",
+    "opdir": "tileops/kernels/elementwise/hardswish/hardswish_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/hardswish.py",
+      "kernel": "tileops/kernels/elementwise/hardswish/hardswish.py",
+      "test": "tests/ops/test_hardswish.py",
+      "bench": "benchmarks/ops/bench_hardswish.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/hardswish/hardswish_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/hardswish/hardswish_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/hardswish/hardswish_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/hardswish/hardswish_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/hardswish/hardswish_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/hardswish/hardswish_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 3,
+      "last": "-"
+    },
+    "report": {
+      "dir": "20261119_164729_008255_HardswishFwdOp",
+      "status": "passed",
+      "date": "2026-11-19"
+    },
+    "six": true
+  },
+  {
+    "op": "AddFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/add-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/7",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/add/add.py",
+    "op_file": "tileops/ops/elementwise/add.py",
+    "test": "tests/ops/test_add.py",
+    "bench": "benchmarks/ops/bench_add.py",
+    "opdir": "tileops/kernels/elementwise/add/add_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/add.py",
+      "kernel": "tileops/kernels/elementwise/add/add.py",
+      "test": "tests/ops/test_add.py",
+      "bench": "benchmarks/ops/bench_add.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/add/add_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/add/add_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/add/add_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/add/add_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/add/add_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/add/add_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 168,
+      "last": "2026-10-21T18:16:00+08:00"
+    },
+    "report": {
+      "dir": "20261117_152252_308638_AddFwdOp",
+      "status": "passed",
+      "date": "2026-11-17"
+    },
+    "six": true
+  },
+  {
+    "op": "SubFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/sub-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/8",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/sub/sub.py",
+    "op_file": "tileops/ops/elementwise/sub.py",
+    "test": "tests/ops/test_sub.py",
+    "bench": "benchmarks/ops/bench_sub.py",
+    "opdir": "tileops/kernels/elementwise/sub/sub_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/sub.py",
+      "kernel": "tileops/kernels/elementwise/sub/sub.py",
+      "test": "tests/ops/test_sub.py",
+      "bench": "benchmarks/ops/bench_sub.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/sub/sub_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/sub/sub_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/sub/sub_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/sub/sub_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/sub/sub_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/sub/sub_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 83,
+      "last": "2026-10-17T20:12:12+08:00"
+    },
+    "report": {
+      "dir": "20261023_161917_619143_SubFwdOp",
+      "status": "passed",
+      "date": "2026-10-23"
+    },
+    "six": true
+  },
+  {
+    "op": "GeluAndMulFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/gelu-and-mul-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/9",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul.py",
+    "op_file": "tileops/ops/elementwise/gelu_and_mul.py",
+    "test": "tests/ops/test_gelu_and_mul.py",
+    "bench": "benchmarks/ops/bench_gelu_and_mul.py",
+    "opdir": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/gelu_and_mul.py",
+      "kernel": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul.py",
+      "test": "tests/ops/test_gelu_and_mul.py",
+      "bench": "benchmarks/ops/bench_gelu_and_mul.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/gelu_and_mul/gelu_and_mul_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 29,
+      "last": "2026-10-18T02:28:57+08:00"
+    },
+    "report": {
+      "dir": "20261117_102709_565655_GeluAndMulFwdOp",
+      "status": "passed",
+      "date": "2026-11-17"
+    },
+    "six": true
+  },
+  {
+    "op": "GeluTanhAndMulFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/gelu-tanh-and-mul-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/10",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul.py",
+    "op_file": "tileops/ops/elementwise/gelu_tanh_and_mul.py",
+    "test": "tests/ops/test_gelu_tanh_and_mul.py",
+    "bench": "benchmarks/ops/bench_gelu_tanh_and_mul.py",
+    "opdir": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/gelu_tanh_and_mul.py",
+      "kernel": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul.py",
+      "test": "tests/ops/test_gelu_tanh_and_mul.py",
+      "bench": "benchmarks/ops/bench_gelu_tanh_and_mul.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/gelu_tanh_and_mul/gelu_tanh_and_mul_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 51,
+      "last": "2026-10-18T01:26:38+08:00"
+    },
+    "report": {
+      "dir": "20261117_104002_621842_GeluTanhAndMulFwdOp",
+      "status": "passed",
+      "date": "2026-11-17"
+    },
+    "six": true
+  },
+  {
+    "op": "IsnanFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/isnan-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/13",
+    "status": "ready",
+    "notes": "11-16 perf_opt 候选被否决：vcmp \"ne\" 在本工具链是 ordered 语义，NaN 位漏判（25% 不符），保持 baseline",
+    "kernel": "tileops/kernels/elementwise/isnan/isnan.py",
+    "op_file": "tileops/ops/elementwise/isnan.py",
+    "test": "tests/ops/test_isnan.py",
+    "bench": "benchmarks/ops/bench_isnan.py",
+    "opdir": "tileops/kernels/elementwise/isnan/isnan_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/isnan.py",
+      "kernel": "tileops/kernels/elementwise/isnan/isnan.py",
+      "test": "tests/ops/test_isnan.py",
+      "bench": "benchmarks/ops/bench_isnan.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/isnan/isnan_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/isnan/isnan_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/isnan/isnan_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/isnan/isnan_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/isnan/isnan_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/isnan/isnan_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 45,
+      "last": "2026-10-18T02:47:22+08:00"
+    },
+    "report": {
+      "dir": "20261116_183742_409434_IsnanFwdOp",
+      "status": "passed",
+      "date": "2026-11-16"
+    },
+    "six": true
+  },
+  {
+    "op": "IsinfFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/isinf-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/11",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/isinf/isinf.py",
+    "op_file": "tileops/ops/elementwise/isinf.py",
+    "test": "tests/ops/test_isinf.py",
+    "bench": "benchmarks/ops/bench_isinf.py",
+    "opdir": "tileops/kernels/elementwise/isinf/isinf_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/isinf.py",
+      "kernel": "tileops/kernels/elementwise/isinf/isinf.py",
+      "test": "tests/ops/test_isinf.py",
+      "bench": "benchmarks/ops/bench_isinf.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/isinf/isinf_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/isinf/isinf_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/isinf/isinf_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/isinf/isinf_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/isinf/isinf_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/isinf/isinf_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 54,
+      "last": "2026-10-18T03:13:00+08:00"
+    },
+    "report": {
+      "dir": "20261117_122322_241985_IsinfFwdOp",
+      "status": "passed",
+      "date": "2026-11-17"
+    },
+    "six": true
+  },
+  {
+    "op": "IsfiniteFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/isfinite-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/12",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/isfinite/isfinite.py",
+    "op_file": "tileops/ops/elementwise/isfinite.py",
+    "test": "tests/ops/test_isfinite.py",
+    "bench": "benchmarks/ops/bench_isfinite.py",
+    "opdir": "tileops/kernels/elementwise/isfinite/isfinite_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/isfinite.py",
+      "kernel": "tileops/kernels/elementwise/isfinite/isfinite.py",
+      "test": "tests/ops/test_isfinite.py",
+      "bench": "benchmarks/ops/bench_isfinite.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/isfinite/isfinite_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/isfinite/isfinite_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/isfinite/isfinite_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/isfinite/isfinite_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/isfinite/isfinite_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/isfinite/isfinite_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 44,
+      "last": "2026-10-18T03:49:23+08:00"
+    },
+    "report": {
+      "dir": "20261117_120655_645080_IsfiniteFwdOp",
+      "status": "passed",
+      "date": "2026-11-17"
+    },
+    "six": true
+  },
+  {
+    "op": "FusedAddLayerNormFwdOp",
+    "family": "norm",
+    "branch": "op/norm/fused-add-layer-norm-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/4",
+    "status": "ready",
+    "notes": "dev R16/R17 已 A/B：13b-prefill fp32 67.2→87.9（−23%），不采纳，保持交付版",
+    "kernel": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm.py",
+    "op_file": "tileops/ops/norm/fused_add_layer_norm.py",
+    "test": "tests/ops/test_fused_add_layer_norm.py",
+    "bench": "benchmarks/ops/bench_fused_add_layer_norm.py",
+    "opdir": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/norm.yaml",
+      "workload": [
+        "tileops/workloads/norm.py"
+      ],
+      "op": "tileops/ops/norm/fused_add_layer_norm.py",
+      "kernel": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm.py",
+      "test": "tests/ops/test_fused_add_layer_norm.py",
+      "bench": "benchmarks/ops/bench_fused_add_layer_norm.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/norm/fused_add_layer_norm/fused_add_layer_norm_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 143,
+      "last": "2026-10-22T10:35:49+08:00"
+    },
+    "report": {
+      "dir": "20261021_095838_127621_FusedAddLayerNormFwdOp",
+      "status": "passed",
+      "date": "2026-10-21"
+    },
+    "six": true
+  },
+  {
+    "op": "BatchNormBwdOp",
+    "family": "norm",
+    "branch": "op/norm/batch-norm-bwd-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/5",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py",
+    "op_file": "tileops/ops/norm/batch_norm_bwd.py",
+    "test": "tests/ops/test_batch_norm_bwd.py",
+    "bench": "benchmarks/ops/bench_batch_norm_bwd.py",
+    "opdir": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/norm.yaml",
+      "workload": [
+        "tileops/workloads/norm.py"
+      ],
+      "op": "tileops/ops/norm/batch_norm_bwd.py",
+      "kernel": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd.py",
+      "test": "tests/ops/test_batch_norm_bwd.py",
+      "bench": "benchmarks/ops/bench_batch_norm_bwd.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/norm/batch_norm_bwd/batch_norm_bwd_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 68,
+      "last": "2026-10-20T18:47:53+08:00"
+    },
+    "report": {
+      "dir": "20261117_140629_142480_BatchNormBwdOp",
+      "status": "passed",
+      "date": "2026-11-17"
+    },
+    "six": true
+  },
+  {
+    "op": "Conv1dFwdOp",
+    "family": "convolution",
+    "branch": "op/convolution/conv1d-perf-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/95",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/convolution/conv1d/conv1d.py",
+    "op_file": "tileops/ops/convolution.py",
+    "test": "tests/ops/test_conv1d.py",
+    "bench": "benchmarks/ops/bench_conv1d.py",
+    "opdir": "tileops/kernels/convolution/conv1d/conv1d_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/convolution.yaml",
+      "workload": [
+        "tileops/workloads/convolution.py"
+      ],
+      "op": "tileops/ops/convolution.py",
+      "kernel": "tileops/kernels/convolution/conv1d/conv1d.py",
+      "test": "tests/ops/test_conv1d.py",
+      "bench": "benchmarks/ops/bench_conv1d.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/conv1d_bias_evidence/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 48,
+      "last": "2026-10-18T17:42:16+08:00"
+    },
+    "report": {
+      "dir": "20261028_173709_347602_Conv1dFwdOp",
+      "status": "passed",
+      "date": "2026-10-28"
+    },
+    "six": true
+  },
+  {
+    "op": "ClampMinFwdOp",
+    "family": "elementwise",
+    "branch": "op/elementwise/clamp-min-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/63",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py",
+    "op_file": "tileops/ops/elementwise/clamp_min.py",
+    "test": "tests/ops/test_clamp_min.py",
+    "bench": "benchmarks/ops/bench_clamp_min.py",
+    "opdir": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/elementwise.yaml",
+      "workload": [
+        "tileops/workloads/elementwise.py"
+      ],
+      "op": "tileops/ops/elementwise/clamp_min.py",
+      "kernel": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar.py",
+      "test": "tests/ops/test_clamp_min.py",
+      "bench": "benchmarks/ops/bench_clamp_min.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/clamp_min_evidence/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/elementwise/clamp_scalar/clamp_scalar_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 101,
+      "last": "2026-10-21T17:14:01+08:00"
+    },
+    "report": {
+      "dir": "20261023_183019_804116_ClampMinFwdOp",
+      "status": "passed",
+      "date": "2026-10-23"
+    },
+    "six": true
+  },
+  {
+    "op": "LerpFwdOp",
+    "family": "elementwise",
+    "branch": "",
+    "pr": "",
+    "status": "blocker",
+    "notes": "本交付树无 manifest/kernel/op/test/bench"
+  },
+  {
+    "op": "Conv1dBiasFwdOp",
+    "family": "convolution",
+    "branch": "op/convolution/conv1d-bias-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/88",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/convolution/conv1d/conv1d.py",
+    "op_file": "tileops/ops/convolution.py",
+    "test": "tests/ops/test_conv1d_bias.py",
+    "bench": "benchmarks/ops/bench_conv1d_bias.py",
+    "opdir": "tileops/kernels/convolution/conv1d/conv1d_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/convolution.yaml",
+      "workload": [
+        "tileops/workloads/convolution.py"
+      ],
+      "op": "tileops/ops/convolution.py",
+      "kernel": "tileops/kernels/convolution/conv1d/conv1d.py",
+      "test": "tests/ops/test_conv1d_bias.py",
+      "bench": "benchmarks/ops/bench_conv1d_bias.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/convolution/conv1d/conv1d_kernel/conv1d_bias_evidence/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/convolution/conv1d/conv1d_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 48,
+      "last": "2026-10-18T17:42:16+08:00"
+    },
+    "report": {
+      "dir": "20261027_094816_102558_Conv1dBiasFwdOp",
+      "status": "passed",
+      "date": "2026-10-27"
+    },
+    "six": true
+  },
+  {
+    "op": "Conv3dBiasFwdOp",
+    "family": "convolution",
+    "branch": "op/convolution/conv3d-bias-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/31",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/convolution/conv3d/conv3d.py",
+    "op_file": "tileops/ops/convolution.py",
+    "test": "tests/ops/test_conv3d_bias.py",
+    "bench": "benchmarks/ops/bench_conv3d_bias.py",
+    "opdir": "tileops/kernels/convolution/conv3d/conv3d_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/convolution.yaml",
+      "workload": [
+        "tileops/workloads/convolution.py"
+      ],
+      "op": "tileops/ops/convolution.py",
+      "kernel": "tileops/kernels/convolution/conv3d/conv3d.py",
+      "test": "tests/ops/test_conv3d_bias.py",
+      "bench": "benchmarks/ops/bench_conv3d_bias.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/convolution/conv3d/conv3d_kernel/conv3d_bias_evidence/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/convolution/conv3d/conv3d_kernel/conv3d_bias_evidence/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/convolution/conv3d/conv3d_kernel/conv3d_bias_evidence/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/convolution/conv3d/conv3d_kernel/conv3d_bias_evidence/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/convolution/conv3d/conv3d_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/convolution/conv3d/conv3d_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 27,
+      "last": "2026-10-18T19:08:15+08:00"
+    },
+    "report": {
+      "dir": "20261023_184106_697102_Conv3dBiasFwdOp",
+      "status": "passed",
+      "date": "2026-10-23"
+    },
+    "six": true
+  },
+  {
+    "op": "GLADecodeOp",
+    "family": "linear_attention",
+    "branch": "op/linear_attention/gla-decode-guoyihua",
+    "pr": "https://github.com/Op-Development/tilelang-ascend-npu-ops/pull/17",
+    "status": "ready",
+    "notes": "",
+    "kernel": "tileops/kernels/linear_attention/gla_decode/gla_decode.py",
+    "op_file": "tileops/ops/linear_attention/gla_decode.py",
+    "test": "tests/ops/test_gla_decode.py",
+    "bench": "benchmarks/ops/bench_gla_decode.py",
+    "opdir": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/linear_attention.yaml",
+      "workload": [
+        "tileops/workloads/linear_attention.py"
+      ],
+      "op": "tileops/ops/linear_attention/gla_decode.py",
+      "kernel": "tileops/kernels/linear_attention/gla_decode/gla_decode.py",
+      "test": "tests/ops/test_gla_decode.py",
+      "bench": "benchmarks/ops/bench_gla_decode.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/linear_attention/gla_decode/gla_decode_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 97,
+      "last": "2026-11-18T15:39:50+08:00"
+    },
+    "report": {
+      "dir": "20261118_153727_643910_GLADecodeOp",
+      "status": "passed",
+      "date": "2026-11-18"
+    },
+    "six": true
+  },
+  {
+    "op": "GatedDeltaNetPrefillFwdOp",
+    "family": "linear_attention",
+    "branch": "",
+    "pr": "",
+    "status": "blocker",
+    "notes": "本交付树无 manifest/kernel/op/test/bench"
+  },
+  {
+    "op": "ArgmaxFwdOp",
+    "family": "reduction",
+    "branch": "",
+    "pr": "",
+    "status": "ready",
+    "notes": "R48/R49 记录已补（round 48/49），旧 final 标 merged",
+    "kernel": "tileops/kernels/reduction/argmax/argmax.py",
+    "op_file": "tileops/ops/reduction/argmax.py",
+    "test": "tests/ops/test_argmax.py",
+    "bench": "benchmarks/ops/bench_argmax.py",
+    "opdir": "tileops/kernels/reduction/argmax/argmax_kernel",
+    "areas": {
+      "manifest": "tileops/manifest/reduction.yaml",
+      "workload": [
+        "tileops/workloads/reduction.py"
+      ],
+      "op": "tileops/ops/reduction/argmax.py",
+      "kernel": "tileops/kernels/reduction/argmax/argmax.py",
+      "test": "tests/ops/test_argmax.py",
+      "bench": "benchmarks/ops/bench_argmax.py"
+    },
+    "evidence_paths": {
+      "DESIGN.md": "tileops/kernels/reduction/argmax/argmax_kernel/DESIGN.md",
+      "REVIEW.md": "tileops/kernels/reduction/argmax/argmax_kernel/REVIEW.md",
+      "RETROSPECTIVE.md": "tileops/kernels/reduction/argmax/argmax_kernel/RETROSPECTIVE.md",
+      "integration_log.md": "tileops/kernels/reduction/argmax/argmax_kernel/integration_log.md"
+    },
+    "perf_files": {
+      "perf_records": "tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/perf_records.jsonl",
+      "opt_log": "tileops/kernels/reduction/argmax/argmax_kernel/perf_opt/opt_log.md"
+    },
+    "perf": {
+      "records": 8,
+      "last": "2026-11-19"
+    },
+    "report": {
+      "dir": "20261119_153438_257284_ArgmaxFwdOp",
+      "status": "passed",
+      "date": "2026-11-19"
+    },
+    "six": true
+  }
+]

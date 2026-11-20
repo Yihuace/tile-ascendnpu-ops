@@ -1,0 +1,537 @@
+Conv1dFwdOp:
+  ref_api: torch.nn.functional.conv1d
+  family: convolution
+  status: implemented
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16
+        shape: '[N, C_in, L_in]'
+      weight:
+        dtype: same_as(input)
+        shape: '[C_out, C_in_g, kW]'
+      bias:
+        dtype: same_as(input)
+        shape: '[C_out]'
+        optional: true
+    outputs:
+      output:
+        dtype: same_as(input)
+        shape: '[N, C_out, L_out]'
+    params:
+      stride:
+        type: int | tuple[int]
+        default: 1
+      padding:
+        type: int | tuple[int] | 'valid' | 'same'
+        default: 0
+      dilation:
+        type: int | tuple[int]
+        default: 1
+      groups:
+        type: int
+        default: 1
+    shape_rules:
+    - groups > 0 and C_in % groups == 0 and C_out % groups == 0
+    - sW > 0 and dW > 0 and pW >= 0 and kW > 0
+    - padding != 'same' or sW == 1
+    - L_out > 0
+  workloads:
+  - input_shape:
+    - 1
+    - 8
+    - 128
+    weight_shape:
+    - 16
+    - 8
+    - 3
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: false
+    dtypes:
+    - float16
+    - bfloat16
+    label: smoke-k3-s1
+  - input_shape:
+    - 1
+    - 80
+    - 3000
+    weight_shape:
+    - 1280
+    - 80
+    - 3
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: false
+    dtypes:
+    - float16
+    - bfloat16
+    label: whisper-conv1
+  - input_shape:
+    - 1
+    - 1
+    - 16000
+    weight_shape:
+    - 512
+    - 1
+    - 10
+    stride: 5
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: false
+    dtypes:
+    - float16
+    - bfloat16
+    label: wav2vec2-layer1
+  - input_shape:
+    - 1
+    - 1
+    - 24000
+    weight_shape:
+    - 32
+    - 1
+    - 7
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: false
+    dtypes:
+    - float16
+    - bfloat16
+    label: encodec-init
+  - input_shape:
+    - 1
+    - 128
+    - 600
+    weight_shape:
+    - 256
+    - 128
+    - 10
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: false
+    dtypes:
+    - float16
+    - bfloat16
+    label: encodec-deep
+  - input_shape:
+    - 1
+    - 80
+    - 3000
+    weight_shape:
+    - 1280
+    - 80
+    - 3
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: whisper-conv1-bias
+  - input_shape:
+    - 1
+    - 1
+    - 16000
+    weight_shape:
+    - 512
+    - 1
+    - 10
+    stride: 5
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: wav2vec2-layer1-bias
+  - input_shape:
+    - 1
+    - 1
+    - 24000
+    weight_shape:
+    - 32
+    - 1
+    - 7
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: encodec-init-bias
+  - input_shape:
+    - 1
+    - 128
+    - 600
+    weight_shape:
+    - 256
+    - 128
+    - 10
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: encodec-deep-bias
+  roofline:
+    vars:
+      N: input_shape[0]
+      C_in: input_shape[1]
+      L_in: input_shape[2]
+      C_out: weight_shape[0]
+      C_in_g: weight_shape[1]
+      kW: weight_shape[2]
+      sW: stride
+      dW: dilation
+      pW: 0 if padding in ('valid', 'same') else (padding if isinstance(padding, int)
+        else padding[0])
+      L_out: (L_in + 2 * pW - dW * (kW - 1) - 1) // sW + 1
+      taps: kW
+      bias_flops: N * C_out * L_out if bias else 0
+    flops: 2 * N * C_out * C_in_g * taps * L_out + bias_flops
+    bytes: (N * C_in * L_in + C_out * C_in_g * kW + N * C_out * L_out + (C_out if
+      bias else 0)) * elem_bytes
+  source:
+    kernel: tileops/kernels/convolution/conv1d/conv1d.py
+    kernel_map:
+      conv1d_pointwise: Conv1dPointwiseKernel
+      conv1d: Conv1dKernel
+      conv1d_unit_stride: Conv1dUnitStrideKernel
+      depthwise_conv1d: DepthwiseConv1dKernel
+      group_conv1d: GroupConv1dKernel
+    op: tileops/ops/convolution.py
+    test: tests/ops/test_conv1d.py
+    bench: benchmarks/ops/bench_conv1d.py
+    bench_manifest_driven: false
+Conv3dBiasFwdOp:
+  ref_api: torch.nn.functional.conv3d
+  family: convolution
+  status: implemented
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16
+        shape: '[N, C_in, D, H, W]'
+      weight:
+        dtype: same_as(input)
+        shape: '[C_out, C_in_g, kD, kH, kW]'
+      bias:
+        dtype: same_as(input)
+        shape: '[C_out]'
+        optional: false
+    outputs:
+      output:
+        dtype: same_as(input)
+        shape: '[N, C_out, out_D, out_H, out_W]'
+    params:
+      stride:
+        type: int | tuple[int, int, int]
+        default: 1
+      padding:
+        type: int | tuple[int, int, int] | 'valid' | 'same'
+        default: 0
+      dilation:
+        type: int | tuple[int, int, int]
+        default: 1
+      groups:
+        type: int
+        default: 1
+    shape_rules:
+    - groups > 0 and C_in % groups == 0 and C_out % groups == 0
+    - sD > 0 and sH > 0 and sW > 0 and dD > 0 and dH > 0 and dW > 0
+    - pD >= 0 and pH >= 0 and pW >= 0 and kD > 0 and kH > 0 and kW > 0
+    - padding != 'same' or (sD == 1 and sH == 1 and sW == 1)
+    - out_D > 0 and out_H > 0 and out_W > 0
+  workloads:
+  - input_shape:
+    - 1
+    - 8
+    - 8
+    - 16
+    - 16
+    weight_shape:
+    - 16
+    - 8
+    - 3
+    - 3
+    - 3
+    stride: 1
+    padding: 1
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: smoke-k3-s1-bias
+  - input_shape:
+    - 1
+    - 3
+    - 16
+    - 112
+    - 112
+    weight_shape:
+    - 64
+    - 3
+    - 3
+    - 3
+    - 3
+    stride: 1
+    padding: 1
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    label: r3d-stem-bias
+  - input_shape:
+    - 1
+    - 64
+    - 8
+    - 56
+    - 56
+    weight_shape:
+    - 128
+    - 64
+    - 3
+    - 3
+    - 3
+    stride: 2
+    padding: 1
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    label: video-down-bias
+  - input_shape:
+    - 1
+    - 32
+    - 32
+    - 64
+    - 64
+    weight_shape:
+    - 64
+    - 32
+    - 3
+    - 3
+    - 3
+    stride: 1
+    padding: 1
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - bfloat16
+    label: unet-encoder-bias
+  roofline:
+    vars:
+      N: input_shape[0]
+      C_in: input_shape[1]
+      D: input_shape[2]
+      H: input_shape[3]
+      W: input_shape[4]
+      C_out: weight_shape[0]
+      C_in_g: weight_shape[1]
+      kD: weight_shape[2]
+      kH: weight_shape[3]
+      kW: weight_shape[4]
+      sD: stride if isinstance(stride, int) else stride[0]
+      sH: stride if isinstance(stride, int) else stride[1]
+      sW: stride if isinstance(stride, int) else stride[2]
+      dD: dilation if isinstance(dilation, int) else dilation[0]
+      dH: dilation if isinstance(dilation, int) else dilation[1]
+      dW: dilation if isinstance(dilation, int) else dilation[2]
+      pD: 0 if padding in ('valid', 'same') else (padding if isinstance(padding, int)
+        else padding[0])
+      pH: 0 if padding in ('valid', 'same') else (padding if isinstance(padding, int)
+        else padding[1])
+      pW: 0 if padding in ('valid', 'same') else (padding if isinstance(padding, int)
+        else padding[2])
+      out_D: (D + 2 * pD - dD * (kD - 1) - 1) // sD + 1
+      out_H: (H + 2 * pH - dH * (kH - 1) - 1) // sH + 1
+      out_W: (W + 2 * pW - dW * (kW - 1) - 1) // sW + 1
+      taps: kD * kH * kW
+      bias_flops: N * C_out * out_D * out_H * out_W
+    flops: 2 * N * C_out * C_in_g * taps * out_D * out_H * out_W + bias_flops
+    bytes: (N * C_in * D * H * W + C_out * C_in_g * kD * kH * kW + N * C_out * out_D
+      * out_H * out_W + C_out) * elem_bytes
+  source:
+    kernel: tileops/kernels/convolution/conv3d/conv3d.py
+    kernel_map:
+      conv3d: Conv3dKernel
+    op: tileops/ops/convolution.py
+    test: tests/ops/test_conv3d_bias.py
+    bench: benchmarks/ops/bench_conv3d_bias.py
+    bench_manifest_driven: false
+Conv1dBiasFwdOp:
+  ref_api: torch.nn.functional.conv1d
+  family: convolution
+  status: implemented
+  variant_of: Conv1dFwdOp
+  signature:
+    inputs:
+      input:
+        dtype: float16 | bfloat16
+        shape: '[N, C_in, L_in]'
+      weight:
+        dtype: same_as(input)
+        shape: '[C_out, C_in_g, kW]'
+      bias:
+        dtype: same_as(input)
+        shape: '[C_out]'
+        optional: false
+    outputs:
+      output:
+        dtype: same_as(input)
+        shape: '[N, C_out, L_out]'
+    params:
+      stride:
+        type: int | tuple[int]
+        default: 1
+      padding:
+        type: int | tuple[int] | 'valid' | 'same'
+        default: 0
+      dilation:
+        type: int | tuple[int]
+        default: 1
+      groups:
+        type: int
+        default: 1
+    shape_rules:
+    - groups > 0 and C_in % groups == 0 and C_out % groups == 0
+    - sW > 0 and dW > 0 and pW >= 0 and kW > 0
+    - padding != 'same' or sW == 1
+    - L_out > 0
+  workloads:
+  - input_shape:
+    - 1
+    - 8
+    - 128
+    weight_shape:
+    - 16
+    - 8
+    - 3
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: smoke-k3-s1-bias
+  - input_shape:
+    - 1
+    - 80
+    - 3000
+    weight_shape:
+    - 1280
+    - 80
+    - 3
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: whisper-conv1-bias
+  - input_shape:
+    - 1
+    - 1
+    - 16000
+    weight_shape:
+    - 512
+    - 1
+    - 10
+    stride: 5
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: wav2vec2-layer1-bias
+  - input_shape:
+    - 1
+    - 1
+    - 24000
+    weight_shape:
+    - 32
+    - 1
+    - 7
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: encodec-init-bias
+  - input_shape:
+    - 1
+    - 128
+    - 600
+    weight_shape:
+    - 256
+    - 128
+    - 10
+    stride: 1
+    padding: 0
+    dilation: 1
+    groups: 1
+    bias: true
+    dtypes:
+    - float16
+    - bfloat16
+    label: encodec-deep-bias
+  roofline:
+    vars:
+      N: input_shape[0]
+      C_in: input_shape[1]
+      L_in: input_shape[2]
+      C_out: weight_shape[0]
+      C_in_g: weight_shape[1]
+      kW: weight_shape[2]
+      sW: stride
+      dW: dilation
+      pW: 0 if padding in ('valid', 'same') else (padding if isinstance(padding, int)
+        else padding[0])
+      L_out: (L_in + 2 * pW - dW * (kW - 1) - 1) // sW + 1
+      taps: kW
+      bias_flops: N * C_out * L_out
+    flops: 2 * N * C_out * C_in_g * taps * L_out + bias_flops
+    bytes: (N * C_in * L_in + C_out * C_in_g * kW + N * C_out * L_out + C_out) * elem_bytes
+  source:
+    kernel: tileops/kernels/convolution/conv1d/conv1d.py
+    kernel_map:
+      conv1d_pointwise: Conv1dPointwiseKernel
+      conv1d: Conv1dKernel
+      conv1d_unit_stride: Conv1dUnitStrideKernel
+      depthwise_conv1d: DepthwiseConv1dKernel
+      group_conv1d: GroupConv1dKernel
+    op: tileops/ops/convolution.py
+    test: tests/ops/test_conv1d_bias.py
+    bench: benchmarks/ops/bench_conv1d_bias.py
+    bench_manifest_driven: false

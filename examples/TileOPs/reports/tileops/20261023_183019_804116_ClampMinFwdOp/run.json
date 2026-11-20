@@ -1,0 +1,1217 @@
+{
+  "schema_version": 2,
+  "operator": "ClampMinFwdOp",
+  "status": "passed",
+  "metadata": {
+    "run_id": "20261023_183019_804116_ClampMinFwdOp",
+    "generated_at": "2026-10-23T18:40:52.724085+08:00",
+    "project_root": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs",
+    "git_commit": "60cfa4e4e811e9deaa895ae56181d9bc5be488c4",
+    "python": "3.11.4",
+    "platform": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+    "test_file": "tests/ops/test_clamp_min.py",
+    "benchmark_file": "benchmarks/ops/bench_clamp_min.py",
+    "prof_mode_requested": "msprof",
+    "kernel_name_requested": null,
+    "commands": {
+      "correctness": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "tests/ops/test_clamp_min.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/pytest/correctness.xml"
+      ],
+      "benchmark": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "benchmarks/ops/bench_clamp_min.py",
+        "-sv",
+        "--junitxml=/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/pytest/benchmark.xml",
+        "-m",
+        "not smoke"
+      ]
+    },
+    "exit_codes": {
+      "correctness": 0,
+      "benchmark": 0
+    }
+  },
+  "setup": {
+    "metadata": {
+      "framework": "TileOPs Reporting 0.1.0",
+      "date": "2026-10-23T18:40:52.724085+08:00",
+      "evaluation_scope": "ClampMinFwdOp",
+      "benchmark": "TileOPs pytest operator suite",
+      "profiler": "msprof",
+      "run_id": "20261023_183019_804116_ClampMinFwdOp",
+      "git_commit": "60cfa4e4e811e9deaa895ae56181d9bc5be488c4",
+      "correctness_target": "tests/ops/test_clamp_min.py",
+      "benchmark_target": "benchmarks/ops/bench_clamp_min.py"
+    },
+    "environment": {
+      "npu": "Ascend910B3 x 1",
+      "cpu": "aarch64",
+      "cann": "9.0.0",
+      "driver": "25.5.0",
+      "pytorch": "2.7.1+cpu",
+      "pytorch_npu": "2.7.1.post4",
+      "tilelang": "0.1.2+60cfa4e4e811e9deaa895ae56181d9bc5be488c4 (/mnt/workspace/tilelang-mlir-ascend@9309edb)",
+      "python": "3.11.4",
+      "os": "Linux-5.10.0-182.0.0.95.r2673_211.hce2.aarch64-aarch64-with-glibc2.31",
+      "container": "container"
+    }
+  },
+  "summary": {
+    "correctness_passed": true,
+    "correctness_tests": 14,
+    "correctness_failed": 0,
+    "operator_count": 1,
+    "total_cases": 14,
+    "passed_cases": 14,
+    "failed_cases": 0,
+    "pass_rate": 1.0,
+    "benchmark_requested": true,
+    "benchmark_passed": true,
+    "benchmark_tests": 10,
+    "benchmark_failed": 0,
+    "case_count": 7,
+    "msprof_case_count": 7,
+    "profiler_fallback_count": 0,
+    "kernel_filter_fallback_count": 0,
+    "invalid_profile_count": 0
+  },
+  "correctness": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/pytest/correctness.xml",
+    "status": "passed",
+    "tests": 14,
+    "passed": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_op[1048576-dtype0--0.5]",
+        "name": "test_clamp_min_op[1048576-dtype0--0.5]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 24.255,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_op[1048576-dtype1--0.5]",
+        "name": "test_clamp_min_op[1048576-dtype1--0.5]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 4.975,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_op[1048576-dtype2--0.5]",
+        "name": "test_clamp_min_op[1048576-dtype2--0.5]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 4.964,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_op[4000000-dtype3--0.5]",
+        "name": "test_clamp_min_op[4000000-dtype3--0.5]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 2.49,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_op[4000000-dtype4--0.5]",
+        "name": "test_clamp_min_op[4000000-dtype4--0.5]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 2.564,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_bounds[-0.5]",
+        "name": "test_clamp_min_bounds[-0.5]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 6.584,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_bounds[0.0]",
+        "name": "test_clamp_min_bounds[0.0]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 6.674,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_bounds[0.25]",
+        "name": "test_clamp_min_bounds[0.25]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 6.6,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "max_abs_err": "0.00e+00"
+        }
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_nan_semantics[dtype0]",
+        "name": "test_clamp_min_nan_semantics[dtype0]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 2.268,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_nan_semantics[dtype1]",
+        "name": "test_clamp_min_nan_semantics[dtype1]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 2.236,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_nan_semantics[dtype2]",
+        "name": "test_clamp_min_nan_semantics[dtype2]",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 2.159,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_none_rejected",
+        "name": "test_clamp_min_none_rejected",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_rejects_non_float_dtype",
+        "name": "test_clamp_min_rejects_non_float_dtype",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      },
+      {
+        "nodeid": "tests.ops.test_clamp_min::test_clamp_min_eval_roofline",
+        "name": "test_clamp_min_eval_roofline",
+        "classname": "tests.ops.test_clamp_min",
+        "time_s": 0.002,
+        "outcome": "passed",
+        "message": null,
+        "properties": {}
+      }
+    ]
+  },
+  "benchmark_tests": {
+    "path": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/pytest/benchmark.xml",
+    "status": "passed",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[smoke-1m-float32]",
+        "name": "test_clamp_min_bench[smoke-1m-float32]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 70.525,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "5.5800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[smoke-1m-float16]",
+        "name": "test_clamp_min_bench[smoke-1m-float16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 50.738,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "4.0400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[smoke-1m-bfloat16]",
+        "name": "test_clamp_min_bench[smoke-1m-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 50.745,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "4.1800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[16M-min-only-float16]",
+        "name": "test_clamp_min_bench[16M-min-only-float16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 51.892,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "27.3600"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[16M-min-only-bfloat16]",
+        "name": "test_clamp_min_bench[16M-min-only-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 51.736,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "26.8800"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[16M-min-only-float32]",
+        "name": "test_clamp_min_bench[16M-min-only-float32]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 50.856,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "49.6000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[64M-min-only-float16]",
+        "name": "test_clamp_min_bench[64M-min-only-float16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 50.831,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "126.3000"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[64M-min-only-bfloat16]",
+        "name": "test_clamp_min_bench[64M-min-only-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 51.019,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "125.8400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[256M-min-only-float16]",
+        "name": "test_clamp_min_bench[256M-min-only-float16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 51.614,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "760.7400"
+        }
+      },
+      {
+        "nodeid": "benchmarks.ops.bench_clamp_min::test_clamp_min_bench[256M-min-only-bfloat16]",
+        "name": "test_clamp_min_bench[256M-min-only-bfloat16]",
+        "classname": "benchmarks.ops.bench_clamp_min",
+        "time_s": 52.562,
+        "outcome": "passed",
+        "message": null,
+        "properties": {
+          "op": "ClampMinFwdOp",
+          "op_module": "tileops.ops.elementwise.clamp_min",
+          "tileops_latency_us": "760.7600"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "source": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/benchmark.json",
+    "requested_prof_mode": "msprof",
+    "cases": [
+      {
+        "operator": "ClampMinFwdOp",
+        "case_id": "ClampMinFwdOp-ef48744fc183",
+        "label": "16M-min-only",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "min": -0.5
+          },
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 27.360001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 70.0805,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.5001506805419922,
+        "performance_tops": 0.6133894920349121,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/artifacts/msprof/main_k2j4zvwn",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.146316,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.146316,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.066618,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.066618,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.146316,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.14267,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.168073,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.14267,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.168073,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.700805,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.15766,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 27.360001,
+          "max_latency_us": 27.360001,
+          "min_latency_us": 27.360001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMinFwdOp",
+        "case_id": "ClampMinFwdOp-0b4bed96f5fd",
+        "label": "16M-min-only",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "min": -0.5
+          },
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 26.879999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 71.332,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.5001468658447266,
+        "performance_tops": 1.8726475238800049,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/artifacts/msprof/main_n4398ox1",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.406432,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.556155,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.406432,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.406432,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.406432,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.406432,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.406432,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.406432,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.406432,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.71332,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.406432,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 26.879999,
+          "max_latency_us": 26.879999,
+          "min_latency_us": 26.879999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMinFwdOp",
+        "case_id": "ClampMinFwdOp-4bf742d2df6b",
+        "label": "16M-min-only",
+        "params": {
+          "dtype": "float32",
+          "op_params": {
+            "min": -0.5
+          },
+          "shape": [
+            4096,
+            4096
+          ]
+        },
+        "config": {
+          "block_size": 4096
+        },
+        "tag": "tileops",
+        "latency_us": 49.599998,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 77.3145,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.2500758171081543,
+        "performance_tops": 0.33835357427597046,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/artifacts/msprof/main_8m2mtugx",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.161419,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.161419,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.07345,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.07345,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.161419,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.157397,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.185422,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.157397,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.185422,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.773145,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.173921,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 49.599998,
+          "max_latency_us": 49.599998,
+          "min_latency_us": 49.599998,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMinFwdOp",
+        "case_id": "ClampMinFwdOp-d20eda80adc2",
+        "label": "64M-min-only",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "min": -0.5
+          },
+          "shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 126.30000299999999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 74.8773,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.4055287539958954,
+        "performance_tops": 0.5313854217529297,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/artifacts/msprof/main_xvgvbiwk",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.126784,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.126784,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.057672,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.057672,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.126784,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.123625,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.145636,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.123625,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.145636,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.748773,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.168431,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 126.300003,
+          "max_latency_us": 126.300003,
+          "min_latency_us": 126.300003,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMinFwdOp",
+        "case_id": "ClampMinFwdOp-1bb8f56cc3cf",
+        "label": "64M-min-only",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "min": -0.5
+          },
+          "shape": [
+            8192,
+            8192
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 125.83999600000001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 75.8715,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 1.2049719095230103,
+        "performance_tops": 1.5999023914337158,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/artifacts/msprof/main_zh_er3po",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.34721,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.475189,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.34721,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.34721,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.34721,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.34721,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.34721,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.34721,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.34721,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.758715,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.34721,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 125.839996,
+          "max_latency_us": 125.839996,
+          "min_latency_us": 125.839996,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMinFwdOp",
+        "case_id": "ClampMinFwdOp-8accf33e7541",
+        "label": "256M-min-only",
+        "params": {
+          "dtype": "float16",
+          "op_params": {
+            "min": -0.5
+          },
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 760.73999,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 73.0763,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.27592915296554565,
+        "performance_tops": 0.3528676927089691,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/artifacts/msprof/main_zdxfe2er",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.084196,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.084196,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.038291,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.038291,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.084196,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.082098,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.096716,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.082098,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.096716,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.730763,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.164375,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 760.73999,
+          "max_latency_us": 760.73999,
+          "min_latency_us": 760.73999,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      },
+      {
+        "operator": "ClampMinFwdOp",
+        "case_id": "ClampMinFwdOp-621fbe2a6b4e",
+        "label": "256M-min-only",
+        "params": {
+          "dtype": "bfloat16",
+          "op_params": {
+            "min": -0.5
+          },
+          "shape": [
+            16384,
+            16384
+          ]
+        },
+        "config": {
+          "block_size": 8192
+        },
+        "tag": "tileops",
+        "latency_us": 760.76001,
+        "prof_mode": "msprof",
+        "profiler_valid": true,
+        "invalid_reason": null,
+        "roofline_utilization_percent": 73.0299,
+        "bandwidth_tb_s": 1.75,
+        "arithmetic_intensity_ops_per_byte": 0.8282808065414429,
+        "performance_tops": 1.0585618019104004,
+        "computility_tops": null,
+        "artifact_dir": "/mnt/workspace/tile-ascendnpu-ops/examples/TileOPs/reports/tileops/20261023_183019_804116_ClampMinFwdOp/artifacts/msprof/main_726fk08m",
+        "advice": "latency bound:memory caused",
+        "roofline_levels": [
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Read from UB",
+            "ratio": 0.229724,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "UB Read + Write",
+            "ratio": 0.314411,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Read UB",
+            "ratio": 0.229724,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 33.527610778808594,
+            "bw_name": "Vector Write UB",
+            "ratio": 0.229724,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.381902694702148,
+            "bw_name": "Write to UB",
+            "ratio": 0.229724,
+            "title": "Memory Unit(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "MTE2",
+            "ratio": 0.229724,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "MTE3",
+            "ratio": 0.229724,
+            "title": "Pipeline(Vector)"
+          },
+          {
+            "bw": 8.596094131469727,
+            "bw_name": "GM to UB",
+            "ratio": 0.229724,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 7.296875,
+            "bw_name": "UB to GM",
+            "ratio": 0.229724,
+            "title": "Memory Transfer(Vector)"
+          },
+          {
+            "bw": 1.75,
+            "bw_name": "GM Read + Write",
+            "ratio": 0.730299,
+            "title": "GM/L2"
+          },
+          {
+            "bw": 7.78000020980835,
+            "bw_name": "L2 Read + Write",
+            "ratio": 0.229724,
+            "title": "GM/L2"
+          }
+        ],
+        "msprof": {
+          "captured_op_count": 1,
+          "captured_op_names": [
+            "main"
+          ],
+          "kernel_name_attempts": [
+            "main"
+          ],
+          "kernel_name_requested": "main",
+          "kernel_name_resolved": "main",
+          "latency_us": 760.76001,
+          "max_latency_us": 760.76001,
+          "min_latency_us": 760.76001,
+          "op_name": "main",
+          "sample_count": 1
+        }
+      }
+    ]
+  },
+  "operators": [
+    {
+      "operator": "ClampMinFwdOp",
+      "family": "elementwise",
+      "cases": 14,
+      "passed": 14,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_max_abs_err": 0.0,
+      "max_abs_err": 0.0,
+      "performance_cases": 7,
+      "ratio_range": {
+        "min": 70.0805,
+        "max": 77.3145
+      }
+    }
+  ],
+  "warnings": []
+}
